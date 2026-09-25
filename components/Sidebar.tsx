@@ -10,7 +10,17 @@ function splitHeading(heading: string): [string, string] {
   return [heading.slice(0, spaceIndex), heading.slice(spaceIndex + 1)];
 }
 
-export function Sidebar({ groups }: { groups: NavGroup[] }) {
+export function Sidebar({
+  groups,
+  mobileOpen,
+  desktopCollapsed,
+  onCloseMobile,
+}: {
+  groups: NavGroup[];
+  mobileOpen: boolean;
+  desktopCollapsed: boolean;
+  onCloseMobile: () => void;
+}) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
@@ -19,7 +29,18 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
   }
 
   return (
-    <nav className="flex w-72 shrink-0 flex-col overflow-y-auto border-r border-line bg-ink-elevated p-4">
+    <nav
+      className={`fixed inset-y-0 left-0 z-40 w-72 shrink-0 flex-col overflow-y-auto border-r border-line bg-ink-elevated p-4 transition-all duration-200 lg:static lg:translate-x-0 ${
+        mobileOpen ? "flex translate-x-0" : "hidden -translate-x-full"
+      } lg:flex ${desktopCollapsed ? "lg:w-0 lg:border-0 lg:p-0 lg:overflow-hidden" : "lg:w-72"}`}
+    >
+      <button
+        type="button"
+        onClick={onCloseMobile}
+        className="mb-2 self-end rounded px-2 py-1 font-mono text-xs text-paper-muted hover:text-paper lg:hidden"
+      >
+        Close ✕
+      </button>
       {groups.map((group) => {
         const [number, name] = splitHeading(group.heading);
         const hasItems = group.items.length > 0;

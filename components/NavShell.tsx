@@ -34,6 +34,8 @@ export function NavShell({
 }) {
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
 
   const track = trackFromSlug(activeTrackSlug(pathname));
   const tree = buildNavTree(
@@ -47,17 +49,40 @@ export function NavShell({
         event.preventDefault();
         setSearchOpen((prev) => !prev);
       }
-      if (event.key === "Escape") setSearchOpen(false);
+      if (event.key === "Escape") {
+        setSearchOpen(false);
+        setMobileOpen(false);
+      }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
   return (
     <div className="flex h-screen">
-      <Sidebar groups={tree} />
+      <Sidebar
+        groups={tree}
+        mobileOpen={mobileOpen}
+        desktopCollapsed={desktopCollapsed}
+        onCloseMobile={() => setMobileOpen(false)}
+      />
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
       <div className="flex flex-1 flex-col overflow-hidden">
-        <TopBar onSearchClick={() => setSearchOpen(true)} />
+        <TopBar
+          onSearchClick={() => setSearchOpen(true)}
+          onMenuClick={() => setMobileOpen(true)}
+          onToggleSidebar={() => setDesktopCollapsed((prev) => !prev)}
+          sidebarCollapsed={desktopCollapsed}
+        />
         <div className="flex-1 overflow-y-auto">{children}</div>
       </div>
       <SearchOverlay items={searchItems} open={searchOpen} onClose={() => setSearchOpen(false)} />
