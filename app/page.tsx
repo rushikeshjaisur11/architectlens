@@ -1,39 +1,30 @@
 import { concepts, cases, studies, builds } from "#velite";
-import { SectionCard } from "@/components/SectionCard";
 
 export default function HomePage() {
   return (
-    <main className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="text-3xl font-bold">architectlens</h1>
-      <p className="mt-2 text-neutral-600">
-        System design concepts, cases, studies, and builds.
+    <main className="mx-auto max-w-2xl px-6 py-16">
+      <h1 className="text-3xl font-bold text-neutral-100">architectlens</h1>
+      <p className="mt-2 text-neutral-400">
+        System design concepts, cases, studies, and builds — browse via the sidebar.
       </p>
-      <div className="mt-10 grid gap-4 sm:grid-cols-2">
-        <SectionCard
-          href="/concepts"
-          title="Concepts"
-          count={concepts.length}
-          description="Classical distributed systems and AI/LLM system design fundamentals."
-        />
-        <SectionCard
-          href="/cases"
-          title="Cases"
-          count={cases.length}
-          description="Real-world scenario walkthroughs and interview questions."
-        />
-        <SectionCard
-          href="/studies"
-          title="Studies"
-          count={studies.length}
-          description="Full end-to-end HLD case studies (design Twitter, Uber, etc)."
-        />
-        <SectionCard
-          href="/builds"
-          title="Builds"
-          count={builds.length}
-          description="Hands-on implementation write-ups."
-        />
-      </div>
+      <dl className="mt-10 grid grid-cols-2 gap-4 text-sm text-neutral-400">
+        <div>
+          <dt className="text-neutral-500">Concepts</dt>
+          <dd className="text-xl text-neutral-100">{concepts.length}</dd>
+        </div>
+        <div>
+          <dt className="text-neutral-500">Cases</dt>
+          <dd className="text-xl text-neutral-100">{cases.length}</dd>
+        </div>
+        <div>
+          <dt className="text-neutral-500">Studies</dt>
+          <dd className="text-xl text-neutral-100">{studies.length}</dd>
+        </div>
+        <div>
+          <dt className="text-neutral-500">Builds</dt>
+          <dd className="text-xl text-neutral-100">{builds.length}</dd>
+        </div>
+      </dl>
     </main>
   );
 }
