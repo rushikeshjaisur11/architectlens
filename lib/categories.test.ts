@@ -32,4 +32,12 @@ describe("categoryFromFolderName", () => {
   it("throws for an unknown category number", () => {
     expect(() => categoryFromFolderName("99-unknown")).toThrow();
   });
+
+  it("throws when the slug doesn't match the number's real slug (wrong/duplicate number reuse)", () => {
+    expect(() => categoryFromFolderName("06-foundations")).toThrow();
+  });
+
+  it("throws for an unpadded number even if the slug is correct", () => {
+    expect(() => categoryFromFolderName("1-foundations")).toThrow();
+  });
 });

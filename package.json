@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "velite build",
+    "predev": "velite build --strict",
     "dev": "next dev",
-    "prebuild": "velite build",
+    "prebuild": "velite build --strict",
     "build": "next build",
     "start": "next start",
     "test": "vitest run"
