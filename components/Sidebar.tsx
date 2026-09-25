@@ -24,16 +24,19 @@ export function Sidebar({ groups, onSearchClick }: { groups: NavGroup[]; onSearc
       </button>
 
       {groups.map((group) => (
-        <div key={group.heading} className="mb-6">
+        <div key={group.heading} className="mb-4">
           <button
             type="button"
             onClick={() => toggle(group.heading)}
             className="mb-2 flex w-full items-center justify-between font-mono text-xs font-semibold uppercase tracking-wide text-neutral-500"
           >
-            {group.heading}
-            <span>{collapsed[group.heading] ? "+" : "−"}</span>
+            <span>{group.heading}</span>
+            <span className="flex items-center gap-2">
+              <span className="normal-case text-neutral-600">{group.items.length}</span>
+              <span>{collapsed[group.heading] ? "+" : "−"}</span>
+            </span>
           </button>
-          {!collapsed[group.heading] && (
+          {!collapsed[group.heading] && group.items.length > 0 && (
             <ul className="space-y-1">
               {group.items.map((item) => {
                 const active = pathname === item.href;

@@ -1,47 +1,64 @@
 import { describe, expect, it } from "vitest";
 import { buildNavTree } from "./nav-tree";
 
-const concepts = [
-  { slug: "rate-limiting", title: "Rate Limiting", track: "classical" as const, order: 7 },
-  { slug: "load-balancing", title: "Load Balancing", track: "classical" as const, order: 2 },
-  { slug: "prompt-routing", title: "Prompt Routing", track: "ai" as const, order: 2 },
-];
-const cases = [{ slug: "optimize-1m-queries-day", title: "Optimize 1M Queries/Day", order: 1 }];
+const foundations = { number: 1, slug: "foundations", name: "Foundations" };
+const apis = { number: 2, slug: "apis-services-protocols", name: "APIs, services and protocols" };
 
 describe("buildNavTree", () => {
-  it("returns groups in fixed order (Classical, AI, Cases) when all have items", () => {
-    const tree = buildNavTree(concepts, cases, [], []);
-    expect(tree.map((g) => g.heading)).toEqual(["Classical", "AI", "Cases"]);
+  it("returns all 18 categories in fixed numeric order, even when every one is empty", () => {
+    const tree = buildNavTree([]);
+    expect(tree).toHaveLength(18);
+    expect(tree[0].heading).toBe("01 Foundations");
+    expect(tree[17].heading).toBe("18 Engineering case studies");
   });
 
-  it("omits Studies and Builds entirely when they have zero items", () => {
-    const tree = buildNavTree(concepts, cases, [], []);
-    expect(tree.find((g) => g.heading === "Studies")).toBeUndefined();
-    expect(tree.find((g) => g.heading === "Builds")).toBeUndefined();
+  it("includes a zero-lesson category as an empty-items group, not omitted", () => {
+    const tree = buildNavTree([]);
+    const foundationsGroup = tree.find((g) => g.heading.startsWith("01"))!;
+    expect(foundationsGroup.items).toEqual([]);
   });
 
-  it("includes Studies and Builds when they have items", () => {
-    const studies = [{ slug: "design-twitter", title: "Design Twitter", order: 1 }];
-    const builds = [{ slug: "rate-limiter", title: "Build a Rate Limiter", order: 1 }];
-    const tree = buildNavTree(concepts, cases, studies, builds);
-    expect(tree.map((g) => g.heading)).toEqual(["Classical", "AI", "Cases", "Studies", "Builds"]);
+  it("orders lessons within a category by their order field", () => {
+    const lessons = [
+      { slug: "second", title: "Second", shortTitle: "Second", order: 2, category: foundations },
+      { slug: "first", title: "First", shortTitle: "First", order: 1, category: foundations },
+    ];
+    const tree = buildNavTree(lessons);
+    const foundationsGroup = tree.find((g) => g.heading.startsWith("01"))!;
+    expect(foundationsGroup.items.map((i) => i.title)).toEqual(["First", "Second"]);
   });
 
-  it("orders items within a group by their order field", () => {
-    const tree = buildNavTree(concepts, [], [], []);
-    const classical = tree.find((g) => g.heading === "Classical")!;
-    expect(classical.items.map((i) => i.title)).toEqual(["Load Balancing", "Rate Limiting"]);
+  it("uses shortTitle for nav display, not the full title", () => {
+    const lessons = [
+      {
+        slug: "cap-theorem",
+        title: "CAP Theorem: A Very Long Explanatory Subtitle",
+        shortTitle: "CAP Theorem",
+        order: 1,
+        category: foundations,
+      },
+    ];
+    const tree = buildNavTree(lessons);
+    const foundationsGroup = tree.find((g) => g.heading.startsWith("01"))!;
+    expect(foundationsGroup.items[0].title).toBe("CAP Theorem");
   });
 
-  it("builds concept hrefs scoped by track", () => {
-    const tree = buildNavTree(concepts, [], [], []);
-    const ai = tree.find((g) => g.heading === "AI")!;
-    expect(ai.items).toEqual([{ href: "/concepts/ai/prompt-routing", title: "Prompt Routing" }]);
+  it("builds hrefs scoped by category slug", () => {
+    const lessons = [{ slug: "rest-vs-rpc", title: "REST vs RPC", shortTitle: "REST vs RPC", order: 1, category: apis }];
+    const tree = buildNavTree(lessons);
+    const apisGroup = tree.find((g) => g.heading.startsWith("02"))!;
+    expect(apisGroup.items[0].href).toBe("/lessons/apis-services-protocols/rest-vs-rpc");
   });
 
-  it("builds case hrefs", () => {
-    const tree = buildNavTree([], cases, [], []);
-    const casesGroup = tree.find((g) => g.heading === "Cases")!;
-    expect(casesGroup.items).toEqual([{ href: "/cases/optimize-1m-queries-day", title: "Optimize 1M Queries/Day" }]);
+  it("keeps the same slug in two different categories separate (hrefs differ by category)", () => {
+    const lessons = [
+      { slug: "overview", title: "Foundations Overview", shortTitle: "Overview", order: 1, category: foundations },
+      { slug: "overview", title: "APIs Overview", shortTitle: "Overview", order: 1, category: apis },
+    ];
+    const tree = buildNavTree(lessons);
+    const foundationsGroup = tree.find((g) => g.heading.startsWith("01"))!;
+    const apisGroup = tree.find((g) => g.heading.startsWith("02"))!;
+    expect(foundationsGroup.items[0].href).toBe("/lessons/foundations/overview");
+    expect(apisGroup.items[0].href).toBe("/lessons/apis-services-protocols/overview");
   });
 });
