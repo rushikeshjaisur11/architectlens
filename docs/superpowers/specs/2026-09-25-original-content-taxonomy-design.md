@@ -134,16 +134,24 @@ names and numbers, used by both the content schema and the sidebar.
 Replaces the current Classical/AI/Cases/Studies/Builds grouping with
 the 18-category tree, in fixed numeric order, each group labeled with
 its number and lesson count (`01 Foundations — 2 lessons`), matching
-fanout's pattern. A category with zero lessons is omitted, same rule
-as before (relevant early on, before every category has its first
-lesson written).
+fanout's pattern. Unlike the old taxonomy (where omitting an
+incidentally-empty group like Studies/Builds made sense because most
+groups had content), **all 18 categories are always shown**, including
+ones with zero lessons (`06 Distributed Coordination — 0 lessons`,
+not clickable). This taxonomy is a fixed, predefined curriculum
+structure that content gets authored into over time — hiding empty
+categories would hide most of the app immediately after this pipeline
+ships, before any lesson exists. A category becomes clickable once it
+has at least one lesson.
 
 ## Landing page
 
 Replaces the current stats-only intro with a curriculum-grid: one
 card per category, numbered, showing lesson count, linking to the
-category's first lesson (or to a category index page — see Open
-questions).
+category's first lesson. All 18 cards always render (same reasoning
+as the sidebar); a category with zero lessons renders as a
+non-clickable card so the full curriculum shape is visible from day
+one.
 
 ## Testing
 
@@ -151,10 +159,9 @@ questions).
   (pure functions, content-source-agnostic).
 - New: category-lookup table test (number/slug/name round-trip,
   unknown folder name handling).
-- New: nav-tree rebuilt around categories — same test shape as
-  before (fixed order, empty-category omission, per-category
-  ordering) but keyed on the 18-category table instead of
-  track/collection.
+- New: nav-tree rebuilt around categories — fixed numeric order, all
+  18 categories always present (including zero-lesson ones, per the
+  Sidebar section above), per-category ordering by `order` field.
 - Removed: `lib/resolve-wikilink.test.ts`, `lib/vault-index.test.ts`,
   `lib/related.test.ts` (their subjects are removed).
 
