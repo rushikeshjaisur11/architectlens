@@ -1,7 +1,6 @@
 import "./globals.css";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { lessons } from "#velite";
-import { buildNavTree } from "@/lib/nav-tree";
 import { buildContentIndex } from "@/lib/search-index";
 import { NavShell } from "@/components/NavShell";
 
@@ -33,7 +32,6 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const tree = buildNavTree(lessons);
   const searchItems = buildContentIndex();
 
   return (
@@ -42,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body className="min-h-screen bg-ink font-sans text-paper" suppressHydrationWarning>
-        <NavShell tree={tree} searchItems={searchItems}>
+        <NavShell lessons={lessons} searchItems={searchItems}>
           {children}
         </NavShell>
       </body>

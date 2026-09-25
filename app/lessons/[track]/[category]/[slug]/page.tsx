@@ -4,16 +4,16 @@ import { findBySlug } from "@/lib/content";
 import { MetaPanel } from "@/components/MetaPanel";
 
 export function generateStaticParams() {
-  return lessons.map((l) => ({ category: l.category.slug, slug: l.slug }));
+  return lessons.map((l) => ({ track: l.track.slug, category: l.category.slug, slug: l.slug }));
 }
 
 export default async function LessonPage({
   params,
 }: {
-  params: Promise<{ category: string; slug: string }>;
+  params: Promise<{ track: string; category: string; slug: string }>;
 }) {
-  const { category, slug } = await params;
-  const inCategory = lessons.filter((l) => l.category.slug === category);
+  const { track, category, slug } = await params;
+  const inCategory = lessons.filter((l) => l.track.slug === track && l.category.slug === category);
   const lesson = findBySlug(inCategory, slug);
   if (!lesson) notFound();
 

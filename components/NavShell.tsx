@@ -1,22 +1,45 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { NavGroup } from "@/lib/nav-tree";
+import { usePathname } from "next/navigation";
+import { buildNavTree } from "@/lib/nav-tree";
+import { trackFromSlug } from "@/lib/tracks";
 import type { ContentIndexItem } from "@/lib/search-index";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { SearchOverlay } from "./SearchOverlay";
 
+type LessonLike = {
+  slug: string;
+  title: string;
+  shortTitle: string;
+  order: number;
+  track: { slug: string; name: string };
+  category: { number: number; slug: string; name: string };
+};
+
+function activeTrackSlug(pathname: string): string {
+  if (pathname.startsWith("/ai-systems") || pathname.startsWith("/lessons/ai-systems")) return "ai-systems";
+  return "system-design";
+}
+
 export function NavShell({
-  tree,
+  lessons,
   searchItems,
   children,
 }: {
-  tree: NavGroup[];
+  lessons: LessonLike[];
   searchItems: ContentIndexItem[];
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
+
+  const track = trackFromSlug(activeTrackSlug(pathname));
+  const tree = buildNavTree(
+    lessons.filter((l) => l.track.slug === track.slug),
+    track
+  );
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {

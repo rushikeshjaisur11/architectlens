@@ -1,5 +1,5 @@
 import { sortByOrder } from "./content";
-import { CATEGORIES } from "./categories";
+import type { Track } from "./tracks";
 
 export type NavItem = { href: string; title: string };
 export type NavGroup = { heading: string; items: NavItem[] };
@@ -12,13 +12,13 @@ type LessonLike = {
   category: { number: number; slug: string; name: string };
 };
 
-export function buildNavTree(lessons: LessonLike[]): NavGroup[] {
-  return CATEGORIES.map((category) => {
+export function buildNavTree(lessons: LessonLike[], track: Track): NavGroup[] {
+  return track.categories.map((category) => {
     const inCategory = sortByOrder(lessons.filter((l) => l.category.number === category.number));
     return {
       heading: `${String(category.number).padStart(2, "0")} ${category.name}`,
       items: inCategory.map((l) => ({
-        href: `/lessons/${category.slug}/${l.slug}`,
+        href: `/lessons/${track.slug}/${category.slug}/${l.slug}`,
         title: l.shortTitle,
       })),
     };

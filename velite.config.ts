@@ -1,6 +1,7 @@
 import { defineConfig, s } from "velite";
 import { CONTENT_ROOT } from "./lib/content-root";
 import { categoryFromFolderName } from "./lib/categories";
+import { trackFromSlug } from "./lib/tracks";
 import { resolveShortTitle } from "./lib/short-title";
 import { order } from "./lib/order";
 import { slugFromFilename } from "./lib/slug";
@@ -12,7 +13,7 @@ export default defineConfig({
   collections: {
     lessons: {
       name: "Lesson",
-      pattern: "*/*.md",
+      pattern: "*/*/*.md",
       schema: s
         .object({
           title: s.string(),
@@ -23,19 +24,21 @@ export default defineConfig({
           path: s.path(),
         })
         .transform((data) => {
-          const [folderName, filename] = data.path.split("/");
-          const category = categoryFromFolderName(folderName);
+          const [trackSlug, folderName, filename] = data.path.split("/");
+          const track = trackFromSlug(trackSlug);
+          const category = categoryFromFolderName(track.categories, folderName);
           const slug = slugFromFilename(filename);
 
-          const key = `${category.slug}/${slug}`;
+          const key = `${trackSlug}/${category.slug}/${slug}`;
           if (seenLessonKeys.has(key)) {
-            throw new Error(`Duplicate lesson slug "${slug}" in category "${category.slug}" (from ${data.path})`);
+            throw new Error(`Duplicate lesson slug "${slug}" in ${trackSlug}/${category.slug} (from ${data.path})`);
           }
           seenLessonKeys.add(key);
 
           return {
             ...data,
             shortTitle: resolveShortTitle(data.title, data.short_title),
+            track: { slug: track.slug, name: track.name },
             category,
             order: order(filename),
             slug,
