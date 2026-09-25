@@ -2,15 +2,11 @@ import { defineConfig, s } from "velite";
 import path from "node:path";
 import { VAULT_SYSTEMS_DESIGN_ROOT } from "./lib/vault-path";
 import { remarkWikilinks } from "./lib/remark-wikilinks";
+import { buildKnownHrefs } from "./lib/vault-index";
+import { order } from "./lib/order";
+import { slugFromFilename } from "./lib/slug";
 
-function order(filename: string): number {
-  const match = /^(\d+)-/.exec(filename);
-  return match ? Number(match[1]) : Number.POSITIVE_INFINITY;
-}
-
-function slugFromFilename(filename: string): string {
-  return filename.replace(/^\d+-/, "").replace(/\.md$/, "");
-}
+const knownHrefs = buildKnownHrefs();
 
 const sharedFields = {
   title: s.string(),
@@ -18,7 +14,7 @@ const sharedFields = {
   maturity: s.string().optional(),
   confidence: s.string().optional(),
   related: s.array(s.string()).default([]),
-  html: s.markdown({ remarkPlugins: [remarkWikilinks] }),
+  html: s.markdown({ remarkPlugins: [() => remarkWikilinks(knownHrefs)] }),
 };
 
 export default defineConfig({
@@ -26,7 +22,7 @@ export default defineConfig({
   collections: {
     concepts: {
       name: "Concept",
-      pattern: "{classical,ai}/*.md",
+      pattern: ["{classical,ai}/*.md", "!**/index.md"],
       schema: s
         .object({
           ...sharedFields,

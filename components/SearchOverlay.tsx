@@ -3,26 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Fuse from "fuse.js";
-import { concepts, cases, studies, builds } from "#velite";
+import type { ContentIndexItem } from "@/lib/search-index";
 
-type SearchItem = { href: string; title: string; tags: string[] };
-
-function toSearchItems(): SearchItem[] {
-  const conceptItems = concepts.map((c) => ({
-    href: `/concepts/${c.track}/${c.slug}`,
-    title: c.title,
-    tags: c.tags,
-  }));
-  const caseItems = cases.map((c) => ({ href: `/cases/${c.slug}`, title: c.title, tags: c.tags }));
-  const studyItems = studies.map((s) => ({ href: `/studies/${s.slug}`, title: s.title, tags: s.tags }));
-  const buildItems = builds.map((b) => ({ href: `/builds/${b.slug}`, title: b.title, tags: b.tags }));
-  return [...conceptItems, ...caseItems, ...studyItems, ...buildItems];
-}
-
-export function SearchOverlay() {
+export function SearchOverlay({ items }: { items: ContentIndexItem[] }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const items = useMemo(toSearchItems, []);
   const fuse = useMemo(() => new Fuse(items, { keys: ["title", "tags"], threshold: 0.35 }), [items]);
   const results = query.trim() ? fuse.search(query).slice(0, 10).map((r) => r.item) : [];
 

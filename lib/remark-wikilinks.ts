@@ -1,12 +1,12 @@
 import { visit } from "unist-util-visit";
 import type { Root } from "mdast";
 import path from "node:path";
-import { parseWikilinkTarget, targetToHref } from "./resolve-wikilink";
+import { parseWikilinkTarget, targetToHref, isKnownTarget } from "./resolve-wikilink";
 import { VAULT_SYSTEMS_DESIGN_ROOT } from "./vault-path";
 
 const WIKILINK_RE = /\[\[([^\]]+)\]\]/g;
 
-export function remarkWikilinks() {
+export function remarkWikilinks(knownHrefs: ReadonlySet<string>) {
   return (tree: Root, file: { path?: string; data: Record<string, unknown> }) => {
     const currentPath = file.path
       ? path.relative(VAULT_SYSTEMS_DESIGN_ROOT, file.path).replace(/\\/g, "/")
@@ -27,7 +27,7 @@ export function remarkWikilinks() {
         }
 
         const target = parseWikilinkTarget(`[[${raw}]]`, currentPath);
-        if (target) {
+        if (target && isKnownTarget(target, knownHrefs)) {
           newChildren.push({
             type: "link",
             url: targetToHref(target),

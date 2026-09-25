@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { concepts } from "#velite";
 import { findConceptBySlug } from "@/lib/content";
+import { resolveRelated } from "@/lib/related";
+import { buildContentIndex } from "@/lib/search-index";
 import { MetaPanel } from "@/components/MetaPanel";
 import { RelatedPanel } from "@/components/RelatedPanel";
 
@@ -17,10 +19,7 @@ export default async function ConceptPage({
   const concept = findConceptBySlug(concepts, track, slug);
   if (!concept) notFound();
 
-  const related = (concept.related as string[])
-    .map((raw) => concepts.find((c) => raw.includes(c.slug)))
-    .filter((c): c is (typeof concepts)[number] => Boolean(c))
-    .map((c) => ({ href: `/concepts/${c.track}/${c.slug}`, title: c.title }));
+  const related = resolveRelated(concept.related, concept.path, buildContentIndex());
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">

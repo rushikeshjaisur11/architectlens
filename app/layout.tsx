@@ -1,5 +1,6 @@
 import "./globals.css";
 import { SearchOverlay } from "@/components/SearchOverlay";
+import { buildContentIndex } from "@/lib/search-index";
 
 export const metadata = {
   title: "architectlens",
@@ -11,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="min-h-screen bg-white text-neutral-900">
         {children}
-        <SearchOverlay />
+        <SearchOverlay items={buildContentIndex()} />
       </body>
     </html>
   );

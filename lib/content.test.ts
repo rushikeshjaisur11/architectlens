@@ -12,9 +12,9 @@ describe("sortByOrder", () => {
     expect(sortByOrder(concepts).map((c) => c.slug)).toEqual(["a", "c", "b"]);
   });
 
-  it("puts items without a finite order last", () => {
-    const withInfinite = [...concepts, { slug: "z", order: Number.POSITIVE_INFINITY, track: "classical" as const }];
-    expect(sortByOrder(withInfinite).map((c) => c.slug)).toEqual(["a", "c", "b", "z"]);
+  it("puts items with the no-prefix sentinel last (Velite serializes Infinity as null, so the sentinel must be a finite number)", () => {
+    const withSentinel = [...concepts, { slug: "z", order: Number.MAX_SAFE_INTEGER, track: "classical" as const }];
+    expect(sortByOrder(withSentinel).map((c) => c.slug)).toEqual(["a", "c", "b", "z"]);
   });
 });
 
