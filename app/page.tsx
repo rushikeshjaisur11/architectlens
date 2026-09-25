@@ -12,20 +12,35 @@ export default function HomePage() {
   for (const lesson of lessons) {
     counts.set(lesson.category.number, (counts.get(lesson.category.number) ?? 0) + 1);
   }
+  const totalLessons = lessons.length;
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="text-3xl font-semibold text-paper">architectlens</h1>
-      <p className="mt-2 text-paper-muted">System design, learned from first principles.</p>
-      <div className="mt-10 grid gap-3 sm:grid-cols-2">
+    <main className="mx-auto max-w-5xl px-6 py-16">
+      <h1 className="text-4xl font-semibold leading-tight text-paper">
+        Learn system design
+        <br />
+        <span className="font-mono text-accent">from first principles.</span>
+      </h1>
+      <p className="mt-4 max-w-xl text-paper-muted">
+        A self-paced curriculum covering the concepts, cases, and builds that come up in real
+        systems work — organized as 18 focused modules.
+      </p>
+      <p className="mt-6 font-mono text-xs text-paper-muted">
+        {totalLessons} lesson{totalLessons === 1 ? "" : "s"} across {CATEGORIES.length} modules
+      </p>
+
+      <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {CATEGORIES.map((category) => {
           const count = counts.get(category.number) ?? 0;
           const number = String(category.number).padStart(2, "0");
 
           const body = (
             <>
-              <span className="font-mono text-xs text-accent">{number}</span>
-              <h2 className="mt-1 text-base font-medium text-paper">{category.name}</h2>
+              <div className="flex items-start justify-between">
+                <span className="font-mono text-xs text-accent">{number}</span>
+                {count > 0 && <span className="text-paper-muted">&rarr;</span>}
+              </div>
+              <h2 className="mt-2 text-base font-medium text-paper">{category.name}</h2>
               <p className="mt-2 font-mono text-xs text-paper-muted">{lessonLabel(count)}</p>
             </>
           );
