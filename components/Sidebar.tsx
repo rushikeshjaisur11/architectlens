@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavGroup } from "@/lib/nav-tree";
+import { TrackSwitcher } from "./TrackSwitcher";
 
 function splitHeading(heading: string): [string, string] {
   const spaceIndex = heading.indexOf(" ");
@@ -34,13 +35,16 @@ export function Sidebar({
         mobileOpen ? "flex translate-x-0" : "hidden -translate-x-full"
       } lg:flex ${desktopCollapsed ? "lg:w-0 lg:border-0 lg:p-0 lg:overflow-hidden" : "lg:w-72"}`}
     >
-      <button
-        type="button"
-        onClick={onCloseMobile}
-        className="mb-2 self-end rounded px-2 py-1 font-mono text-xs text-paper-muted hover:text-paper lg:hidden"
-      >
-        Close ✕
-      </button>
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <TrackSwitcher />
+        <button
+          type="button"
+          onClick={onCloseMobile}
+          className="rounded px-2 py-1 font-mono text-xs text-paper-muted hover:text-paper lg:hidden"
+        >
+          Close ✕
+        </button>
+      </div>
       {groups.map((group) => {
         const [number, name] = splitHeading(group.heading);
         const hasItems = group.items.length > 0;

@@ -2,13 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TRACKS } from "@/lib/tracks";
 import { ThemeToggle } from "./ThemeToggle";
-
-function activeTrackSlug(pathname: string): string {
-  if (pathname.startsWith("/ai-systems") || pathname.startsWith("/lessons/ai-systems")) return "ai-systems";
-  return "system-design";
-}
+import { TrackSwitcher } from "./TrackSwitcher";
 
 function categoryLabel(pathname: string): string | null {
   const match = /^\/lessons\/[^/]+\/([^/]+)\//.exec(pathname);
@@ -31,7 +26,6 @@ export function TopBar({
   sidebarCollapsed: boolean;
 }) {
   const pathname = usePathname();
-  const active = activeTrackSlug(pathname);
   const label = categoryLabel(pathname);
 
   return (
@@ -53,23 +47,11 @@ export function TopBar({
         >
           {sidebarCollapsed ? "»" : "«"}
         </button>
-        <nav className="flex min-w-0 items-center gap-3 overflow-x-auto font-mono text-xs text-paper-muted">
-          <Link href="/" className="shrink-0 hover:text-paper">
+        <nav className="flex min-w-0 items-center gap-3 font-mono text-xs text-paper-muted">
+          <Link href="/" className="hidden shrink-0 hover:text-paper sm:inline">
             architectlens
           </Link>
-          <span className="flex shrink-0 items-center gap-1">
-            {TRACKS.map((track, i) => (
-              <span key={track.slug} className="flex items-center gap-1">
-                {i > 0 && <span>|</span>}
-                <Link
-                  href={track.slug === "system-design" ? "/" : `/${track.slug}`}
-                  className={active === track.slug ? "text-accent" : "hover:text-paper"}
-                >
-                  {track.name}
-                </Link>
-              </span>
-            ))}
-          </span>
+          <TrackSwitcher className="shrink-0" />
           {label && (
             <>
               <span className="hidden sm:inline">/</span>
