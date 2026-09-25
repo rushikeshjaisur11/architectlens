@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { lessons } from "#velite";
 import { CATEGORIES } from "@/lib/categories";
+import { sortByOrder } from "@/lib/content";
+
+function lessonLabel(count: number): string {
+  return count === 1 ? "1 lesson" : `${count} lessons`;
+}
 
 export default function HomePage() {
   const counts = new Map<number, number>();
@@ -10,34 +15,38 @@ export default function HomePage() {
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="text-3xl font-bold text-neutral-100">architectlens</h1>
-      <p className="mt-2 text-neutral-400">System design, learned from first principles.</p>
-      <div className="mt-10 grid gap-4 sm:grid-cols-2">
+      <h1 className="text-3xl font-semibold text-paper">architectlens</h1>
+      <p className="mt-2 text-paper-muted">System design, learned from first principles.</p>
+      <div className="mt-10 grid gap-3 sm:grid-cols-2">
         {CATEGORIES.map((category) => {
           const count = counts.get(category.number) ?? 0;
-          const label = `${String(category.number).padStart(2, "0")} ${category.name}`;
+          const number = String(category.number).padStart(2, "0");
+
+          const body = (
+            <>
+              <span className="font-mono text-xs text-accent">{number}</span>
+              <h2 className="mt-1 text-base font-medium text-paper">{category.name}</h2>
+              <p className="mt-2 font-mono text-xs text-paper-muted">{lessonLabel(count)}</p>
+            </>
+          );
 
           if (count === 0) {
             return (
-              <div key={category.number} className="rounded-lg border border-neutral-800 p-6 opacity-50">
-                <h2 className="text-lg font-semibold text-neutral-100">{label}</h2>
-                <p className="mt-2 text-xs uppercase tracking-wide text-neutral-500">{count} lessons</p>
+              <div key={category.number} className="rounded border border-line-soft p-5 opacity-60">
+                {body}
               </div>
             );
           }
 
-          const firstLesson = lessons
-            .filter((l) => l.category.number === category.number)
-            .sort((a, b) => a.order - b.order)[0];
+          const firstLesson = sortByOrder(lessons.filter((l) => l.category.number === category.number))[0];
 
           return (
             <Link
               key={category.number}
               href={`/lessons/${category.slug}/${firstLesson.slug}`}
-              className="block rounded-lg border border-neutral-800 p-6 hover:border-neutral-600 transition-colors"
+              className="block rounded border border-line p-5 transition-colors hover:border-accent-dim"
             >
-              <h2 className="text-lg font-semibold text-neutral-100">{label}</h2>
-              <p className="mt-2 text-xs uppercase tracking-wide text-neutral-500">{count} lessons</p>
+              {body}
             </Link>
           );
         })}

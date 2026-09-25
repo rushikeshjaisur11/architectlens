@@ -21,14 +21,14 @@ export function SearchOverlay({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 pt-24">
-      <div className="w-full max-w-lg rounded-lg bg-neutral-900 p-4 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-ink/80 pt-24">
+      <div className="w-full max-w-lg rounded border border-line bg-ink-elevated p-4 shadow-xl">
         <input
           autoFocus
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search architectlens..."
-          className="w-full rounded border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 outline-none"
+          className="w-full rounded border border-line bg-ink px-3 py-2 text-sm text-paper outline-none focus:border-accent-dim"
         />
         <ul className="mt-3 max-h-80 space-y-1 overflow-y-auto">
           {results.map((item) => (
@@ -36,7 +36,7 @@ export function SearchOverlay({
               <Link
                 href={item.href}
                 onClick={onClose}
-                className="block rounded px-2 py-1 text-sm text-neutral-200 hover:bg-neutral-800"
+                className="block rounded px-2 py-1 text-sm text-paper-muted hover:bg-ink hover:text-paper"
               >
                 {item.title}
               </Link>

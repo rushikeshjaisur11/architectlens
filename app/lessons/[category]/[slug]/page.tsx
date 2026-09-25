@@ -19,15 +19,21 @@ export default async function LessonPage({
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="text-2xl font-bold">{lesson.title}</h1>
+      <p className="font-mono text-xs text-accent">
+        {String(lesson.category.number).padStart(2, "0")} {lesson.category.name}
+      </p>
+      <h1 className="mt-2 text-2xl font-semibold text-paper">{lesson.title}</h1>
       <div className="mt-4">
         <MetaPanel tags={lesson.tags} />
       </div>
-      <article className="prose prose-invert mt-8 max-w-none" dangerouslySetInnerHTML={{ __html: lesson.html }} />
+      <article
+        className="prose prose-invert mt-8 max-w-none prose-headings:text-paper prose-a:text-accent"
+        dangerouslySetInnerHTML={{ __html: lesson.html }}
+      />
       {lesson.sources.length > 0 && (
-        <div className="mt-8 border-t border-neutral-800 pt-4">
-          <h3 className="text-sm font-medium text-neutral-200">Sources</h3>
-          <ul className="mt-2 space-y-1 text-sm text-neutral-400">
+        <div className="mt-8 border-t border-line pt-4">
+          <h3 className="font-mono text-xs text-paper-muted">Sources</h3>
+          <ul className="mt-2 space-y-1 text-sm text-paper-muted">
             {lesson.sources.map((source) => (
               <li key={source}>{source}</li>
             ))}

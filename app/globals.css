@@ -1,2 +1,32 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  --color-ink: #0d1321;
+  --color-ink-elevated: #141b2e;
+  --color-line: #2a3752;
+  --color-line-soft: #1e2740;
+  --color-paper: #e8ecf4;
+  --color-paper-muted: #8792ac;
+  --color-accent: #e8a33d;
+  --color-accent-dim: #b8801f;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-ink: #eef1f6;
+  --color-ink-elevated: #ffffff;
+  --color-line: #c7d0e0;
+  --color-line-soft: #dbe1ec;
+  --color-paper: #101526;
+  --color-paper-muted: #56607a;
+  --color-accent: #b8730f;
+  --color-accent-dim: #8f5a0c;
+}
