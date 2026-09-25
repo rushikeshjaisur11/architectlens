@@ -27,7 +27,7 @@ export default async function ConceptPage({
       <div className="mt-4">
         <MetaPanel tags={concept.tags} maturity={concept.maturity} confidence={concept.confidence} />
       </div>
-      <article className="prose mt-8 max-w-none" dangerouslySetInnerHTML={{ __html: concept.html }} />
+      <article className="prose prose-invert mt-8 max-w-none" dangerouslySetInnerHTML={{ __html: concept.html }} />
       <RelatedPanel items={related} />
     </main>
   );

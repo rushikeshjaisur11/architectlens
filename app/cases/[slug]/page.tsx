@@ -18,7 +18,7 @@ export default async function CasePage({ params }: { params: Promise<{ slug: str
       <div className="mt-4">
         <MetaPanel tags={item.tags} maturity={item.maturity} confidence={item.confidence} />
       </div>
-      <article className="prose mt-8 max-w-none" dangerouslySetInnerHTML={{ __html: item.html }} />
+      <article className="prose prose-invert mt-8 max-w-none" dangerouslySetInnerHTML={{ __html: item.html }} />
     </main>
   );
 }
