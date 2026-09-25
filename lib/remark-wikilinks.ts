@@ -13,7 +13,7 @@ export function remarkWikilinks() {
       : "";
 
     visit(tree, "text", (node: { value: string }, index, parent) => {
-      if (!parent || index === null || !WIKILINK_RE.test(node.value)) return;
+      if (!parent || typeof index !== "number" || !WIKILINK_RE.test(node.value)) return;
       WIKILINK_RE.lastIndex = 0;
 
       const newChildren: unknown[] = [];
