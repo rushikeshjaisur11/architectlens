@@ -9,8 +9,8 @@
   --color-ink-elevated: #141b2e;
   --color-line: #2a3752;
   --color-line-soft: #1e2740;
-  --color-paper: #e8ecf4;
-  --color-paper-muted: #8792ac;
+  --color-paper: #f1f4fa;
+  --color-paper-muted: #a4aec8;
   --color-accent: #e8a33d;
   --color-accent-dim: #b8801f;
 }
@@ -25,9 +25,9 @@
   --color-ink-elevated: #ffffff;
   --color-line: #c7d0e0;
   --color-line-soft: #dbe1ec;
-  --color-paper: #101526;
-  --color-paper-muted: #56607a;
-  --color-accent: #b8730f;
+  --color-paper: #0b0f1c;
+  --color-paper-muted: #3c4560;
+  --color-accent: #a6650c;
   --color-accent-dim: #8f5a0c;
 }
 
@@ -47,4 +47,28 @@
   --tw-prose-pre-bg: var(--color-ink-elevated);
   --tw-prose-th-borders: var(--color-line);
   --tw-prose-td-borders: var(--color-line-soft);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+.prose :where(h1, h2, h3):not(:where([class~="not-prose"] *)) {
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+.prose :where(code):not(:where(pre, [class~="not-prose"]) *) {
+  background-color: var(--color-ink-elevated);
+  border: 1px solid var(--color-line-soft);
+  border-radius: 0.3em;
+  padding: 0.15em 0.4em;
+  font-weight: 500;
+}
+
+.prose :where(code):not(:where(pre, [class~="not-prose"]) *)::before,
+.prose :where(code):not(:where(pre, [class~="not-prose"]) *)::after {
+  content: "";
+}
+
+.prose :where(pre):not(:where([class~="not-prose"] *)) {
+  border: 1px solid var(--color-line-soft);
 }
