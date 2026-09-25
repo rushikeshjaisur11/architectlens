@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { buildNavTree } from "./nav-tree";
 
 const concepts = [
-  { slug: "load-balancing", title: "Load Balancing", track: "classical" as const, order: 2 },
   { slug: "rate-limiting", title: "Rate Limiting", track: "classical" as const, order: 7 },
+  { slug: "load-balancing", title: "Load Balancing", track: "classical" as const, order: 2 },
   { slug: "prompt-routing", title: "Prompt Routing", track: "ai" as const, order: 2 },
 ];
 const cases = [{ slug: "optimize-1m-queries-day", title: "Optimize 1M Queries/Day", order: 1 }];

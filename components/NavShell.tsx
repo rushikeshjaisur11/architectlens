@@ -30,9 +30,9 @@ export function NavShell({
   }, []);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen">
       <Sidebar groups={tree} onSearchClick={() => setSearchOpen(true)} />
-      <main className="flex-1 overflow-y-auto">{children}</main>
+      <div className="flex-1 overflow-y-auto">{children}</div>
       <SearchOverlay items={searchItems} open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
   );
