@@ -30,3 +30,21 @@
   --color-accent: #b8730f;
   --color-accent-dim: #8f5a0c;
 }
+
+.prose {
+  --tw-prose-body: var(--color-paper-muted);
+  --tw-prose-headings: var(--color-paper);
+  --tw-prose-links: var(--color-accent);
+  --tw-prose-bold: var(--color-paper);
+  --tw-prose-counters: var(--color-paper-muted);
+  --tw-prose-bullets: var(--color-line);
+  --tw-prose-hr: var(--color-line);
+  --tw-prose-quotes: var(--color-paper);
+  --tw-prose-quote-borders: var(--color-line);
+  --tw-prose-captions: var(--color-paper-muted);
+  --tw-prose-code: var(--color-paper);
+  --tw-prose-pre-code: var(--color-paper);
+  --tw-prose-pre-bg: var(--color-ink-elevated);
+  --tw-prose-th-borders: var(--color-line);
+  --tw-prose-td-borders: var(--color-line-soft);
+}

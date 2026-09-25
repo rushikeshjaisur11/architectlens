@@ -27,7 +27,7 @@ export default async function LessonPage({
         <MetaPanel tags={lesson.tags} />
       </div>
       <article
-        className="prose prose-invert mt-8 max-w-none prose-headings:text-paper prose-a:text-accent"
+        className="prose mt-8 max-w-none"
         dangerouslySetInnerHTML={{ __html: lesson.html }}
       />
       {lesson.sources.length > 0 && (
