@@ -123,26 +123,26 @@ Existing: B-Trees vs LSM-Trees, Replication Strategies, Compression & Columnar S
 - [x] Write-ahead logging and crash recovery (04-write-ahead-logging-and-crash-recovery.md)
 - [x] Compaction strategies and storage engine internals (05-compaction-strategies-and-storage-engine-internals.md)
 
-### 08-async-work-and-streams
+### 08-async-work-and-streams — ✅ DONE
 Existing: Message Queues & Delivery Guarantees, Stream Processing, Event Sourcing & CQRS
-- [ ] Dead letter queues and poison message handling
-- [ ] Exactly-once processing semantics
-- [ ] Kafka/Pulsar architecture deep dive (partitions, consumer groups, offsets)
+- [x] Dead letter queues and poison message handling (04-dead-letter-queues-and-poison-message-handling.md)
+- [x] Exactly-once processing semantics (05-exactly-once-processing-semantics.md)
+- [x] Kafka/Pulsar architecture deep dive (06-kafka-pulsar-architecture-deep-dive.md)
 
-### 09-search-and-retrieval
+### 09-search-and-retrieval — ✅ DONE
 Existing: Inverted Indexes & Full-Text Search, Search Relevance & Autocomplete, Spell Correction & Faceted Search
-- [ ] Distributed search index sharding and replication (Elasticsearch/Solr architecture)
-- [ ] Search query caching and performance tuning
+- [x] Distributed search index sharding and replication (04-distributed-search-index-sharding-and-replication.md)
+- [x] Search query caching and performance tuning (05-search-query-caching-and-performance-tuning.md)
 
-### 10-analytics-and-sketches
+### 10-analytics-and-sketches — ✅ DONE
 Existing: Probabilistic Data Structures, Real-Time Analytics Pipelines, T-Digest & Percentile Estimation
-- [ ] Bloom filters and Count-Min Sketch in depth
-- [ ] OLAP vs OLTP and columnar analytics engines (star schema, materialized views)
+- [x] Bloom filters and Count-Min Sketch in depth (04-bloom-filters-and-count-min-sketch.md)
+- [x] OLAP vs OLTP and columnar analytics engines (05-olap-vs-oltp-and-columnar-engines.md)
 
-### 11-realtime-social-and-feeds
+### 11-realtime-social-and-feeds — ✅ DONE
 Existing: Fanout Strategies, WebSockets/Long Polling/SSE, Ranking Feeds
-- [ ] Presence systems (online/offline/typing indicators)
-- [ ] Notification delivery at scale (push/email/SMS fanout, dedup)
+- [x] Presence systems (04-presence-systems.md)
+- [x] Notification delivery at scale (05-notification-delivery-at-scale.md)
 
 ### 12-geo-matching-and-recs
 Existing: Geospatial Indexing, Recommendation Systems, Two-Sided Marketplace Matching
