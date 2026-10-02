@@ -5,5 +5,7 @@ import { SCENES as sd3 } from "./sd-3";
 import { SCENES as sd4 } from "./sd-4";
 import { SCENES as sd5 } from "./sd-5";
 import { SCENES as sd6 } from "./sd-6";
+import { SCENES as ai1 } from "./ai-1";
+import { SCENES as ai2 } from "./ai-2";
 
-export const SCENES: Record<string, Scene> = { ...sd1, ...sd2, ...sd3, ...sd4, ...sd5, ...sd6 };
+export const SCENES: Record<string, Scene> = { ...sd1, ...sd2, ...sd3, ...sd4, ...sd5, ...sd6, ...ai1, ...ai2 };
