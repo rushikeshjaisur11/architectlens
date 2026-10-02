@@ -1,25 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { ANIMATIONS } from "./registry";
+import dynamic from "next/dynamic";
 
-type Slot = { el: Element; name: string };
+const AnimRuntime = dynamic(() => import("./AnimRuntime"), { ssr: false });
 
-export function LessonAnimations() {
-  const [slots, setSlots] = useState<Slot[]>([]);
-
-  useEffect(() => {
-    const found = document.querySelectorAll<HTMLElement>("[data-lesson-body] [data-anim]");
-    setSlots(Array.from(found, (el) => ({ el, name: el.dataset.anim ?? "" })));
-  }, []);
-
-  return (
-    <>
-      {slots.map(({ el, name }, i) => {
-        const Animation = ANIMATIONS[name as keyof typeof ANIMATIONS];
-        return Animation ? createPortal(<Animation />, el, `${name}-${i}`) : null;
-      })}
-    </>
-  );
+export function LessonAnimations({ lessonKey }: { lessonKey: string }) {
+  return <AnimRuntime lessonKey={lessonKey} />;
 }

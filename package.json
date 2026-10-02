@@ -21,6 +21,7 @@
     "velite": "^0.4.0"
   },
   "devDependencies": {
+    "@napi-rs/canvas": "^1.0.10",
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/typography": "^0.5.20",
     "@types/react-dom": "^19.3.0",

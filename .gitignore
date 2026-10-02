@@ -3,3 +3,5 @@ node_modules/
 .velite/
 out/
 *.tsbuildinfo
+
+.scene-previews/
