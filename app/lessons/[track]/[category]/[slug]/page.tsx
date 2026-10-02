@@ -32,7 +32,7 @@ export default async function LessonPage({
         className="prose mt-8 max-w-none"
         dangerouslySetInnerHTML={{ __html: lesson.html }}
       />
-      <LessonAnimations key={`${track}/${category}/${slug}`} />
+      <LessonAnimations key={`${track}/${category}/${slug}`} lessonKey={`${track}/${category}/${slug}`} />
       {lesson.sources.length > 0 && (
         <div className="mt-8 border-t border-line pt-4">
           <h3 className="font-mono text-xs text-paper-muted">Sources</h3>
