@@ -35,6 +35,9 @@ Naive hash sharding (`hash(key) % N`) has a brutal property: changing `N` (addin
 
 **Consistent hashing** solves this by mapping both shards and keys onto a fixed ring (a hash space, typically visualized as a circle from 0 to 2^32-1). Each key is assigned to the next shard clockwise from its position on the ring. Adding or removing a shard only affects the keys between it and its neighbor on the ring — roughly `1/N` of the data moves, not the entire dataset. This is why most modern distributed databases (Cassandra, DynamoDB) use some variant of consistent hashing rather than plain modulus hashing.
 
+<div data-anim="consistent-hashing"></div>
+
+
 ## The other half: generating unique IDs across shards
 
 Once data is split across machines, a naive auto-incrementing ID (`id SERIAL` in Postgres) breaks — you can't have two shards both independently incrementing from 1 without collisions. Common solutions:

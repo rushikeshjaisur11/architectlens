@@ -21,6 +21,9 @@ This turns "does the model know this?" into "can we find this?" — a search pro
 4. **Retrieve.** At query time, the user's question is embedded the same way, and the index returns the chunks whose vectors are closest — i.e., most semantically similar to the question.
 5. **Augment and generate.** The retrieved chunks are inserted into the prompt (typically in a clearly delimited context section), and the model is instructed to answer using them.
 
+<div data-anim="rag-pipeline"></div>
+
+
 ## Why chunking strategy matters more than people expect
 
 A chunk that's too large dilutes relevance — the embedding represents an average of several ideas, so a search for one specific fact may not surface it even if it's present somewhere in the chunk. A chunk that's too small loses context — a sentence fragment retrieved in isolation may be technically the closest match but unusable without its surrounding paragraph.

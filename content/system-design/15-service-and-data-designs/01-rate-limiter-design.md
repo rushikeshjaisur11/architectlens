@@ -27,6 +27,9 @@ A **token bucket** holds a capped number of tokens, refilled at a steady rate (e
 
 **Leaky bucket** is the inverse framing: requests are added to a queue and processed at a strictly constant rate, smoothing bursts into a steady output stream rather than allowing them through — appropriate when the downstream system genuinely needs a steady request rate regardless of how bursty the input is, rather than when occasional legitimate bursts should be accommodated.
 
+<div data-anim="token-bucket"></div>
+
+
 ## Where the rate limiter's state actually lives
 
 For a single server, an in-memory counter is enough. For a distributed system with multiple servers behind a load balancer, the rate limit needs to be enforced consistently across all of them — a client shouldn't be able to bypass a "100 requests/minute" limit just by having requests routed to different servers, each tracking its own independent count. This requires a shared, centralized store (commonly Redis, given its speed and native support for atomic increment operations) that all servers check against, rather than each server maintaining isolated local state.

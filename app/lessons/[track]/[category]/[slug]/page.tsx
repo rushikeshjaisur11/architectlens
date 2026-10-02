@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { lessons } from "#velite";
 import { findBySlug } from "@/lib/content";
 import { MetaPanel } from "@/components/MetaPanel";
+import { LessonAnimations } from "@/components/anim/LessonAnimations";
 
 export function generateStaticParams() {
   return lessons.map((l) => ({ track: l.track.slug, category: l.category.slug, slug: l.slug }));
@@ -27,9 +28,11 @@ export default async function LessonPage({
         <MetaPanel tags={lesson.tags} />
       </div>
       <article
+        data-lesson-body
         className="prose mt-8 max-w-none"
         dangerouslySetInnerHTML={{ __html: lesson.html }}
       />
+      <LessonAnimations key={`${track}/${category}/${slug}`} />
       {lesson.sources.length > 0 && (
         <div className="mt-8 border-t border-line pt-4">
           <h3 className="font-mono text-xs text-paper-muted">Sources</h3>
