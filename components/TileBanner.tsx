@@ -33,7 +33,7 @@ export function TileBanner({ title, tags = "", hover, spec }: { title: string; t
         canvas.width = Math.round(w * dpr);
         canvas.height = Math.round(h * dpr);
       }
-      const light = document.documentElement.dataset.theme !== "dark";
+      const light = !["dark", "black"].includes(document.documentElement.dataset.theme ?? "");
       g.dark = !light;
       g.pal = basePalette(!light);
       const s = Math.min(w / BANNER_W, h / BANNER_H);

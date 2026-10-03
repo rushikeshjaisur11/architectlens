@@ -1,5 +1,5 @@
 // Identity of each top-level section of the site. The three tracks and the frameworks guides are
-// separate sections, each with its own route, hue and icon, so none reads as part of another.
+// separate sections, each with its own route and icon. Each has its own colour (blue, green, orange, coral), applied through the section accent in globals.css.
 export type SectionKey = "system-design" | "ai-systems" | "ai-system-design" | "frameworks";
 export type SectionIconKey = "network" | "brain" | "blocks" | "wrench";
 
@@ -18,7 +18,7 @@ export const SECTIONS: Section[] = [
     key: "system-design",
     name: "System Design",
     href: "/system-design",
-    hue: 232,
+    hue: 212,
     icon: "network",
     tagline: "How large systems scale, fail and recover.",
     audience: ["Data, caching and consistency", "Queues, streams and coordination", "Classic designs and real incidents"],
@@ -27,7 +27,7 @@ export const SECTIONS: Section[] = [
     key: "ai-systems",
     name: "AI Systems",
     href: "/ai-systems",
-    hue: 172,
+    hue: 152,
     icon: "brain",
     tagline: "The building blocks of production AI.",
     audience: ["Prompting, context and RAG", "Serving, agents and tool use", "Evals, safety and cost"],
@@ -36,7 +36,7 @@ export const SECTIONS: Section[] = [
     key: "ai-system-design",
     name: "AI System Design",
     href: "/ai-system-design",
-    hue: 268,
+    hue: 32,
     icon: "blocks",
     tagline: "End-to-end designs for AI products and platforms.",
     audience: ["Assistants, search and agents", "LLM platforms and multi-tenant AI", "Regulated and industry solutions"],
@@ -45,7 +45,7 @@ export const SECTIONS: Section[] = [
     key: "frameworks",
     name: "Frameworks",
     href: "/frameworks",
-    hue: 335,
+    hue: 8,
     icon: "wrench",
     tagline: "Hands-on guides for agent and AI frameworks.",
     audience: ["Mapped back to the patterns", "Grouped by language", "New guides on the way"],

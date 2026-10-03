@@ -9,15 +9,15 @@
   --font-code: var(--font-mono-body), ui-monospace, monospace;
   --font-display: var(--font-display-serif), Georgia, serif;
 
-  --color-ink: #f7f8fb;
-  --color-ink-elevated: #ffffff;
-  --color-line: #d5dbe8;
-  --color-line-soft: #e6e9f2;
-  --color-paper: #12172b;
-  --color-paper-muted: #38425a;
-  --color-accent: #4338ca;
-  --color-accent-dim: #3730a3;
-  --color-hook: #b45309;
+  --color-ink: #ffffff;
+  --color-ink-elevated: #f6f8fa;
+  --color-line: #d0d7de;
+  --color-line-soft: #e6eaee;
+  --color-paper: #1f2328;
+  --color-paper-muted: #424a53;
+  --color-accent: #0550ae;
+  --color-accent-dim: #0a3069;
+  --color-hook: #0550ae;
 }
 
 :root {
@@ -26,15 +26,29 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-ink: #09090b;
-  --color-ink-elevated: #131316;
-  --color-line: #2a2a2f;
-  --color-line-soft: #1d1d21;
-  --color-paper: #ededf0;
-  --color-paper-muted: #b8b8c2;
-  --color-accent: #8f9dff;
-  --color-accent-dim: #6d7df0;
-  --color-hook: #f0b04a;
+  --color-ink: #06070a;
+  --color-ink-elevated: #0e1014;
+  --color-line: #262a30;
+  --color-line-soft: #16191d;
+  --color-paper: #dde4ec;
+  --color-paper-muted: #b1bac4;
+  --color-accent: #79b8ff;
+  --color-accent-dim: #58a6ff;
+  --color-hook: #58a6ff;
+}
+
+/* OLED black: true #000 background so OLED pixels switch off; text stays off-white to avoid halation. */
+:root[data-theme="black"] {
+  color-scheme: dark;
+  --color-ink: #000000;
+  --color-ink-elevated: #0b0b0c;
+  --color-line: #26272b;
+  --color-line-soft: #17181a;
+  --color-paper: #dcdfe4;
+  --color-paper-muted: #aeb3bb;
+  --color-accent: #79b8ff;
+  --color-accent-dim: #58a6ff;
+  --color-hook: #58a6ff;
 }
 
 /* Reading mode: warm paper, soft brown ink, serif body text, like an e-reader. */
@@ -46,9 +60,9 @@
   --color-line-soft: #e5dac0;
   --color-paper: #3a2e1d;
   --color-paper-muted: #55472f;
-  --color-accent: #9a5a12;
-  --color-accent-dim: #85500f;
-  --color-hook: #9a5a12;
+  --color-accent: #8a4f0e;
+  --color-accent-dim: #774409;
+  --color-hook: #8a4f0e;
 }
 
 :root[data-theme="sepia"] .prose {
@@ -178,16 +192,75 @@
 
 /* Per-section colour: set --h (a hue) on a wrapper and use these. */
 .hue-text {
-  color: hsl(var(--h) 62% 40%);
+  color: hsl(var(--h) 75% 26%);
 }
 .hue-bg {
-  background-color: hsl(var(--h) 75% 55% / 0.12);
+  background-color: hsl(var(--h) 55% 45% / 0.12);
 }
 .hue-dot {
-  background-color: hsl(var(--h) 70% 52%);
+  background-color: hsl(var(--h) 60% 40%);
 }
-:root[data-theme="dark"] .hue-text {
-  color: hsl(var(--h) 85% 75%);
+:root[data-theme="dark"] .hue-text,
+:root[data-theme="black"] .hue-text {
+  color: hsl(var(--h) 65% 70%);
+}
+:root[data-theme="dark"] .hue-dot,
+:root[data-theme="black"] .hue-dot {
+  background-color: hsl(var(--h) 65% 70%);
+}
+.hue-border {
+  border-color: hsl(var(--h) 60% 40%);
+}
+.hue-hover:hover {
+  border-color: hsl(var(--h) 60% 40%);
+}
+:root[data-theme="dark"] .hue-hover:hover,
+:root[data-theme="black"] .hue-hover:hover {
+  border-color: hsl(var(--h) 65% 70%);
+}
+.hue-solid {
+  background-color: hsl(var(--h) 60% 38%);
+  color: #fff;
+}
+:root[data-theme="dark"] .hue-border,
+:root[data-theme="black"] .hue-border {
+  border-color: hsl(var(--h) 65% 70%);
+}
+:root[data-theme="dark"] .hue-solid,
+:root[data-theme="black"] .hue-solid {
+  background-color: hsl(var(--h) 65% 70%);
+  color: #06070a;
+}
+
+/* Section colour: NavShell sets data-section, so links, buttons, progress and labels take the section's accent. */
+:root[data-section="ai-systems"] { --color-accent: #1a7f37; --color-accent-dim: #116329; --color-hook: #1a7f37; }
+:root[data-section="ai-system-design"] { --color-accent: #9a4a06; --color-accent-dim: #7d3b04; --color-hook: #9a4a06; }
+:root[data-section="frameworks"] { --color-accent: #c2301f; --color-accent-dim: #a02517; --color-hook: #c2301f; }
+:root[data-theme="dark"][data-section="ai-systems"], :root[data-theme="black"][data-section="ai-systems"] { --color-accent: #56d364; --color-accent-dim: #3fb950; --color-hook: #3fb950; }
+:root[data-theme="dark"][data-section="ai-system-design"], :root[data-theme="black"][data-section="ai-system-design"] { --color-accent: #f0b04a; --color-accent-dim: #d29922; --color-hook: #d29922; }
+:root[data-theme="dark"][data-section="frameworks"], :root[data-theme="black"][data-section="frameworks"] { --color-accent: #ff8b7b; --color-accent-dim: #ff7b72; --color-hook: #ff7b72; }
+
+/* Page reveal after in-app navigation: NavShell tags the content in the first screen (data-rv, with its reading-order
+   index --ri); each piece rises into place in turn. While the journey veil is up the animations wait at their hidden
+   first frame and start the moment it lifts. Opacity and transform only, so it stays smooth on long pages. */
+html[data-navigated] main [data-rv] {
+  animation: content-in 0.7s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: calc(0.04s + var(--ri, 0) * 0.055s);
+}
+html[data-navigated] main h1[data-rv],
+html[data-navigated] main h2[data-rv] {
+  animation-name: heading-in;
+  animation-duration: 0.85s;
+}
+html[data-veil] main [data-rv] { animation-play-state: paused; }
+@keyframes content-in {
+  from { opacity: 0; transform: translateY(22px); }
+}
+@keyframes heading-in {
+  from { opacity: 0; transform: translateY(36px) scale(0.985); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-navigated] main [data-rv] { animation: none; }
 }
 
 /* ===== Typography system (site-wide) ===== */
@@ -380,11 +453,13 @@ p {
   text-transform: uppercase;
 }
 
-.prose h2[data-kind="mistakes"] { color: var(--color-hook); }
-.prose h2[data-kind="example"] { color: hsl(172 70% 32%); }
-.prose h2[data-kind="current"] { color: hsl(268 55% 48%); }
-:root[data-theme="dark"] .prose h2[data-kind="example"] { color: hsl(172 65% 62%); }
-:root[data-theme="dark"] .prose h2[data-kind="current"] { color: hsl(268 90% 80%); }
+.prose h2[data-kind="mistakes"] { color: #9a6700; }
+.prose h2[data-kind="example"] { color: #1a7f37; }
+.prose h2[data-kind="current"] { color: var(--color-accent); }
+:root[data-theme="dark"] .prose h2[data-kind="mistakes"],
+:root[data-theme="black"] .prose h2[data-kind="mistakes"] { color: #d29922; }
+:root[data-theme="dark"] .prose h2[data-kind="example"],
+:root[data-theme="black"] .prose h2[data-kind="example"] { color: #56d364; }
 
 /* Prose headings: explicit sizes (the typography plugin sets its own). */
 .prose :where(h1):not(:where([class~="not-prose"] *)) {

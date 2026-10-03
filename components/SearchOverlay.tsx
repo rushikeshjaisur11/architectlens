@@ -80,7 +80,7 @@ export function SearchOverlay({
 
   useEffect(() => setActive(0), [q]);
   useEffect(() => {
-    if (open) setBeam(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
+    if (open) setBeam(["dark", "black"].includes(document.documentElement.dataset.theme ?? "") ? "dark" : "light");
     else setQuery("");
   }, [open]);
   useEffect(() => {

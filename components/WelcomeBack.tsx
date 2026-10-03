@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { nextAfterLast, readSet } from "@/lib/progress";
 import { sectionByKey } from "@/lib/track-meta";
 import { SectionIcon } from "./SectionIcon";
-import type { PathOrder } from "./PathCards";
+import type { PathOrder } from "./JourneyMap";
 
 // For returning readers the landing page opens on the next lesson, so a concept is one click from home.
 export function WelcomeBack({ order }: { order: PathOrder }) {

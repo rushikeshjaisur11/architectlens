@@ -3,9 +3,10 @@ import { TRACKS, hasTrackContext } from "./tracks";
 import { SECTIONS, activeSection } from "./track-meta";
 
 describe("SECTIONS", () => {
-  it("has one section per track plus frameworks, each with its own hue and route", () => {
+  it("has one section per track plus frameworks, each with its own hue, route and icon", () => {
     expect(SECTIONS.map((s) => s.key)).toEqual([...TRACKS.map((t) => t.slug), "frameworks"]);
     expect(new Set(SECTIONS.map((s) => s.hue)).size).toBe(SECTIONS.length);
+    expect(new Set(SECTIONS.map((s) => s.icon)).size).toBe(SECTIONS.length);
     expect(SECTIONS.map((s) => s.href)).toEqual(SECTIONS.map((s) => `/${s.key}`));
   });
 });

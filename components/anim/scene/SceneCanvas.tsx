@@ -19,7 +19,7 @@ function initial(controls: Control[] = []): Record<string, number> {
 }
 
 function readPalette(el: HTMLElement) {
-  const dark = document.documentElement.dataset.theme === "dark";
+  const dark = ["dark", "black"].includes(document.documentElement.dataset.theme ?? "");
   const pal = basePalette(dark);
   const css = getComputedStyle(el);
   const pick = (name: string, fallback: string) => {

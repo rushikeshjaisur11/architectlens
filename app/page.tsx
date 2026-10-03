@@ -2,21 +2,13 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { lessons } from "#velite";
 import { TRACKS } from "@/lib/tracks";
-import { PathCards, type PathOrder, type PathStats } from "@/components/PathCards";
+import { JourneyMap, type PathOrder, type PathStats } from "@/components/JourneyMap";
 import { BlurFade } from "@/components/ui/blur-fade";
-import { DotPattern } from "@/components/ui/dot-pattern";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { TextEffect } from "@/components/ui/text-effect";
 import { TypedWords } from "@/components/TypedWords";
 import { WelcomeBack } from "@/components/WelcomeBack";
 import { TileBanner } from "@/components/TileBanner";
-
-const STEPS = [
-  { n: "1", title: "System Design", text: "Learn the foundations: data, scaling, consistency and failure." },
-  { n: "2", title: "AI Systems", text: "Learn the building blocks: models, retrieval, agents, evals and safety." },
-  { n: "3", title: "AI System Design", text: "Put it together: full designs for AI products and platforms." },
-  { n: "4", title: "Frameworks", text: "Go hands-on with agent frameworks, mapped back to the patterns." },
-];
 
 const PILLARS = [
   { title: "Built for reading", text: "Light, dark and e-reader themes, adjustable text size, and a layout that stays out of the way." },
@@ -48,15 +40,7 @@ export default function LandingPage() {
   return (
     <main>
       <WelcomeBack order={order} />
-      <section className="first-visit relative overflow-hidden border-b border-line-soft">
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <DotPattern
-            width={22}
-            height={22}
-            cr={1}
-            className="fill-paper-muted/25 [mask-image:radial-gradient(48rem_26rem_at_30%_30%,white,transparent)]"
-          />
-        </div>
+      <section className="relative overflow-hidden border-b border-line-soft">
         <div className="relative mx-auto grid max-w-5xl items-center gap-12 px-6 py-16 sm:py-24 lg:grid-cols-[1.15fr_1fr]">
           <div>
           <p className="inline-flex items-center gap-2 rounded-full border border-line bg-ink-elevated/70 px-3 py-1.5 text-xs font-medium text-paper-muted">
@@ -141,29 +125,12 @@ export default function LandingPage() {
       </section>
 
       <section className="mx-auto max-w-5xl px-6 py-16">
-        <h2 className="text-paper">Choose your path</h2>
+        <h2 className="text-paper">Your learning journey</h2>
         <p className="mt-2 max-w-2xl text-paper-muted">
-          Four separate paths. Each has its own modules and can be read on its own, or in order.
+          Four stops, in a suggested order. Each path stands on its own, so start wherever you already are.
         </p>
         <div className="mt-8">
-          <PathCards stats={stats} order={order} />
-        </div>
-      </section>
-
-      <section className="first-visit border-y border-line-soft bg-ink-elevated/40">
-        <div className="mx-auto max-w-5xl px-6 py-16">
-          <h2 className="text-paper">How the paths fit together</h2>
-          <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((s, i) => (
-              <li key={s.n}>
-              <BlurFade inView delay={i * 0.1} className="h-full rounded-xl border border-line bg-ink-elevated p-5">
-                <span className="text-xs font-medium text-accent">Step {s.n}</span>
-                <p className="mt-2 font-medium text-paper">{s.title}</p>
-                <p className="mt-1.5 text-sm leading-relaxed text-paper-muted">{s.text}</p>
-              </BlurFade>
-              </li>
-            ))}
-          </ol>
+          <JourneyMap stats={stats} order={order} />
         </div>
       </section>
 

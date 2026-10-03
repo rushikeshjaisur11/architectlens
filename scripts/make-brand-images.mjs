@@ -8,8 +8,8 @@ function mark(ctx, x, y, s) {
   ctx.translate(x, y);
   ctx.scale(k, k);
   const g = ctx.createLinearGradient(0, 0, 64, 64);
-  g.addColorStop(0, "#4f46e5");
-  g.addColorStop(1, "#7c8cff");
+  g.addColorStop(0, "#0550ae");
+  g.addColorStop(1, "#58a6ff");
   ctx.fillStyle = g;
   ctx.beginPath();
   ctx.roundRect(0, 0, 64, 64, 15);
@@ -47,8 +47,8 @@ function mark(ctx, x, y, s) {
   const c = createCanvas(W, H);
   const ctx = c.getContext("2d");
   const bg = ctx.createLinearGradient(0, 0, W, H);
-  bg.addColorStop(0, "#0f1218");
-  bg.addColorStop(1, "#1a2040");
+  bg.addColorStop(0, "#06070a");
+  bg.addColorStop(1, "#0e1014");
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
   for (const [x, y, r, hue] of [[1050, 80, 380, 232], [1100, 560, 320, 268], [700, 650, 260, 172]]) {
