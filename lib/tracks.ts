@@ -42,6 +42,8 @@ const AI_SYSTEM_DESIGN_CATEGORIES: Category[] = [
   { number: 3, slug: "llm-platforms-and-infrastructure", name: "LLM platforms and infrastructure" },
   { number: 4, slug: "data-feedback-and-training-loops", name: "Data, feedback and training loops" },
   { number: 5, slug: "enterprise-and-multi-tenant-ai", name: "Enterprise and multi-tenant AI" },
+  { number: 6, slug: "media-and-content-ai", name: "Media and content AI" },
+  { number: 7, slug: "reliability-cost-and-scale", name: "Reliability, cost and scale" },
 ];
 
 export const TRACKS: Track[] = [

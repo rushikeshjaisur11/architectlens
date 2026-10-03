@@ -1,6 +1,7 @@
 import { lessons } from "#velite";
 import { trackFromSlug } from "@/lib/tracks";
 import { CurriculumGrid } from "@/components/CurriculumGrid";
+import { TrackHub } from "@/components/TrackHub";
 
 export default function AiSystemsPage() {
   const track = trackFromSlug("ai-systems");
@@ -8,6 +9,7 @@ export default function AiSystemsPage() {
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-16">
+      <TrackHub active="ai-systems" />
       <h1 className="text-4xl font-semibold leading-tight text-paper">
         Learn AI systems
         <br />

@@ -1,0 +1,73 @@
+---
+title: "Designing a Guardrails Service"
+short_title: "Guardrails Service"
+tags: ["guardrails", "safety", "moderation", "policy", "latency", "design"]
+sources:
+  - "OWASP Top 10 for Large Language Model Applications"
+  - "Public documentation of open-source guardrail frameworks and safety classifier models"
+  - "Inan et al., 'Llama Guard: LLM-based Input-Output Safeguard for Human-AI Conversations' (2023)"
+---
+
+## The problem
+
+Every AI feature needs protection against the same things: prompt injection, jailbreaks, leakage of personal data, toxic or off-policy output, and misuse of tools. Each team building its own filters leads to gaps and inconsistency. A **guardrails service** is a shared, configurable layer that screens inputs and outputs (and sometimes tool calls) against policy, fast enough not to ruin the product experience, and measurable enough to tune.
+
+## Step 1: Requirements
+
+- **Coverage:** input checks (injection, jailbreak, PII, banned topics), output checks (toxicity, PII, policy violations, groundedness, format), and tool-call checks.
+- **Configurability:** policies per application, tenant and data class, versioned and testable.
+- **Latency:** adds tens of milliseconds, not seconds; streaming outputs checked incrementally.
+- **Observability:** every decision logged with the reason and policy version.
+- **Tunability:** measurable precision and recall, with controls for the false-positive and false-negative trade-off.
+- **Scale (example):** 10,000 checks per second.
+
+## Step 2: Where it sits
+
+Integrate as a library or sidecar, or as a step inside the LLM gateway. The flow is **pre-call checks** (input rails), the model call, **post-call checks** (output rails), and **action checks** before tools run. Placing the service in the gateway enforces it uniformly, while a library permits application-specific rails. Many systems do both: baseline rails in the gateway, custom ones in the app.
+
+## Step 3: Layered detectors
+
+No single detector is enough, so combine cheap and expensive checks in a **cascade**:
+
+1. **Rules and patterns:** regexes for secrets, card numbers, banned terms; microsecond cost, high precision on what they cover.
+2. **Small classifiers:** fine-tuned models for toxicity, injection, topic; milliseconds, good recall.
+3. **LLM-based judges:** a safeguard model reads the conversation against a written policy for nuanced cases; slower and costlier, used only when earlier layers are uncertain or the risk is high.
+
+Run independent detectors **in parallel** and combine their verdicts; short-circuit when one is conclusive.
+
+## Step 4: Policy as code
+
+Express policies declaratively: which detectors run for which route, thresholds, and the **action** for each outcome: allow, block, redact, rewrite, escalate to a human, or log only. Version policies, review changes, test them against a dataset of known good and bad inputs before rollout, and deploy gradually. Distinguish **hard blocks** (clearly harmful) from **soft interventions** (add a disclaimer, ask a clarifying question).
+
+## Step 5: Handling streaming
+
+Waiting for a full response defeats streaming. Options: check the **prompt** before generation, then check the output in **chunks** (every sentence or N tokens), cutting the stream and replacing it with a safe message if a violation appears. Buffering a small window lets the checker see context. The trade-off: stricter holdbacks give safer output but add latency.
+
+## Step 6: Failure and bypass considerations
+
+- **Fail open or closed?** If the service is down, high-risk applications should fail closed (block), low-risk ones may fail open; make it a per-policy decision with alerts.
+- **Adversarial robustness:** attackers probe for gaps with encodings, other languages and multi-turn tricks; red-team continuously and feed new attacks into the test set.
+- **Do not rely on guardrails alone:** they reduce risk but cannot prove safety. Combine with least-privilege tools, sandboxing and human approval for high-impact actions.
+- **Rails can be attacked too:** the content being screened may include text aimed at the safeguard model, so treat it as untrusted data inside its prompt.
+
+## Step 7: Measuring and tuning
+
+Maintain labelled datasets per category and report **precision, recall and false-positive rate** per detector and policy version. Sample blocked requests for human review to find over-blocking, which harms users as much as under-blocking harms safety. Track block rates by route and over time as a signal of attacks or regressions. Let teams choose thresholds based on their risk tolerance, with the metrics visible.
+
+## A worked example
+
+**Scenario:** a user asks a finance assistant to "summarise this email thread" and the thread contains hidden text telling the assistant to forward the user's account numbers.
+
+1. The input rail runs a PII detector (account numbers found, masked before the model sees them) and an injection classifier in parallel.
+2. The injection classifier scores the hidden instruction at 0.93, above the policy's threshold of 0.8; the action is "strip the flagged span and log".
+3. The model summarises the cleaned thread. The output rail checks for PII and policy compliance; it finds none.
+4. The decision log records the detectors, scores and policy version; a daily report shows the injection block rate trending up for this route, which triggers a red-team review.
+5. The tool allow-list for this assistant does not include any email-sending tool, providing a second line of defence even if the rail had missed it.
+
+## Common mistakes
+
+- **One detector as the only defence.**
+- **Running all checks serially** and adding seconds of latency.
+- **No measurement of false positives**, so over-blocking goes unnoticed.
+- **Unversioned policy changes** pushed straight to production.
+- **Treating guardrails as a substitute** for least-privilege design.

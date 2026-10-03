@@ -1,6 +1,7 @@
 import { lessons } from "#velite";
 import { trackFromSlug } from "@/lib/tracks";
 import { CurriculumGrid } from "@/components/CurriculumGrid";
+import { TrackHub } from "@/components/TrackHub";
 
 export default function AiSystemDesignPage() {
   const track = trackFromSlug("ai-system-design");
@@ -8,6 +9,7 @@ export default function AiSystemDesignPage() {
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-16">
+      <TrackHub active="ai-system-design" />
       <h1 className="text-4xl font-semibold leading-tight text-paper">
         Design AI products
         <br />

@@ -1,0 +1,86 @@
+---
+title: "Designing an Autonomous Software Engineering Agent"
+short_title: "Software Engineering Agent"
+tags: ["coding-agent", "sandbox", "verification", "pull-requests", "design"]
+sources:
+  - "Jimenez et al., 'SWE-bench: Can Language Models Resolve Real-World GitHub Issues?' (2023)"
+  - "Yang et al., 'SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering' (2024)"
+  - "Public documentation of container sandboxes and CI systems"
+---
+
+## The problem
+
+Given a ticket ("fix the failing date parsing for time zones"), an autonomous software engineering agent explores a repository, makes changes, runs the tests, and opens a pull request for human review. Unlike autocomplete, it acts over many steps with real tools, so the engineering centres on **sandboxing, verification and bounded autonomy**.
+
+## Step 1: Requirements
+
+- **Capability:** handle well-scoped issues: bug fixes, small features, refactors, dependency bumps.
+- **Safety:** cannot damage production, leak secrets or exfiltrate code; every change goes through review.
+- **Verifiability:** every PR comes with evidence: tests run, results and a summary.
+- **Cost control:** bounded tokens and runtime per task.
+- **Scale (example):** 5,000 tasks per day across thousands of repositories.
+
+## Step 2: Architecture
+
+- **Task intake:** from an issue tracker or chat; the agent restates the task and the acceptance criteria.
+- **Orchestrator:** manages the task lifecycle, budgets and retries.
+- **Sandbox:** an ephemeral container or microVM per task with a checkout of the repo, the project's toolchain, limited network and no production credentials.
+- **Agent loop:** the model uses tools (read file, search, edit, run command, run tests) in the sandbox.
+- **Verifier and reporter:** runs the full test suite and linters, collects the diff, writes the PR description, and posts results.
+
+## Step 3: The tool interface matters enormously
+
+Raw shell access is hard for models to use well. A purpose-built **agent-computer interface** helps:
+
+- **Search tools** that return concise, ranked results with line numbers rather than megabytes of grep output.
+- **Viewing** files in windows, not whole large files.
+- **Editing** via structured, validated operations (replace a range, apply a patch) with immediate **syntax and lint feedback**, so mistakes are caught right away.
+- **Test running** with summarised failures.
+
+Good tools shrink the context, give fast feedback and reduce errors far more than prompt tweaks.
+
+## Step 4: Finding the right code
+
+Large repositories require navigation: use code search, symbol indexes, the language server, and an embedding index to locate relevant files. A repository map (a compact outline of files and symbols) in the prompt helps orientation. Encourage a **reproduce first** habit: write or locate a failing test before changing code, which both focuses the search and provides a verification target.
+
+## Step 5: Verification as the core loop
+
+The agent's reliability comes from external checks, not from the model's confidence:
+
+1. Reproduce the failure with a test.
+2. Make the change.
+3. Run the targeted tests, then the broader suite, linters and type checks.
+4. Iterate on failures for a bounded number of rounds.
+5. Review its own diff for scope creep (unrelated edits) and leftover debugging code.
+
+Where tests are missing, the agent can add them, but the PR must flag that. A change that passes no meaningful checks is reported as **unverified**.
+
+## Step 6: Security and containment
+
+- **Network egress** restricted to package mirrors and the repository host; no arbitrary internet.
+- **Secrets** never present in the sandbox; scoped, short-lived tokens only for opening the PR.
+- **Prompt injection** from issue text, code comments or dependencies is a real risk; the agent must not follow instructions found in repository content that conflict with the task, and cannot take destructive actions anyway.
+- **Resource limits** (CPU, memory, time) and a kill switch.
+- **Human review is mandatory** before merge; the agent cannot approve its own work.
+
+## Step 7: Cost, scale and evaluation
+
+Sandboxes are the main infrastructure cost: pre-built images per repository, warm pools, and caching of dependencies cut start-up from minutes to seconds. Token cost is controlled by compact tools and by stopping tasks that are not converging. Evaluate with **benchmark suites of real issues** (does the agent's patch make the hidden tests pass), plus production metrics: PR acceptance rate, review comments per PR, time to merge and revert rate. Analyse failed tasks by category (misunderstood issue, wrong file, flaky test) to guide improvements.
+
+## A worked example
+
+**Scenario:** an issue says "`parse_date` returns the wrong day for dates in UTC+13".
+
+1. The orchestrator starts a sandbox from the repo's prepared image and gives the agent the issue and a budget.
+2. The agent searches symbols, finds `parse_date`, and writes a failing test reproducing the bug with a UTC+13 input.
+3. It fixes an off-by-one in the offset normalisation; the linter flags an unused import it had added, which it removes.
+4. The targeted tests pass; the broad suite shows one unrelated flaky test, which the agent reruns and notes in the PR.
+5. It opens a PR with the diff, the new test, the test results and a note on the flaky test, then waits for human review; a reviewer asks for a comment, the agent amends, and the PR merges.
+
+## Common mistakes
+
+- **Giving the model an unrestricted shell** instead of purpose-built tools.
+- **No reproduction or test run**, so confidence replaces evidence.
+- **Secrets or broad network access in the sandbox.**
+- **Letting the agent merge its own changes.**
+- **Counting tasks attempted** rather than accepted and not reverted.

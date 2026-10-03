@@ -6,6 +6,8 @@ import { MORE_AI_1 } from "./more-ai-1";
 import { MORE_AI_2 } from "./more-ai-2";
 import { MORE_AI_3 } from "./more-ai-3";
 import { MORE_AD } from "./more-ad-1";
+import { MORE_AD_2 } from "./more-ad-2";
+import { MORE_AD_3 } from "./more-ad-3";
 
 // Extra scenes per lesson key, appended after the lesson's main scene.
-export const MORE: Record<string, Scene[]> = { ...MORE_SD_1, ...MORE_SD_2, ...MORE_SD_3, ...MORE_AI_1, ...MORE_AI_2, ...MORE_AI_3, ...MORE_AD };
+export const MORE: Record<string, Scene[]> = { ...MORE_SD_1, ...MORE_SD_2, ...MORE_SD_3, ...MORE_AI_1, ...MORE_AI_2, ...MORE_AI_3, ...MORE_AD, ...MORE_AD_2, ...MORE_AD_3 };
