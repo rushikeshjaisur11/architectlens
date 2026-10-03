@@ -24,7 +24,12 @@ export default function AiSystemDesignPage() {
         {trackLessons.length} lesson{trackLessons.length === 1 ? "" : "s"} across {track.categories.length} modules
       </p>
 
-      <CurriculumGrid track={track} lessons={trackLessons} />
+      <CurriculumGrid
+        track={track}
+        lessons={trackLessons.map(({ slug, title, shortTitle, summary, minutes, tags, order, category }) => ({
+          slug, title, shortTitle, summary, minutes, tags, order, category,
+        }))}
+      />
     </main>
   );
 }

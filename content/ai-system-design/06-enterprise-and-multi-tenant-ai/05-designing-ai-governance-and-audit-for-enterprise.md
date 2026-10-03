@@ -6,6 +6,9 @@ sources:
   - "NIST, AI Risk Management Framework (AI RMF 1.0, 2023)"
   - "Regulation (EU) 2024/1689 (EU AI Act) overview of risk tiers and obligations"
   - "ISO/IEC 42001 AI management system standard (overview)"
+  - "EU AI Omnibus (Reg. (EU) 2026/1744) summary, Gibson Dunn, gibsondunn.com (fetched Oct 2026)"
+  - "NIST AI 600-1, Generative AI Profile (July 2024)"
+  - "ISO/IEC 42001:2023, AI management systems"
 ---
 
 *This lesson describes engineering patterns for governance, not legal advice. Regulations differ by jurisdiction and change; check requirements with your legal and compliance teams.*
@@ -75,6 +78,20 @@ Define roles: system owners, a central AI risk function, security, privacy, lega
 3. The gateway policy allows only an approved model in the company's region, with applicant data redacted in logs after 30 days.
 4. In production every recommendation stores its inputs, rubric version and the reviewer's decision. Dashboards watch override rates and group-level outcome differences.
 5. Quarterly reassessment finds a skew for one group; the system is paused, retuned, retested, and the incident, fix and approval are recorded in the evidence store.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Inventory every AI system, classify by risk, assign owners, require approvals and keep evidence (steps above).
+
+**Regulatory clock (live-checked October 2026).**
+
+- **EU AI Act, as amended by the AI Omnibus** (political agreement 7 May 2026, in force 27 July 2026). High-risk obligations for stand-alone **Annex III** systems now apply from **2 December 2027** (was 2 August 2026); **Annex I** products (AI embedded in regulated products) from **2 August 2028**. **Article 50 transparency** duties stayed on **2 August 2026**, with a watermarking grace period to **2 December 2026** for existing systems. General-purpose model duties have applied since **2 August 2025**. The AI Office gains exclusive competence over AI systems built on a general-purpose model by the same provider. A new Article 5 prohibition covers AI-generated non-consensual intimate imagery and CSAM.
+- **NIST AI RMF and the Generative AI Profile (AI 600-1)** list 12 GAI-specific risks (for example confabulation, information integrity, data privacy, IP) and are the usual US reference in procurement.
+- **ISO/IEC 42001** is the certifiable AI management-system standard; many enterprises use it as the single control library and map NIST and EU evidence onto it.
+
+**Enterprise pattern.** One control library, three mappings (EU, NIST, ISO). The registry records risk tier, data categories, model and version, owner, evaluation results and approvals; changes to model, prompt or tools trigger re-review by tier. Dates slip (this one just did), so keep deadlines as data in the registry, not in prose.
+
+*Not legal advice; confirm obligations with counsel.*
 
 ## Common mistakes
 

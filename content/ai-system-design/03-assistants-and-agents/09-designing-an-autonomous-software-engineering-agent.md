@@ -6,6 +6,8 @@ sources:
   - "Jimenez et al., 'SWE-bench: Can Language Models Resolve Real-World GitHub Issues?' (2023)"
   - "Yang et al., 'SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering' (2024)"
   - "Public documentation of container sandboxes and CI systems"
+  - "SWE-bench Pro (Scale AI) and SWE-bench Verified leaderboard summaries, October 2026 (secondary: benchlm.ai, morphllm.com)"
+  - "Sandboxing and agent security guidance: OWASP Top 10 for Agentic Applications 2026, ASI05 Unexpected Code Execution"
 ---
 
 ## The problem
@@ -76,6 +78,14 @@ Sandboxes are the main infrastructure cost: pre-built images per repository, war
 3. It fixes an off-by-one in the offset normalisation; the linter flags an unused import it had added, which it removes.
 4. The targeted tests pass; the broad suite shows one unrelated flaky test, which the agent reruns and notes in the PR.
 5. It opens a PR with the diff, the new test, the test results and a note on the flaky test, then waits for human review; a reviewer asks for a comment, the agent amends, and the PR merges.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Clone the repo in a sandbox, plan, edit, run tests, iterate, open a pull request for review (steps above).
+
+**How to read benchmark claims (secondary sources, October 2026).** **SWE-bench Verified** (500 human-validated Python tasks) is saturated: leaderboards now show scores in the mid-90s, and reports say OpenAI stopped using it in February 2026 over contamination concerns. **SWE-bench Pro** (Scale AI; about 1,865 tasks across 41 repositories in Python, Go, TypeScript and JavaScript, including private proprietary code) is the contamination-resistant alternative; the October 2026 leaderboard reportedly has the top model near **90%** and several others above 80%. Scores also depend heavily on the agent harness, not just the model. None of this predicts performance on your repositories, tests and conventions.
+
+**Enterprise pattern.** Evaluate on **your own historical issues**: replay 100 or more closed tickets against the pre-fix commit and score by your test suite plus reviewer rating. Run each task in an ephemeral, network-restricted sandbox with no production credentials (OWASP ASI05: unexpected code execution), grant write access only to a branch, require human review for merge, cap tokens and wall-clock per task, and record the full trajectory for audit. Track merge rate, review-edit rate and revert rate, not just "tests pass".
 
 ## Common mistakes
 

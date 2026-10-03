@@ -6,6 +6,9 @@ sources:
   - "Ho, Jain and Abbeel, 'Denoising Diffusion Probabilistic Models' (2020)"
   - "Rombach et al., 'High-Resolution Image Synthesis with Latent Diffusion Models' (2022)"
   - "Public documentation on content provenance standards for AI-generated media"
+  - "C2PA Content Credentials specification v2.3 (December 2025), via secondary summaries"
+  - "European Commission, Code of Practice on marking and labelling of AI-generated content (final, 10 June 2026), via secondary summaries"
+  - "EU AI Omnibus summary, Gibson Dunn (Article 50 dates; fetched Oct 2026)"
 ---
 
 ## The problem
@@ -73,6 +76,16 @@ Track queue wait, generation time per step count, GPU utilisation, batch sizes, 
 3. After 25 denoising steps (about 4 seconds) the images are produced at base resolution and upscaled.
 4. The output classifier passes all four; provenance metadata is embedded; files go to storage; the CDN URLs are pushed to the client over a stream.
 5. A second user, queued behind a bulk job, is served first because interactive requests have priority; the bulk job finishes later using idle GPUs.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Prompt filtering, generation, output safety checks, delivery through a CDN (steps above).
+
+**Provenance is now a compliance feature.** EU AI Act **Article 50** transparency duties apply from **2 August 2026**, with a watermarking grace period for **existing systems until 2 December 2026** (per the Omnibus). Secondary sources report that the Commission's final Code of Practice on marking and labelling (10 June 2026) points to a **multi-layer approach**: cryptographically signed metadata (**C2PA Content Credentials**, spec v2.3 as of December 2025) together with imperceptible watermarking. Reports say major providers (OpenAI, Google, ElevenLabs) ship provenance by default while at least one popular image generator does not. Metadata can be stripped by re-encoding, which is why the watermark layer exists; neither survives every edit, so detection stays probabilistic.
+
+**Also new in the EU:** the Omnibus adds an Article 5 prohibition on AI systems generating **non-consensual intimate imagery and child sexual abuse material** (transitional period to 2 December 2026), so prompt and output classifiers for these categories are a legal requirement, not a policy choice.
+
+**Enterprise pattern.** Sign every generated asset at the egress point (one service, one key hierarchy in an HSM or KMS), embed an invisible watermark, store a provenance record keyed by asset hash for later verification, expose a verification endpoint, and log safety-classifier decisions for audit.
 
 ## Common mistakes
 

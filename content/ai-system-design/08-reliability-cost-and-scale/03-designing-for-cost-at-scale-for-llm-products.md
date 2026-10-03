@@ -6,6 +6,8 @@ sources:
   - "Chen, Zaharia and Zou, 'FrugalGPT: How to Use Large Language Models While Reducing Cost and Improving Performance' (2023)"
   - "Provider documentation on prompt caching, batch APIs and token pricing"
   - "FinOps Foundation guidance on unit economics"
+  - "Anthropic pricing documentation (fetched Oct 2026)"
+  - "Google Gemini API pricing (fetched Oct 2026)"
 ---
 
 ## The problem
@@ -69,6 +71,14 @@ Every saving has a quality risk, so tie each change to evidence: run the evaluat
 3. Routing: a small classifier detects simple factual lookups (62 percent of traffic); a small model answers them with a verifier. The cascade escalates 9 percent to the strong model. Average cost falls to 1.4 cents; quality on the golden set is within noise.
 4. Batch: nightly document pre-summarisation moves to a batch API at half price.
 5. Dashboards now show cost per resolved question at 1.1 cents, and a budget alert guards against regression; a monthly review picks up a new cheaper model, which passes evaluation and lowers the small-model tier further.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Route by difficulty, cache, shorten prompts, batch what can wait (steps above).
+
+**Numbers to design with (live-checked, October 2026).** Caching reads cost 10% of input on most Claude models, so a prompt that is 90% stable prefix cuts input cost by roughly 80% (0.1 x 90% + 10% = 19% of original). Batch is 50% off. Together, a nightly summarisation job on Haiku 4.5 drops input from $1.00 to $0.05 per million tokens. Context windows of **1M tokens are priced at the standard rate** on Claude 4.6 and later (no long-context surcharge), which changes the "chunk or stuff" decision: stuffing is now a cost and latency choice, not a price-tier one. **Small models are not free of caveats**: output tokens cost 5x input on Claude and 5x on Gemini Flash, so verbose answers dominate the bill; cap output length and ask for structured, short results.
+
+**Enterprise pattern.** Maintain a cost model per feature (requests x tokens x rate x (1 - cache hit rate)) and review it against actuals monthly. Revisit routing every time providers reprice: in 2026 list prices moved down for mid-tier models (Sonnet 5 at $2/$10) while top-tier models (Fable 5.1 at $10/$50) stayed expensive, so last year's "always use the small model" rule may be wrong.
 
 ## Common mistakes
 

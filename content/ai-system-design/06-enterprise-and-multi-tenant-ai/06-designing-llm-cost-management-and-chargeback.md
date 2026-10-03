@@ -6,6 +6,9 @@ sources:
   - "FinOps Foundation framework and capabilities documentation"
   - "Provider pricing documentation for input, output and cached tokens"
   - "Public cloud cost allocation and tagging guidance"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched Oct 2026)"
+  - "Google Gemini API pricing, ai.google.dev/gemini-api/docs/pricing (fetched Oct 2026)"
+  - "Third-party OpenAI price trackers (OpenAI's pricing page returned 403; figures unverified at source)"
 ---
 
 ## The problem
@@ -63,6 +66,22 @@ Review model choices with cost and quality evidence, set targets for cost per re
 3. An anomaly alert had fired two days after the deploy, but the team's budget alert threshold was set too high to page anyone; the platform lowers default thresholds and requires an owner contact.
 4. The team trims the history to the last five messages and caches the shared instructions; the route's cost per call falls by 70 percent with no change in quality scores in the evaluation platform.
 5. Chargeback for the month reflects actual use; the saved amount is reported in the savings dashboard as evidence for the optimisation.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Meter tokens per request, attribute them to team, product and feature, and enforce budgets at the gateway (steps above).
+
+**Live price levers (October 2026; prices change, so store them as data).**
+
+- **Prompt caching.** Anthropic: cache write 1.25x (5 minute) or 2x (1 hour) base input; cache read **0.1x** (0.05x on Opus 5.5, 0.025x on Fable 5.1). A 5-minute cache pays off after one read, a 1-hour cache after two. Gemini: implicit caching on by default, cached input around 90% cheaper, explicit caching adds a storage charge.
+- **Batch.** 50% off input and output on Anthropic and Gemini; OpenAI Batch and Flex are also reported at 50% off. Batch discounts stack with caching, but **fast mode and the Managed Agents product are excluded**.
+- **Premium tiers.** OpenAI Priority is reported at roughly 2x standard; Anthropic fast mode for Opus is roughly 2x. Use them for latency-critical paths only.
+- **Data residency.** Anthropic `inference_geo: "us"` is **1.1x**; Bedrock and Vertex regional endpoints carry about a **10% premium** over global. Residency is a cost line, not a free switch.
+- **Tokenizer drift.** Anthropic notes Claude 4.7 and later models produce about **30% more tokens** for the same text, so a model swap changes cost even at equal list price.
+- **Per-call extras.** Web search is $10 per 1,000 searches on Claude and $14 per 1,000 after 5,000 free on Gemini; tool definitions and computer-use toolsets add thousands of input tokens per request; Managed Agents bill $0.08 per session-hour on top of tokens.
+- **Example anchors.** Claude Sonnet 5.5 $2 in / $10 out per million tokens; Haiku 4.5 $1 / $5; Opus 5.5 $4 / $20. Gemini 3.8 Flash $0.75 / $3.75 (introductory through 31 December 2026, then double); 3.5 Flash-Lite $0.30 / $2.50.
+
+**Enterprise pattern.** Chargeback needs the *effective* rate: record input, cached, output and tool tokens separately, multiply by the rate card version in force at that time, and show cache hit rate per team. Provisioned throughput (for example Vertex GSUs on 1-week to 1-year commitments) trades flexibility for lower unit cost; model it against your utilisation curve before committing.
 
 ## Common mistakes
 

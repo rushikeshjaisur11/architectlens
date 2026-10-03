@@ -6,6 +6,9 @@ sources:
   - "Model Context Protocol specification and documentation"
   - "Public documentation of durable workflow engines and container sandboxes"
   - "OWASP guidance on excessive agency in LLM applications"
+  - "MCP specification 2026-07-28 release notes (fetched Oct 2026)"
+  - "A2A Protocol documentation v1.0 (fetched Oct 2026)"
+  - "Anthropic pricing documentation, Managed Agents section (fetched Oct 2026)"
 ---
 
 ## The problem
@@ -75,6 +78,18 @@ Capture a trace per run: each model call (prompt, response, tokens, cost), tool 
 3. For `reset_password` the policy requires a recent multi-factor challenge; the gateway pauses the run and sends a verification prompt. After it succeeds the call runs once with an idempotency key.
 4. The employee asks for a monitor costing $650; the order tool exceeds the approval threshold, so the run waits (durably) for the manager's approval, then resumes and completes.
 5. The worker running the agent dies after the order call but before logging; the resumed run sees the step recorded as complete from the idempotent response and does not order a second monitor.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** A runtime executes the agent loop with durable state, timeouts, retries and tool calls; a registry lists tools with schemas and permissions (steps above).
+
+**Standards you should build on (live-checked).**
+
+- **MCP (2026-07-28 revision).** Stateless core (no session handshake), so tool servers scale horizontally behind any load balancer. **Multi Round-Trip Requests** let a server answer `input_required` and the client retry with the answer, replacing long-lived server-initiated streams: good for approvals mid-call. List results carry `ttlMs` and `cacheScope`, so the registry can cache tool catalogues safely. **Tasks** is a formal extension for long-running work with poll-based status. Header-based routing lets the gateway meter and authorise per tool.
+- **A2A v1.0** for cross-agent delegation, with signed Agent Cards for discovery and verification. MCP equips one agent with tools; A2A lets agents collaborate.
+- **Managed runtimes exist.** Anthropic prices Managed Agents at $0.08 per running session-hour plus tokens (idle time is free; no batch discount). Compare build-versus-buy including runtime cost, not just tokens.
+
+**Enterprise pattern.** The registry stores for each tool: owner, schema version, scopes required, data classification, side-effect class (read, write, irreversible), rate limit and approval rule. The runtime checkpoints after every step so a crashed worker resumes, enforces per-run budgets, and emits one trace per run. Pin tool versions per agent release so a tool change cannot silently alter agent behaviour.
 
 ## Common mistakes
 

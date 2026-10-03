@@ -6,6 +6,9 @@ sources:
   - "RFC 6749 (OAuth 2.0) and RFC 8693 (OAuth 2.0 Token Exchange)"
   - "NIST SP 800-207, Zero Trust Architecture"
   - "Simon Willison, writing on the 'lethal trifecta' for AI agents (2025)"
+  - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched Oct 2026)"
+  - "A2A Protocol documentation, a2a-protocol.org (v1.0, fetched Oct 2026)"
+  - "OWASP Top 10 for Agentic Applications 2026 (ASI01 to ASI10), via secondary summaries"
 ---
 
 ## The problem
@@ -76,6 +79,20 @@ When an agent calls another agent, authority must **narrow, never widen**. Pass 
 3. The agent drafts the summary and requests to send email. Because the session is tainted and sending is high impact, policy requires approval.
 4. The user sees the recipient, subject and body, approves, and a one-time `mail.send` token bound to this exact message is issued.
 5. The email goes out; the audit log records user, agent, task, the approved message hash and the approval time. The hidden instruction to forward data elsewhere had no tool and no scope to act on.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** An agent needs its own identity, a delegated user token with narrow scope, and a policy check outside the model (steps above). That is the baseline every enterprise review asks for.
+
+**What the protocols now give you (live-checked).**
+
+- **MCP 2026-07-28 spec.** The protocol core is **stateless**: no `initialize` handshake and no `Mcp-Session-Id`, so MCP servers sit behind ordinary round-robin load balancers. HTTP requests carry `Mcp-Method` and `Mcp-Name` headers so gateways and WAFs can route, meter and authorise without parsing JSON bodies. Authorization is hardened: **RFC 9207 issuer validation** before code redemption, client credentials bound to the issuing authorization server, and a formal shift from Dynamic Client Registration toward **Client ID Metadata Documents (CIMD)**. **Enterprise Managed Authorization (EMA)** is a formal extension, which lets the corporate identity provider, not each user clicking "allow", decide which agents may reach which tools. Roots, Sampling and Logging are deprecated with a twelve-month minimum support window, and legacy HTTP+SSE is deprecated.
+- **A2A v1.0** (Linux Foundation, March 2026) uses **signed Agent Cards** (JWS with JCS canonicalisation) so one agent can verify another's domain and declared capabilities, and adds multi-tenancy. Use MCP for agent-to-tool, A2A for agent-to-agent.
+- **OWASP Top 10 for Agentic Applications (Dec 2025)** names *Identity and Privilege Abuse* (ASI03), *Tool Misuse* (ASI02), *Insecure Inter-Agent Communication* (ASI07) and *Rogue Agents* (ASI10). Map your controls to these in the threat model.
+
+**Enterprise pattern.** Register every agent in the IdP as a workload identity; issue short-lived tokens through token exchange (RFC 8693) carrying both the user (`sub`) and the agent (`act`); enforce at the MCP gateway using the new routing headers; require step-up approval for write tools; log each tool call with agent id, user id and policy decision. Because MCP is now stateless, authorisation must be checked **per request**, never remembered per session.
+
+*Verify before building:* the 2026-07-28 revision is recent; check which version your MCP SDK and gateway implement.
 
 ## Common mistakes
 

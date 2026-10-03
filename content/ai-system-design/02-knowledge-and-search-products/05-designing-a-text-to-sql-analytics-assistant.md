@@ -6,6 +6,8 @@ sources:
   - "Yu et al., 'Spider: A Large-Scale Human-Labeled Dataset for Complex and Cross-Domain Semantic Parsing and Text-to-SQL Task' (2018)"
   - "Public documentation on semantic layers and governed metrics in analytics tools"
   - "OWASP guidance on SQL injection and least-privilege database access"
+  - "Lei et al., 'Spider 2.0: Evaluating Language Models on Real-World Enterprise Text-to-SQL Workflows' (2024; ICLR 2025)"
+  - "Jin et al., 'Text-to-SQL Benchmarks are Broken: An In-Depth Analysis of Annotation Errors' (CIDR 2026)"
 ---
 
 ## The problem
@@ -69,6 +71,14 @@ Build a golden set of real questions with verified SQL or answers. Score **execu
 3. SQL is generated against the approved view, validated (read-only, allowed columns, limit 100), dry-run estimated at a few seconds.
 4. The result shows paid search at 4.1, email at 3.8; a sanity check passes. The user sees a bar chart, the SQL and the note "ROAS uses last-click attribution".
 5. The manager flags that finance uses a 7-day window; the correction is routed to the data team, who add a second governed metric rather than letting the model guess.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Give the model the schema, generate SQL, execute read-only, return the result with the query (steps above).
+
+**Why enterprise accuracy is lower than the leaderboard (published evidence).** On the academic Spider 1.0 benchmark models exceed 90%, but **Spider 2.0**, built from real enterprise workflows (632 tasks, databases averaging about 800 columns, multiple SQL dialects and warehouse products), reported only **21.4% success for the best agent at publication**, and a 2026 CIDR paper argues that widely used text-to-SQL benchmarks contain **substantial annotation errors**, so high public scores overstate real accuracy. Spider 2.0's own error analysis attributes a large share of failures to dialect-specific functions, multi-step calculation and query planning, not simple schema lookup. Newer models score higher than the 2024 numbers; check the current leaderboard, but the lesson stands: public benchmarks do not predict your warehouse.
+
+**What enterprises do.** Put a **governed semantic layer** (metric definitions, join paths, business glossary, certified tables) between the model and raw schemas so "revenue" means one thing; restrict the model to certified datasets; retrieve only relevant tables and columns; run queries with a read-only, row-level-secured service identity per user; set cost and row limits; show the SQL and assumptions; and build a golden set of real questions with verified answers from your own analysts as the release gate.
 
 ## Common mistakes
 

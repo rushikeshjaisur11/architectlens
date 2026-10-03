@@ -6,6 +6,9 @@ sources:
   - "Lewis et al., 'Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks' (2020)"
   - "Public vendor documentation on enterprise search connectors and document-level access control"
   - "Ragas project documentation on RAG evaluation metrics"
+  - "Anthropic, 'Introducing Contextual Retrieval', anthropic.com/news/contextual-retrieval (fetched Oct 2026)"
+  - "VentureBeat, 'Enterprise RAG rebuild: hybrid retrieval adoption tripled in Q1 2026' (survey-based, secondary)"
+  - "OWASP Top 10 for LLM Applications 2025, LLM08 Vector and Embedding Weaknesses"
 ---
 
 ## The problem
@@ -70,6 +73,19 @@ Build a golden set of real questions with the expected source documents. Measure
 3. Hybrid search returns 30 chunks; the reranker keeps 5. Two cite the current policy (version 4) and one cites an outdated version 2.
 4. The model answers "30 days after account closure" citing version 4, and notes that version 2 said 90 days and was superseded, with dates.
 5. Citation check passes. The user clicks thumbs up; the feedback is stored with the trace for later evaluation.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Chunk, embed, retrieve top-k, generate with citations (steps above). A prototype that does this scores well on easy questions and fails quietly on real ones.
+
+**What changes at enterprise scale (live-checked).**
+
+- **Hybrid retrieval plus reranking is the default.** Anthropic's published Contextual Retrieval study (prepend a 50 to 100 token model-written context to each chunk before indexing) cut top-20 retrieval failures from **5.7% to 3.7%** (embeddings alone), **2.9%** (with BM25) and **1.9%** (with a reranker added): a 67% reduction. Their one-time cost was about **$1.02 per million document tokens** using prompt caching. A 2026 survey reported by VentureBeat found enterprise intent to adopt hybrid retrieval rising from about 10% to 33% in Q1 2026. Treat these as directional: the corpus was Anthropic's, so measure on yours.
+- **Reranking costs latency.** Secondary sources put cross-encoder reranking at around 100 to 150 ms; budget for it and rerank only the top 50 to 100 candidates.
+- **Retrieval is agentic and permission-aware.** The retriever may loop (reformulate, search again) and must filter by the caller's entitlements *before* ranking, not after generation. OWASP now lists vector and embedding weaknesses (LLM08) as its own risk: embedding inversion, cross-tenant leakage and poisoned documents.
+- **Evaluate retrieval and generation separately.** Track recall at k on a labelled set, faithfulness (is every claim supported by retrieved text) and abstention quality.
+
+**Enterprise pattern.** Version the index (embedding model, chunking, metadata schema) like a database migration; shadow-run a new index against live queries before cutover; keep the original document access control list on every chunk and sync it on a short interval so revoked access disappears quickly.
 
 ## Common mistakes
 

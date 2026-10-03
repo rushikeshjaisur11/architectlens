@@ -6,6 +6,8 @@ sources:
   - "OpenTelemetry specification, including semantic conventions for generative AI"
   - "Google SRE Book, chapter 'Monitoring Distributed Systems'"
   - "Public documentation of LLM tracing and evaluation tools"
+  - "OpenTelemetry GenAI semantic conventions (moved to open-telemetry/semantic-conventions-genai, fetched Oct 2026)"
+  - "Community analyses of OpenTelemetry GenAI convention stability (July 2026), for example john-hodge.com"
 ---
 
 ## The problem
@@ -76,6 +78,16 @@ Alert on symptoms: error and refusal spikes, latency and cost anomalies, evaluat
 3. Opening a trace tree: the retrieval span returned zero documents because an index alias pointed to an empty collection; the LLM span then answered from nothing.
 4. The team fixes the alias; metrics recover. The affected traces are added to the regression dataset, and an alert is added for "retrieval returned zero results" rate.
 5. Total detection and diagnosis time was 25 minutes, with no manual log digging.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Trace every request across retrieval, model calls and tools; log prompts, responses, tokens, latency, cost; attach feedback (steps above).
+
+**Standards status (live-checked).** OpenTelemetry's GenAI semantic conventions cover inference spans, **agent spans**, tool calls, metrics and **MCP** instrumentation, with provider-specific pages for Anthropic, AWS Bedrock, Azure AI and OpenAI. In June 2026 they moved out of the main semantic-conventions repository into a dedicated `semantic-conventions-genai` repository, and as of mid-July 2026 community analysis reports **every `gen_ai.*` attribute still carries "Development" status, not Stable**. The conventions also provide an opt-in environment variable to select the newest experimental version and explicit guidance on capturing prompt and response content.
+
+**What to do.** Instrument with OpenTelemetry anyway (vendor-neutral, works with any backend) but wrap attribute names in one adapter module so a rename costs one change. **Do not capture prompt and completion content by default**: it is the most sensitive data in the system; capture it behind a flag, with redaction, short retention and tenant-scoped access. Keep metadata (model, token counts, latency, cache hit, tool name, outcome) always on.
+
+**Enterprise pattern.** One trace per user request with child spans for retrieval, each model call and each tool call; sample all failures and low-feedback traces, a small percentage of the rest; export cost as a metric derived from token counts and a versioned rate card; link traces to evaluation runs so a regression points at a prompt or model version.
 
 ## Common mistakes
 

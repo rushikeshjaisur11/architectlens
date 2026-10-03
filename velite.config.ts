@@ -5,6 +5,7 @@ import { trackFromSlug } from "./lib/tracks";
 import { resolveShortTitle } from "./lib/short-title";
 import { order } from "./lib/order";
 import { slugFromFilename } from "./lib/slug";
+import { readingMinutes, summarize } from "./lib/summary";
 
 const seenLessonKeys = new Set<string>();
 
@@ -21,9 +22,10 @@ export default defineConfig({
           tags: s.array(s.string()).default([]),
           sources: s.array(s.string()).default([]),
           html: s.markdown(),
+          raw: s.raw(),
           path: s.path(),
         })
-        .transform((data) => {
+        .transform(({ raw, ...data }) => {
           const [trackSlug, folderName, filename] = data.path.split("/");
           const track = trackFromSlug(trackSlug);
           const category = categoryFromFolderName(track.categories, folderName);
@@ -37,6 +39,8 @@ export default defineConfig({
 
           return {
             ...data,
+            summary: summarize(raw),
+            minutes: readingMinutes(raw),
             shortTitle: resolveShortTitle(data.title, data.short_title),
             track: { slug: track.slug, name: track.name },
             category,

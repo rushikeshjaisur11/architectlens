@@ -6,6 +6,8 @@ sources:
   - "OWASP Top 10 for Large Language Model Applications"
   - "MITRE ATLAS (Adversarial Threat Landscape for Artificial-Intelligence Systems)"
   - "NIST AI RMF 1.0 and NIST SP 800-207 (Zero Trust Architecture)"
+  - "OWASP Top 10 for LLM Applications 2025, genai.owasp.org/llm-top-10 (fetched Oct 2026)"
+  - "OWASP Top 10 for Agentic Applications 2026 (published December 2025), via secondary summaries"
 ---
 
 ## The problem
@@ -71,6 +73,16 @@ Include AI systems in the standard security lifecycle: design review with threat
 3. Controls: reading and sending run in **separate sessions**; the reading session has no send tool. Drafted replies are shown to the user for approval with the exact recipients highlighted; the send token is issued only after approval, bound to that message.
 4. Output handling: summaries are rendered as text only, with links shown but not auto-fetched, to prevent exfiltration through image URLs.
 5. Detection: an alert fires when an approved send includes recipients never seen in the thread; the red-team suite includes 40 injection payloads that run in CI against the agent.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Treat the model as an untrusted component: separate instructions from data, validate output, limit tool reach (steps above).
+
+**Use the current OWASP lists as your threat checklist.** The official 2025 LLM list is: LLM01 Prompt Injection, LLM02 Sensitive Information Disclosure, LLM03 Supply Chain, LLM04 Data and Model Poisoning, LLM05 Improper Output Handling, LLM06 Excessive Agency, LLM07 System Prompt Leakage, LLM08 Vector and Embedding Weaknesses, LLM09 Misinformation, LLM10 Unbounded Consumption. Three entries are new or reshaped since 2023 and matter for design: **System Prompt Leakage** (never put secrets or authorisation rules in the prompt), **Vector and Embedding Weaknesses** (RAG stores need access control and poisoning defences, see multi-tenant RAG), and **Unbounded Consumption** (cost and denial-of-wallet are security issues; rate limits and budgets belong in the gateway).
+
+The December 2025 **Agentic Applications Top 10** adds agent-specific risks: Agent Goal Hijack, Tool Misuse, Identity and Privilege Abuse, Agentic Supply Chain, Unexpected Code Execution, Memory and Context Poisoning, Insecure Inter-Agent Communication, Cascading Failures, Human-Agent Trust Exploitation and Rogue Agents.
+
+**Enterprise pattern.** Build a threat model per use case: list assets, trust boundaries (user, retrieved content, tool output, other agents), and map each OWASP item to a control and an owner. Run adversarial evaluation (prompt-injection suites, tool-abuse scenarios) in CI and as periodic red teaming; keep results as audit evidence. Pin and scan models, datasets, MCP servers and plugins as supply-chain artefacts.
 
 ## Common mistakes
 

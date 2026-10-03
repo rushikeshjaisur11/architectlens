@@ -6,6 +6,9 @@ sources:
   - "HHS, HIPAA Privacy and Security Rules overview"
   - "HL7 FHIR specification (Fast Healthcare Interoperability Resources)"
   - "Public clinical informatics literature on ambient documentation and note quality evaluation"
+  - "Doximity, 2026 State of AI in Medicine (physician adoption of voice documentation tools), via secondary summaries"
+  - "FDA Clinical Decision Support Software guidance (final, January 2026), docket FDA-2017-D-6569, via secondary summaries"
+  - "HHS, HIPAA Privacy and Security Rules (business associate requirements)"
 ---
 
 *Engineering patterns only; clinical and legal requirements vary by jurisdiction and must be confirmed with clinical safety, privacy and legal teams.*
@@ -82,6 +85,19 @@ Evaluate with clinicians: note quality rubrics (accuracy, completeness, concisio
 3. The note is rendered in the clinic's SOAP template. Each statement links to transcript evidence; "denies fever" is correctly negated.
 4. The verifier flags that the patient said "ten milligrams" but the transcript audio around the drug name is unclear; the draft shows "[drug: unclear, dose 10 mg: please confirm]" instead of guessing.
 5. The clinician confirms the drug from the EHR, edits one sentence and signs. The edit and the flag resolution are logged; audio is deleted after 24 hours per policy.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Capture the visit, transcribe, draft a structured note, let the clinician review and sign (steps above).
+
+**Market and regulatory picture (secondary sources, October 2026; verify with counsel and the FDA text).**
+
+- **Adoption is mainstream.** Doximity's 2026 survey reports **29% of physicians** using voice-based documentation tools (up from 20% in April 2025). Major EHR vendors now ship their own ambient scribe and at least one offers it at no charge to customers, so a build-versus-buy decision must compare against a bundled feature.
+- **FDA.** Tools that only draft notes for clinician review are generally treated as workflow tools, not regulated devices. Features that suggest diagnoses, recommend treatment or **auto-populate billing codes without clinician review** can move the product toward Software as a Medical Device. The January 2026 final CDS guidance update is the document to read; keep the product on the documentation side of that line deliberately.
+- **HIPAA.** An ambient tool that handles protected health information is a **business associate**; a signed BAA is required before any PHI flows, along with encryption, access control, audit logs and training. Model providers and every subprocessor in the chain need coverage.
+- **Recording consent.** Class actions filed in 2026 allege ambient recording without valid consent under state wiretap laws (California CIPA exposure is reported at up to $5,000 per recording). Capture patient consent explicitly in the workflow and in two-party-consent states announce the recording.
+
+**Enterprise pattern.** Clinician-in-the-loop sign-off with edit-rate tracking, source-linked notes (each statement traceable to transcript text), per-specialty evaluation by clinicians, hallucination audits on sampled notes, and an EHR write-back path through the vendor's supported APIs rather than screen automation.
 
 ## Common mistakes
 

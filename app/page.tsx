@@ -24,7 +24,12 @@ export default function HomePage() {
         {track.categories.length} modules
       </p>
 
-      <CurriculumGrid track={track} lessons={trackLessons} />
+      <CurriculumGrid
+        track={track}
+        lessons={trackLessons.map(({ slug, title, shortTitle, summary, minutes, tags, order, category }) => ({
+          slug, title, shortTitle, summary, minutes, tags, order, category,
+        }))}
+      />
     </main>
   );
 }

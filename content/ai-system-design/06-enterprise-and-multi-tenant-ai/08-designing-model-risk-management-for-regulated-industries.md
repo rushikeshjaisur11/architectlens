@@ -6,6 +6,8 @@ sources:
   - "Federal Reserve and OCC, SR 11-7 Guidance on Model Risk Management (2011)"
   - "Regulation (EU) 2024/1689 (EU AI Act) overview of risk categories and obligations"
   - "ISO/IEC 42001 AI management system standard (overview)"
+  - "Federal Reserve SR 26-2 (17 April 2026), federalreserve.gov/supervisionreg/srletters/SR2602.htm (fetched Oct 2026)"
+  - "Secondary analyses of SR 26-2 scope and generative AI (for example CRA, Elevate Consulting, 2026)"
 ---
 
 *This lesson describes engineering and process patterns, not legal advice. Requirements vary by jurisdiction and sector; confirm with compliance and legal teams.*
@@ -81,6 +83,16 @@ Automate evidence collection: evaluation results, approvals, configuration versi
 3. Bias testing across customer segments shows no systematic difference in tone or content; edge cases (disputed claims, vulnerable customers) are routed to senior adjusters.
 4. Approval conditions: pinned model version, mandatory adjuster review with the claim facts shown beside the draft, monthly sampling of 200 letters, override-rate monitoring, and re-validation on any model or prompt change.
 5. After a provider announces a model update, the change process runs the regression suite on the new version; it shows a regression on exclusion wording, so the update is deferred until prompts are adjusted and the suite passes.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Inventory models, tier by materiality, validate independently, monitor, and govern change (steps above).
+
+**What changed in 2026 (US banking).** The Federal Reserve, OCC and FDIC issued **SR 26-2 on 17 April 2026**, superseding SR 11-7 (2011) and SR 21-8. The primary page states a **risk-based approach tailored to each organisation's model risk profile, size and complexity**, and notes it is most relevant to banks above **$30 billion** in assets. Secondary analyses report that **generative and agentic AI are explicitly out of scope** ("novel and rapidly evolving") and that the agencies plan a separate request for information. I could read only the summary page, not the PDF text, so confirm that scope statement in the PDF.
+
+**What that means for design.** Absent specific rules, banks apply the *principles* (inventory, effective challenge, ongoing monitoring) to LLM systems by analogy and by their own policy, and examiners will still ask. Practical pattern: classify LLM use cases by materiality (customer-facing or decision-influencing is higher tier), require independent validation for those, define tolerance thresholds for quality and bias metrics, monitor drift on live samples, and treat prompt, model and retrieval-corpus changes as model changes with revalidation. Keep a vendor-model inventory, since a provider's silent model update is a change you did not approve.
+
+*Jurisdictions differ (EU, UK PRA SS1/23, others); this section covers the US federal banking agencies only.*
 
 ## Common mistakes
 
