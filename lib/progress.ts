@@ -20,3 +20,11 @@ export function markRead(lessonKey: string): void {
     // storage unavailable: progress simply is not remembered
   }
 }
+
+// The lesson to offer next: the first unread one after the most recently read lesson in this list,
+// else the first unread one. Home, section pages and path cards all use this so they agree.
+export function nextAfterLast<T extends { key: string }>(list: T[], read: Set<string>): T | undefined {
+  const last = [...read].filter((k) => list.some((l) => l.key === k)).pop();
+  const after = last ? list.slice(list.findIndex((l) => l.key === last) + 1) : list;
+  return after.find((l) => !read.has(l.key)) ?? list.find((l) => !read.has(l.key));
+}

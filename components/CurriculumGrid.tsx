@@ -6,7 +6,7 @@ import { sortByOrder } from "@/lib/content";
 import type { Track } from "@/lib/tracks";
 import { Check, ChevronDown, ChevronsDownUp, ChevronsUpDown } from "lucide-react";
 import { TileBanner } from "./TileBanner";
-import { readSet } from "@/lib/progress";
+import { nextAfterLast, readSet } from "@/lib/progress";
 import type { BannerSpec } from "@/lib/banner-kinds";
 import { sectionByKey } from "@/lib/track-meta";
 import { onGlowMove } from "@/lib/glow";
@@ -101,9 +101,10 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
   const allFolded = expanded.size === 0;
   const readCount = lessons.filter((l) => done.has(`${track.slug}/${l.category.slug}/${l.slug}`)).length;
 
-  const nextUnread = sortByOrder(lessons)
+  const ordered = sortByOrder(lessons)
     .sort((a, b) => a.category.number - b.category.number)
-    .find((l) => !done.has(`${track.slug}/${l.category.slug}/${l.slug}`));
+    .map((l) => ({ ...l, key: `${track.slug}/${l.category.slug}/${l.slug}` }));
+  const nextUnread = nextAfterLast(ordered, done);
 
   // A reader with progress gets the module holding their next lesson open; everyone else sees every module folded.
   const autoOpened = useRef(false);

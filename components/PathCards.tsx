@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { SECTIONS } from "@/lib/track-meta";
-import { readSet } from "@/lib/progress";
+import { nextAfterLast, readSet } from "@/lib/progress";
 import { SectionIcon } from "./SectionIcon";
 import { BlurFade } from "./ui/blur-fade";
 import { onGlowMove } from "@/lib/glow";
@@ -26,11 +26,11 @@ export function PathCards({ stats, order }: { stats: PathStats; order: PathOrder
   }, []);
 
   return (
-    <div className="grid gap-4 md:grid-cols-6">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
       {SECTIONS.map((s, i) => {
         const st = stats[s.key];
         const done = st ? [...read].filter((k) => k.startsWith(`${s.key}/`)).length : 0;
-        const next = (order[s.key] ?? []).find((l) => !read.has(l.key));
+        const next = nextAfterLast(order[s.key] ?? [], read);
         return (
           <BlurFade key={s.key} delay={i * 0.1} className={`h-full ${SPANS[i % SPANS.length]}`}>
           <div

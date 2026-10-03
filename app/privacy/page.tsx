@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: `How ${SITE_NAME} handles information.`,
 };
 
+const ANALYTICS = !!process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
+
 export default function PrivacyPage() {
   return (
     <main className="mx-auto max-w-3xl px-5 py-14 sm:px-6 sm:py-20">
@@ -30,10 +32,26 @@ export default function PrivacyPage() {
 
         <h2>What the site does not do</h2>
         <ul>
-          <li>It does not run analytics or advertising trackers.</li>
-          <li>It does not load fonts or scripts from third-party servers when you visit.</li>
+          {ANALYTICS ? (
+            <li>It does not run advertising trackers or set cookies.</li>
+          ) : (
+            <>
+              <li>It does not run analytics or advertising trackers.</li>
+              <li>It does not load fonts or scripts from third-party servers when you visit.</li>
+            </>
+          )}
           <li>It does not sell or share information about you.</li>
         </ul>
+
+        {ANALYTICS && (
+          <>
+            <h2>Analytics</h2>
+            <p>
+              The site counts page views with Plausible, a privacy-focused service that uses no cookies and does not
+              track you across sites or store personal data. It is used only to see which notes are read.
+            </p>
+          </>
+        )}
 
         <h2>Hosting</h2>
         <p>

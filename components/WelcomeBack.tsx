@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { readSet } from "@/lib/progress";
+import { nextAfterLast, readSet } from "@/lib/progress";
 import { sectionByKey } from "@/lib/track-meta";
 import { SectionIcon } from "./SectionIcon";
 import type { PathOrder } from "./PathCards";
@@ -17,8 +17,7 @@ export function WelcomeBack({ order }: { order: PathOrder }) {
     if (!lastKey) return;
     const track = lastKey.split("/")[0];
     const list = order[track] ?? [];
-    const after = list.slice(list.findIndex((l) => l.key === lastKey) + 1);
-    const next = after.find((l) => !read.has(l.key)) ?? list.find((l) => !read.has(l.key));
+    const next = nextAfterLast(list, read);
     if (!next) return;
     setPick({ ...next, track, last: list.find((l) => l.key === lastKey)?.title ?? "" });
   }, [order]);

@@ -31,6 +31,9 @@ const reading = Literata({
   variable: "--font-reading",
 });
 
+// Optional, cookieless analytics (Plausible). Off unless a domain is set at build time; see /privacy.
+const ANALYTICS_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
+
 const THEME_INIT_SCRIPT = `
 (function () {
   try {
@@ -63,6 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning className={`${sans.variable} ${mono.variable} ${reading.variable} ${display.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        {ANALYTICS_DOMAIN && <script defer data-domain={ANALYTICS_DOMAIN} src="https://plausible.io/js/script.js" />}
       </head>
       <body className="min-h-screen bg-ink font-sans text-paper" suppressHydrationWarning>
         <NavShell lessons={lessons} searchItems={searchItems}>
