@@ -23,6 +23,8 @@ banner:
 
 **Write-behind** (write-back) also writes to the cache first, but the database write is deferred and applied asynchronously, batched or queued. The write call returns as soon as the cache is updated, and a background process flushes changes to the database later.
 
+<div data-anim="cache-write-strategies"></div>
+
 ## Tradeoffs that actually matter
 
 **Cache-aside** is the default because it's resilient and simple: if the cache goes down entirely, the app still works — every read just falls through to the database, degraded but correct. Its weakness is the read-after-miss penalty (three round trips: check cache, miss, hit DB, populate cache) and a **stale-read window** between a database write and the corresponding cache invalidation — a classic race where a concurrent read can populate the cache with a value that's about to be overwritten. Mitigation is usually a short TTL plus invalidate-on-write, accepting that perfect consistency isn't the goal.

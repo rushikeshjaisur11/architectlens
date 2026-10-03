@@ -21,6 +21,8 @@ Most systems read data far more often than they write it, and the same small set
 
 The speedup only materializes if the cache actually gets hit often enough to justify its cost and complexity — a cache with a low hit rate (because access patterns are too uniform, or the cache is too small to hold the working set) adds latency and operational overhead for little benefit.
 
+<div data-anim="cache-hit-rate"></div>
+
 ## Where to put the cache
 
 - **Client-side / browser cache** — closest to the user, zero network cost on a hit, but invisible to the server, so invalidation relies on cache headers (`Cache-Control`, `ETag`) the client honors.

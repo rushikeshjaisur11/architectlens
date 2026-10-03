@@ -5,6 +5,7 @@ import { findBySlug } from "@/lib/content";
 import { MetaPanel } from "@/components/MetaPanel";
 import { LessonAnimations } from "@/components/anim/LessonAnimations";
 import { ArticleEnd } from "@/components/ArticleEnd";
+import { LessonCheck, LessonPredict } from "@/components/anim/LessonQuiz";
 import { LessonBanner, LessonPager, LessonTopNav, OnThisPage, ReadingProgress, SectionControls } from "@/components/LessonChrome";
 import { trackFromSlug } from "@/lib/tracks";
 
@@ -66,12 +67,14 @@ export default async function LessonPage({
         <SectionControls />
       </div>
       <OnThisPage />
+      {lesson.predict && <div className="mt-8"><LessonPredict {...lesson.predict} /></div>}
       <article
         data-lesson-body
         className="prose mt-8 max-w-[72ch]"
         dangerouslySetInnerHTML={{ __html: lesson.html }}
       />
       <LessonAnimations key={`${track}/${category}/${slug}`} lessonKey={`${track}/${category}/${slug}`} />
+      {lesson.check.length > 0 && <LessonCheck questions={lesson.check} />}
       <ArticleEnd lessonKey={`${track}/${category}/${slug}`} />
       {lesson.sources.length > 0 && (
         <details className="group mt-10 rounded-xl border border-line-soft bg-ink-elevated/40 px-4 py-3">

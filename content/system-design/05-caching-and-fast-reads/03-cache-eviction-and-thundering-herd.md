@@ -30,6 +30,8 @@ Most production caches (Redis included) support multiple configurable eviction p
 
 A specific, easy-to-miss failure mode: when a popular cache entry expires (or is evicted), and many concurrent requests for that same key arrive around the same time, *all* of them see a cache miss simultaneously and *all* of them fall through to the expensive origin (database, external API) at once — a sudden spike of redundant load hitting the origin for what should have been a single cache-refill operation. This is called a **thundering herd** or **cache stampede**, and it's particularly dangerous for very popular keys, since popularity is exactly what makes many concurrent requests for the same key likely in the first place.
 
+<div data-anim="thundering-herd"></div>
+
 ## Mitigating thundering herd
 
 - **Request coalescing (single-flight)** — when a cache miss occurs, the first request to notice the miss takes responsibility for fetching from the origin, and any other concurrent requests for the *same key* wait for that in-flight fetch to complete rather than independently triggering their own redundant origin fetch. This turns N simultaneous origin requests for the same expired key into just one.

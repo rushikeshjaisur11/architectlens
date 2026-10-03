@@ -8,6 +8,13 @@ import { slugFromFilename } from "./lib/slug";
 import { BANNER_KINDS } from "./lib/banner-kinds";
 import { readingMinutes, summarize } from "./lib/summary";
 
+const quiz = {
+  options: s.array(s.string()).min(2).max(4),
+  answer: s.number().int().min(0),
+  why: s.string(),
+};
+const inRange = (o: { options: string[]; answer: number }) => o.answer < o.options.length;
+
 const seenLessonKeys = new Set<string>();
 
 export default defineConfig({
@@ -28,6 +35,13 @@ export default defineConfig({
               nodes: s.array(s.tuple([s.enum(BANNER_KINDS), s.string().max(18)])).min(2).max(5),
             })
             .optional(),
+          predict: s.object({ question: s.string(), ...quiz }).refine(inRange, "predict.answer out of range").optional(),
+          check: s
+            .array(
+              s.object({ q: s.string(), ...quiz }).refine(inRange, "check.answer out of range"),
+            )
+            .max(4)
+            .default([]),
           html: s.markdown(),
           raw: s.raw(),
           path: s.path(),
