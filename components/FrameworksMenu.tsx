@@ -49,7 +49,7 @@ export function FrameworksMenu({ className = "" }: { className?: string }) {
       {open && (
         <div
           role="menu"
-          className="absolute left-0 top-full z-50 mt-1.5 w-64 overflow-hidden rounded-lg border border-line bg-ink-elevated shadow-xl shadow-black/40"
+          className="absolute right-0 top-full sm:left-0 sm:right-auto z-50 mt-1.5 w-64 overflow-hidden rounded-lg border border-line bg-ink-elevated shadow-xl shadow-black/40"
         >
           {frameworksByLanguage().map(([language, items], g) => (
             <div key={language} className={g > 0 ? "border-t border-line-soft" : ""}>

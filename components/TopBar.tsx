@@ -53,7 +53,7 @@ export function TopBar({
             architectlens
           </Link>
           <TrackSwitcher className="shrink-0" />
-          <FrameworksMenu className="hidden shrink-0 sm:block" />
+          <FrameworksMenu className="shrink-0" />
           {label && (
             <>
               <span className="hidden sm:inline">/</span>

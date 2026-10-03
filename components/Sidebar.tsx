@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavGroup } from "@/lib/nav-tree";
 import { TrackSwitcher } from "./TrackSwitcher";
-import { FrameworksMenu } from "./FrameworksMenu";
 
 function splitHeading(heading: string): [string, string] {
   const spaceIndex = heading.indexOf(" ");
@@ -46,7 +45,6 @@ export function Sidebar({
           Close ✕
         </button>
       </div>
-      <FrameworksMenu className="mb-4 sm:hidden" />
       {groups.map((group) => {
         const [number, name] = splitHeading(group.heading);
         const hasItems = group.items.length > 0;

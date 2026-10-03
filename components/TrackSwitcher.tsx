@@ -45,7 +45,7 @@ export function TrackSwitcher({ className = "" }: { className?: string }) {
         }`}
       >
         <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-        {activeTrack.name}
+        <span className="max-w-[7.5rem] truncate sm:max-w-none">{activeTrack.name}</span>
         <span className={`text-paper-muted transition-transform duration-150 ${open ? "rotate-180" : ""}`}>▾</span>
       </button>
       {open && (
