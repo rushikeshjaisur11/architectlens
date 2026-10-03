@@ -39,7 +39,9 @@ export default function AnimRuntime({ lessonKey }: { lessonKey: string }) {
     const injected: HTMLElement[] = [];
     const scenes = SCENES[lessonKey] ?? [];
     if (scenes.length) {
-      const heads = Array.from(body.querySelectorAll("h2")).slice(explicit.length ? 1 : 0);
+      const all = Array.from(body.querySelectorAll("h2"));
+      const content = all.filter((h) => !/common mistakes/i.test(h.textContent ?? ""));
+      const heads = (content.length ? content : all).slice(explicit.length ? 1 : 0);
       const last = heads.length - 1;
       let after: Element | null = null;
       scenes.forEach((scene, i) => {
@@ -47,7 +49,7 @@ export default function AnimRuntime({ lessonKey }: { lessonKey: string }) {
         el.setAttribute("data-anim-auto", "");
         const hi = scenes.length === 1 || last < 1 ? 0 : Math.min(last, Math.round((i * last) / (scenes.length - 1)));
         let anchor = heads[hi] ? anchorFor(heads[hi]) : null;
-        if (after && anchor && (anchor === after || (anchor.compareDocumentPosition(after) & Node.DOCUMENT_POSITION_FOLLOWING) === 0)) anchor = after;
+        if (after && anchor && (anchor === after || (anchor.compareDocumentPosition(after) & Node.DOCUMENT_POSITION_PRECEDING) === 0)) anchor = after;
         if (anchor) anchor.after(el);
         else body.append(el);
         after = el;
