@@ -38,8 +38,8 @@ export default function AnimRuntime({ lessonKey }: { lessonKey: string }) {
 
     const injected: HTMLElement[] = [];
     const scenes = SCENES[lessonKey] ?? [];
-    if (!explicit.length && scenes.length) {
-      const heads = Array.from(body.querySelectorAll("h2"));
+    if (scenes.length) {
+      const heads = Array.from(body.querySelectorAll("h2")).slice(explicit.length ? 1 : 0);
       const last = heads.length - 1;
       let after: Element | null = null;
       scenes.forEach((scene, i) => {

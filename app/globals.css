@@ -5,12 +5,12 @@
   --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 
-  --color-ink: #0d1321;
-  --color-ink-elevated: #141b2e;
-  --color-line: #2a3752;
-  --color-line-soft: #1e2740;
-  --color-paper: #f1f4fa;
-  --color-paper-muted: #a4aec8;
+  --color-ink: #0a0a0b;
+  --color-ink-elevated: #141415;
+  --color-line: #2e2e33;
+  --color-line-soft: #202024;
+  --color-paper: #f2f2f3;
+  --color-paper-muted: #a9a9b2;
   --color-accent: #e8a33d;
   --color-accent-dim: #b8801f;
 }

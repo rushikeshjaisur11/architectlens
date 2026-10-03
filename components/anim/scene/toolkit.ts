@@ -3,7 +3,7 @@ import type { G, Pal, TextOpts } from "./types";
 
 export const LW = 480;
 
-const DARK: Pal = { ink: "#0d1321", panel: "#141b2e", line: "#2a3752", paper: "#e8ecf4", muted: "#8792ac", accent: "#e8a33d", ok: "#7bd88f", bad: "#ff6b6b", blue: "#4cc9f0", violet: "#c792ea", teal: "#5eead4" };
+const DARK: Pal = { ink: "#0a0a0b", panel: "#141415", line: "#34343a", paper: "#ededee", muted: "#909099", accent: "#e8a33d", ok: "#7bd88f", bad: "#ff6b6b", blue: "#4cc9f0", violet: "#c792ea", teal: "#5eead4" };
 const LIGHT: Pal = { ink: "#eef1f6", panel: "#ffffff", line: "#c7d0e0", paper: "#101526", muted: "#56607a", accent: "#b8730f", ok: "#2f9e57", bad: "#d6453d", blue: "#1783b4", violet: "#8a55c9", teal: "#0f9488" };
 
 export function basePalette(dark: boolean): Pal {

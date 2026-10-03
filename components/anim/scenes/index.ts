@@ -15,5 +15,7 @@ import { MORE } from "./more";
 
 const base: Record<string, Scene> = { ...sd1, ...sd2, ...sd3, ...sd4, ...sd5, ...sd6, ...sd7, ...ai1, ...ai2, ...ai3, ...ai4, ...ai5 };
 
-// Every lesson gets its main scene first, then any extra scenes that explain further parts of it.
-export const SCENES: Record<string, Scene[]> = Object.fromEntries(Object.entries(base).map(([k, s]) => [k, [s, ...(MORE[k] ?? [])]]));
+// A lesson gets its main scene first, then any extra scenes that explain further parts of it.
+// Lessons that use an explicit pilot animation have extras only.
+const keys = new Set([...Object.keys(base), ...Object.keys(MORE)]);
+export const SCENES: Record<string, Scene[]> = Object.fromEntries([...keys].map((k) => [k, [...(base[k] ? [base[k]] : []), ...(MORE[k] ?? [])]]));

@@ -76,7 +76,7 @@ function render(scene: Scene, dark: boolean, preview?: string) {
       g.t = t;
       g.dt = 1 / 15;
       guard.clearRect(0, 0, LW, h);
-      guard.fillStyle = dark ? "#0d1321" : "#eef1f6";
+      guard.fillStyle = dark ? "#0a0a0b" : "#eef1f6";
       guard.fillRect(0, 0, LW, h);
       fresh(g);
     }
