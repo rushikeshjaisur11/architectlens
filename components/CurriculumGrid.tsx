@@ -28,7 +28,7 @@ function Tile({ lesson: l, href, label }: { lesson: LessonTile; href: string; la
       onBlur={() => setHover(false)}
       className="group flex flex-col overflow-hidden rounded-lg border border-line transition-colors hover:border-accent-dim hover:bg-ink-elevated"
     >
-      <div className="relative h-24 border-b border-line-soft bg-ink-elevated/50">
+      <div className="banner-bg relative h-24 border-b border-line-soft">
         <TileBanner text={`${l.title} ${l.tags.join(" ")}`} hover={hover} />
       </div>
       <div className="flex flex-1 flex-col p-4">

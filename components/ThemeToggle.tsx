@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Moon, Sun } from "lucide-react";
 
 export function ThemeToggle() {
   const [light, setLight] = useState(false);
@@ -23,7 +24,7 @@ export function ThemeToggle() {
       onClick={toggle}
       className="rounded border border-line px-2 py-1 font-mono text-xs text-paper-muted hover:border-accent-dim hover:text-paper"
     >
-      <span className="sm:hidden" aria-hidden>{light ? "☾" : "☀"}</span>
+      <span className="sm:hidden" aria-hidden>{light ? <Moon size={14} /> : <Sun size={14} />}</span>
       <span className="hidden sm:inline">{light ? "Dark" : "Light"}</span>
     </button>
   );

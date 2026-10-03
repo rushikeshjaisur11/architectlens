@@ -17,7 +17,7 @@ function Tile({ t }: { t: SectionTile }) {
       onBlur={() => setHover(false)}
       className="group flex flex-col overflow-hidden rounded-lg border border-line transition-colors hover:border-accent-dim hover:bg-ink-elevated"
     >
-      <div className="relative h-24 border-b border-line-soft bg-ink-elevated/50">
+      <div className="banner-bg relative h-24 border-b border-line-soft">
         <TileBanner text={t.hint} hover={hover} />
       </div>
       <div className="p-4">

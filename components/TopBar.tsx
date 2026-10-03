@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Menu, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./ThemeToggle";
 import { TrackSwitcher } from "./TrackSwitcher";
@@ -38,7 +39,7 @@ export function TopBar({
           aria-label="Open navigation"
           className="shrink-0 rounded border border-line px-2 py-1 font-mono text-xs text-paper-muted hover:border-accent-dim hover:text-paper lg:hidden"
         >
-          ☰
+          <Menu size={14} />
         </button>
         <button
           type="button"
@@ -46,7 +47,7 @@ export function TopBar({
           aria-label={sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
           className="hidden shrink-0 rounded border border-line px-2 py-1 font-mono text-xs text-paper-muted hover:border-accent-dim hover:text-paper lg:inline-flex"
         >
-          {sidebarCollapsed ? "»" : "«"}
+          {sidebarCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
         </button>
         <nav className="flex min-w-0 items-center gap-2 sm:gap-3 font-mono text-xs text-paper-muted">
           <Link href="/" className="hidden shrink-0 hover:text-paper sm:inline">
@@ -72,7 +73,7 @@ export function TopBar({
           <span className="hidden sm:inline">
             Search <span className="text-paper-muted">Ctrl+K</span>
           </span>
-          <span className="sm:hidden">🔍</span>
+          <Search size={14} className="sm:hidden" />
         </button>
         <ThemeToggle />
       </div>

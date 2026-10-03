@@ -77,3 +77,10 @@
 [data-anim-auto]:empty {
   min-height: 16rem;
 }
+
+.banner-bg {
+  background-image:
+    radial-gradient(circle at 1px 1px, var(--color-line) 1px, transparent 0),
+    linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 9%, transparent), transparent 60%);
+  background-size: 14px 14px, 100% 100%;
+}
