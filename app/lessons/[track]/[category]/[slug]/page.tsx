@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { lessons } from "#velite";
 import { findBySlug } from "@/lib/content";
@@ -8,6 +9,21 @@ import { trackFromSlug } from "@/lib/tracks";
 
 export function generateStaticParams() {
   return lessons.map((l) => ({ track: l.track.slug, category: l.category.slug, slug: l.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ track: string; category: string; slug: string }>;
+}): Promise<Metadata> {
+  const { track, category, slug } = await params;
+  const lesson = findBySlug(lessons.filter((l) => l.track.slug === track && l.category.slug === category), slug);
+  if (!lesson) return {};
+  return {
+    title: lesson.title,
+    description: lesson.summary,
+    openGraph: { title: lesson.title, description: lesson.summary, type: "article" },
+  };
 }
 
 export default async function LessonPage({
@@ -32,7 +48,7 @@ export default async function LessonPage({
   const moduleHref = `${trackHref}/#m-${category}`;
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
+    <main className="mx-auto max-w-3xl px-5 py-8 sm:px-6 sm:py-12">
       <ReadingProgress lessonKey={`${track}/${category}/${slug}`} />
       <LessonTopNav trackName={trackName} trackHref={trackHref} moduleName={lesson.category.name}
         moduleHref={moduleHref}
@@ -40,7 +56,7 @@ export default async function LessonPage({
         nextHref={next && href(next)}
       />
       <LessonBanner title={lesson.title} tags={lesson.tags.join(" ")} spec={lesson.banner} />
-      <h1 className="mt-6 text-2xl font-semibold text-paper sm:text-3xl">{lesson.title}</h1>
+      <h1 className="mt-6 text-paper">{lesson.title}</h1>
       <p className="mt-2 font-mono text-xs text-paper-muted">
         {lesson.category.name} &middot; {lesson.minutes} min read
       </p>

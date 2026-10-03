@@ -27,7 +27,7 @@ export function TrackHeader({
           {lessons} lessons &middot; {modules} modules
         </span>
       </p>
-      <h1 className="mt-5 text-4xl font-semibold leading-tight tracking-tight text-paper">
+      <h1 className="mt-5 text-paper">
         {title}
         <br />
         <span className="hue-text">{accent}</span>

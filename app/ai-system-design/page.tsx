@@ -3,6 +3,8 @@ import { trackFromSlug } from "@/lib/tracks";
 import { CurriculumGrid } from "@/components/CurriculumGrid";
 import { TrackHeader } from "@/components/TrackHeader";
 
+export const metadata = { title: "AI System Design", description: "End-to-end designs for AI products and platforms." };
+
 export default function AiSystemDesignPage() {
   const track = trackFromSlug("ai-system-design");
   const trackLessons = lessons.filter((l) => l.track.slug === track.slug);

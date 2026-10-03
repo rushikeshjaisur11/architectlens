@@ -36,6 +36,21 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/privacy" className="text-paper-muted transition-colors hover:text-paper">
+                Privacy
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms" className="text-paper-muted transition-colors hover:text-paper">
+                Terms of use
+              </Link>
+            </li>
+            <li>
+              <Link href="/licenses" className="text-paper-muted transition-colors hover:text-paper">
+                Licences
+              </Link>
+            </li>
+            <li>
               <Link href="/about#method" className="text-paper-muted transition-colors hover:text-paper">
                 How the notes are made
               </Link>

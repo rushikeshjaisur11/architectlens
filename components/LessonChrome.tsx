@@ -36,13 +36,10 @@ export function LessonTopNav({
       <button type="button" onClick={back} className={btn} aria-label="Go back">
         <ArrowLeft size={13} /> Back
       </button>
-      <Link href="/" className={btn} aria-label="Home">
-        <Home size={13} /> Home
+      <Link href={trackHref} className={`${btn} min-w-0 max-w-[11rem]`} aria-label={`${trackName} home`}>
+        <Home size={13} className="shrink-0" /> <span className="truncate">{trackName}</span>
       </Link>
       <nav className="ml-1 hidden min-w-0 items-center gap-1.5 font-mono text-xs text-paper-muted sm:flex" aria-label="Breadcrumb">
-        <Link href={trackHref} className="truncate hover:text-paper">
-          {trackName}
-        </Link>
         <span aria-hidden>/</span>
         <Link href={moduleHref} className="truncate hover:text-paper">
           {moduleName}
@@ -92,7 +89,17 @@ export function SectionControls() {
       sectionOf(h).forEach((el) => el.classList.toggle("sec-hidden", collapsed));
     };
     const heads = Array.from(body.querySelectorAll("h2"));
+    const KINDS: [RegExp, string, string][] = [
+      [/common mistakes/i, "mistakes", "Watch out"],
+      [/worked example/i, "example", "Worked example"],
+      [/current practice|enterprise practice/i, "current", "Current practice"],
+    ];
     heads.forEach((h) => {
+      const kind = KINDS.find(([re]) => re.test(h.textContent ?? ""));
+      if (kind) {
+        h.setAttribute("data-kind", kind[1]);
+        h.setAttribute("data-label", kind[2]);
+      }
       h.setAttribute("data-collapsible", "");
       h.setAttribute("role", "button");
       h.setAttribute("tabindex", "0");
@@ -120,7 +127,7 @@ export function SectionControls() {
       body.removeEventListener("keydown", onKey);
       window.removeEventListener("lesson:collapse-all", onAll);
       heads.forEach((h) => {
-        ["data-collapsible", "role", "tabindex", "aria-expanded"].forEach((a) => h.removeAttribute(a));
+        ["data-collapsible", "data-kind", "data-label", "role", "tabindex", "aria-expanded"].forEach((a) => h.removeAttribute(a));
         sectionOf(h).forEach((el) => el.classList.remove("sec-hidden"));
       });
     };

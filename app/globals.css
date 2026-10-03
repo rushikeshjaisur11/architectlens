@@ -182,3 +182,193 @@
 :root[data-theme="dark"] .hue-text {
   color: hsl(var(--h) 85% 75%);
 }
+
+/* ===== Typography system (site-wide) ===== */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-size: 1rem;
+  line-height: 1.6;
+  font-feature-settings: "kern", "liga", "calt";
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer base {
+h1,
+h2,
+h3 {
+  color: var(--color-paper);
+  font-weight: 650;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+  line-height: 1.12;
+  letter-spacing: -0.028em;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 1.3rem + 0.9vw, 1.875rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+h3 {
+  font-size: 1.125rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+p {
+  text-wrap: pretty;
+}
+}
+
+@layer components {
+.display {
+  font-size: clamp(2.5rem, 1.5rem + 4.2vw, 4.25rem);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-paper-muted);
+}
+}
+
+/* ===== Reading text: body, emphasis, links, lists, quotes ===== */
+.prose {
+  --tw-prose-body: color-mix(in srgb, var(--color-paper) 88%, var(--color-ink));
+  --tw-prose-bullets: var(--color-accent-dim);
+  --tw-prose-counters: var(--color-accent-dim);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+.prose :where(p, li) {
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 639px) {
+  .prose :where(p, li) {
+    hyphens: auto;
+  }
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+/* Key terms: bold, full-contrast, with a soft marker underline so they catch the eye while skimming. */
+.prose :where(strong):not(:where([class~="not-prose"] *)) {
+  color: var(--color-paper);
+  font-weight: 650;
+  background-image: linear-gradient(transparent 64%, color-mix(in srgb, var(--color-accent) 24%, transparent) 64%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 0 0.08em;
+}
+
+.prose :where(em):not(:where([class~="not-prose"] *)) {
+  color: var(--color-paper);
+}
+
+.prose :where(a):not(:where([class~="not-prose"] *)) {
+  color: var(--color-accent);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+
+.prose :where(a):not(:where([class~="not-prose"] *)):hover {
+  text-decoration-color: var(--color-accent);
+}
+
+.prose :where(code):not(:where(pre, [class~="not-prose"]) *) {
+  color: var(--color-accent);
+  font-size: 0.88em;
+}
+
+.prose :where(blockquote):not(:where([class~="not-prose"] *)) {
+  font-style: normal;
+  font-weight: 400;
+  border-left: 3px solid var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 7%, transparent);
+  border-radius: 0 0.6rem 0.6rem 0;
+  padding: 0.6rem 1.1rem;
+  quotes: none;
+}
+
+.prose :where(blockquote p):not(:where([class~="not-prose"] *))::before,
+.prose :where(blockquote p):not(:where([class~="not-prose"] *))::after {
+  content: none;
+}
+
+.prose :where(pre):not(:where([class~="not-prose"] *)) {
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+  overflow-x: auto;
+}
+
+.prose :where(table):not(:where([class~="not-prose"] *)) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  font-size: 0.92rem;
+}
+
+/* Opening paragraph reads as a lead. */
+.prose > p:first-child {
+  font-size: 1.1875rem;
+  line-height: 1.65;
+  color: var(--color-paper);
+}
+
+/* Topic separation: each section opens with a rule and generous space. */
+.prose :where(h2):not(:where([class~="not-prose"] *)) {
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--color-line);
+}
+
+.prose > h1:first-child,
+.prose > h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.prose :where(h3):not(:where([class~="not-prose"] *)) {
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.1875rem;
+}
+
+/* Section kinds get a colour and a small label (set from the heading text in the lesson page). */
+.prose h2[data-kind]::before {
+  content: attr(data-label);
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.prose h2[data-kind="mistakes"] { color: var(--color-hook); }
+.prose h2[data-kind="example"] { color: hsl(172 70% 32%); }
+.prose h2[data-kind="current"] { color: hsl(268 55% 48%); }
+:root[data-theme="dark"] .prose h2[data-kind="example"] { color: hsl(172 65% 62%); }
+:root[data-theme="dark"] .prose h2[data-kind="current"] { color: hsl(268 90% 80%); }

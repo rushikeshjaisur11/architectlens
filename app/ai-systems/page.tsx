@@ -3,6 +3,8 @@ import { trackFromSlug } from "@/lib/tracks";
 import { CurriculumGrid } from "@/components/CurriculumGrid";
 import { TrackHeader } from "@/components/TrackHeader";
 
+export const metadata = { title: "AI Systems", description: "The building blocks of production AI: prompting, retrieval, serving, agents, evals and safety." };
+
 export default function AiSystemsPage() {
   const track = trackFromSlug("ai-systems");
   const trackLessons = lessons.filter((l) => l.track.slug === track.slug);

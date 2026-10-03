@@ -21,7 +21,7 @@ export default async function FrameworkSectionPage({ params }: { params: Promise
         <Link href={`/frameworks/${framework.slug}`} className="hover:text-paper">{framework.name}</Link> /{" "}
         <span className="text-accent">{section.name}</span>
       </p>
-      <h1 className="mt-2 text-3xl font-semibold text-paper">{framework.name}: {section.name}</h1>
+      <h1 className="mt-2 text-paper">{framework.name}: {section.name}</h1>
       <p className="mt-3 text-paper-muted">{section.blurb}</p>
       <div className="mt-8 rounded-lg border border-line bg-ink-elevated p-5">
         <p className="font-mono text-sm text-paper">Coming soon</p>

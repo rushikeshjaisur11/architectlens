@@ -3,6 +3,8 @@ import { trackFromSlug } from "@/lib/tracks";
 import { CurriculumGrid } from "@/components/CurriculumGrid";
 import { TrackHeader } from "@/components/TrackHeader";
 
+export const metadata = { title: "System Design", description: "Concepts, cases and complete designs for building large systems." };
+
 export default function HomePage() {
   const track = trackFromSlug("system-design");
   const trackLessons = lessons.filter((l) => l.track.slug === track.slug);

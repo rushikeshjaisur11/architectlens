@@ -73,27 +73,30 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
       window.removeEventListener("storage", sync);
     };
   }, []);
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  // Every module starts folded; the ones a reader opens are remembered per track.
+  const storeKey = `expanded-modules-v1:${track.slug}`;
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
   useEffect(() => {
+    const target = window.location.hash.replace(/^#m-/, "");
+    let saved = new Set<string>();
     try {
-      const saved = new Set<string>(JSON.parse(localStorage.getItem("collapsed-modules-v1") ?? "[]"));
-      const target = window.location.hash.replace(/^#m-/, "");
-      saved.delete(target);
-      setCollapsed(saved);
-      if (target) requestAnimationFrame(() => document.getElementById(`m-${target}`)?.scrollIntoView());
+      saved = new Set<string>(JSON.parse(localStorage.getItem(storeKey) ?? "[]"));
     } catch {
-      // storage unavailable: every module starts open
+      // storage unavailable: modules start folded
     }
-  }, []);
-  function setFolded(next: Set<string>) {
-    setCollapsed(next);
+    if (target) saved.add(target);
+    setExpanded(saved);
+    if (target) setTimeout(() => document.getElementById(`m-${target}`)?.scrollIntoView(), 0);
+  }, [storeKey]);
+  function setOpenModules(next: Set<string>) {
+    setExpanded(next);
     try {
-      localStorage.setItem("collapsed-modules-v1", JSON.stringify([...next]));
+      localStorage.setItem(storeKey, JSON.stringify([...next]));
     } catch {
-      // folding still works for this page view
+      // opening still works for this page view
     }
   }
-  const allFolded = collapsed.size >= track.categories.length;
+  const allFolded = expanded.size === 0;
   const readCount = lessons.filter((l) => done.has(`${track.slug}/${l.category.slug}/${l.slug}`)).length;
 
   const nextUnread = sortByOrder(lessons)
@@ -122,12 +125,12 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
         <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line-soft" role="progressbar" aria-valuemin={0} aria-valuemax={lessons.length} aria-valuenow={readCount}>
           <div className="h-full rounded-full bg-hook transition-all" style={{ width: `${lessons.length ? (readCount / lessons.length) * 100 : 0}%` }} />
         </div>
-        {readCount > 0 && nextUnread && (
+        {nextUnread && (
           <Link
             href={`/lessons/${track.slug}/${nextUnread.category.slug}/${nextUnread.slug}`}
             className="max-w-[55%] shrink-0 truncate rounded-full bg-hook px-3.5 py-1.5 font-medium text-ink shadow-sm transition hover:brightness-110"
           >
-            Continue: {nextUnread.shortTitle}
+            {readCount > 0 ? "Continue" : "Start"}: {nextUnread.shortTitle}
           </Link>
         )}
       </div>
@@ -149,7 +152,7 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
           >
             {tag ? `Topic: ${tag}` : "Topics"}
           </button>
-          <button type="button" onClick={() => setFolded(allFolded ? new Set() : new Set(track.categories.map((x) => x.slug)))} className={ctl}>
+          <button type="button" onClick={() => setOpenModules(allFolded ? new Set(track.categories.map((x) => x.slug)) : new Set())} className={ctl}>
             {allFolded ? <ChevronsUpDown size={13} /> : <ChevronsDownUp size={13} />}
             <span className="hidden sm:inline">{allFolded ? "Expand all" : "Collapse all"}</span>
           </button>
@@ -175,7 +178,7 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
 
       {visible.length === 0 && <p className="text-sm text-paper-muted">No lessons match. Clear the filter.</p>}
 
-      <div className="space-y-8">
+      <div className="space-y-3">
         {track.categories.map((category) => {
           const items = sortByOrder(visible.filter((l) => l.category.number === category.number));
           if (items.length === 0) return null;
@@ -185,12 +188,12 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
           const finished = items.filter(isDone).length;
           const minutesLeft = items.filter((l) => !isDone(l)).reduce((sum, l) => sum + l.minutes, 0);
           // While filtering, matches stay visible even inside a folded module.
-          const open = !collapsed.has(category.slug) || !!q || !!tag;
+          const open = expanded.has(category.slug) || !!q || !!tag;
           const toggle = () => {
-            const next = new Set(collapsed);
+            const next = new Set(expanded);
             if (next.has(category.slug)) next.delete(category.slug);
             else next.add(category.slug);
-            setFolded(next);
+            setOpenModules(next);
           };
           return (
             <section key={category.number} id={`m-${category.slug}`} className="scroll-mt-32">
@@ -199,12 +202,12 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
                 onClick={toggle}
                 aria-expanded={open}
                 aria-controls={`grid-${category.slug}`}
-                className="group mb-4 flex w-full items-center gap-3 border-b border-line-soft pb-2 text-left"
+                className="group flex w-full items-center gap-3 rounded-xl border border-line bg-ink-elevated/60 px-4 py-3.5 text-left transition-colors hover:border-accent-dim"
               >
-                <span className="font-mono text-xs text-accent">{number}</span>
-                <h2 className="text-lg font-medium text-paper group-hover:text-accent">{category.name}</h2>
+                <span className="flex h-7 min-w-7 items-center justify-center rounded-md bg-accent/10 px-1.5 text-xs font-semibold text-accent">{number}</span>
+                <h2 className="text-base font-semibold text-paper group-hover:text-accent sm:text-lg">{category.name}</h2>
                 <span className="ml-auto hidden font-mono text-xs text-paper-muted sm:inline">
-                  {finished === items.length ? "completed" : `${minutesLeft} min left`}
+                  {items.length} lessons &middot; {finished === items.length ? "completed" : `${minutesLeft} min left`}
                 </span>
                 <span className="inline-flex items-center gap-2 font-mono text-xs text-paper-muted">
                   {finished === items.length ? <Check size={13} className="text-hook" /> : null}
@@ -215,7 +218,7 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
                 </span>
                 <ChevronDown size={16} className={`shrink-0 text-paper-muted transition-transform ${open ? "" : "-rotate-90"}`} />
               </button>
-              <div id={`grid-${category.slug}`} hidden={!open} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <div id={`grid-${category.slug}`} hidden={!open} className="mb-6 mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((l, i) => (
                   <Tile
                     key={l.slug}

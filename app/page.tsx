@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { lessons } from "#velite";
 import { TRACKS } from "@/lib/tracks";
-import { PathCards, type PathStats } from "@/components/PathCards";
+import { PathCards, type PathOrder, type PathStats } from "@/components/PathCards";
 
 const STEPS = [
   { n: "1", title: "System Design", text: "Learn the foundations: data, scaling, consistency and failure." },
@@ -25,6 +25,15 @@ export default function LandingPage() {
       return [t.slug, { lessons: own.length, modules: t.categories.length, hours: Math.max(1, Math.round(minutes / 60)) }];
     }),
   );
+  const order: PathOrder = Object.fromEntries(
+    TRACKS.map((t) => [
+      t.slug,
+      lessons
+        .filter((l) => l.track.slug === t.slug)
+        .sort((a, b) => a.category.number - b.category.number || a.order - b.order)
+        .map((l) => ({ key: `${t.slug}/${l.category.slug}/${l.slug}`, title: l.shortTitle })),
+    ]),
+  );
   const totalLessons = lessons.length;
   const totalHours = Math.round(lessons.reduce((sum, l) => sum + l.minutes, 0) / 60);
 
@@ -44,7 +53,7 @@ export default function LandingPage() {
             <span className="h-1.5 w-1.5 rounded-full bg-hook" />
             Architecture education, grounded in current practice
           </p>
-          <h1 className="mt-6 max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight text-paper sm:text-6xl">
+          <h1 className="display mt-6 max-w-3xl text-paper">
             Learn how modern systems are <span className="text-accent">designed and built.</span>
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-paper-muted">
@@ -82,18 +91,18 @@ export default function LandingPage() {
       </section>
 
       <section className="mx-auto max-w-5xl px-6 py-16">
-        <h2 className="text-2xl font-semibold tracking-tight text-paper">Choose your path</h2>
+        <h2 className="text-paper">Choose your path</h2>
         <p className="mt-2 max-w-2xl text-paper-muted">
           Four separate paths. Each has its own modules and can be read on its own, or in order.
         </p>
         <div className="mt-8">
-          <PathCards stats={stats} />
+          <PathCards stats={stats} order={order} />
         </div>
       </section>
 
       <section className="border-y border-line-soft bg-ink-elevated/40">
         <div className="mx-auto max-w-5xl px-6 py-16">
-          <h2 className="text-2xl font-semibold tracking-tight text-paper">How the paths fit together</h2>
+          <h2 className="text-paper">How the paths fit together</h2>
           <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s) => (
               <li key={s.n} className="rounded-xl border border-line bg-ink-elevated p-5">
@@ -107,7 +116,7 @@ export default function LandingPage() {
       </section>
 
       <section className="mx-auto max-w-5xl px-6 py-16">
-        <h2 className="text-2xl font-semibold tracking-tight text-paper">Made for focused learning</h2>
+        <h2 className="text-paper">Made for focused learning</h2>
         <div className="mt-8 grid gap-6 sm:grid-cols-3">
           {PILLARS.map((p) => (
             <div key={p.title}>

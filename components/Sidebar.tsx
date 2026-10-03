@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavGroup } from "@/lib/nav-tree";
@@ -25,14 +25,25 @@ export function Sidebar({
   onCloseMobile: () => void;
 }) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const navRef = useRef<HTMLElement>(null);
+  const path = pathname.replace(/\/$/, "");
+  const sameHref = (href: string) => href.replace(/\/$/, "") === path;
+  const activeHeading = groups.find((g) => g.items.some((i) => sameHref(i.href)))?.heading;
+  // Modules start folded, except the one holding the current lesson.
+  const [open, setOpen] = useState<Record<string, boolean>>({});
+  const isOpen = (heading: string) => open[heading] ?? heading === activeHeading;
 
   function toggle(heading: string) {
-    setCollapsed((prev) => ({ ...prev, [heading]: !prev[heading] }));
+    setOpen((prev) => ({ ...prev, [heading]: !isOpen(heading) }));
   }
+
+  useEffect(() => {
+    navRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: "center" });
+  }, [pathname, desktopCollapsed, mobileOpen]);
 
   return (
     <nav
+      ref={navRef}
       className={`fixed inset-y-0 left-0 z-40 w-72 shrink-0 flex-col overflow-y-auto border-r border-line bg-ink-elevated p-4 transition-all duration-200 lg:static lg:translate-x-0 ${
         mobileOpen ? "flex translate-x-0" : "hidden -translate-x-full"
       } lg:flex ${desktopCollapsed ? "lg:w-0 lg:border-0 lg:p-0 lg:overflow-hidden" : "lg:w-72"}`}
@@ -64,18 +75,19 @@ export function Sidebar({
               <span className="font-mono text-xs text-paper-muted">{group.items.length}</span>
               {hasItems && (
                 <span className="font-mono text-xs text-paper-muted">
-                  {collapsed[group.heading] ? "+" : "−"}
+                  {isOpen(group.heading) ? "−" : "+"}
                 </span>
               )}
             </button>
-            {hasItems && !collapsed[group.heading] && (
+            {hasItems && isOpen(group.heading) && (
               <ul className="ml-6 space-y-1 border-l border-line-soft pl-3">
                 {group.items.map((item) => {
-                  const active = pathname === item.href;
+                  const active = sameHref(item.href);
                   return (
                     <li key={item.href}>
                       <Link
                         href={item.href}
+                        aria-current={active ? "page" : undefined}
                         className={
                           active
                             ? "block rounded px-2 py-1 text-sm text-accent"

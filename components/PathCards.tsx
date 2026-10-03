@@ -8,9 +8,10 @@ import { readSet } from "@/lib/progress";
 import { SectionIcon } from "./SectionIcon";
 
 export type PathStats = Record<string, { lessons: number; hours: number; modules: number }>;
+export type PathOrder = Record<string, { key: string; title: string }[]>;
 
 // The four learning paths as distinct cards. Reading progress comes from this browser only.
-export function PathCards({ stats }: { stats: PathStats }) {
+export function PathCards({ stats, order }: { stats: PathStats; order: PathOrder }) {
   const [read, setRead] = useState<Set<string>>(new Set());
   useEffect(() => {
     const sync = () => setRead(readSet());
@@ -24,10 +25,10 @@ export function PathCards({ stats }: { stats: PathStats }) {
       {SECTIONS.map((s) => {
         const st = stats[s.key];
         const done = st ? [...read].filter((k) => k.startsWith(`${s.key}/`)).length : 0;
+        const next = (order[s.key] ?? []).find((l) => !read.has(l.key));
         return (
-          <Link
+          <div
             key={s.key}
-            href={s.href}
             style={{ "--h": s.hue } as React.CSSProperties}
             className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-ink-elevated p-6 transition duration-200 hover:-translate-y-0.5 hover:border-accent-dim hover:shadow-xl hover:shadow-black/10"
           >
@@ -39,7 +40,11 @@ export function PathCards({ stats }: { stats: PathStats }) {
             <span className="hue-bg relative flex h-11 w-11 items-center justify-center rounded-xl">
               <SectionIcon name={s.icon} size={22} className="hue-text" />
             </span>
-            <h3 className="relative mt-5 text-xl font-semibold tracking-tight text-paper">{s.name}</h3>
+            <h3 className="relative mt-5 text-xl font-semibold tracking-tight text-paper">
+              <Link href={s.href} className="after:absolute after:inset-0 after:rounded-2xl">
+                {s.name}
+              </Link>
+            </h3>
             <p className="relative mt-1.5 text-sm text-paper-muted">{s.tagline}</p>
             <ul className="relative mt-4 space-y-1.5 text-sm text-paper-muted">
               {s.audience.map((a) => (
@@ -53,12 +58,23 @@ export function PathCards({ stats }: { stats: PathStats }) {
               <span>
                 {st ? `${st.lessons} lessons · ${st.modules} modules · ${st.hours} h` : "Guides by language"}
               </span>
-              <span className="hue-text inline-flex items-center gap-1 font-medium">
-                {done > 0 ? `Continue (${done}/${st?.lessons})` : "Start"}
-                <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
-              </span>
+              {next ? (
+                <Link
+                  href={`/lessons/${next.key}`}
+                  className="hue-text relative z-10 inline-flex min-w-0 max-w-[60%] items-center gap-1 font-medium hover:underline"
+                >
+                  <span className="truncate">
+                    {done > 0 ? "Continue" : "Start"}: {next.title}
+                  </span>
+                  <ArrowRight size={13} className="shrink-0" />
+                </Link>
+              ) : (
+                <span className="hue-text inline-flex items-center gap-1 font-medium">
+                  Open <ArrowRight size={13} />
+                </span>
+              )}
             </div>
-          </Link>
+          </div>
         );
       })}
     </div>
