@@ -9,8 +9,8 @@ type Motif = { id: string; re: RegExp; layout: Layout; nodes: N[] };
 // "fan": first node is the hub, the rest surround it. "loop": a line plus a feedback edge.
 export const MOTIFS: Motif[] = [
   { id: "structured", re: /structured output|chain-of-thought|prompt(ing)? (tech|engineer)|json mode/, layout: "line", nodes: [["user", "prompt"], ["model", "LLM"], ["shield", "schema"], ["doc", "JSON"]] },
-  { id: "api", re: /apis?|rest vs|grpc|graphql|pagination|webhook/, layout: "line", nodes: [["client", "client"], ["lb", "API"], ["server", "service"], ["db", "data"]] },
-  { id: "lock", re: /locks?|mutex|lease|fencing/, layout: "line", nodes: [["server", "node A"], ["lock", "lock"], ["server", "node B"], ["db", "resource"]] },
+  { id: "api", re: /\bapis?\b|rest vs|grpc|graphql|pagination|webhook/, layout: "line", nodes: [["client", "client"], ["lb", "API"], ["server", "service"], ["db", "data"]] },
+  { id: "lock", re: /\blocks?\b|mutex|lease|fencing/, layout: "line", nodes: [["server", "node A"], ["lock", "lock"], ["server", "node B"], ["db", "resource"]] },
   { id: "gossip", re: /gossip|heartbeat|failure detect|membership/, layout: "fan", nodes: [["server", "node"], ["server", "peer"], ["server", "peer"], ["server", "peer"]] },
   { id: "bidding", re: /bidding|auction/, layout: "line", nodes: [["user", "bid"], ["queue", "auction"], ["model", "ranker"], ["doc", "winner"]] },
   { id: "text-to-sql", re: /text-to-sql|sql|analytics assistant/, layout: "line", nodes: [["user", "question"], ["model", "LLM"], ["db", "warehouse"], ["doc", "chart"]] },
