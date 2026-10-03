@@ -5,6 +5,24 @@ tags: ["analytics", "sketches", "percentiles", "monitoring"]
 sources:
   - "Ted Dunning & Otmar Ertl, 'Computing Extremely Accurate Quantiles Using t-Digests' (2019)"
   - "Datadog and Prometheus documentation on percentile aggregation approaches"
+predict:
+  question: "Server A's p99 latency is 200 ms and server B's is 400 ms. What is the fleet-wide p99 of both servers' requests?"
+  options: ["Exactly 300 ms, the average of the two", "Always 400 ms, the larger of the two", "It cannot be derived from the two p99 values alone"]
+  answer: 2
+  why: "A combined percentile depends on the underlying distributions, not just each server's individual percentile. Averaging p99s is mathematically unsound."
+check:
+  - q: "Why prefer a t-digest to a fixed-bucket histogram for p99.9 monitoring?"
+    options: ["Fixed-bucket histograms cannot be merged across servers", "T-digest clusters shrink toward the extremes, with no need to guess a distribution", "T-digest stores every raw value, so its tail estimates are always exact"]
+    answer: 1
+    why: "A t-digest uses variable-size clusters that are finest at the extremes, so tail precision does not depend on bucket boundaries chosen in advance."
+  - q: "Why is reservoir sampling a poor fit for tail-latency monitoring?"
+    options: ["A fixed random sample rarely holds enough extreme values to estimate p99.9", "Reservoir samples cannot approximate the median of a stream accurately", "Reservoir sampling needs unbounded memory as the stream grows longer"]
+    answer: 0
+    why: "Sampling bounds memory but undersamples the rare extreme values, so it may approximate a p50 but not a p99.9."
+  - q: "Across 200 servers, why send t-digests to a central aggregator instead of raw latencies?"
+    options: ["Raw latencies cannot be transmitted over a network without losing precision", "Digests are averaged at the aggregator, giving the fleet's exact percentile", "Digests merge into one without raw data, so it is cheap and correct"]
+    answer: 2
+    why: "T-digests are mergeable, so a compact summary from each server combines into a fleet-wide digest. This avoids shipping raw per-request data."
 ---
 
 ## Why percentiles matter more than averages for latency, and why they're harder to compute at scale

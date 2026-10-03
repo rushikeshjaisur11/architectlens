@@ -15,6 +15,24 @@ banner:
     - [server, "Schemaless"]
     - [db, "MySQL cells"]
     - [db, "append-only"]
+predict:
+  question: "The trip service appends a STATUS cell with reference key 2 after the BASE cell with key 1. What happens to the key 1 cell?"
+  options: ["It is overwritten in place by the newer cell with key 2", "It is deleted once the replicas confirm the new cell", "It stays stored, and readers fetch the latest version of each column"]
+  answer: 2
+  why: "Cells are append-only and immutable, so updates add higher reference keys while old versions remain."
+check:
+  - q: "Why did Uber layer Schemaless on MySQL rather than adopt a new database engine?"
+    options: ["MySQL natively provides schemaless sharding with no extra layer", "Known tooling and failure modes mattered more than a new engine", "No other engine could scale horizontally at Uber's volume"]
+    answer: 1
+    why: "The team already understood MySQL replication, backups and failure modes, which outweighed the elegance of a new engine."
+  - q: "Why pre-shard into many more logical shards than physical servers?"
+    options: ["Shards can later move between servers without re-hashing keys", "The hash function only spreads keys evenly with many shards", "Each logical shard needs its own dedicated physical primary"]
+    answer: 0
+    why: "A fixed shard count keeps key placement stable, so rebalancing means moving whole shards."
+  - q: "What can go wrong if you assume secondary indexes are strongly consistent?"
+    options: ["Index entries are written first, so queries show phantom trips", "Index lookups block until every shard has applied the write", "The index may lag, so a just-written trip can be missing from queries"]
+    answer: 2
+    why: "Index tables are maintained separately and asynchronously, so applications must tolerate a gap after a write."
 ---
 
 *Provenance note (October 2026): the cell model (row key, column name, ref key, JSON body), append-only immutability, the 2014 move off a single PostgreSQL instance, triggers and secondary indexes were checked against Uber's Schemaless post, and Docstore against Uber's 2021 post. Hash-based shard placement, the fixed shard count and the DOSA and Cassandra details come from recall and were not re-fetched.*

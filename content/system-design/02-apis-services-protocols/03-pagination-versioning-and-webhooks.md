@@ -12,6 +12,24 @@ banner:
     - [doc, "cursor"]
     - [server, "API v2"]
     - [server, "webhook"]
+predict:
+  question: "A client reads page 1 (offset 0, limit 20) of /orders, then 3 new orders are inserted at the front before it requests offset 20. What happens?"
+  options: ["It sees 3 rows from page 1 again as duplicates on page 2", "It skips 3 rows, since offsets count from the newest order", "It gets the correct next 20 rows, since offsets are stable identities"]
+  answer: 0
+  why: "Offsets are positions, not identities, so concurrent inserts shift them and cause duplicate or missing rows."
+check:
+  - q: "Why do GitHub and Stripe use cursor pagination beyond performance?"
+    options: ["Cursors let clients jump straight to page 500 at no extra cost", "The next page is relative to a specific row, so concurrent inserts don't shift it", "Cursors are human-readable, so they are easier to debug than offsets"]
+    answer: 1
+    why: "A cursor encodes a stable reference row, so changes elsewhere in the dataset do not move the boundary."
+  - q: "A public API has thousands of uncoordinated integrations and must keep evolving. What fits best?"
+    options: ["Strict backward compatibility only, since it places no limit on evolution", "Unversioned breaking changes, since consumers will adapt quickly", "Date-based header versions, pinning old integrations while new ones get current behavior"]
+    answer: 2
+    why: "Date-based versioning lets existing integrations keep the shape they were built against without a coordinated migration."
+  - q: "Why must webhook receivers deduplicate by event ID?"
+    options: ["Delivery is at-least-once, so a lost acknowledgment triggers redelivery of handled events", "Webhooks are delivered exactly once, so duplicates indicate a forged event", "Event IDs let receivers reorder events that arrive out of sequence"]
+    answer: 0
+    why: "Retries after a lost acknowledgment redeliver already-processed events, so receivers must handle repeats idempotently."
 ---
 
 ## Pagination: why "just return everything" breaks down

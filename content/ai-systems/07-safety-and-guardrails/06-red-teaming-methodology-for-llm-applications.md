@@ -13,6 +13,24 @@ banner:
     - [model, "app"]
     - [doc, "findings"]
     - [shield, "fixes"]
+predict:
+  question: "A model scores perfectly on accuracy and helpfulness evals. A red team then bypasses its safety rules with a role-play prompt in minutes. What explains the gap?"
+  options: ["The evals were run with too few examples to measure accuracy reliably", "Standard evals use cooperative usage, so they don't surface adversarial failures", "Role-play prompts are only effective against models that score poorly on helpfulness"]
+  answer: 1
+  why: "Jailbreaks and injections are adversarial by nature and don't show up in benchmarks built around normal use."
+check:
+  - q: "Why run automated red-teaming alongside manual red-teaming instead of choosing one?"
+    options: ["Automated tools find novel attack classes, while humans mainly handle regression volume", "Manual testing finds novel attacks but doesn't scale, while automation scales and catches regressions", "Automated tools cost less than humans, so manual testing is only needed for compliance sign-off"]
+    answer: 1
+    why: "Humans find new attack classes, attacker-LLM tools rediscover known families at scale, and manual findings feed the automated suite."
+  - q: "Why must a red-team pass cover the full deployed pipeline rather than just the base model?"
+    options: ["Base models are already hardened, so only the surrounding application needs testing", "Provider APIs block red-team traffic, so testing must happen against your own wrapper", "RAG poisoning, over-permissioned tools and system prompt leaks only exist in the deployed system"]
+    answer: 2
+    why: "The same model can be safe in one deployment and exploitable in another depending on what it's wired to."
+  - q: "A red-team report lists confirmed vulnerabilities, but no process converts them into tests. What is the likely result?"
+    options: ["The same issues are rediscovered in each future engagement instead of staying fixed", "The report is acted on once and fully closes those vulnerability classes for good", "Future engagements find fewer issues, as the report already trained testers to avoid them"]
+    answer: 0
+    why: "Without a feedback loop into automated regression tests, findings are repeated rather than prevented."
 ---
 
 ## Red-teaming vs. standard evaluation

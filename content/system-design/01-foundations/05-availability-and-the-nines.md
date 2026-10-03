@@ -12,6 +12,24 @@ banner:
     - [doc, "99.99%"]
     - [doc, "99.999%"]
     - [shield, "error budget"]
+predict:
+  question: "A request passes through 5 services in sequence, each at 99.9% availability. Roughly what is the combined availability?"
+  options: ["About 99.9%, because the chain is limited by its average component", "About 99.99%, because five services give extra redundancy", "About 99.5%, because availabilities multiply along the chain"]
+  answer: 2
+  why: "0.999^5 is about 0.995, so each extra hop on the critical path drags overall availability down."
+check:
+  - q: "Two replicas share a rack and a power supply. Why is the 0.01 x 0.01 redundancy math misleading here?"
+    options: ["Failures are only independent when replicas run different software versions", "One correlated event, like a power loss, can take both down at once", "Same-rack replicas fail more often because they share a network path"]
+    answer: 1
+    why: "The multiplication assumes independent failures; redundancy needs separate failure domains such as racks or availability zones."
+  - q: "The error budget for the period is mostly unspent. What does the lesson say the team should do?"
+    options: ["Feel comfortable shipping riskier changes faster", "Freeze all changes to preserve the unspent budget", "Raise the SLO at once to use up the spare margin"]
+    answer: 0
+    why: "An unspent error budget gives room to ship riskier changes, while an exhausted one signals prioritizing stability."
+  - q: "Why is going from three nines to four nines more than a small tightening?"
+    options: ["It needs only more careful operation, with the same architecture", "It cuts allowed downtime about 2x, so modest redundancy suffices", "It cuts allowed downtime about 10x, usually demanding different architecture"]
+    answer: 2
+    why: "Each extra nine is roughly a 10x reduction in allowed downtime, typically requiring multi-region failover and automated remediation."
 ---
 
 ## What "three nines" actually means
@@ -30,6 +48,8 @@ Each additional nine is roughly a 10x reduction in allowed downtime — the jump
 ## Why availability composes multiplicatively across dependencies
 
 If a request depends on multiple services in sequence, each with its own availability, the overall availability is (approximately) the product of each dependency's availability, not the average or the minimum. A request touching 5 services each at 99.9% availability has a combined availability closer to 99.5% (0.999^5 ≈ 0.995) — noticeably worse than any single component's stated availability. This is a direct, easy-to-miss consequence of chaining dependencies: **each additional hop in a request's critical path drags overall availability down**, even if every individual service meets its own target, which is why minimizing the number of hard dependencies on a critical path is itself a real availability lever, not just a performance one.
+
+<div data-anim="availability-nines"></div>
 
 ## Redundancy: how systems actually beat a single component's availability ceiling
 

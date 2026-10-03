@@ -11,6 +11,24 @@ banner:
     - [db, "MySQL"]
     - [doc, "objects"]
     - [doc, "associations"]
+predict:
+  question: "A like is added in a region away from the shard's master. A user in another region reads the count right away. What may they see?"
+  options: ["The read blocks until the write reaches the reader's region", "An error, until replication to that region has finished", "A count briefly one behind, within a bounded staleness window"]
+  answer: 2
+  why: "TAO favors availability and low read latency, so a replica that has not yet received the write can briefly show a slightly stale count."
+check:
+  - q: "Why does TAO make the cache the primary interface rather than using cache-aside?"
+    options: ["The fast path is the only path, and apps need no cache logic", "Cache-aside cannot serve reads fast enough at any read ratio", "Applications can bypass the cache whenever they need fresh data"]
+    answer: 0
+    why: "With a huge read-to-write ratio, hiding storage behind the cache guarantees every caller benefits without implementing cache logic correctly."
+  - q: "Why assign one master region per shard instead of one global master?"
+    options: ["A single global master makes writes fast from every region", "Writes stay near the data's home region without multi-leader conflicts", "Letting every region accept writes removes all conflict handling"]
+    answer: 1
+    why: "Most graph data has a natural home region, so a per-shard master keeps write latency low and avoids the harder multi-leader conflict problem."
+  - q: "Where does per-shard regional mastership stop being enough?"
+    options: ["Data that is read far more often than it is written", "Data whose owning user lives in the shard's master region", "Data with no home region and frequent concurrent cross-region writes"]
+    answer: 2
+    why: "It sidesteps rather than solves multi-region writes; data without regional affinity still faces the multi-leader conflict problem."
 ---
 
 ## The problem: a read pattern that didn't fit existing tools well

@@ -6,6 +6,24 @@ sources:
   - "AWS Well-Architected SaaS Lens and AWS whitepaper, 'SaaS Tenant Isolation Strategies'"
   - "PostgreSQL documentation, 'Row Security Policies' (row-level security)"
   - "Microsoft Azure Architecture Center, 'Multitenant SaaS database tenancy patterns'"
+predict:
+  question: "RLS is enforced on every table, and a developer forgets the WHERE tenant_id clause in a query. What does the query return?"
+  options: ["Rows from every tenant, because RLS only applies to queries that mention tenant_id", "Only the current tenant's rows, because the policy filters every query automatically", "An error, because queries without a tenant filter are rejected at parse time"]
+  answer: 1
+  why: "A row-level security policy is enforced on every query, so a forgotten WHERE clause cannot return another tenant's rows. The tenant must be set from an authenticated claim."
+check:
+  - q: "Why do mature SaaS products tier tenants rather than choose a single isolation model for everyone?"
+    options: ["Shared tables are insecure at any scale, so only large tenants may use them", "A dedicated stack per tenant is cheap enough once automation exists", "Small tenants stay cheap in pooled infrastructure while large or regulated ones get stronger isolation"]
+    answer: 2
+    why: "Shared tables scale cheaply to thousands of tenants but isolate weakly; silos cost the most. A tenant directory lets a tenant be promoted without code changes."
+  - q: "Where should the tenant value used by an RLS policy come from?"
+    options: ["An authenticated claim resolved at the edge, never from user input", "A request parameter, so clients can switch tenants without logging in again", "A cache key shared across tenants, to avoid a lookup on every request"]
+    answer: 0
+    why: "The tenant is resolved once from the token or domain and carried in the request context. Taking it from user input would let a caller choose another tenant's data."
+  - q: "Why enforce rate limits per tenant instead of one global limit?"
+    options: ["A global limit is too complex to implement at the gateway", "A global limit lets one tenant's burst eat the shared allowance and hurt everyone else", "Per-tenant limits remove the need for fair queueing in background jobs"]
+    answer: 1
+    why: "Without per-tenant limits one customer's burst becomes everyone's outage. Fair queueing is still needed separately so one tenant's job backlog cannot starve others."
 ---
 
 ## What multi-tenancy means

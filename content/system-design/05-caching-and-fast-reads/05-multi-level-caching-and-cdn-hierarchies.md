@@ -12,6 +12,36 @@ banner:
     - [cdn, "CDN"]
     - [cache, "Redis"]
     - [db, "origin"]
+predict:
+  question: "A piece of content goes viral and hundreds of edge locations miss it for the first time, with a shield tier in place. How many requests reach origin?"
+  options:
+    - "One, the shield's own miss, after which the shield serves the other edges"
+    - "One per edge location, since each edge checks origin independently"
+    - "None, because edge caches share their contents with each other"
+  answer: 0
+  why: "Only the shield's own first miss reaches origin, so origin load scales with distinct content rather than with the number of edge locations."
+check:
+  - q: "Why are versioned URLs often preferred over active purging for guaranteed-fresh delivery?"
+    options:
+      - "A purge reaches every layer including browsers, but versioned URLs are cheaper to run"
+      - "A new URL is in no layer's cache yet, so there is no multi-layer purge to propagate"
+      - "Versioned URLs force browsers to revalidate on every request, so staleness is zero"
+    answer: 1
+    why: "A purge must reach each layer separately, while a new URL sidesteps the problem because no layer holds it."
+  - q: "Why configure the shield tier with a slightly longer TTL than the edge tier for breaking news?"
+    options:
+      - "Edge expirations then hit origin in sync, since the shield refreshes whenever an edge does"
+      - "The shield only caches static assets, so volatile content bypasses it and reaches origin anyway"
+      - "A burst of edge expirations is absorbed by the still-valid shield instead of each reaching origin"
+    answer: 2
+    why: "The still-valid shield answers the repeated edge misses, which is where its origin-load reduction matters most."
+  - q: "After an urgent correction is purged at the edge and shield tiers, what staleness remains?"
+    options:
+      - "Browsers holding the old copy keep it until their own local TTL expires, an accepted bounded gap"
+      - "A single purge call clears every layer including browsers, so no gap remains"
+      - "The shared article URL can simply be renamed per edit, which removes any remaining gap"
+    answer: 0
+    why: "Purge APIs do not reach browser caches, so that layer stays stale until its TTL runs out, which the team should plan for."
 ---
 
 ## Why a single cache layer isn't always the full picture

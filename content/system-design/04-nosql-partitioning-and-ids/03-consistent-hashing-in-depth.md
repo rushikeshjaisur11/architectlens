@@ -13,6 +13,24 @@ banner:
     - [server, "node A"]
     - [server, "node B"]
     - [server, "node C"]
+predict:
+  question: "A ring has 5 nodes, each hashed to a single position. What does the lesson predict about load?"
+  options: ["Arc lengths can differ by 2-3x, leaving some nodes hot", "Load is perfectly even, because hashing is uniform", "Only the first node on the ring receives any keys"]
+  answer: 0
+  why: "With few nodes and one position each, hash randomness produces uneven arcs, which is why virtual nodes are needed."
+check:
+  - q: "Why do virtual nodes help when a node is removed?"
+    options: ["Its load spreads across many survivors instead of one successor", "Its keys are deleted rather than reassigned", "Its successor takes over, but with faster lookups"]
+    answer: 0
+    why: "Many small scattered arcs mean the departing node's load is distributed across many surviving nodes."
+  - q: "What can go wrong with replication when vnodes are added carelessly?"
+    options: ["Replicas multiply beyond the configured replication factor", "Vnodes disable the preference list entirely", "Adjacent vnodes of one machine can collapse replicas onto fewer machines"]
+    answer: 2
+    why: "Without skipping repeated physical nodes, a key's replicas may share a failure domain despite correct ring math."
+  - q: "Is it safe to assume every sharded NoSQL store walks a hash ring?"
+    options: ["Yes, because all such stores derive from the Dynamo paper", "No, some use static partition maps with explicit rebalancing", "Yes, because ring hashing is the only way to shard"]
+    answer: 1
+    why: "The lesson notes DynamoDB uses static partition maps, so assuming a ring is a category error."
 ---
 
 ## The problem plain hashing creates

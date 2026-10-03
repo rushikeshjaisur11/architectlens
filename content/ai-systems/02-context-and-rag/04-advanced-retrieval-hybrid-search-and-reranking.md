@@ -14,6 +14,24 @@ banner:
     - [db, "hybrid search"]
     - [server, "reranker"]
     - [model, "LLM"]
+predict:
+  question: "A legal RAG system reranks the top 50 hybrid-search candidates with a cross-encoder. The corpus grows from 1M to 10M documents. What happens to reranking cost?"
+  options: ["It grows tenfold, because the cross-encoder must see the whole new corpus", "It stays about the same, because it only scores a fixed 50 candidates", "It falls, because a larger corpus gives the first stage better candidates"]
+  answer: 1
+  why: "Reranking cost depends on the candidate-set size, not the corpus size. That is the purpose of the two-stage pattern."
+check:
+  - q: "A user searches for an exact statute citation using vector search only. Why can it fail?"
+    options: ["Embeddings cannot encode numbers, so citations are dropped at index time", "Statute citations are always too short to be embedded as a chunk", "The exact string is present, but semantic similarity may not rank that chunk first"]
+    answer: 2
+    why: "Embeddings capture semantic closeness, not exact term matching. BM25 in a hybrid setup closes this predictable gap."
+  - q: "Why does Reciprocal Rank Fusion merge by rank position and not by raw score?"
+    options: ["BM25 and vector scores are not on comparable scales, but ranks are", "Raw scores are too expensive to compute for the documents in both lists", "Rank positions are more accurate than scores for judging relevance"]
+    answer: 0
+    why: "RRF credits a document ranked highly by either list without needing the two scoring systems to be numerically comparable."
+  - q: "A team reranks the top 1,000 candidates \"for quality\". What is the trade-off they overlooked?"
+    options: ["Rerankers score worse on larger sets, so ranking quality drops overall", "Latency and cost inflate, though value comes from a small relevant set", "Hybrid search is switched off, since a reranker replaces keyword matching"]
+    answer: 1
+    why: "Reranking pays off when a costly, accurate model scores a deliberately small, already-relevant set."
 ---
 
 ## Why pure vector search alone often isn't enough

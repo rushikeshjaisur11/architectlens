@@ -5,6 +5,36 @@ tags: ["distributed-systems", "gossip", "failure-detection"]
 sources:
   - "Demers et al., 'Epidemic Algorithms for Replicated Database Maintenance' (1987, the original gossip protocol paper)"
   - "Cassandra documentation on gossip-based cluster membership"
+predict:
+  question: "A new node joins a 500-node cluster where each node gossips with a few random peers per round. Roughly how many rounds until everyone knows?"
+  options:
+    - "About 500 rounds, since each round informs just one additional node"
+    - "A small number, roughly logarithmic in size, because informed nodes multiply each round"
+    - "It never fully converges unless a central registry pushes the update out"
+  answer: 1
+  why: "Informed nodes grow roughly exponentially per round, so information reaches the whole cluster in a logarithmic number of rounds."
+check:
+  - q: "Why does phi accrual detection beat a fixed timeout?"
+    options:
+      - "It uses a single shorter timeout everywhere, which detects real failures faster for every node"
+      - "It replaces heartbeats with consensus votes among nodes, removing false positives entirely"
+      - "It judges each node against its own heartbeat history, so a naturally jittery node is not wrongly declared dead"
+    answer: 2
+    why: "It adapts to each node's normal behavior instead of one threshold serving every node poorly."
+  - q: "What does gossip membership trade against a centralized registry?"
+    options:
+      - "Gossip has no single point of failure and constant per-node cost, but views converge only eventually"
+      - "Gossip gives every node an instantly identical membership view, which a central registry cannot"
+      - "Gossip load per node grows with cluster size, but it is still simpler to reason about"
+    answer: 0
+    why: "Decentralization removes the bottleneck but accepts a brief window of differing views."
+  - q: "What does a false-positive failure detection cause?"
+    options:
+      - "Requests keep routing to a dead node, which fails them until it is removed"
+      - "A healthy node is falsely declared dead, triggering needless rebalancing of its data on the ring"
+      - "The node is quietly ignored while its data stays in place, with no rebalancing or cost"
+    answer: 1
+    why: "Declaring a healthy node dead moves its data away unnecessarily, which is churn without benefit."
 ---
 
 ## Why cluster membership needs its own solution, distinct from consensus

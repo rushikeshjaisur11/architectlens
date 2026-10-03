@@ -14,6 +14,24 @@ banner:
     - [shield, "inject fault"]
     - [doc, "observe"]
     - [server, "fix"]
+predict:
+  question: "A team states a 15-minute RTO but has never run its failover. The first full game day measures it. What is the most likely result?"
+  options: ["It matches 15 minutes, since the architecture was designed for it", "About 25 minutes, with hidden bottlenecks like DNS delay and a manual approval", "Under 5 minutes, since automation always beats the stated target"]
+  answer: 1
+  why: "Untested procedures hide bottlenecks that only appear when the failover is actually executed."
+check:
+  - q: "What does a near-zero RPO require, and what does it cost?"
+    options: ["Synchronous replication, at the cost of added write latency", "Asynchronous replication, at the cost of a small data-loss window", "Daily backups, at the cost of slower failover"]
+    answer: 0
+    why: "Near-zero data loss needs synchronous replication, which is a deliberate latency tradeoff."
+  - q: "Why run resilience experiments at production scale instead of a small staging environment?"
+    options: ["Staging environments cannot run chaos tools at all", "Failover that works in small staging can behave differently at real volumes", "Production-scale tests cost less than maintaining staging"]
+    answer: 1
+    why: "The most valuable findings often only surface at real data volumes and traffic."
+  - q: "Why should game days include the on-call team rather than only test the failover tooling?"
+    options: ["Humans are needed to start chaos tools on a schedule", "On-call engineers replace automated failover during tests", "Gaps can lie in process, such as an unnecessary manual approval step"]
+    answer: 2
+    why: "A technically resilient system can still recover slowly if runbooks or approvals are slow."
 ---
 
 ## Why untested resilience mechanisms often aren't actually resilient

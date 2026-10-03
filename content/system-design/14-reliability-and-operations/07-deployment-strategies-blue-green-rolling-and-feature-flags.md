@@ -15,6 +15,24 @@ banner:
     - [lb, "canary 5%"]
     - [shield, "bake + halt"]
     - [server, "fleet"]
+predict:
+  question: "A new recommendation algorithm is live behind a flag at 10% of users, and the flag-on group's p99 is 30% worse. How is it fixed fastest?"
+  options: ["Run a rolling update to the previous build across the fleet", "Turn the flag off in seconds, with no rollback deploy needed", "Flip blue-green traffic back to the idle environment"]
+  answer: 1
+  why: "Flags separate deploy from release, so exposure can be switched off instantly."
+check:
+  - q: "Why does blue-green not limit blast radius the way a canary does?"
+    options: ["The cutover exposes all users at once instead of a small slice", "Green never receives any testing before the cutover", "Blue is deleted at cutover, so rollback is slow"]
+    answer: 0
+    why: "Blue-green gives fast rollback, but the flip sends everyone to the new version together."
+  - q: "Why use expand and contract for database changes?"
+    options: ["It removes the need for feature flags during rollouts", "Both code versions run on one schema, so changes must stay compatible", "It lets blue-green avoid paying for duplicate infrastructure"]
+    answer: 1
+    why: "Deploys briefly run two versions against one schema, so schema and code must never need to change at the same instant."
+  - q: "What is the main cost of feature flags?"
+    options: ["They need a redeploy every time they are toggled", "They block merging unfinished work into the main branch", "They are debt, multiplying behavior combinations that need testing"]
+    answer: 2
+    why: "Flags should be removed after launch, with owners and expiry, to avoid untestable combinations."
 ---
 
 ## The goal: change production without hurting users

@@ -14,6 +14,24 @@ banner:
     - [doc, "timeout"]
     - [server, "retry + jitter"]
     - [shield, "load shed"]
+predict:
+  question: "A gateway, a service and a database client each retry 3 times. The database slows while 1,000 requests per second arrive. How many attempts hit the database?"
+  options: ["About 3,000 per second", "About 9,000 per second", "About 27,000 per second"]
+  answer: 2
+  why: "Stacked retries multiply: 3 x 3 x 3 = 27 attempts per request, so 27,000 per second."
+check:
+  - q: "Why add jitter to exponential backoff?"
+    options: ["It lets clients skip the backoff on their first retry", "Clients that failed together would otherwise retry together in lockstep", "It raises the retry budget above the usual 10% cap"]
+    answer: 1
+    why: "Without randomization, many clients hit the recovering server at the same instant."
+  - q: "Why shed excess load instead of queueing everything?"
+    options: ["Queued requests finish sooner than rejected ones can be retried", "Rejecting requests lets the server ignore request priorities", "Queues grow past client timeouts, wasting capacity on abandoned requests"]
+    answer: 2
+    why: "An overloaded server that accepts everything serves nobody; early cheap rejection keeps accepted work on time."
+  - q: "Why limit hedged requests to idempotent reads?"
+    options: ["A second copy is sent, so it suits only repeatable, cheap reads", "Hedging needs a single replica, which writes cannot provide", "Hedged requests are cancelled at p50, which breaks writes"]
+    answer: 0
+    why: "Hedging duplicates work, so it fits only safe repeatable reads, not expensive or non-idempotent calls."
 ---
 
 ## Failure handling can cause failure
@@ -36,6 +54,8 @@ Rules that prevent retry storms:
 - **Retry at one layer only.** If three layers each retry three times, one user request can become 27 calls to the database. Choose the layer closest to the user or the one with the best information.
 
 **Retry amplification example:** a request goes through a gateway, a service and a database client, each retrying 3 times. When the database slows, one request generates 3 x 3 x 3 = 27 attempts; at 1,000 requests per second the database sees 27,000, finishes off what was a slowdown, and the outage spreads upward.
+
+<div data-anim="retry-storm"></div>
 
 ## Hedged requests: spend a little to cut the tail
 

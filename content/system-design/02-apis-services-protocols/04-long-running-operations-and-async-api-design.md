@@ -13,6 +13,24 @@ banner:
     - [server, "202 + id"]
     - [queue, "worker"]
     - [doc, "poll result"]
+predict:
+  question: "A 10-minute export is exposed as one synchronous endpoint behind a gateway with a 30-60 second timeout. What happens?"
+  options: ["The gateway times out the call and the client cannot recover without redoing the work", "The export finishes normally, since the server keeps working past any timeout", "The gateway retries until the export finishes, so the client sees success"]
+  answer: 0
+  why: "Long synchronous calls fight gateway timeouts and give no way to recover a dropped connection, hence the kick-off-and-return contract."
+check:
+  - q: "When is polling or a streaming connection the better choice than webhooks?"
+    options: ["When an event fires at unpredictable times and the receiver has stable infrastructure", "When the client has a public endpoint and needs the lowest possible latency", "When the client cannot receive inbound requests, such as a mobile app or NAT'd service"]
+    answer: 2
+    why: "Webhooks need a public, reachable endpoint, which mobile apps and clients behind NAT lack."
+  - q: "Why shouldn't a webhook-only design stand alone for an async job?"
+    options: ["If delivery silently fails, the client has no status endpoint and is stuck", "Webhooks cannot carry result data, so a status endpoint is needed for results", "Webhooks arrive in guaranteed order, so a status endpoint adds nothing"]
+    answer: 0
+    why: "Webhook delivery is not guaranteed, so clients need a way to check status directly."
+  - q: "What problem do many clients polling at a fixed short interval create?"
+    options: ["It guarantees faster completion detection than any push-based approach", "A self-inflicted load spike, so backoff or Retry-After should be used", "It exposes the callback URL, so payloads must then be signed"]
+    answer: 1
+    why: "Naive fixed-interval polling grows into a load spike as job volume grows; exponential backoff or a server-suggested interval avoids it."
 ---
 
 ## Why synchronous request/response breaks down

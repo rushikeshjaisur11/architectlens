@@ -7,6 +7,24 @@ sources:
   - "RocksDB Wiki — Write Ahead Log (WAL)"
   - "SQLite Documentation — Write-Ahead Logging"
   - "ARIES: A Transaction Recovery Method (Mohan et al., IBM Research, 1992)"
+predict:
+  question: "A database crashes after a transaction's WAL record was fsynced but before its data page was flushed. What happens on restart?"
+  options: ["The commit is lost, since the data page never reached disk", "The log is replayed from the last checkpoint, so the change is reapplied", "The database rolls the transaction back because the page is stale"]
+  answer: 1
+  why: "A commit is durable once the log record is fsynced; recovery finds the last checkpoint and replays later WAL records (REDO)."
+check:
+  - q: "Why does the lesson say to bound recovery time with checkpoints rather than keep the full log forever?"
+    options: ["Recovery would replay from the beginning, taking longer as the database ages", "Old log records become corrupt and can no longer be checksummed", "The log would stop being sequential once it passes a size limit"]
+    answer: 0
+    why: "Checkpoints flush dirty pages so recovery only replays records after the latest one."
+  - q: "What is the trade-off of tuning checkpoints very infrequent?"
+    options: ["Each checkpoint writes more data, making commits slower to acknowledge", "Less checkpoint I/O, but longer recovery and more WAL disk usage", "Fewer fsync calls, but the data files lose their crash protection"]
+    answer: 1
+    why: "Too infrequent means recovery time and WAL disk usage grow; too frequent means extra I/O."
+  - q: "An engineer writes WAL records but skips fsync, relying on the OS page cache. What is the risk?"
+    options: ["Group commit stops batching, so throughput drops sharply", "Checkpoints can no longer find a safe point to start recovery", "Writes that look committed can still be lost on power failure"]
+    answer: 2
+    why: "Without fsync or fdatasync the OS may still hold the write in memory, so durability is not guaranteed."
 ---
 
 ## The core problem: durability vs. random I/O

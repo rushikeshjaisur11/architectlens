@@ -12,6 +12,24 @@ banner:
     - [doc, "text"]
     - [model, "LLM"]
     - [doc, "answer"]
+predict:
+  question: "A team sends full-resolution photos to decide 'receipt or invoice'. What does the lesson predict compared with downscaled images?"
+  options: ["Several times the token cost with no real accuracy improvement", "Slightly lower cost because high-res images need fewer tiles", "Much higher accuracy that justifies the added token cost"]
+  answer: 0
+  why: "High-resolution images tile into more patches and cost several times more, without proportional gain on simple classification."
+check:
+  - q: "Why might you pick a transcribe-then-prompt pipeline over native audio input?"
+    options: ["Transcripts keep tone and emphasis that raw audio would lose", "Transcripts are inspectable and reusable, while raw audio is reprocessed per call", "Native audio models can't handle noisy phone calls at all"]
+    answer: 1
+    why: "A transcript is inspectable, versionable and reusable across prompts; raw audio must be re-sent and reprocessed each call."
+  - q: "When might native audio input beat a transcript?"
+    options: ["When the transcript must be cached and reused across many prompts", "When debugging requires reading the exact text the model saw", "When tone and emphasis matter, such as sentiment on a call recording"]
+    answer: 2
+    why: "Native audio preserves tone, emphasis and non-verbal cues that a transcript strips out."
+  - q: "Why reference 'the first image' and 'the second image' explicitly in a multi-image prompt?"
+    options: ["The model can't track which image is which by position alone", "The API rejects multi-image prompts that lack numbered references", "Explicit references reduce the token cost of each image sent"]
+    answer: 0
+    why: "Ordering and labeling matter; the model should not be left to infer which image is which from position in a long prompt."
 ---
 
 ## Multimodal input is still a token sequence

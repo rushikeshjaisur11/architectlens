@@ -12,6 +12,24 @@ banner:
     - [server, "API"]
     - [db, "object store"]
     - [doc, "blobs"]
+predict:
+  question: "Bytes 100-200 of a 1 GB object must change. What does an object store like S3 do?"
+  options: ["Rewrites bytes 100-200 in place, as a traditional filesystem would", "Replaces the whole object by uploading a full new version under the key", "Patches the range through the nested directory the key appears to imply"]
+  answer: 1
+  why: "Object stores offer whole-object replacement, not in-place partial edits, as a deliberate scalability tradeoff."
+check:
+  - q: "Why does object storage give up filesystem semantics like in-place edits?"
+    options: ["Flat keys and whole-object replacement let it scale out horizontally", "Filesystem semantics are patented, so object stores must avoid them", "Directories are costly to store but fast to list at large scale"]
+    answer: 0
+    why: "Supporting partial in-place mutation across a distributed store is much harder than whole-object replacement, so the simpler model wins on scale."
+  - q: "Why move original source files to cheaper storage classes with a lifecycle policy?"
+    options: ["Hot storage cannot hold source files once transcoding has finished", "They are rarely accessed after transcoding, so hot-tier cost buys nothing", "Cold tiers make later re-transcoding faster than hot storage does"]
+    answer: 1
+    why: "Sources are a re-processing safety net, not actively served, so cheaper classes cut cost without hurting users."
+  - q: "What is the catch of putting data in archive or cold storage?"
+    options: ["Storage cost is higher, in return for faster restores from offline media", "Objects in archive can no longer be removed by lifecycle rules", "Retrieval can take minutes to hours, so it suits only rarely read data"]
+    answer: 2
+    why: "Archive gives the lowest storage cost but data may need restoring from near-offline media before it is readable."
 ---
 
 ## Why object storage, not a filesystem, is the default for large-scale file storage

@@ -13,6 +13,24 @@ banner:
     - [queue, "broker"]
     - [shield, "idempotent"]
     - [server, "consumer"]
+predict:
+  question: "A Kafka Streams app runs with exactly_once_v2 and crashes mid-batch. What is the effect on its output topic and input offset?"
+  options: ["Partial output stays visible, but the input offset is rewound", "The whole step rolls back, so neither output nor offset commit shows", "The output is kept and the offset commits, with duplicates removed later"]
+  answer: 1
+  why: "The read-aggregate-write-commit cycle is one transaction, so a crash leaves no partial result."
+check:
+  - q: "Why does the lesson call exactly-once delivery the wrong target?"
+    options: ["Retries after a lost ack risk duplication, so the goal is exactly-once effect", "Brokers cannot assign sequence numbers without hurting throughput", "Consumers always receive messages out of order, so duplicates are unavoidable"]
+    answer: 0
+    why: "The Two Generals' Problem means delivery needs retries; the achievable goal is applying each effect once."
+  - q: "A transactional Kafka pipeline calls an external payment API. What is still needed?"
+    options: ["Nothing, since the transaction covers external calls made inside it", "A higher transaction timeout, so the API call fits in the transaction", "Idempotency on the API hop, as the guarantee ends at Kafka"]
+    answer: 2
+    why: "Kafka's guarantees cover Kafka-internal hops; external side effects need their own idempotent handling."
+  - q: "When is skipping exactly-once machinery the right call?"
+    options: ["When duplicates are harmless, such as a page-view analytics event", "When data is a payment charge, because duplicates are corrected later", "When ordering is needed, because transactions break ordering"]
+    answer: 0
+    why: "Transactions add latency and complexity, so tolerable duplicates do not justify the cost."
 ---
 
 ## Why "exactly-once delivery" is the wrong target

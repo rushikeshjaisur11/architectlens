@@ -13,6 +13,24 @@ banner:
     - [shield, "detectors"]
     - [db, "metrics"]
     - [client, "alerts"]
+predict:
+  question: "A team runs a judge model on 100% of production traffic to track hallucinations. According to the lesson, what is the likely result?"
+  options: ["Much better signal, since more scored samples always beat fewer", "Roughly doubled inference cost for marginal benefit over a 1-5% stratified sample", "Lower cost, since judges are cheaper than the main model", "Fewer false alarms, since every response is scored equally"]
+  answer: 1
+  why: "A stratified 1-5% sample, oversampling flagged responses, gives a usable signal at a fraction of the cost."
+check:
+  - q: "Why compare drift metrics to a fixed reference window instead of a trailing average?"
+    options: ["A trailing average is too slow to compute on live traffic", "A moving average drifts alongside the problem, so the change is never seen", "Fixed windows remove the need for any alerting rules", "A fixed window guarantees ground-truth labels exist for each query"]
+    answer: 1
+    why: "Drift needs a stable baseline; a constantly moving trailing average shifts with the problem and hides it."
+  - q: "Why is concept drift harder to detect automatically than input or output drift?"
+    options: ["The correct answer changed while model behavior did not, so it needs user feedback", "Concept drift only affects models that were never fine-tuned", "Input drift and concept drift are the same measurement under two names", "Embedding distance can detect it directly when queries look similar"]
+    answer: 0
+    why: "A policy or price change makes a previously correct response wrong without any visible change in model behavior or inputs."
+  - q: "Why should a RAG hallucination check score against retrieved context rather than only the model's output?"
+    options: ["Context checks are cheaper because they skip the judge model", "The model's output has no claims that could be checked", "Many apparent hallucinations are retrieval failures, which a groundedness check against context surfaces", "Retrieved context is guaranteed to be correct, so it serves as ground truth"]
+    answer: 2
+    why: "A large share of hallucinations are wrong or stale retrieved documents, which a model-only check cannot reveal."
 ---
 
 ## Why offline evals aren't enough

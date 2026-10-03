@@ -13,6 +13,24 @@ banner:
     - [server, "service A"]
     - [server, "service B"]
     - [server, "service C"]
+predict:
+  question: "A single small team builds a new e-commerce system as six microservices from day one. What is the most likely outcome?"
+  options: ["Each service scales independently, so the team gets most of the scaling benefit at once", "Releases get faster because the team no longer coordinates changes across modules", "Operational cost rises, but independent deployment gains little because one team still coordinates every change"]
+  answer: 2
+  why: "Independent deployment only pays off with multiple teams that need to ship without coordinating. One team still coordinates across services while paying for network calls, tracing and per-service pipelines."
+check:
+  - q: "Why is splitting by a technical seam, such as one 'validation' service, worse than splitting by bounded context?"
+    options: ["Validation logic needs more CPU than domain logic, so it scales badly as its own service", "The resulting services stay tightly coupled to each other's internal changes, undermining independent deployment", "Domain-aligned services are always smaller, so they start and deploy faster"]
+    answer: 1
+    why: "A technical-seam service still has to change whenever the services around it change. Bounded contexts own their logic and data, so they hold up better."
+  - q: "Why does the lesson say monolith-internal boundaries are cheaper to reshape than microservice boundaries?"
+    options: ["Moving logic between modules is a code change; between services it needs contract and deployment coordination", "A monolith has no internal module boundaries, so nothing ever needs to be moved", "Each microservice owns its own database, which makes moving logic between services trivial"]
+    answer: 0
+    why: "Across services a refactor spans API contracts and independent deployment schedules. Inside a monolith the same move is an ordinary code change."
+  - q: "A multi-team company still ships one shared monolith despite a clear deployment bottleneck. What is the lesson's view?"
+    options: ["Staying put is safe, because a monolith's simplicity always outweighs coordination costs", "Teams should split into services once the codebase passes a certain size", "It keeps paying a growing coordination cost past the point where simplicity still outweighs it"]
+    answer: 2
+    why: "Never splitting after a real multi-team bottleneck or scaling need appears is listed as a mistake. The trigger is a demonstrated need, not size alone."
 ---
 
 ## Why this is a genuine tradeoff, not a settled "microservices are modern" default

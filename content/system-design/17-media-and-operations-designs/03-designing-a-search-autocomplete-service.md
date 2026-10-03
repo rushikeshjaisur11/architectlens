@@ -13,6 +13,24 @@ banner:
     - [cache, "prefix cache"]
     - [db, "trie"]
     - [doc, "suggestions"]
+predict:
+  question: "The node for prefix 'a' has millions of descendants. If completions are collected at query time instead of stored as top-K per node, what happens?"
+  options: ["Lookup stays O(prefix length) because the trie already orders descendants by score", "Popular short prefixes become too slow to meet the roughly 100 ms budget", "Memory use falls but rankings go stale, with latency unaffected"]
+  answer: 1
+  why: "Collecting all descendants is too slow for popular short prefixes; precomputed top-K makes lookup depend only on prefix length."
+check:
+  - q: "Why apply personalization as a re-ranking step instead of inside the trie?"
+    options: ["Per-user ranking is only possible on the client, since servers lack the query history", "Personal history changes too fast for any server index to track, even by re-ranking", "Personalizing inside the trie would multiply storage, so it is applied to top candidates afterward"]
+    answer: 2
+    why: "The serving index stays simple with global popularity, and personalization reorders a small candidate list."
+  - q: "Why shard by observed load rather than alphabet slices?"
+    options: ["Some prefixes like 's' and 'a' are far hotter than others, so alphabet slices create hot shards", "Alphabet slices split related prefixes across machines, which makes each lookup slower", "Prefix-range sharding cannot be replicated, so availability would suffer"]
+    answer: 0
+    why: "Skewed prefix popularity makes alphabetical shards uneven."
+  - q: "Why run both a slow path and a fast path?"
+    options: ["The fast path replaces the rebuild, since streaming alone yields stable popularity cheaply", "Periodic rebuilds give stable popularity, while streaming updates surface trending queries within minutes", "Two paths are needed because a single trie cannot be swapped atomically while serving"]
+    answer: 1
+    why: "Serving merges stable rebuilt popularity with minutes-fresh trends, without waiting for the nightly rebuild."
 ---
 
 ## What autocomplete has to do

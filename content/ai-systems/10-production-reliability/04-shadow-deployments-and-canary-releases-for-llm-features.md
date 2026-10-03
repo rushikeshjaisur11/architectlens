@@ -7,6 +7,24 @@ sources:
   - "Anthropic and OpenAI documentation on prompt/model version management"
   - "Experimentation and prompt-management guidance, 2026 (secondary: Langfuse, MLflow, Statsig)"
   - "CrowdStrike, Channel File 291 Root Cause Analysis (August 2024)"
+predict:
+  question: "A canary at 5% of users monitors only error rate and latency, and both look normal. The new prompt subtly worsens answer quality. What does the canary show?"
+  options: ["Nothing, because the regression produces successful but worse responses", "The regression, since errors rise whenever quality drops", "The regression, since latency always shifts when quality drops"]
+  answer: 0
+  why: "Quality regressions are soft failures; catching them requires evaluation metrics alongside operational ones."
+check:
+  - q: "How do shadow deployments differ from canary releases?"
+    options: ["Shadow exposes a small fraction of users; canary exposes none", "Shadow runs on real traffic with no user exposure; canary exposes a small fraction", "Both expose the full user base, just at different times"]
+    answer: 1
+    why: "A shadow version's output is only logged and compared, while a canary serves real users in a limited cohort."
+  - q: "Why is shadow testing risky for fully agentic changes?"
+    options: ["Duplicated tool-call side effects would occur from the shadow version", "Shadow cannot run on real production traffic at all", "Shadowing halves compute cost, which makes it unsuitable"]
+    answer: 0
+    why: "Agents with real side effects should not be duplicated, which limits where shadow deployment applies."
+  - q: "Why define a rollback trigger before starting a canary?"
+    options: ["A judgment call by on-call stays more flexible than any threshold", "It is unnecessary once offline evals have passed", "A predefined threshold avoids deciding under pressure once things look wrong"]
+    answer: 2
+    why: "A pre-agreed threshold turns rollback into a minimal-deliberation action rather than an improvised decision."
 ---
 
 ## Why deploying an LLM change is riskier than it looks

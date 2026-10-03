@@ -17,6 +17,24 @@ banner:
     - [db, "RAG"]
     - [gpu, "fine-tune"]
     - [server, "agent"]
+predict:
+  question: "The insurer's prompted model with a glossary and five examples reaches 89 percent field accuracy but doubles prompt size and cost. With 8,000 labelled notes, what does a fine-tuned small model likely deliver?"
+  options: ["About 89 percent accuracy at double the cost, since weights cannot hold abbreviations", "About 94 percent accuracy at a quarter of the cost per note", "A lower accuracy, because notes need retrieval of company glossaries"]
+  answer: 1
+  why: "In the worked example the fine-tuned small model reaches 94 percent at a quarter of the cost and half the latency, since the task needs behaviour, not outside knowledge."
+check:
+  - q: "A team fine-tunes a model on product documentation so it can answer product questions. What is the main problem?"
+    options: ["Fine-tuning cannot change the output format of a model", "The facts in the weights go stale and cannot be cited or permission-checked", "Fine-tuned models cannot be combined with a prompted model"]
+    answer: 1
+    why: "Fine-tuning teaches behaviour, not facts; knowledge baked into weights ages and offers no citations or access control."
+  - q: "A claims process has fixed steps: classify, retrieve, extract, validate, respond. Why build it as a workflow rather than an agent?"
+    options: ["Workflows are predictable, testable and cheaper than free-roaming agents", "Agents cannot call tools or retrieve documents at all", "Workflows allow the model to choose its own path at runtime"]
+    answer: 0
+    why: "When steps are known in advance, a workflow gives predictability and lower cost, while agents add calls, latency and attack surface."
+  - q: "Why does the enterprise pattern re-run the bake-off when a new model generation lands?"
+    options: ["Evaluation sets expire and must be rewritten for each model", "Retrieval quality is tied to a specific model version", "The winning option can change as models improve and reprice"]
+    answer: 2
+    why: "The comparison of prompt, RAG, fine-tuned and agent options depends on current models, so the winner can change."
 ---
 
 ## The decision that shapes everything

@@ -12,6 +12,24 @@ banner:
     - [model, "small LM"]
     - [cloud, "fallback"]
     - [doc, "answer"]
+predict:
+  question: "The offline work-order app runs at about 25 tokens per second and needs 80 output tokens in roughly 3 seconds. A new schema needs 160 output tokens. Ignoring prompt processing, what happens?"
+  options: ["About 6.4 seconds, so the 3-second requirement is missed", "About 3 seconds, since the NPU speed scales with output length", "About 1.6 seconds, since longer outputs amortize the fixed startup cost"]
+  answer: 0
+  why: "Generation time is output tokens divided by speed: 160 / 25 = 6.4 s, over the 3 s budget."
+check:
+  - q: "A team validates quality using the full-precision model on a server, then ships a 4-bit model to phones. What is wrong?"
+    options: ["Nothing, since quantization never changes outputs on small models", "The quantized model was not tested on the device, where quality and speed can differ", "Server tests are only valid for models above 15 billion parameters"]
+    answer: 1
+    why: "The lesson says to test the quantized model on the device, not the full-precision model on a server."
+  - q: "Why keep a cloud fallback in a tiered on-device design?"
+    options: ["A router can send the roughly 5% of inputs the small model cannot handle to a larger model, within policy", "Cloud models are always cheaper per token, so the device model is only a cache", "The device model cannot produce structured output without a cloud model validating it"]
+    answer: 0
+    why: "Small models are weaker on hard cases, so a router with confidence and policy rules sends those up while private, simple work stays on device."
+  - q: "An 8 GB phone is sized only by weight size for a 4-bit 4B model (about 2 GB). Why can this still fail?"
+    options: ["4-bit weights must be expanded to 16-bit in RAM before any inference can run", "The operating system reserves the entire memory, so no model can fit", "The KV cache grows with context length, so long contexts can add gigabytes"]
+    answer: 2
+    why: "Weights are only part of the footprint; a 32,000-token context can add gigabytes, which is why on-device apps cap context."
 ---
 
 ## Why run a small model at all

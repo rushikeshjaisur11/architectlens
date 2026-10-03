@@ -12,6 +12,24 @@ banner:
     - [shield, "breaker"]
     - [server, "dependency"]
     - [cache, "fallback"]
+predict:
+  question: "A recommendation service times out and its circuit trips open. What does a checkout request experience?"
+  options: ["Each request waits out the full timeout, then checkout fails", "Requests queue until a half-open trial call succeeds", "The call fails fast, the widget is omitted and checkout continues"]
+  answer: 2
+  why: "An open circuit fails fast, and graceful degradation treats the widget as non-essential."
+check:
+  - q: "What does a bulkhead add that a circuit breaker alone does not?"
+    options: ["It caps a dependency's use of shared pools before any threshold trips", "It fails calls fast once failures cross a threshold, unlike breakers", "It serves cached data whenever the dependency is down"]
+    answer: 0
+    why: "Bulkheads bound resource use up front, so one dependency cannot starve healthy ones even before the breaker opens."
+  - q: "Why fail fast while the circuit is open rather than keep trying?"
+    options: ["It guarantees the dependency recovers within the cooldown", "It protects the caller's threads and gives the dependency room to recover", "It lets the circuit skip the half-open trial requests"]
+    answer: 1
+    why: "Continued load keeps a struggling dependency down and ties up the caller's own resources."
+  - q: "Why decide fallback behavior at design time instead of during an incident?"
+    options: ["Fallbacks only work if stale caches are already populated", "Open circuits block improvised fallbacks during an incident", "Which dependencies are essential must be chosen deliberately beforehand"]
+    answer: 2
+    why: "The essential versus enhancement split determines the right fallback, and it should not be improvised."
 ---
 
 ## Why failures need to be contained, not just detected
@@ -27,6 +45,8 @@ A **circuit breaker** wraps calls to a dependency and tracks its recent failure 
 - **Half-open** — after the cooldown period, the circuit allows a small number of trial requests through to check whether the dependency has recovered. If they succeed, the circuit closes and normal operation resumes; if they still fail, it reopens for another cooldown period.
 
 This pattern turns "keep hammering a struggling dependency with the same load that's contributing to its struggle" into "back off automatically, then carefully check for recovery" — directly addressing the cascading-failure risk described above, without needing a human to notice and manually intervene during the initial failure window.
+
+<div data-anim="circuit-breaker"></div>
 
 ## Graceful degradation: what to do while the circuit is open
 

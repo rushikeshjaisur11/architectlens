@@ -13,6 +13,24 @@ banner:
     - [cdn, "edge"]
     - [cache, "edge cache"]
     - [user, "viewer"]
+predict:
+  question: "A video is requested by 1,000 viewers near one edge location whose cache is cold for it. How often does the origin serve it to that edge?"
+  options: ["Once, because the first miss fills the edge cache and the rest are hits", "1,000 times, because each viewer request is forwarded to the origin", "Zero times, because a pull CDN never contacts the origin for files"]
+  answer: 0
+  why: "The edge fetches from the origin once on the first miss, caches it, and serves later requests locally."
+check:
+  - q: "Why use seconds-long TTLs for live sports segments but long TTLs for catalog segments?"
+    options: ["Live content is produced continuously, so cache lifetime must match segment duration", "Live segments are larger than catalog ones, so edges must evict them sooner", "Catalog content is requested less often, so it needs a longer TTL to stay cached"]
+    answer: 0
+    why: "Catalog segments never change once published, while live segments only exist moments before they are needed, so caching must match freshness needs."
+  - q: "Why prefer versioned URLs over purge APIs for JS and CSS bundles?"
+    options: ["Most CDN providers do not offer purge APIs for static assets", "Old cached copies just become unreferenced, avoiding invalidation-timing races", "Versioned URLs make edge caches hold each bundle for a shorter time"]
+    answer: 1
+    why: "Publishing under a new URL sidesteps invalidation entirely, which is why it is the dominant pattern for static assets."
+  - q: "What is the risk of assuming a CDN makes the origin unimportant?"
+    options: ["Edge locations stop caching once origin load falls below a minimum level", "Push CDNs only need the origin to be available during the upload step", "Misses and TTL expirations still reach the origin, so it must stay reliable"]
+    answer: 2
+    why: "Every first request per region and every TTL expiry still hits the origin; volume drops but is not zero."
 ---
 
 ## Why serving media directly from your origin server doesn't scale

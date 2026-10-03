@@ -13,6 +13,36 @@ banner:
     - [lock, "prepare"]
     - [db, "participants"]
     - [shield, "commit/abort"]
+predict:
+  question: "A 2PC coordinator crashes after collecting yes votes but before sending the decision. What do the participants do?"
+  options:
+    - "They time out and commit on their own, since all voted yes"
+    - "They abort at once and release locks, since the coordinator is gone"
+    - "They stay blocked, holding locks, unable to decide on their own"
+  answer: 2
+  why: "After voting yes a participant must wait for the coordinator, so it holds locks indefinitely, which is the 2PC blocking problem."
+check:
+  - q: "Why prefer sagas over 2PC for independently owned microservices?"
+    options:
+      - "Services owned by different teams fail independently, so blocking on every participant is untenable"
+      - "Sagas give stronger atomicity than 2PC because compensations always restore exact prior state"
+      - "Sagas keep isolation intact, so concurrent reads never see intermediate states"
+    answer: 0
+    why: "Sagas avoid global locks and a blocking coordinator, trading away atomicity and isolation."
+  - q: "What is the trade-off between saga orchestration and choreography?"
+    options:
+      - "Choreography is easier to observe, since logic lives in one place rather than in handlers"
+      - "Orchestration centralizes the flow so it is easier to trace, but adds a component that needs high availability"
+      - "Orchestration scales better, since it removes the need for any central component"
+    answer: 1
+    why: "Choreography spreads the flow across handlers, orchestration centralizes it and adds a critical component."
+  - q: "Why must saga steps and compensations be idempotent?"
+    options:
+      - "Idempotency is needed only for the forward steps, since compensations run exactly once"
+      - "It lets a saga hold locks across steps, restoring the isolation that 2PC provides"
+      - "Retries can invoke a step or its compensation more than once, so both must be safe to repeat"
+    answer: 2
+    why: "Network retries mean either side may run twice."
 ---
 
 ## The problem: atomicity across nodes

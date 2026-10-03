@@ -12,6 +12,24 @@ banner:
     - [queue, "Kafka"]
     - [db, "index store"]
     - [client, "dashboards"]
+predict:
+  question: "An alert shows the checkout error rate climbing. Using only the metrics dashboard, what can the team learn?"
+  options: ["Exactly when errors began and how severe they are, but not which downstream call causes them", "The failing downstream inventory call and its connection pool exhaustion root cause", "The per-request journey across services for a sample of failing requests"]
+  answer: 0
+  why: "Metrics show that something is wrong and when; traces show where, and logs show the specific detail."
+check:
+  - q: "Why publish logs to Kafka instead of writing straight to the central store from each instance?"
+    options: ["It makes log lines searchable faster than writing them directly into the index", "It guarantees logs are never duplicated, removing the need for downstream deduplication", "A storage slowdown then does not block or lose logs from the application instances"]
+    answer: 2
+    why: "The durable queue decouples log generation from storage and indexing."
+  - q: "Why use a time-series database for metrics rather than the log-indexing store?"
+    options: ["Metrics are pre-aggregated time series, so forcing them through full-text log storage serves neither pattern well", "Metrics need full-text search over raw events, which only a time-series database offers", "Log indexes cannot store numeric values, so metrics would be rejected outright"]
+    answer: 0
+    why: "Storage shape should match access pattern, like the row-versus-columnar mismatch."
+  - q: "Why build trace-ID propagation into service communication from the start?"
+    options: ["Trace IDs can be reconstructed afterward from metrics, so timing has little effect", "Retrofitting it into a large fleet later is a much bigger migration than designing it in", "Propagation is only needed at the edge service, not at each downstream hop"]
+    answer: 1
+    why: "Every service must forward the trace ID to downstream calls, and adding that late is painful."
 ---
 
 ## Why this system is worth designing deliberately, not treating as an afterthought

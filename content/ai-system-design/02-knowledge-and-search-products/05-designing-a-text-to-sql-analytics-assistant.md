@@ -8,6 +8,24 @@ sources:
   - "OWASP guidance on SQL injection and least-privilege database access"
   - "Lei et al., 'Spider 2.0: Evaluating Language Models on Real-World Enterprise Text-to-SQL Workflows' (2024; ICLR 2025)"
   - "Jin et al., 'Text-to-SQL Benchmarks are Broken: An In-Depth Analysis of Annotation Errors' (CIDR 2026)"
+predict:
+  question: "A marketing manager flags that finance computes ROAS with a 7-day attribution window while the assistant used last-click. What happens to the correction?"
+  options: ["The model is told to use 7-day windows in every future prompt", "The manager's edited SQL is saved only for their own account", "The data team adds a second governed metric instead of letting the model guess"]
+  answer: 2
+  why: "Definitions stay consistent because metrics are governed; the correction goes to the data team, who add a second metric rather than letting the model guess."
+check:
+  - q: "Why put a semantic layer between the model and the raw warehouse schema?"
+    options: ["It lets the model write unrestricted SQL across all 3,000 tables faster", "It turns free-form generation into selection of governed metrics with fixed definitions", "It removes the need for validation and execution limits"]
+    answer: 1
+    why: "Mapping a question onto curated, governed metrics is an easier selection problem and keeps definitions such as revenue consistent across answers."
+  - q: "Why score text-to-SQL by execution accuracy instead of string equality with reference SQL?"
+    options: ["Many different queries are equivalent and return the same correct result", "String comparison cannot be run on queries containing joins", "Execution accuracy avoids needing a golden set of questions"]
+    answer: 0
+    why: "Equivalent queries can look very different as text, so the result matching the reference is the fair measure of correctness."
+  - q: "Why run queries under a read-only role equal to the user's permissions rather than a shared super-user?"
+    options: ["Super-user roles cannot execute dry runs on the warehouse", "A role per user is needed to keep the semantic layer in sync", "A wrong or malicious query still cannot return data the user may not see"]
+    answer: 2
+    why: "Using the warehouse's own row and column security means model-written SQL cannot exceed the user's rights, whatever it generates."
 ---
 
 ## The problem

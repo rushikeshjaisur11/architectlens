@@ -12,6 +12,24 @@ banner:
     - [db, "event log"]
     - [server, "worker"]
     - [queue, "resume"]
+predict:
+  question: "In the invoice agent, the worker crashes during step 2 after step 1 extracted fields for $0.03. What happens on replay?"
+  options: ["Step 1 returns its stored result, and step 2 re-runs", "Both steps re-run, so the extraction is paid for twice", "The run fails and a human must restart it from step 1"]
+  answer: 0
+  why: "The engine replays the event history so completed steps return stored results and only unfinished work re-runs."
+check:
+  - q: "Why is a LangGraph checkpoint not the same as durability?"
+    options: ["Checkpoints cannot be stored in Postgres or any database", "Checkpoints only record model outputs, never tool results", "Someone still must detect death, choose re-entry and handle half-done steps"]
+    answer: 2
+    why: "Durable engines supply detection, restart and safe handling of a step that started but did not finish."
+  - q: "Why use an idempotency key on the payment step?"
+    options: ["A retry after a timeout returns the first result instead of paying twice", "The key encrypts the payment details sent downstream", "The key lets the model choose the payment amount on retry"]
+    answer: 0
+    why: "Replay and retry mean a step may execute more than once, so side effects must be safe to repeat."
+  - q: "Why version workflow definitions while runs are in flight?"
+    options: ["Old runs must restart from step 1 whenever prompts change", "Changing step order under in-flight runs can break replay", "Versioning stops the engine from storing run history"]
+    answer: 1
+    why: "Route new runs to the new version and drain or migrate old ones."
 ---
 
 ## The problem: agents that outlive a process

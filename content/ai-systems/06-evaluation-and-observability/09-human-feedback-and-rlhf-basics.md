@@ -12,6 +12,24 @@ banner:
     - [db, "preferences"]
     - [gpu, "reward model"]
     - [model, "policy"]
+predict:
+  question: "A team has 50,000 thumbs-down records and says it 'does RLHF'. What is missing for that to be true?"
+  options: ["Nothing, because collecting feedback is RLHF", "A training pipeline, such as reward model plus RL or DPO", "More thumbs-down records, since RLHF needs at least a million", "A switch to absolute 1-10 scores instead of thumbs"]
+  answer: 1
+  why: "Feedback collection is only a signal; shaping behavior needs a reward model plus RL or DPO, or a deliberate decision to use it for monitoring."
+check:
+  - q: "Why do RLHF-style pipelines collect pairwise preferences instead of absolute 1-10 scores from raters?"
+    options: ["Relative comparisons are more consistent across raters than absolute scores", "Pairwise data is smaller, so training always finishes faster", "Absolute scores cannot be stored in a dataset", "Raters refuse to give numbers, so pairs are the only data they will provide"]
+    answer: 0
+    why: "Raters, and even the same rater over time, disagree on what a 7 out of 10 looks like, while comparisons are more reliable."
+  - q: "Why might a team with limited ML infrastructure choose DPO over full RLHF?"
+    options: ["DPO needs no preference data, so collection is skipped", "DPO removes the supervised fine-tuning step, which RLHF requires", "DPO skips the reward model and RL loop, so it is easier to run", "DPO guarantees the targeted behavior changes, so no eval is needed"]
+    answer: 2
+    why: "DPO optimizes directly on preference pairs with a supervised-style objective, avoiding the reward model and PPO."
+  - q: "Why evaluate against a targeted held-out set after preference tuning, instead of trusting a clean training run?"
+    options: ["A finished run proves the behavior shifted, so evals only add cost", "Training runs that complete without error can still fail to move the targeted behavior", "Held-out sets are needed only for the SFT step, not for DPO", "Evals replace the reward model in the DPO objective"]
+    answer: 1
+    why: "Completing without errors does not show the verbose, hedging behavior actually changed; it must be verified."
 ---
 
 ## Why human feedback is a distinct signal from the evaluation methods covered so far

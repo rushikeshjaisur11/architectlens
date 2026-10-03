@@ -12,6 +12,24 @@ banner:
     - [server, "matcher"]
     - [user, "driver"]
     - [doc, "match"]
+predict:
+  question: "Greedy matching gives the nearest driver A to rider 1. Seconds later rider 2 appears right next to A and only has a far driver. What would a few-second batch likely do?"
+  options: ["Give A to rider 1 anyway, since batching keeps arrival order", "Give A to rider 2 and a farther driver to rider 1, lowering total wait", "Hold both riders until more drivers come online"]
+  answer: 1
+  why: "Solving the batch together can find an assignment with lower total wait than locally greedy choices."
+check:
+  - q: "What is the trade-off in batch matching?"
+    options: ["A small deliberate delay buys a better aggregate match", "It removes the need for geospatial candidate filtering", "Each match gets worse and the total outcome is no better"]
+    answer: 0
+    why: "Waiting briefly to accumulate requests mirrors a window trading immediacy for a fuller picture."
+  - q: "Riders wait long in an area with far more requests than drivers. What is the right lever?"
+    options: ["Refine the matching algorithm, since it can offset a supply shortfall", "Shrink the batch window to a single request", "Use pricing or incentives, since no algorithm can create missing drivers"]
+    answer: 2
+    why: "A supply-demand imbalance is not an algorithm problem, so algorithmic effort is misdirected."
+  - q: "Why can ignoring stable matching hurt a job marketplace?"
+    options: ["Proximity-based matching cannot be computed without it", "A pair that prefers each other may route around the platform's assignment", "Batching produces longer waits without stability guarantees"]
+    answer: 1
+    why: "An unstable assignment gives users an incentive to circumvent it, undermining trust."
 ---
 
 ## What makes two-sided matching a distinct problem from simple retrieval

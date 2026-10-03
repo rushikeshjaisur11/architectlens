@@ -7,6 +7,24 @@ sources:
   - "Public documentation on calendar and conferencing platform APIs and consent requirements"
   - "Liu et al., 'Lost in the Middle: How Language Models Use Long Contexts' (2023)"
   - "In re Otter.AI Privacy Litigation, N.D. Cal. No. 5:25-cv-06911, as reported by Mondaq, NPR and legal press (2025 to 2026)"
+predict:
+  question: "During a meeting someone says \"someone should check legal\". What does the extractor do?"
+  options: ["It assigns the item to the most talkative attendee", "It marks the item unassigned because no owner can be resolved", "It drops the item since it contains no due date"]
+  answer: 1
+  why: "The worked example marks it as an unassigned item because it has no owner, rather than guessing one."
+check:
+  - q: "Why summarise by topic segments and then combine, instead of one pass over the transcript?"
+    options: ["Segment summaries avoid needing any structured output", "The middle of a long transcript is easy to lose in a single pass", "A single pass cannot link summary lines to timestamps"]
+    answer: 1
+    why: "The lesson notes that meetings run an hour or more and the middle is easy to lose, hence the two-stage approach."
+  - q: "Why mark ambiguous action items as suggestions for a human to confirm?"
+    options: ["Silently assigning wrong owners or dates breaks trust in the highest-value output", "Suggestions are cheaper to store and sync than confirmed tasks are", "Task tools reject any item that carries a confidence field value"]
+    answer: 0
+    why: "Action items are the highest-value and most error-prone output, so ambiguity is flagged rather than silently resolved."
+  - q: "Why require consent from every participant rather than only the account holder?"
+    options: ["Account holders cannot legally consent to recording on behalf of their company", "Only participants' consent allows the audio to be stored in encrypted form", "Non-account-holders were central to the allegations in the Otter.AI litigation"]
+    answer: 2
+    why: "The class action alleges recording non-account-holder participants without consent, which makes consent a product requirement."
 ---
 
 ## The problem

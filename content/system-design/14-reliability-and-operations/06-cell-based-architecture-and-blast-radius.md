@@ -13,6 +13,24 @@ banner:
     - [server, "cell 1"]
     - [server, "cell 2"]
     - [server, "cell 3"]
+predict:
+  question: "A SaaS platform with 6,000 tenants runs 12 cells of 500. A faulty release reaches cell 1 before rollback. About how many tenants are affected?"
+  options: ["Around half, because cells share a router", "All 6,000 tenants, as with one cluster", "About 8% of tenants, the 500 in that cell"]
+  answer: 2
+  why: "Cells are independent, so the failure is bounded to the cell's 500 of 6,000 tenants."
+check:
+  - q: "Why combine cells with availability zones instead of choosing one?"
+    options: ["Zones cover infrastructure loss, while cells contain software and data failures", "Zones cover software bugs, while cells cover data-centre power loss", "Cells replace zones, since each cell already spans a whole region"]
+    answer: 0
+    why: "Bugs and bad config replicate across zones, so cells add a different kind of isolation."
+  - q: "Why must the cell router be kept extremely simple?"
+    options: ["Routers cannot map tenants to cells without their own database", "It is the one shared component, so it becomes the critical dependency", "A simple router lets cells call each other on the request path"]
+    answer: 1
+    why: "A complex router becomes the new single point of failure."
+  - q: "Why use shuffle sharding instead of pinning each customer to a single cell?"
+    options: ["Pinning shares every server, so one poison customer hits everyone", "Shuffle sharding needs a separate database for each customer", "Pinning leaves utilisation low, while random subsets keep isolation"]
+    answer: 2
+    why: "Random worker subsets keep a bad customer's impact small without dedicating whole stacks."
 ---
 
 ## The problem with one big shared system

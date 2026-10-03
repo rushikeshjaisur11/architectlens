@@ -14,6 +14,24 @@ banner:
     - [model, "judge"]
     - [shield, "calibrate"]
     - [user, "human labels"]
+predict:
+  question: "A team runs pairwise judging once per pair, always listing the new prompt's answer as A, and the new prompt wins 62% of the time. What is the main concern?"
+  options: ["Pairwise judging is less reliable than pointwise scoring", "Judges prefer shorter answers, which hides the true win rate", "The 62% may partly reflect position bias favoring whichever answer appears first", "The win rate is too low to be reported with any confidence"]
+  answer: 2
+  why: "Judges systematically favor the first-listed answer, so single-pass pairwise without order swapping bakes position bias into the win rate."
+check:
+  - q: "Why prefer pairwise comparison against a fixed baseline over absolute 1-5 scoring for tracking prompt revisions?"
+    options: ["Relative judgments are more consistent than absolute scales, which drift across days and prompt revisions", "Pairwise needs no rubric, whereas pointwise scoring always needs a long rubric", "Pairwise calls are cheaper than pointwise calls at every candidate count", "Absolute scores cannot be parsed from model output, while winners can"]
+    answer: 0
+    why: "Absolute scores drift, while relative comparisons are easier to make consistently; a fixed baseline avoids the quadratic cost of all-pairs."
+  - q: "Why is using the same model family as generator and judge risky when choosing between prompt variants?"
+    options: ["The judge refuses to score outputs it generated, leaving gaps in the results", "Self-preference bias inflates whichever variant sounds most like the judge's own style", "Same-family judges cannot read the rubric, so scores become random", "It doubles the number of calls, which raises cost without changing the scores"]
+    answer: 1
+    why: "The lesson documents self-preference bias, so a same-family judge may reward style similarity rather than real quality."
+  - q: "A judge gives stable, self-consistent scores week after week. Why is that not enough to trust it?"
+    options: ["Stable scores prove the rubric is too coarse and should use a 1-100 scale", "Consistency only matters for pairwise judging, not for pointwise scores", "Consistency is not validity: it may be stably measuring something other than what you care about", "Stable scores mean the judge has been trained on the test set"]
+    answer: 2
+    why: "The lesson, citing 2026 work, says a judge that agrees with itself may still not measure real quality, so human-labeled agreement is still needed."
 ---
 
 ## Why use a model as the judge

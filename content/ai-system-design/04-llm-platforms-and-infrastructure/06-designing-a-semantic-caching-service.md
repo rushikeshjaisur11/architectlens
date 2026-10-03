@@ -8,6 +8,24 @@ sources:
   - "Provider documentation on prompt caching versus response caching"
   - "Secondary reports on semantic cache hit rates and AWS-published chatbot research, 2026 (futureagi.com, spheron.network, getmaxim.ai)"
   - "Anthropic pricing documentation, prompt caching (fetched Oct 2026)"
+predict:
+  question: "With a similarity threshold of 0.9, a user asks for the daily transfer limit for business accounts, scoring 0.88 against a cached retail entry. What happens?"
+  options: ["The cached retail answer is returned since 0.88 is close enough", "The cache returns it after the entity check passes", "The model is called, since 0.88 is below the threshold and the scope differs"]
+  answer: 2
+  why: "The request misses on both counts: similarity is under 0.9 and the scope key differs, so the model answers."
+check:
+  - q: "Why run a shadow job that recomputes sampled cache hits with the model?"
+    options: ["It measures the live false-hit rate, which hit rate alone cannot show", "It refreshes stale entries before their TTL expires", "It raises the similarity threshold automatically over time"]
+    answer: 0
+    why: "Sampled recomputation compares cached and fresh answers, giving a real false-hit rate (0.2 percent in the example)."
+  - q: "Why store source document ids as metadata on cache entries?"
+    options: ["To raise similarity scores for entries drawn from the same document", "To evict affected entries when a source or policy changes", "To let exact-match lookups skip the scope key"]
+    answer: 1
+    why: "Event-driven invalidation evicts tagged entries when the document changes, so nobody gets the old number."
+  - q: "Why add entity checks or a verifier on top of a high similarity threshold?"
+    options: ["Embedding lookups are too slow to trust without a second verification pass", "Provider prompt caching requires verified entries before any reuse", "Near-identical wording can hide different needs, like cancelling an order versus a plan"]
+    answer: 2
+    why: "Embedding similarity is a blunt instrument; verification catches near-matches that are not truly equivalent."
 ---
 
 ## The problem

@@ -14,6 +14,24 @@ banner:
     - [model, "rewrite"]
     - [db, "retrieve"]
     - [doc, "answer"]
+predict:
+  question: "A user types \"stop billing me\". The best document matches \"how do I cancel my subscription\" strongly but the literal query weakly. A multi-query retriever generates three phrasings, one of them the cancel phrasing. What happens to that document?"
+  options: ["It is dropped, because the union of results keeps only the literal query's hits", "It is retrieved through the cancel variant and merged into the combined results", "It is retrieved only after the reranker rewrites the original query itself"]
+  answer: 1
+  why: "Each variant is searched independently and the results are unioned, so a document weak for one phrasing can still be recovered by another."
+check:
+  - q: "Why is HyDE a poor fit for a narrow lookup like \"what is the capital of France\"?"
+    options: ["The hypothetical document can state a wrong or generic answer that pulls retrieval off target", "HyDE only works on queries longer than the documents it is searching against", "The hypothetical document is shown to the user, so it must be factually correct"]
+    answer: 0
+    why: "The query is already a strong retrieval signal there. HyDE helps most on short, underspecified conceptual queries."
+  - q: "A team merges results from five expanded queries and feeds them straight to generation. What goes wrong?"
+    options: ["Recall drops, since merging results from several queries removes relevant chunks", "Latency falls, since five queries are answered with a single generation call", "Near-duplicate chunks inflate the context and push out distinct relevant ones"]
+    answer: 2
+    why: "Expansion should be paired with deduplication and reranking before generation."
+  - q: "A rewriter sees only the current turn \"what about the next one\". What is the likely outcome?"
+    options: ["It cannot resolve the reference, so the rewritten query stays ambiguous", "It guesses the product name correctly, since the corpus vocabulary hints at it", "It skips rewriting and passes the literal text, which is always equivalent"]
+    answer: 0
+    why: "A rewriter needs the same conversation history a human would need to disambiguate the question."
 ---
 
 ## Why the raw user query is often the wrong retrieval input

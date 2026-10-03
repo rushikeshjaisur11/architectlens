@@ -8,6 +8,24 @@ sources:
   - "Public documentation of multimodal embedding models and vector search"
   - "Google Gemini API documentation on video understanding, ai.google.dev/gemini-api/docs/video-understanding, and reports on September 2026 agentic video understanding (secondary)"
   - "TwelveLabs pricing calculator, twelvelabs.io (via search results)"
+predict:
+  question: "An hour of video has about 100,000 frames. The pipeline detects scenes and captions only 41 key frames. What happens to cost?"
+  options: ["Cost is unchanged because every frame is still embedded", "Cost rises because scene detection needs extra GPU passes", "Cost stays around a few cents per hour of video"]
+  answer: 2
+  why: "Scene-based key frame selection keeps processing to a few cents per hour of video."
+check:
+  - q: "Why index at the segment level instead of whole videos?"
+    options: ["Whole-video entries cannot point users to the right moment", "Segments let keyword search replace vector search entirely", "Whole videos are too large to store in a vector index"]
+    answer: 0
+    why: "Segment records carry start and end times, so results are playable at the right moment."
+  - q: "Why use hybrid retrieval over keyword search or vectors alone?"
+    options: ["Vector search alone is too slow for 500,000 hours of archive", "Keyword search catches exact terms; vector search catches paraphrases", "Fusion removes the need for permission filters"]
+    answer: 1
+    why: "The two methods find different matches, so fusing and reranking covers both exact terms and paraphrases."
+  - q: "Why summarise long videos with map-reduce and timestamp citations?"
+    options: ["Summaries are cheaper when they omit the transcript text", "Map-reduce guarantees that visual claims are always correct", "Long videos exceed one context, and the middle is easily missed"]
+    answer: 2
+    why: "Per-segment summaries avoid the context limit, and time citations make each line verifiable."
 ---
 
 ## The problem

@@ -16,6 +16,24 @@ banner:
     - [model, "tutor"]
     - [db, "progress"]
     - [doc, "next hint"]
+predict:
+  question: "A student answers 1/2 + 1/3 = 2/5. What does the tutor do first?"
+  options: ["Asks a guiding question about piece sizes and withholds the answer", "States that 5/6 is correct and explains the method straight away", "Resets the student's mastery to zero and moves on to a new topic"]
+  answer: 0
+  why: "The policy picks hint level one, a nudge, and reveals answers only after genuine attempts."
+check:
+  - q: "Why use a symbolic engine to check maths steps and results?"
+    options: ["Symbolic engines write friendlier explanations than the language model can", "The LLM explains but does not compute, because wrong explanations teach wrong things", "Engines replace the curriculum graph when choosing the next problem"]
+    answer: 1
+    why: "Deterministic tools handle correctness; the LLM handles explanation."
+  - q: "Why judge the tutor by randomised learning outcomes rather than chat quality or engagement?"
+    options: ["Engagement is hard to log, whereas test scores are available by default", "Chat quality is fixed by the pedagogical policy, so it cannot vary across sessions", "A fluent, engaging tutor can still harm learning, for instance by handing out answers"]
+    answer: 2
+    why: "Evaluation should measure learning; engagement is secondary."
+  - q: "Why was the Khanmigo effect size much smaller than the Harvard physics result?"
+    options: ["Real-world usage and fidelity matter, and effects shrink versus lab-style trials", "The Tennessee tutor gave answers on request, unlike the Harvard tutor", "Middle-school students cannot benefit from pedagogy-based tutors the way undergraduates do"]
+    answer: 0
+    why: "The lesson says real-world effects are smaller and usage and fidelity matter."
 ---
 
 *Engineering patterns only; child privacy and education regulations vary and must be confirmed with legal and privacy teams.*

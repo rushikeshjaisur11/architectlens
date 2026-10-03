@@ -14,6 +14,24 @@ banner:
     - [shield, "defenses"]
     - [model, "LLM"]
     - [doc, "safe reply"]
+predict:
+  question: "A model's safety training only included direct, obviously disallowed requests. A user rephrases the same disallowed request as a role-play scenario. What is the most likely outcome, per the lesson?"
+  options: ["The model refuses, because identical underlying intent always triggers the learned refusal", "The model may comply, because the phrasing falls outside what its safety behavior generalized to", "The model refuses every role-play request, since persona framing is always flagged as hostile"]
+  answer: 1
+  why: "Safety behavior is learned from finite examples, so a surface form unlike the training data can slip past even when the intent is the same."
+check:
+  - q: "Why add an independent output classifier when the model already has safety training?"
+    options: ["The classifier replaces the need for safety training, which is costly to keep up to date", "Safety training only affects input handling, so outputs need a separate system to check", "It backstops cases where the model's own safety training failed to generalize to an adversarial phrasing"]
+    answer: 2
+    why: "Relying on one mechanism means its generalization must hold perfectly; an independent layer catches the misses."
+  - q: "A team validates jailbreak defenses thoroughly before launch and plans no further testing. What does the lesson predict?"
+    options: ["Effectiveness will likely degrade as new jailbreak techniques emerge that launch testing never covered", "Effectiveness stays stable, because the safety training was already adversarially thorough at launch", "Effectiveness improves, since attackers adapt to the defenses and stop probing a hardened system"]
+    answer: 0
+    why: "Jailbreaking is an ongoing arms race, so red-teaming must be continuous and its findings fed back into training data and eval sets."
+  - q: "Why feed discovered jailbreak successes back into the eval set as well as the training data?"
+    options: ["Each gap becomes a permanent regression check for future model or prompt changes", "Eval sets are what actually change model behavior, while training data only informs the classifier", "It keeps the eval set small by replacing older examples with the most recent attack technique"]
+    answer: 0
+    why: "This mirrors the evaluation lesson's pattern of turning real failures into regression checks, applied to safety."
 ---
 
 ## How jailbreaks differ from prompt injection

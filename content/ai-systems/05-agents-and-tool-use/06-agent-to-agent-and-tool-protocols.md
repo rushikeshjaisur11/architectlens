@@ -16,6 +16,24 @@ banner:
     - [lb, "A2A"]
     - [model, "agent B"]
     - [server, "tool"]
+predict:
+  question: "A team wires a supervisor and three workers inside one LangGraph app using A2A between them. What is the likely outcome?"
+  options: ["Extra serialization and network overhead with no real benefit", "Better agent discovery, with no change in overhead", "Lower latency, since A2A tasks are asynchronous by design"]
+  answer: 0
+  why: "A2A's value is cross-trust-boundary discovery and async task lifecycle; in-process handoffs can use direct calls."
+check:
+  - q: "Which framing correctly splits MCP and A2A?"
+    options: ["MCP is for peer agents, and A2A is for giving one agent its tools", "MCP gives one agent its tools, and A2A lets agents act as peers", "Both do the same job, and A2A only adds streaming and auth"]
+    answer: 1
+    why: "MCP is agent-to-tool; A2A covers discovery and delegation between independent agents."
+  - q: "Why avoid hardcoding a remote agent's assumed capabilities?"
+    options: ["Agent Cards are needed only for authentication, not capabilities", "Hardcoding is faster but removes the ability to stream results", "It recreates tight coupling and breaks silently when capabilities change"]
+    answer: 2
+    why: "Reading the Agent Card at a well-known URL is the discovery step that keeps the caller loosely coupled."
+  - q: "Why is an MCP server not automatically trustworthy?"
+    options: ["A compromised server can return crafted results that inject prompts into the host", "Servers must run remotely, so they are exposed to the internet", "The protocol requires the server to see the model's full history"]
+    answer: 0
+    why: "A server is code with tool-execution and context-injection access, so treat it like any dependency."
 ---
 
 ## Why standardized protocols exist at all

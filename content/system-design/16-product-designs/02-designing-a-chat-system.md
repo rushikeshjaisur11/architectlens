@@ -11,6 +11,24 @@ banner:
     - [lb, "chat gateway"]
     - [queue, "fanout"]
     - [phone, "receiver"]
+predict:
+  question: "User A messages user B, who is offline. What happens right after chat server 1 receives the message?"
+  options: ["It is dropped when the registry lookup finds no server for B, and A sees an error", "It is persisted with a sequence number and A sees sent; delivery waits for B's reconnect", "It stays only in server 1's memory until B reconnects, and A sees sent"]
+  answer: 1
+  why: "Every message is persisted regardless of recipient state, so A gets sent and B receives it when reconnecting."
+check:
+  - q: "Why keep a shared registry mapping user IDs to chat servers?"
+    options: ["WebSockets cannot be load balanced, so the registry replaces the load balancer", "Sender and recipient may sit on different servers, so the sender's server must find the recipient's", "The registry stores message history so that chat servers can remain stateless"]
+    answer: 1
+    why: "With multiple chat servers, a message must be forwarded to the specific instance holding the recipient's connection."
+  - q: "Why order messages with per-conversation sequence numbers rather than wall-clock timestamps?"
+    options: ["Clock skew between servers can produce inconsistent ordering, which sequence numbers avoid", "Timestamps are too large to store alongside each message in the message store", "Sequence numbers let messages from different conversations share a single global order"]
+    answer: 0
+    why: "Independent server clocks skew, while a sequence number assigned at persistence time gives a deterministic order."
+  - q: "Why persist every message even when the recipient is online?"
+    options: ["The WebSocket push is unreliable, so persistence is only a fallback after push fails", "Persistence is needed only to track read receipts, not delivery or history", "Persistence supports offline delivery and history, while push supplies low latency; neither replaces the other"]
+    answer: 2
+    why: "Both paths happen together for every message: storage for offline and history, WebSocket for fast delivery."
 ---
 
 ## Why a chat system pulls together a different set of concepts than the URL shortener

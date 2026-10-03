@@ -13,6 +13,24 @@ banner:
     - [lock, "vault"]
     - [shield, "mTLS"]
     - [db, "encrypted data"]
+predict:
+  question: "A merchant leaves the payments platform, and its per-merchant KMS key is scheduled for deletion. What happens to its stored card data?"
+  options: ["It stays readable by database administrators", "It must be re-encrypted under a shared key first", "It becomes unreadable, which is crypto-erasure"]
+  answer: 2
+  why: "Data encrypted with a DEK wrapped by that key cannot be unwrapped once the key is gone."
+check:
+  - q: "Why use envelope encryption instead of encrypting all data directly with the KMS master key?"
+    options: ["Rotating the KEK re-wraps small DEKs rather than re-encrypting all data", "KMS cannot encrypt anything larger than a single database row", "DEKs avoid the need for any key to be audited"]
+    answer: 0
+    why: "The master key stays in the KMS and rotation touches only small wrapped keys."
+  - q: "Why is mTLS alone not enough in a zero-trust design?"
+    options: ["mTLS encrypts traffic but cannot identify the caller", "It proves who is calling, but separate authorization decides what they may do", "Authorization is automatic once certificates are issued"]
+    answer: 1
+    why: "Without policy, any authenticated service could call anything."
+  - q: "Why prefer short-lived dynamic credentials over static database passwords?"
+    options: ["They remove the need for a secret manager", "They are never logged, so audits are unnecessary", "A leaked credential has a short useful life"]
+    answer: 2
+    why: "An hour-long credential limits the damage from a leak, and rotation is automated."
 ---
 
 ## Perimeter security stopped working

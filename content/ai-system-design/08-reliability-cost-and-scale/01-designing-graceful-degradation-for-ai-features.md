@@ -14,6 +14,24 @@ banner:
     - [model, "primary"]
     - [cache, "cheaper model"]
     - [doc, "static reply"]
+predict:
+  question: "The primary model's error rate hits 40 percent and the circuit breaker opens, then the second provider starts rate-limiting under the extra load. What does the gateway shed first?"
+  options: ["Paid interactive requests, because they are the most expensive to serve on the second provider", "Nothing, because retrying every failed call against the primary will clear the backlog", "Batch summarisation jobs, plus a per-user token cap for free-tier users, protecting paid traffic"]
+  answer: 2
+  why: "Under overload the gateway rejects or defers low-priority work (batch, free tier) first so interactive paid traffic stays within capacity."
+check:
+  - q: "Why must every rung of a fallback ladder be evaluated for quality and not just implemented?"
+    options: ["An unchecked fallback model may fail worse than an honest error message would have", "Evaluation is what allows the circuit breaker to route any traffic to that rung", "Untested rungs are skipped by the gateway, so they never receive any traffic"]
+    answer: 0
+    why: "The lesson warns that a fallback model that has never been checked may fail worse than an honest error."
+  - q: "Why cap retries to a fraction of traffic and use backoff with jitter during an outage?"
+    options: ["Every retry adds latency, so fewer retries always means faster answers for users", "Unbounded retries can pile load onto a struggling dependency and turn a partial outage total", "Providers bill retried calls at a premium, so caps mainly protect the monthly budget"]
+    answer: 1
+    why: "Retry storms worsen an outage, so retries are budgeted and spread out."
+  - q: "The guardrail service goes down. What does the lesson say about how features should behave?"
+    options: ["Every feature fails open so availability is preserved, with the outage logged afterwards", "Every feature fails closed, because any bypass of safety checks is unacceptable", "High-risk features fail closed, while low-risk ones may fail open with logging"]
+    answer: 2
+    why: "The decision is explicit and risk-tiered: block high-risk features, allow low-risk ones with logging."
 ---
 
 ## The problem

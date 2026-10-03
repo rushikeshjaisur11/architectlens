@@ -16,6 +16,24 @@ banner:
     - [server, "connectors"]
     - [db, "run state"]
     - [queue, "triggers"]
+predict:
+  question: "The worker running the ERP step dies mid-call, and the engine retries the same attempt id. What happens?"
+  options: ["A duplicate payable is created because the ERP cannot tell the calls apart", "The ERP returns the existing record, so no duplicate is created", "The run restarts from the first step and re-extracts the invoice"]
+  answer: 1
+  why: "The idempotency key built from the email id lets the ERP return the existing record on retry."
+check:
+  - q: "Why persist run state after every step with stateless workers?"
+    options: ["A crash loses at most the in-flight step, which is simply retried", "It lets workers sleep during long waits without any timers", "It removes the need for idempotency keys on effectful steps"]
+    answer: 0
+    why: "The lesson says a worker crash loses at most the in-flight step, and durable timers replace sleeping workers."
+  - q: "Why pair a LangGraph checkpointer with a durable engine such as Temporal?"
+    options: ["Checkpointers cannot store any state about agent reasoning", "Snapshots alone do not detect failure or restart the run, so something must", "Temporal replaces the need for human approval steps"]
+    answer: 1
+    why: "Checkpointing is not durability: something must still detect failure, decide where to re-enter and restart the run."
+  - q: "Why use per-tenant queues and concurrency caps?"
+    options: ["They make each individual workflow run faster", "They guarantee exactly-once effects across tenants", "A workflow stuck in a loop cannot starve other tenants"]
+    answer: 2
+    why: "Isolation per tenant means one runaway workflow cannot consume shared capacity."
 ---
 
 ## The problem

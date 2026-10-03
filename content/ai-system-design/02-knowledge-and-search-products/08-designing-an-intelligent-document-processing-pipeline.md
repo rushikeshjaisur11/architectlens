@@ -8,6 +8,24 @@ sources:
   - "Public guidance on straight-through processing and confidence-based human review"
   - "Document parsing and OCR benchmark summaries, 2026 (secondary: reducto.ai, aimultiple.com, intuitionlabs.ai); vendor-run benchmarks"
   - "RealDocBench and PureDocBench (arXiv 2606.07401, 2605.07492)"
+predict:
+  question: "On an invoice, line items sum to 4,230.00 but the extracted total reads 4,280.00. What happens in the pipeline?"
+  options: ["The mismatch lowers confidence and a re-read of the total finds 4,230.00", "The invoice posts automatically because OCR confidence was high", "The invoice is rejected outright and the supplier is notified"]
+  answer: 0
+  why: "Cross-field validation catches the mismatch, lowers confidence and triggers a re-read; OCR had confused 3 and 8, so the corrected invoice then posts."
+check:
+  - q: "Why rely on validators such as sum checks and master-data lookups rather than trusting model output?"
+    options: ["Validators remove the need for an extraction schema", "Validators are cheaper and more reliable than hoping the model is right", "Validators make human review unnecessary for every field"]
+    answer: 1
+    why: "Format, cross-field and reference checks catch raw extraction errors deterministically and cheaply."
+  - q: "Why sample auto-accepted documents for quality audit?"
+    options: ["Sampling replaces the calibration of confidence thresholds", "Auto-accepted documents are never validated by rules", "Silent errors can hide behind high confidence that is not calibrated"]
+    answer: 2
+    why: "Documents that skip review can still be wrong, so sampling detects silent errors and checks that confidence reflects real accuracy."
+  - q: "Why use a hybrid extraction setup of specialised models for common types and an LLM for the long tail?"
+    options: ["Specialised models are cheap for high-volume types, while the LLM handles unseen layouts and hard cases", "LLMs cannot extract into a typed schema, so specialised models are required", "Specialised models never need validators"]
+    answer: 0
+    why: "A cheap specialised model suits high-volume formats, while an LLM flexibly handles new layouts at higher cost and with validation."
 ---
 
 ## The problem

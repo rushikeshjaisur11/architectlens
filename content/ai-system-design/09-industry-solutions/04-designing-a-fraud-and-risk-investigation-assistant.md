@@ -8,6 +8,24 @@ sources:
   - "Regulation and supervisory guidance on explainability of automated decisions in financial services (overview)"
   - "FinCEN, FIN-2024-Alert004 on deepfake media in fraud schemes (13 November 2024), fincen.gov"
   - "Secondary 2026 summaries on AI in AML, SAR volumes and explainability gaps (fintech.global, arXiv 2605.04076)"
+predict:
+  question: "An alert shows four transfers under $10,000 to new beneficiaries, and two beneficiaries share a device with accounts from a reported mule network. What does the assistant do?"
+  options: ["Closes the alert as benign, because each transfer is under the threshold", "Produces an evidence-linked summary and recommends escalation, and the analyst decides", "Files the regulatory report automatically, since the graph link is strong evidence"]
+  answer: 1
+  why: "The assistant assembles the case and recommends; the analyst checks evidence and decides."
+check:
+  - q: "Why implement investigations as playbook workflows instead of open-ended agents?"
+    options: ["Open agents cannot call tools, so workflows are the only way to run lookups", "Workflows let the LLM choose thresholds, which makes the narratives more fluent", "Steps, data and thresholds stay deterministic and reviewed, so it is cheaper and defensible"]
+    answer: 2
+    why: "Deterministic steps are more reliable, cheaper and easier to defend."
+  - q: "Why have the LLM summarise from structured graph results rather than raw data?"
+    options: ["Every narrative statement can then cite specific records and be verified", "Raw graph data is too large for any model to read, whatever the query", "Structured results spare the analyst from opening the case management system"]
+    answer: 0
+    why: "Summaries from structured results keep each claim tied to a verifiable record."
+  - q: "Why review a sample of summaries the assistant marked as benign?"
+    options: ["Benign cases are the cheapest to review, so they give the best throughput measure", "To catch missed risk, where suspicious cases were summarised as benign", "Benign samples feed straight into the detection layer's reason codes for training"]
+    answer: 1
+    why: "The lesson calls for reviewing missed risk as well as over-escalation."
 ---
 
 *Engineering patterns only; legal and regulatory duties differ by jurisdiction.*

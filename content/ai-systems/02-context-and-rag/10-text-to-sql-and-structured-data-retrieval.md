@@ -5,6 +5,24 @@ tags: ["text-to-sql", "structured-data", "semantic-layer", "rag", "analytics"]
 sources:
   - "Lei et al., 'Spider 2.0: Evaluating Language Models on Real-World Enterprise Text-to-SQL Workflows' (2024; ICLR 2025)"
   - "Jin et al., 'Text-to-SQL Benchmarks are Broken: An In-Depth Analysis of Annotation Errors' (CIDR 2026)"
+predict:
+  question: "A team picks a model scoring above 90% on the Spider benchmark and deploys it on a warehouse averaging ~800 columns per database. What accuracy should they expect?"
+  options: ["Close to 90%, since Spider scores transfer to any SQL warehouse", "Far lower, since Spider 2.0 reported ~21% for the best agent on enterprise tasks", "Exactly zero, because dialect differences make every query fail to run"]
+  answer: 1
+  why: "Public benchmarks do not predict your warehouse. Failures cluster in dialect functions, multi-step calculations and query planning."
+check:
+  - q: "Why define metrics in a semantic layer instead of letting the model query raw tables?"
+    options: ["Raw tables cannot be read by a model, and semantic layers can", "It removes the need for validation, since a semantic layer is always read-only", "Metrics are defined once, so analysts and the assistant report the same number"]
+    answer: 2
+    why: "Without it, the model may invent metrics that differ from the official definition."
+  - q: "Why give the model a handful of relevant tables via schema linking, not the full catalogue?"
+    options: ["A warehouse may hold thousands of tables, and pasting them all is a listed mistake", "Full catalogues are blocked by the validation step, which allows read statements", "The model reads column names only, so a full catalogue adds nothing useful"]
+    answer: 0
+    why: "Schema linking retrieves relevant tables and columns by embedding their descriptions and past successful queries."
+  - q: "Why execute generated SQL under the user's own read-only identity instead of a shared admin account?"
+    options: ["Admin accounts have statement timeouts that stop long queries from finishing", "An admin account bypasses row-level security, exposing rows the user may not see", "User identities run queries faster because their results are cached longer"]
+    answer: 1
+    why: "Execution should carry the user's permissions, plus a read-only role, timeout and cost cap."
 ---
 
 ## Why embeddings are the wrong tool for numbers

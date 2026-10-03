@@ -8,6 +8,24 @@ sources:
   - "Robots Exclusion Protocol (RFC 9309) and public crawler etiquette guidance"
   - "Tow Center for Digital Journalism (Columbia), study of citation accuracy in AI search engines (March 2025), as reported by Nieman Lab"
   - "Reports on publisher licensing and citation attribution in AI search, 2026 (secondary)"
+predict:
+  question: "For a rate decision, the press release and two reports say rates held at 4.25 percent, but a low-quality blog claims a cut. What happens in the answer engine?"
+  options: ["The blog is demoted by source-quality ranking and not used", "The blog is cited as an equal source because it is newest", "The answer refuses to give a rate until all sources agree"]
+  answer: 0
+  why: "Reranking uses source quality and corroboration, so the primary source and reputable reports lead and the blog claim is demoted and unused."
+check:
+  - q: "Why use a router to decide whether to search instead of searching on every message?"
+    options: ["Search results are never useful for time-sensitive questions", "Searching every message wastes time and money, while never searching hallucinates", "A router makes citation checks unnecessary for stable knowledge"]
+    answer: 1
+    why: "Searching everything is slow and costly, never searching invents facts, so a light router searches only time-sensitive or sourced questions."
+  - q: "Why give the generation step no tools that can exfiltrate or act, when pages may hide instructions?"
+    options: ["Tools make the selected passages exceed the context window size", "Citation markers cannot be produced whenever tools are enabled", "Fetched text is untrusted, so an injected instruction has nothing to act with"]
+    answer: 2
+    why: "Treating fetched text as data and removing tools limits the damage if a hidden instruction slips through."
+  - q: "Given studies finding AI search engines often fail to cite the correct source, how should citations be handled?"
+    options: ["As claims to verify, by checking each cited passage supports its sentence", "As proof, since the engine selected them from retrieved passages", "As optional, since users rarely click the source cards"]
+    answer: 0
+    why: "A citation is a claim, not proof, so entailment checks should confirm support and unsupported claims be dropped or softened."
 ---
 
 ## The problem

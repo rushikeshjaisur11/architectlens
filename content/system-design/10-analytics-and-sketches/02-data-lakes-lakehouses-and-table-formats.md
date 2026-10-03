@@ -14,6 +14,24 @@ banner:
     - [db, "table format"]
     - [server, "catalog"]
     - [client, "engines"]
+predict:
+  question: "After a GDPR erasure rewrite physically removes a user's rows, snapshot expiry is never run. Is the user's old data gone from storage?"
+  options: ["Yes, because the rewrite replaces every earlier copy of the files", "Yes, because deletion vectors are applied to all snapshots at once", "No, because older snapshots keep the old files alive until expired"]
+  answer: 2
+  why: "Old snapshots reference old data files, so those files remain until the snapshots are expired. That is why the example expires snapshots older than 7 days."
+check:
+  - q: "Several independent engines (Spark, Trino, Flink) must share the same tables. Why does the lesson point to Iceberg here?"
+    options: ["Iceberg is engine-neutral, with an open REST catalog many engines implement", "Iceberg stores data in a proprietary format that only those engines read", "Delta Lake cannot support deletion vectors or time travel at all"]
+    answer: 0
+    why: "Iceberg was designed to be engine-neutral and its REST catalog spec is widely implemented. Delta is recommended when the platform centres on Databricks."
+  - q: "Why commit streaming writes roughly every minute instead of every second?"
+    options: ["Object storage rejects more than one write per minute to a table", "Each commit adds metadata and small files, so frequent commits cause churn", "Snapshots can only be created on minute boundaries for time travel"]
+    answer: 1
+    why: "Very frequent commits multiply snapshots, metadata and tiny files, which slow reads and need more compaction."
+  - q: "Why do multiple writers need a shared catalog?"
+    options: ["The catalog stores the data files themselves, so engines need one copy", "Without it, each engine would need its own Parquet schema for the table", "It arbitrates concurrent commits, so writers do not conflict"]
+    answer: 2
+    why: "The catalog maps a table name to its current metadata and arbitrates concurrent commits. Without one, concurrent writers can conflict."
 ---
 
 ## Three generations of analytics storage

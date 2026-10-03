@@ -13,6 +13,24 @@ banner:
     - [server, "consumer"]
     - [shield, "retries"]
     - [queue, "DLQ"]
+predict:
+  question: "An order consumer retries a record that references a nonexistent customer_id. Without a DLQ, what happens to the records behind it in the partition?"
+  options: ["They are processed first, since Kafka reorders failed records", "They wait forever, since the failing record is retried each time", "They are dropped after the broker's redelivery limit is reached"]
+  answer: 1
+  why: "Kafka replays an uncommitted record on each poll, and ordered consumption means nothing behind it can proceed."
+check:
+  - q: "Why is Kafka's DLQ pattern implemented by the application rather than the broker?"
+    options: ["Offset management is explicit, so retry policy is the consumer's responsibility", "Kafka brokers cannot store records that failed processing", "Kafka topics cannot be created dynamically for failed records"]
+    answer: 0
+    why: "Unlike SQS or Service Bus, Kafka has no redrive policy; the consumer publishes to a DLQ topic and commits the offset."
+  - q: "What goes wrong if the retry threshold is set too low?"
+    options: ["Poison messages block the queue for longer before being isolated", "Transient failures get dead-lettered and need manual intervention", "Alerting on DLQ depth stops working until the threshold is raised"]
+    answer: 1
+    why: "A brief downstream timeout could dead-letter a message that would have succeeded on retry."
+  - q: "Why is a DLQ with no alerting 'functionally the same as data loss'?"
+    options: ["Dead-lettered messages expire immediately unless someone replays them", "Messages in a DLQ cannot be replayed once the original topic moves on", "Failed messages pile up unnoticed until someone happens to look"]
+    answer: 2
+    why: "A DLQ only preserves messages usefully if someone is notified about its depth and reviews it."
 ---
 
 ## The poison message problem

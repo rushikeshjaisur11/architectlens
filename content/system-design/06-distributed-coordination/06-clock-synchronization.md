@@ -15,6 +15,36 @@ banner:
     - [doc, "timestamps"]
     - [cloud, "time source"]
     - [server, "node B"]
+predict:
+  question: "Machine A's clock runs fast and machine B's runs slow. B writes a value causally after A's write. Under wall-clock last-write-wins, which survives?"
+  options:
+    - "A's older write wins, since its fast-clock timestamp is larger"
+    - "B's newer write wins, since NTP guarantees timestamps follow real time"
+    - "Both are kept as siblings, since timestamps from different machines cannot compare"
+  answer: 0
+  why: "Skew can exceed the real gap between writes, so a later timestamp is a wrong causality signal."
+check:
+  - q: "What does Spanner pay for external consistency with commit-wait?"
+    options:
+      - "Nothing, because TrueTime's interval is hidden from the commit path"
+      - "It removes the need for GPS and atomic clocks by waiting out any clock skew"
+      - "Latency equal to the uncertainty interval on every commit, in return for external consistency"
+    answer: 2
+    why: "Commit-wait directly adds the uncertainty interval to each commit."
+  - q: "Why would a team without atomic clocks pick hybrid logical clocks?"
+    options:
+      - "They give the same external consistency as TrueTime without any waiting or hardware"
+      - "They need no special hardware and stay close to NTP time while preserving causality"
+      - "They are pure logical counters, so they carry no relation to wall-clock time at all"
+    answer: 1
+    why: "HLCs combine a physical component with a logical counter, as CockroachDB does."
+  - q: "What is the trade-off of vector clocks over Lamport clocks?"
+    options:
+      - "They can tell concurrent events from causally related ones, but grow with process count"
+      - "Lamport clocks can detect concurrency too, and vector clocks only add wall-clock accuracy"
+      - "Vector clocks stay constant-size at any scale, which is why Dynamo adopted them"
+    answer: 0
+    why: "The vector gives concurrency detection at the cost of size growing with participants."
 ---
 
 ## Why clocks are a distributed systems problem

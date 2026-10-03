@@ -15,6 +15,24 @@ banner:
     - [model, "small"]
     - [model, "large"]
     - [db, "cost per task"]
+predict:
+  question: "Model A costs $5 per million output tokens and averages 300 output tokens per response. Model B costs $10 per million and averages 100. Which is cheaper per response on output cost?"
+  options: ["Model A, because its per-token rate is half of Model B's", "They cost the same, since output volume and rate offset exactly", "Model B, because its terser output costs less in total"]
+  answer: 2
+  why: "A is 300 x $5 = 1,500 units versus B at 100 x $10 = 1,000, so verbosity can outweigh a cheaper rate."
+check:
+  - q: "Why measure cost per successful output instead of cost per token?"
+    options: ["A cheaper model that needs retries or fails downstream can cost more per correct answer", "Token pricing changes too often to compare, whereas per-answer costs stay fixed over time", "Cost per token ignores input tokens, which are the larger share of most bills"]
+    answer: 0
+    why: "Retry loops and downstream failures make a cheap-per-token model look artificially attractive."
+  - q: "Why build your own eval set instead of picking a model from public leaderboards?"
+    options: ["Leaderboards only list flagship models, so mid-tier options can't be compared there", "General capability rankings don't transfer cleanly to narrow tasks like structured extraction", "Leaderboards are updated too slowly to reflect any change in provider pricing or tiers"]
+    answer: 1
+    why: "A model that wins general benchmarks can underperform a cheaper one on your specific task."
+  - q: "A router sends easy requests to a small model but has no escalation path on low confidence. What is the risk?"
+    options: ["Costs rise, since low-confidence requests are retried on the small model repeatedly", "The router itself becomes expensive, because it must score every request twice", "Worse answers ship silently, instead of paying for the upgrade only when needed"]
+    answer: 2
+    why: "Static routing without fallback trades quality for savings invisibly."
 ---
 
 ## The core mental model

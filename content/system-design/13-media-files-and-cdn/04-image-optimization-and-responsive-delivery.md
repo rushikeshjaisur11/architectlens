@@ -12,6 +12,24 @@ banner:
     - [server, "resize"]
     - [cdn, "CDN"]
     - [client, "srcset"]
+predict:
+  question: "A site uses on-the-fly image transformation. One specific 400px AVIF variant is requested 1,000 times. How many transformations run?"
+  options: ["1,000, because generated variants are never cached", "One; the CDN caches the variant after its first request", "Zero, because all variants are generated at upload time"]
+  answer: 1
+  why: "The first request pays the transform cost, then the cached variant serves every later request."
+check:
+  - q: "Why choose on-the-fly transformation for a platform whose UI crops keep changing?"
+    options: ["Pre-generation would store unused variants or need constant regeneration", "On-the-fly variants need no caching because transforms are nearly free", "Pre-generated variants cannot be served through a CDN layer"]
+    answer: 0
+    why: "The needed resolution and crop combinations are large and evolving, so generating on demand avoids wasted storage."
+  - q: "Why offer AVIF through picture with a JPEG fallback instead of AVIF only?"
+    options: ["JPEG decodes faster, so browsers prefer it whenever both are offered", "Some clients lack modern-format support and would get a broken experience", "AVIF is larger than JPEG at equal quality, so the fallback saves bytes"]
+    answer: 1
+    why: "Fallback avoids a compatibility gap that would trade real breakage for a small compression gain."
+  - q: "What is the downside of defining a very large set of srcset breakpoints?"
+    options: ["Browsers refuse to choose among more than a few variants", "Servers must guess the best resolution for each device", "Extra storage and cache fragmentation for marginal precision gain"]
+    answer: 2
+    why: "Too many breakpoints add storage and fragment the cache; too few make devices download excess data."
 ---
 
 ## Why serving one fixed image file to every device is wasteful

@@ -7,6 +7,24 @@ sources:
   - "LangChain / LangGraph documentation on context management (python.langchain.com)"
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
   - "Anthropic documentation, extended and adaptive thinking (fetched October 2026)"
+predict:
+  question: "A RAG pipeline retrieves 20 chunks \"to be safe\" when 5 would answer the query. How does this affect input tokens in the downstream calls?"
+  options: ["It costs about 4x the input tokens on every downstream call that carries those chunks", "It costs the same, because only the final answer step pays for retrieved chunk tokens", "It costs about 2x, since retrieval overhead is paid once and later steps reuse the cache"]
+  answer: 0
+  why: "20 chunks versus 5 is 4x the input tokens, paid by every downstream call, not just the retrieval step."
+check:
+  - q: "Why does an agent loop that appends every tool result to its context cost far more than per-step estimates suggest?"
+    options: ["Each new call re-processes the full history, so total tokens grow quadratically over the session", "Tool results are priced at the output rate, which multiplies the cost of each appended result", "The model re-reads only the latest result, but the framework bills every earlier call again"]
+    answer: 0
+    why: "Step n's prompt includes steps 1 through n-1, which compounds across the run."
+  - q: "Why set a hard total-run ceiling on tokens or steps for an agent, not just per-step caps?"
+    options: ["Per-step caps are ignored by providers, so only a run ceiling is enforced by the API", "A stuck loop could otherwise consume unbounded cost with no user-facing signal until the bill", "A run ceiling raises answer quality, because agents reason better with fewer total steps"]
+    answer: 1
+    why: "Per-step caps don't bound how many steps happen; a run-level ceiling with a forced termination path does."
+  - q: "Why track input and output tokens separately rather than a single total?"
+    options: ["Providers only report totals, so separating them requires estimating from prompt length", "Output tokens are priced several times higher, so a total hides where the dollars actually go", "Input tokens are free in most pipelines, so only output tokens need to be counted"]
+    answer: 1
+    why: "Different pricing means a combined total obscures which step drives the real cost."
 ---
 
 ## The core problem

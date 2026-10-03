@@ -13,6 +13,24 @@ banner:
     - [doc, "working"]
     - [db, "episodic"]
     - [db, "semantic"]
+predict:
+  question: "An assistant writes every message from months of chats into its vector store. What happens to retrieving a stated dietary restriction?"
+  options: ["It becomes harder to retrieve among a flood of low-value detail", "It improves, because more stored text gives more similarity matches", "It is unaffected, because similarity search ignores unrelated entries"]
+  answer: 0
+  why: "Indiscriminate writing makes the store noisy, which is why an explicit memory-writing step decides what is worth persisting."
+check:
+  - q: "Why not load a user's full preference history into every new session?"
+    options: ["It would break the vector store's similarity ranking", "It wastes context budget and dilutes relevant memories among irrelevant ones", "It is needed only for episodic memory, not for preferences"]
+    answer: 1
+    why: "Targeted retrieval, like RAG, keeps cost down and avoids the lost-in-the-middle effect."
+  - q: "Why is a MemGPT-style paging approach used over one-time context assembly?"
+    options: ["It removes the need for any long-term store", "It lets the context window hold the entire memory at once", "It can page information in and out as the task's needs shift"]
+    answer: 2
+    why: "A fixed assembly at task start cannot adapt as different information becomes relevant during a long task."
+  - q: "Why treat short-term context and long-term memory as different mechanisms?"
+    options: ["They serve different purposes and need different storage, retrieval and curation", "Short-term context is stored in vectors while long-term is not", "Long-term memory is the same data, only kept in a larger window"]
+    answer: 0
+    why: "Immediate task state versus durable cross-session knowledge; treating them identically means neither job is done well."
 ---
 
 ## Why "memory" for an agent is a real design problem, not just context history

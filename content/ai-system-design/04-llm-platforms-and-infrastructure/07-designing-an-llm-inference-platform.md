@@ -16,6 +16,24 @@ banner:
     - [lb, "scheduler"]
     - [gpu, "GPU pool"]
     - [client, "stream"]
+predict:
+  question: "Agent-loop traffic with 6,000-token shared contexts hits 8 GPUs. How does P90 time-to-first-token compare between routing policies?"
+  options: ["It is similar, since continuous batching hides prefix reuse", "Load-only routing reaches roughly 92 to 95 s, versus 0.54 s for precise prefix-aware", "Load-only routing is faster because it spreads work evenly over replicas"]
+  answer: 1
+  why: "In the cited llm-d benchmark, precise prefix-aware routing gave 0.54 s P90 TTFT against about 92 to 95 s for load-only or random routing, with about twice the throughput."
+check:
+  - q: "Why scale GPU replicas on queue depth or tokens in flight rather than GPU utilisation?"
+    options: ["Utilisation cannot be measured separately for each model replica", "Queue depth is cheaper to collect than any GPU-level metric", "Utilisation lags, and with minutes-long cold starts it reacts too late"]
+    answer: 2
+    why: "Cold starts take minutes, so scaling must follow leading indicators; autoscaling on utilisation alone reacts too late."
+  - q: "What does prefill/decode disaggregation buy you, according to the lesson?"
+    options: ["Independent tuning of first-token and inter-token latency, not extra throughput", "Higher throughput, since decode work is spread over more GPUs", "Faster cold starts, since prefill pools stay permanently warm"]
+    answer: 0
+    why: "vLLM documents that it lets you tune TTFT and inter-token latency independently and protects decode from prefill interruptions, but does not improve throughput."
+  - q: "Why use admission control with bounded queues and retry hints under overload?"
+    options: ["Rejection frees reserved KV-cache memory for requests already running", "Without limits, overload turns into minute-long latencies for everyone", "Queues are slower than rejecting, so limits only matter for batch jobs"]
+    answer: 1
+    why: "The lesson lists no admission control as a mistake: overload then collapses latency, whereas bounded queues and clear rejections keep it predictable."
 ---
 
 ## The problem

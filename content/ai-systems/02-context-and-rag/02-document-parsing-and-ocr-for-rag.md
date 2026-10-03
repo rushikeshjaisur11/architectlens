@@ -6,6 +6,24 @@ sources:
   - "Document parsing and OCR benchmark summaries, 2026 (secondary; vendor-run: reducto.ai, aimultiple.com, intuitionlabs.ai)"
   - "RealDocBench (arXiv 2606.07401) and PureDocBench (arXiv 2605.07492), document parsing benchmarks (2026)"
   - "Anthropic, 'Introducing Contextual Retrieval' (fetched October 2026)"
+predict:
+  question: "An insurer routes digital pages to text-layer extraction, scans to an OCR parser, and only the ~8% of pages with complex tables or stamps to a vision model. What happens to parsing cost per page?"
+  options: ["It stays low, because the expensive model only sees the hard pages", "It roughly doubles, because three parsers must be run and reconciled", "It rises with page count, because vision is needed to verify every page"]
+  answer: 0
+  why: "Routing by difficulty keeps the costly method for a small share of pages, so per-page cost stays low while recall rose from 58% to 81%."
+check:
+  - q: "A 40-row financial table is chunked and one chunk holds rows 21 to 25 without the header row. Why is that chunk a problem?"
+    options: ["The numbers no longer say what they mean, so retrieval returns unusable values", "Five rows are too short for any embedding model to produce a vector from", "The chunk will always be ranked below chunks taken from the table's first rows"]
+    answer: 0
+    why: "Without the header, \"42\" no longer means anything like \"revenue in 2023\". Store the header with every chunk or index per-row text."
+  - q: "A vendor benchmark ranks parser A first on tables. What should an architect do before adopting it?"
+    options: ["Adopt it, since the vendor's own benchmark is the best evidence available", "Run a bake-off on the worst 200 documents, because rankings vary by document type", "Pick the most expensive parser, since price reliably tracks table accuracy"]
+    answer: 1
+    why: "Benchmarks are mostly vendor-run and disagree, so the only safe conclusion is that ranking depends on document type."
+  - q: "Why record the parser name and version with every chunk?"
+    options: ["It lets embeddings be computed faster on chunks from newer parsers", "Citations need the parser name to be shown beside every quoted source", "A parser upgrade is a re-indexing event, so you must know which chunks are stale"]
+    answer: 2
+    why: "Without version tracking nobody knows which documents were parsed with the older, weaker method."
 ---
 
 ## Garbage in, garbage retrieved

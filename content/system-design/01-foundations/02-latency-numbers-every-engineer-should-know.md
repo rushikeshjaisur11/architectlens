@@ -13,6 +13,24 @@ banner:
     - [db, "RAM ~100ns"]
     - [server, "SSD ~100us"]
     - [cloud, "WAN ~150ms"]
+predict:
+  question: "An operation needs ten sequential round trips at 50 ms each. An alternative does one round trip carrying ten times the payload. Which is faster?"
+  options: ["The ten sequential trips, since each one moves less data", "The single trip, since fixed round-trip latency dominates at these sizes", "They tie, since the total bytes moved are the same either way"]
+  answer: 1
+  why: "Ten trips cost 500 ms, while one larger trip costs roughly one round trip, because latency rather than bandwidth dominates at these sizes."
+check:
+  - q: "A service makes synchronous cross-region calls on its hot path. Why is it slow even with fast code?"
+    options: ["Cross-region calls are slow mainly because of inefficient serialization code", "Cross-region latency disappears once the service runs on SSD-backed storage", "Each cross-region call costs about 50-150 ms, which dominates however fast the code is"]
+    answer: 2
+    why: "Network round trips of tens to hundreds of milliseconds swamp local compute, which is the argument for data locality and regional deployment."
+  - q: "Why do LSM trees and write-ahead logs favor sequential writes?"
+    options: ["Random I/O pays a full seek or access penalty on each small operation", "Sequential writes use less memory than random writes on any hardware", "Random writes are not supported by SSDs or spinning disks at all"]
+    answer: 0
+    why: "Random access pays an access penalty each time, so sequential I/O is dramatically cheaper per byte."
+  - q: "Why memorize ratios between tiers rather than exact nanosecond figures?"
+    options: ["Exact figures are never useful, so only ratios can feed into designs", "Hardware changes yearly, but orders of magnitude between tiers stay stable", "Ratios stay exact across hardware generations, unlike the absolute numbers"]
+    answer: 1
+    why: "Absolute numbers shift with hardware, while the relative gaps, such as RAM versus SSD or same-datacenter versus cross-region, age well."
 ---
 
 ## Why this matters

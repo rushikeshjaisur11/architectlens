@@ -5,6 +5,24 @@ tags: ["storage-engines", "databases", "b-trees", "lsm-trees"]
 sources:
   - "Martin Kleppmann, 'Designing Data-Intensive Applications' (2017), chapter on storage and retrieval"
   - "RocksDB and PostgreSQL documentation on storage engine internals"
+predict:
+  question: "A node ingests millions of small events per second, each key written once and rarely read. Which write path fits this best?"
+  options: ["B-Tree, because each event updates its page in place sequentially", "LSM-Tree, because each write is an append to the memtable then a flush", "B-Tree, because page splits are cheap enough to match append speed"]
+  answer: 1
+  why: "LSM writes are sequential appends and never in-place random writes, so they have a higher throughput ceiling for append-heavy event data."
+check:
+  - q: "A team picks an LSM-Tree database for a read-heavy workload with rare writes. What do they mostly get?"
+    options: ["Extra read amplification and compaction cost, with no write benefit", "Faster range scans, since SSTables are sorted on disk", "Lower space use, since old versions merge away immediately"]
+    answer: 0
+    why: "The lesson names this as a common mistake: the read-side costs arrive without the write-throughput gain that justifies them."
+  - q: "Why do Bloom filters not fully remove the read cost of an LSM-Tree?"
+    options: ["They only speed up range scans, so point lookups still check every file", "They add false negatives, so reads fall back to scanning every file", "They skip files that cannot hold the key, but a lookup may still probe several"]
+    answer: 2
+    why: "A Bloom filter only rules out SSTables that definitely lack the key; the key may still live in the memtable or several SSTables."
+  - q: "Compaction falls behind during a sustained write burst on an LSM system. What is the likely outcome?"
+    options: ["Writes degrade to in-place updates until compaction catches back up", "SSTables pile up unchecked and latency becomes unpredictable", "Reads get faster because more files means more Bloom filters"]
+    answer: 1
+    why: "Compaction keeps SSTable count manageable; when it lags, file count grows and latency spikes (compaction storms)."
 ---
 
 ## The problem both structures solve

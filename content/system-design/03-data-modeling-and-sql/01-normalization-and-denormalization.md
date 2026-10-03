@@ -12,6 +12,24 @@ banner:
     - [server, "joins"]
     - [doc, "denormalized"]
     - [client, "fast read"]
+predict:
+  question: "An orders row copies shipping_address at purchase time. Months later the customer moves and edits their profile. What happens to the old order's stored address?"
+  options: ["It stays as the purchase-time snapshot, which is the correct value", "It must be backfilled, or the old order shows wrong data", "It updates itself because the customer row changed"]
+  answer: 0
+  why: "The shipping address is a snapshot of a moment, so duplicating it is correct and the old order should keep the original value."
+check:
+  - q: "A team wants to copy each customer's current plan tier onto every historical event row to speed up a dashboard. What is the main risk?"
+    options: ["Duplicated tiers never change, so the copies cannot drift", "Each plan change needs a backfill across all referencing rows", "Joins become slower because the tier column is duplicated"]
+    answer: 1
+    why: "Tier changes after creation and old rows must reflect it, so duplication recreates the update anomaly normalization avoids."
+  - q: "Why does the lesson say to normalize by default and denormalize only for a specific slow query?"
+    options: ["Speculative denormalization adds write complexity for a problem that may never occur", "Denormalized tables cannot be indexed, so reads get slower later", "Normalized schemas are always faster to read than copies"]
+    answer: 0
+    why: "Denormalizing before measuring pays update-anomaly cost with no proven benefit."
+  - q: "A trigger that populates the order_summary read table silently stops working. What is the likely outcome?"
+    options: ["The normalized source tables become inconsistent with each other", "The dashboard keeps serving stale data while source tables stay correct", "The dashboard fails immediately with a join error on every read"]
+    answer: 1
+    why: "Derived copies go stale if their refresh mechanism breaks, while the normalized system of record is unaffected."
 ---
 
 ## What normalization actually buys you

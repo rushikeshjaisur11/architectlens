@@ -13,6 +13,24 @@ banner:
     - [doc, "REST"]
     - [doc, "gRPC"]
     - [doc, "GraphQL"]
+predict:
+  question: "A GraphQL query fetches 50 posts and each post's author is resolved by its own database query. How many queries run?"
+  options: ["About 51: one for the list plus one per post's author", "Exactly 2, because GraphQL batches resolver calls itself", "Exactly 1, because a single request makes one database call"]
+  answer: 0
+  why: "This is the N+1 problem; without a batching tool such as Dataloader, each resolver issues its own query."
+check:
+  - q: "Why is gRPC used mostly for internal traffic rather than public browser APIs?"
+    options: ["Protocol Buffers are too slow to parse at public traffic volumes", "Browsers need a gRPC-Web proxy, which erodes its performance advantage", "HTTP/2 multiplexing causes head-of-line blocking for external clients"]
+    answer: 1
+    why: "Browsers cannot call gRPC directly, so a translation layer is required, undermining the reason for choosing it."
+  - q: "A team with two stable screens wants GraphQL to future-proof its API. What does the lesson advise?"
+    options: ["Adopt it, since over-fetching always appears eventually at any scale", "Adopt it, because URL-based caching is easier in GraphQL than REST", "Wait until over-fetching is a measured pain, since N+1 and caching add cost"]
+    answer: 2
+    why: "GraphQL moves complexity server-side, and it is not worth it until over- or under-fetching is an actual problem."
+  - q: "What does skipping OpenAPI on a REST API forgo?"
+    options: ["A schema contract like gRPC's .proto, which REST allows but doesn't force", "Browser compatibility, since REST only works with a published schema", "HTTP caching, since ETags require an OpenAPI specification to work"]
+    answer: 0
+    why: "OpenAPI gives REST the contract benefits of a .proto file; skipping it is a self-inflicted wound rather than a property of REST."
 ---
 
 ## Three answers to the same question

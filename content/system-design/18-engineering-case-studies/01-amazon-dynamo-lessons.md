@@ -11,6 +11,24 @@ banner:
     - [server, "vector clocks"]
     - [server, "quorum"]
     - [server, "hinted handoff"]
+predict:
+  question: "Two replicas are partitioned. One accepts 'add item A' to a cart and the other accepts 'add item B'. What does Dynamo do?"
+  options: ["Accepts both writes, returns both versions later, and the app merges them", "Rejects the second write to avoid creating divergent cart versions", "Keeps the write with the later timestamp and drops the other one"]
+  answer: 0
+  why: "Dynamo is always-writable: it accepts both writes, detects the conflict, and hands both versions to the application, which merges by union of items."
+check:
+  - q: "Why use vector clocks instead of last-write-wins timestamps?"
+    options: ["Timestamps need more metadata per write than vector clocks do", "Last-write-wins silently drops a concurrent update that was not stale", "Vector clocks let Dynamo reject conflicting writes at write time"]
+    answer: 1
+    why: "Vector clocks distinguish a newer version from a truly concurrent one, while last-write-wins discards an update even when it was merely concurrent."
+  - q: "Why does Dynamo use sloppy quorums with hinted handoff?"
+    options: ["Writes keep succeeding by landing on a reachable stand-in node", "Exactly the N designated nodes must hold each write immediately", "Writes block until the intended replica becomes reachable again"]
+    answer: 0
+    why: "If an intended replica is unreachable, another node holds the data temporarily and hands it off later, preferring to accept the write now."
+  - q: "Which adoption does the case study warn is a mistake?"
+    options: ["Partitioning data across nodes with consistent hashing", "Replicating each key to N nodes for redundancy", "Choosing eventual consistency with no application-level merge plan"]
+    answer: 2
+    why: "Dynamo worked because the cart had a safe merge strategy; eventual consistency without reconciliation just leaves silently inconsistent data."
 ---
 
 ## The business problem behind the technical one

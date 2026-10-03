@@ -6,6 +6,24 @@ sources:
   - "Pelkonen et al., 'Gorilla: A Fast, Scalable, In-Memory Time Series Database' (VLDB 2015, Facebook)"
   - "Prometheus documentation, storage and data model, prometheus.io"
   - "InfluxDB, TimescaleDB and VictoriaMetrics documentation on storage engines and retention"
+predict:
+  question: "A metric has 3 services x 5 regions x 4 statuses. A developer adds a `user_id` label with 1 million values. Roughly how many series result?"
+  options: ["About 1 million, since the original 60 series barely add to it", "About 60 million, since labels multiply together", "About 60 thousand, since most combinations never occur"]
+  answer: 1
+  why: "Each unique label combination is a new series, so 60 x 1,000,000 gives 60 million. That is how unbounded labels exhaust memory."
+check:
+  - q: "Why store histograms or sketches when downsampling instead of pre-averaged values?"
+    options: ["Averages of averages give wrong percentiles, so the distribution must be kept", "Histograms take fewer bytes per point than a single stored average", "Averages cannot be computed once raw data is older than 30 days"]
+    answer: 0
+    why: "Pre-averaged data loses the distribution, so percentiles computed from it are wrong. Histograms or t-digests preserve what you will query."
+  - q: "Why does delta-of-delta compression work so well for timestamps?"
+    options: ["Timestamps are random, so storing differences hides their true values", "Scrapes arrive at near-constant intervals, so the second difference is usually zero", "Timestamps are stored once per block, so no per-point values are needed"]
+    answer: 1
+    why: "With a 15-second scrape, the second difference is typically zero and takes one bit. This regularity is the basis of the compression."
+  - q: "Where should request-level high-cardinality data such as request IDs go?"
+    options: ["Into a label, since each series is indexed for fast lookup", "Into raw-resolution storage, since downsampling removes unique IDs", "Into logs or traces, since TSDB cost scales with distinct series"]
+    answer: 2
+    why: "A TSDB's cost scales with the number of distinct series. Unbounded values belong in logs or traces, and active series should be limited."
 ---
 
 ## A workload with its own shape

@@ -5,6 +5,24 @@ tags: ["stream-processing", "async", "data-pipelines"]
 sources:
   - "Apache Flink and Kafka Streams documentation on windowing and event time"
   - "Martin Kleppmann, 'Designing Data-Intensive Applications' (2017), chapter on stream processing"
+predict:
+  question: "A mobile client buffers events offline for an hour, then sends them. A dashboard uses processing time. What does it show?"
+  options: ["The events counted at their original times from an hour ago", "The events dropped, since they arrived after the window closed", "A false spike now, as delayed events look like current activity"]
+  answer: 2
+  why: "Processing-time aggregation attributes the burst to the moment of arrival, not when it actually happened."
+check:
+  - q: "Why does a watermark tolerance set too loose hurt?"
+    options: ["It drops valid late events, so counts are permanently too low", "It delays every window's result even when most data arrived on time", "It forces the system to switch from event time to processing time"]
+    answer: 1
+    why: "A loose watermark holds windows open longer than the data requires."
+  - q: "When is batch processing the better choice over streaming?"
+    options: ["When the result does not need low latency, because batch is simpler and cheaper", "When events arrive out of order, since batch ignores event time", "When data is unbounded, because batch handles never-ending input"]
+    answer: 0
+    why: "The lesson says batch stays simpler and cheaper for anything that does not genuinely need freshness."
+  - q: "Why pick a sliding window over a tumbling window for the wait-time dashboard?"
+    options: ["Each event belongs to one window, which cuts computation", "Sliding windows close on inactivity, matching rider behavior", "It updates smoothly, at the cost of events counting in multiple windows"]
+    answer: 2
+    why: "Sliding windows refresh continuously, while tumbling windows only jump once per interval."
 ---
 
 ## Batch and stream processing solve the same problem on different timescales

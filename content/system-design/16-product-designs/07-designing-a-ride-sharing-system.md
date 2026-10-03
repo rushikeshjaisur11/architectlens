@@ -13,6 +13,24 @@ banner:
     - [server, "dispatch"]
     - [db, "geo index"]
     - [phone, "driver"]
+predict:
+  question: "5 million drivers send a location update every 4 seconds, while ride requests peak in the tens of thousands per second. Which load dominates?"
+  options: ["Ride requests, since each triggers matching, pricing and payment", "Location ingestion, at about 1.25 million writes per second", "Both are roughly equal, so the design should split capacity evenly"]
+  answer: 1
+  why: "5M drivers / 4 seconds gives about 1.25 million writes per second, far above ride requests."
+check:
+  - q: "Why can the driver location index live in memory without durable per-update storage?"
+    options: ["Each update overwrites the last, and a failed shard recovers when drivers re-send positions", "The trip service replays full location history to rebuild the index after a failure", "Location accuracy is irrelevant to matching, so losing it is harmless"]
+    answer: 0
+    why: "The data is ephemeral and self-healing within seconds, so heavy durability would be pointless write load."
+  - q: "Why claim a driver with an atomic conditional update during matching?"
+    options: ["It guarantees the nearest driver is always the one chosen", "Without it, two concurrent matches could both pick one driver, double-booking them", "It prevents drivers from declining offers once they are sent"]
+    answer: 1
+    why: "Reserving only if currently available means one match succeeds and the other picks another driver."
+  - q: "Why store trip state in a replicated database while locations are ephemeral?"
+    options: ["Trip updates are more frequent than location updates, so they need bigger storage", "Trip state transitions need ordering that in-memory stores cannot provide", "The trip record drives billing and disputes, so it must not be lost"]
+    answer: 2
+    why: "Money depends on trip state, whereas location is simply overwritten by the next update."
 ---
 
 ## Requirements

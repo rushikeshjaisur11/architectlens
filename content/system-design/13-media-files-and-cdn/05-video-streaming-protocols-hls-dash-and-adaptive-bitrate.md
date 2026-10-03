@@ -13,6 +13,24 @@ banner:
     - [doc, "HLS/DASH"]
     - [cdn, "CDN"]
     - [client, "ABR player"]
+predict:
+  question: "A train enters a tunnel and throughput collapses while the buffer drains from 20 s toward 8 s. What does the player do?"
+  options: ["Pauses with a spinner until throughput fully recovers", "Steps down to a lower rendition such as 240p so segments outpace playback", "Asks the server to lower the stream's bitrate for this connection"]
+  answer: 1
+  why: "The player, not the server, picks renditions; dropping a rung keeps segments downloading faster than they play."
+check:
+  - q: "Why not simply use 2-second segments everywhere?"
+    options: ["Short segments cannot be cached by a CDN at all", "They raise request count, manifest size and per-segment overhead", "They stop the player from switching renditions mid-playback"]
+    answer: 1
+    why: "Short segments adapt faster but cost efficiency; many VOD systems settle on 4 to 6 seconds."
+  - q: "Why does HLS/DASH streaming scale to millions of viewers?"
+    options: ["A dedicated streaming server holds one long connection per viewer", "The CDN chooses each viewer's bitrate so the origin does little", "Segments are static HTTP files that edge caches serve like any object"]
+    answer: 2
+    why: "Streaming is a static-file problem, not a stateful connection problem, which is why CDNs make it scale."
+  - q: "Why give live manifests very short cache lifetimes but cache old VOD segments for long?"
+    options: ["Live manifests change constantly, and stale ones leave viewers on old playlists", "VOD segments are small, so caching them for long costs the edge little", "Live manifests are encrypted, so edges cannot store them for long"]
+    answer: 0
+    why: "A long-cached live manifest would hide new segments, while finished VOD segments never change."
 ---
 
 ## Streaming over plain HTTP

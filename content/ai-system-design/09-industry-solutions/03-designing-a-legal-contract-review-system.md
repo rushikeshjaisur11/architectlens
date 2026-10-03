@@ -9,6 +9,24 @@ sources:
   - "ABA Formal Opinion 512, Generative Artificial Intelligence Tools (July 2024)"
   - "Court sanction trackers and press reports on AI-hallucinated filings, 2026 (secondary: Newsweek, legal AI trackers)"
   - "Stanford HAI / RegLab study of hallucination in legal AI research tools (2024), as cited in secondary 2026 summaries"
+predict:
+  question: "A supplier contract caps liability at 100 percent of annual Charges, excluding data breaches. The playbook requires 150 percent plus a data-breach super-cap. What does the system output?"
+  options: ["Marks it non-compliant, quotes both passages and proposes fallback language as a draft", "Rewrites the clause with the preferred language and applies the edit as final", "Marks it acceptable, since 100 percent is common for fee-based caps"]
+  answer: 0
+  why: "The system flags the deviation with quotes and proposes approved fallback text marked as a draft for the lawyer."
+check:
+  - q: "Why give the model definitions and cross-referenced sections along with the clause?"
+    options: ["Isolated paragraphs exceed the context window, so definitions pad the input to the limit", "Meaning depends on defined terms, cross-references and precedence, so a lone paragraph misleads", "Definitions are needed only for portfolio queries, not for single-contract review"]
+    answer: 1
+    why: "Contracts are not free text; the clause alone can be misread without what it depends on."
+  - q: "Why is 'no termination for convenience clause found' risky as a conclusion?"
+    options: ["Absence conclusions become legally binding once the system reports them", "Retrieval returns fewer results on long contracts, so absence is the usual outcome", "It may reflect a retrieval miss, so the system must list sections searched, including schedules"]
+    answer: 2
+    why: "Absence must be a justified conclusion, not a failure to retrieve."
+  - q: "Why verify programmatically that quoted text exists in the document?"
+    options: ["Paraphrased or invented text would otherwise pass as evidence of a finding", "Quote checks measure consistency between two passes over the same clause", "Quote checks replace lawyer sign-off on low-risk clauses to save time"]
+    answer: 0
+    why: "Quote-level grounding stops hallucinated or paraphrased evidence from reaching the lawyer."
 ---
 
 *Engineering patterns only; this is not legal advice, and professional responsibility rules apply to legal work.*

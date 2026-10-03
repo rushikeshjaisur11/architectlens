@@ -14,6 +14,24 @@ banner:
     - [shield, "detector"]
     - [server, "mask"]
     - [db, "vault"]
+predict:
+  question: "A team redacts PII in live requests before they reach the model, but their tracing tool records each prompt before the redaction step runs. Where does raw PII persist?"
+  options: ["Nowhere, because the model never sees the raw text and so nothing is stored", "In the model's weights only, since the trace is discarded after redaction completes", "In the trace store, which holds a second, unguarded copy of the raw prompt"]
+  answer: 2
+  why: "Redaction after logging only changes what the model saw, not what persisted; observability pipelines are a common leak path."
+check:
+  - q: "Why combine regex, NER and an optional LLM pass instead of using only an LLM detector?"
+    options: ["Regex and NER are always more accurate than LLMs, so an LLM pass adds nothing", "Regex is cheap and precise on structured types, while the LLM adds cost and latency", "An LLM detector can't find names, so NER is required to cover that PII category"]
+    answer: 1
+    why: "Layering puts cheap high-precision detectors first and reserves the slower, costlier LLM call for ambiguous or domain-specific cases."
+  - q: "Why prefer pseudonymization over plain masking for a summarization pipeline?"
+    options: ["Masking is irreversible and pseudonymization is not, so only pseudonymization meets privacy law", "Consistent fake values keep referential structure, so the model can still tell people apart", "Pseudonymization removes the need for a mapping table, which reduces the security surface"]
+    answer: 1
+    why: "Identical placeholders destroy coherence; consistent pseudonyms preserve it and can allow reversal via a secure mapping."
+  - q: "A team ships a PII detector without measuring it on representative traffic. What failure modes does the lesson predict?"
+    options: ["Missed PII goes unnoticed until an incident, and over-redaction silently degrades task quality", "Only over-redaction appears, since detectors by default err toward flagging too much text", "Only missed PII appears, because over-redaction is caught automatically by downstream tasks"]
+    answer: 0
+    why: "Without precision/recall measurement, both false negatives and false positives stay hidden."
 ---
 
 ## Why LLM pipelines need their own PII layer

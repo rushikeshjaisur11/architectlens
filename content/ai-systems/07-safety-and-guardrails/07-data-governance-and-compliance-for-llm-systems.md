@@ -15,6 +15,24 @@ banner:
     - [shield, "policy"]
     - [doc, "lineage"]
     - [user, "auditor"]
+predict:
+  question: "A customer disputes a wrong answer. The team logged only the final output text, not the retrieved documents or model version. What can the audit establish?"
+  options: ["What the system said, but not why, because the context behind the answer is missing", "Both what and why, since the output text alone reveals the retrieved sources", "Neither, because an output-only log is rejected as evidence of any kind"]
+  answer: 0
+  why: "Without retrieved context, tool calls and version, a log answers what but not why, and the decision can't be reproduced or defended."
+check:
+  - q: "Why not keep one undifferentiated log store with long retention for everything?"
+    options: ["Long retention raises storage costs, but breach exposure depends only on log volume", "Regulators prohibit retaining operational logs, so they must live in a separate region", "Debug data with raw PII would sit at compliance retention, raising breach exposure without aiding auditability"]
+    answer: 2
+    why: "Separating operational from compliance logs avoids over-retaining sensitive debug data while keeping what regulation requires."
+  - q: "Why log which exact model and prompt version served each request, not just the model name?"
+    options: ["Provider models can silently change behavior at a fixed name, so reproducing a decision needs the actual version", "Model names are reused across vendors, so a name alone can't identify the provider", "Version logging is needed only to calculate per-request cost for billing"]
+    answer: 0
+    why: "Version pinning and logging make a later 'why did it say that' investigation possible at all."
+  - q: "Production logs are proposed as fine-tuning data. What does the lesson say about that reuse?"
+    options: ["It is cleared automatically, since the data was already lawfully collected for serving", "It needs its own consent and governance check, since a new purpose is a distinct legal basis", "It is allowed if the logs are first moved from operational to compliance retention"]
+    answer: 1
+    why: "Data collected to serve a request isn't automatically cleared for model improvement under most privacy frameworks."
 ---
 
 ## Why LLM systems need governance beyond standard app logging

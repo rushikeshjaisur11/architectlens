@@ -13,6 +13,24 @@ banner:
     - [shield, "SLO"]
     - [doc, "error budget"]
     - [user, "release gate"]
+predict:
+  question: "An API has a 99.9% SLO over 30 days and serves 10 million requests. About how many failed requests use up the whole error budget?"
+  options: ["About 1,000 failed requests", "About 10,000 failed requests", "About 100,000 failed requests"]
+  answer: 1
+  why: "0.1% of 10 million requests is 10,000 allowed failures."
+check:
+  - q: "Why target something below 100% availability?"
+    options: ["100% is unachievable and costly, and users cannot tell the gap", "Regulators forbid promising 100% availability in contracts", "Error budgets only work if the SLI is measured as an average"]
+    answer: 0
+    why: "Users cannot tell 99.99 from 100 once their own network is included, so the lowest satisfying target is cheapest."
+  - q: "Why set the SLA looser than the internal SLO?"
+    options: ["It lets the SLA use a longer window than the SLO does", "It leaves room to react before penalties or refunds are owed", "It removes the need to track an error budget internally"]
+    answer: 1
+    why: "An SLO equal to the SLA leaves no margin to fix problems before paying penalties."
+  - q: "Why alert on burn rate instead of 'error rate above 0.1%'?"
+    options: ["It pages less often because it ignores latency entirely", "It fires only after the budget is fully exhausted", "It compares consumption pace to the window, cutting noisy blip alerts"]
+    answer: 2
+    why: "Burn rate shows how fast the budget is being spent, so fast and slow burns can be separated."
 ---
 
 ## Three terms that are easy to confuse

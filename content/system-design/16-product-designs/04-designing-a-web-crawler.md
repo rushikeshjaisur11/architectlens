@@ -11,6 +11,24 @@ banner:
     - [server, "fetcher"]
     - [server, "parser"]
     - [db, "index"]
+predict:
+  question: "Thousands of crawler workers each send a modest request rate, all to the same domain, under a reasonable global limit. What happens?"
+  options: ["The domain receives overwhelming aggregate load despite a reasonable system-wide rate", "Each worker's modest rate keeps the domain safe, so nothing bad happens", "The robots.txt crawl-delay automatically throttles all workers to a safe rate"]
+  answer: 0
+  why: "A global limit doesn't protect any single site; the limit must be keyed per domain."
+check:
+  - q: "What tradeoff does a Bloom filter for seen URLs accept compared with an exact hash set?"
+    options: ["It occasionally re-crawls a URL because it can report a seen URL as definitely not seen", "It can skip a genuinely new URL on a false positive, in exchange for far less memory", "It cannot answer membership for URLs, so it is used only for content deduplication"]
+    answer: 1
+    why: "False positives occasionally skip a new URL, judged acceptable given the large memory savings at this scale."
+  - q: "Why rank discovered URLs in a priority queue rather than a plain FIFO order?"
+    options: ["FIFO queues cannot be distributed across workers, but priority queues can", "Plain ordering treats all URLs equally, so low-value or trap URLs eat budget valuable pages need", "A priority queue removes the need for deduplication since high-score URLs are unique"]
+    answer: 1
+    why: "Prioritization plus trap heuristics stops pathological or low-value URLs from consuming crawl budget."
+  - q: "URL deduplication already exists, so why also hash page content or use SimHash?"
+    options: ["Different URLs can serve duplicate or near-duplicate content that URL checks cannot catch", "Bloom filter false positives would otherwise let duplicate URLs through", "robots.txt forbids fetching the same content from more than one URL"]
+    answer: 0
+    why: "Content deduplication catches mirrors, parameter variants and syndicated copies, a different redundancy from repeated URLs."
 ---
 
 ## Why a web crawler exercises a different set of concepts than the earlier product designs

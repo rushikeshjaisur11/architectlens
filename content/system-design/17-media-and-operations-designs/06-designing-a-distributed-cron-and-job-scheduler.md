@@ -6,6 +6,24 @@ sources:
   - "Google SRE Book, chapter 'Distributed Periodic Scheduling with Cron'"
   - "Kubernetes documentation on CronJobs (concurrencyPolicy, startingDeadlineSeconds)"
   - "Apache ZooKeeper and etcd documentation on leader election"
+predict:
+  question: "The old leader stalls at 02:00:05, and a new leader at 02:00:20 tries inserting run IDs like job@02:00Z that already exist. What happens?"
+  options: ["Those inserts fail harmlessly on the uniqueness constraint, so nothing double-fires", "Each such job runs twice, since the new leader cannot know what the old one fired", "All jobs due at 02:00 are skipped until the next scheduled tick"]
+  answer: 0
+  why: "Run IDs derived from job and scheduled time act as fencing, so duplicate inserts are rejected while missed jobs still fire."
+check:
+  - q: "Why make missed-run behavior a per-job policy?"
+    options: ["Always catching up is correct, since skipping a run silently loses data", "A late report may be worthless and skippable, but a billing job must be caught up", "Always skipping is correct, since late runs risk overlapping the next tick"]
+    answer: 1
+    why: "The right answer depends on whether the job's output is still useful when late."
+  - q: "Why alert on a job failing to run at all, not only on failures?"
+    options: ["Failure alerts already fire on missed runs, so absence alerts add only duplicate noise", "Absence alerts replace retries, since a missing run is cheaper to detect than fix", "A job that silently never runs produces no error, so only an absence alert catches it"]
+    answer: 2
+    why: "Absence alerts such as 'no success in 26 hours' catch silent failures."
+  - q: "Why add jitter to jobs scheduled at midnight?"
+    options: ["Thousands of jobs firing together would hit executors and downstream systems at once, so jitter spreads launches", "Jitter ensures each job runs exactly once per tick by randomizing run identifiers", "Wall-clock times differ across machines, so jitter hides clock skew between replicas"]
+    answer: 0
+    why: "Jitter and rate-limited launches avoid a thundering herd at round times."
 ---
 
 ## What cron does, and why one machine is not enough

@@ -12,6 +12,24 @@ banner:
     - [queue, "queue"]
     - [server, "transcode"]
     - [cdn, "CDN"]
+predict:
+  question: "A video's 4K transcode fails while the 1080p and lower renditions succeed. What should the pipeline do?"
+  options: ["Hold the video in processing until every rendition succeeds, to avoid partial availability", "Make the video watchable at the qualities that succeeded and retry the failed one independently", "Discard all renditions and re-run the full transcode from the uploaded source file"]
+  answer: 1
+  why: "A failed rendition should not block the video from going live at the qualities that did succeed."
+check:
+  - q: "Why upload chunks directly to object storage via pre-signed URLs?"
+    options: ["Large binary uploads through application servers become a scaling bottleneck; they only coordinate metadata", "Object storage verifies chunk integrity, which application servers cannot do themselves", "Pre-signed URLs let the uploader skip transcoding for videos already in a standard format"]
+    answer: 0
+    why: "The application server tracks which chunks exist, not the bytes."
+  - q: "Why split the video into segments before transcoding?"
+    options: ["Segment splitting lowers per-segment quality loss, which serial transcoding cannot avoid", "It lets the uploader's connection close sooner, since segments are acknowledged individually", "Serial transcoding time grows with video length and gains nothing from extra workers"]
+    answer: 2
+    why: "Segment-level jobs spread across a worker fleet, so more workers shorten processing."
+  - q: "Why return success to the uploader before transcoding finishes?"
+    options: ["Queues make transcoding faster by caching renditions between the upload and worker stages", "Upload success is fast and synchronous while readiness is slow, so coupling them holds connections open for minutes", "Synchronous waiting is fine for short videos but risks data loss on long ones"]
+    answer: 1
+    why: "Decoupling the fast upload concern from the slow readiness concern avoids long-held requests."
 ---
 
 ## Why video upload isn't just a file-upload problem

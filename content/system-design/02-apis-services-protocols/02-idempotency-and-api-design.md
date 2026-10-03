@@ -13,6 +13,24 @@ banner:
     - [server, "API"]
     - [db, "seen keys"]
     - [doc, "same reply"]
+predict:
+  question: "A client sends 'charge $50' with an idempotency key, the response is lost, and the client retries with the same key. What does the server do?"
+  options: ["Charges again, because POST is never safe to deduplicate", "Returns the original response without charging a second time", "Rejects the retry with an error since the key was already used"]
+  answer: 1
+  why: "The server recognises the key, skips the side effect, and replays the stored response."
+check:
+  - q: "Why does expiring idempotency keys too soon cause harm?"
+    options: ["Storage fills up with stale keys, slowing every lookup", "The client must generate a new UUID for each retry attempt", "A delayed legitimate retry is treated as new and executed twice"]
+    answer: 2
+    why: "Too-early expiry reopens the window for a late retry to repeat the side effect the key was meant to prevent."
+  - q: "A PUT endpoint increments a counter as a side effect. What is the risk?"
+    options: ["It silently breaks the convention, so clients that retry safely get wrong results", "HTTP rejects the request, because PUT forbids server-side side effects", "Retries stay safe, since the protocol enforces that PUT is idempotent"]
+    answer: 0
+    why: "Idempotency of PUT is a convention, not an enforced guarantee, so a violation gives no obvious signal."
+  - q: "Why must a key be unique per logical operation rather than reused across purchases?"
+    options: ["A reused key makes the server charge the first purchase twice", "A reused key returns the first charge's cached response, skipping the new purchase", "Keys last only 24 hours, so any reuse after that is always rejected"]
+    answer: 1
+    why: "The server replays the stored response for a seen key, so a later, different purchase would never be processed."
 ---
 
 ## What idempotency actually means

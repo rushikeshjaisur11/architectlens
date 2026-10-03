@@ -11,6 +11,24 @@ banner:
     - [model, "plan"]
     - [db, "retrieve"]
     - [doc, "evidence"]
+predict:
+  question: "A user asks for the revenue growth rate of the company that acquired Company X in 2023. Why is one similarity search on that question unlikely to work?"
+  options: ["The question is too long for any embedding model to turn into a vector", "The query does not name the acquirer yet, so no passage matches both facts", "The index holds only revenue passages, so acquisition facts are never retrieved"]
+  answer: 1
+  why: "The acquirer must be found first, and that intermediate fact then drives the second retrieval hop."
+check:
+  - q: "A pipeline always does exactly two retrieval hops. What is the weakness?"
+    options: ["It underperforms on questions needing 3+ hops and wastes cost on 1-hop ones", "It is cheaper than agentic retrieval but cannot answer any question needing 2 hops", "It lets the model stop early, which risks answers built on too little evidence"]
+    answer: 0
+    why: "A rigid hop count ignores real question complexity, whereas agentic retrieval lets the model judge when it has enough."
+  - q: "Why route simple questions to single-shot RAG and not run multi-hop on every query?"
+    options: ["Multi-hop retrieval cannot answer questions that live in a single passage", "Multi-hop adds LLM calls and latency that most questions do not need", "Single-shot RAG is always more accurate than multi-hop for every question type"]
+    answer: 1
+    why: "Multi-hop earns its cost only for questions that connect information across sources. A cheap classification step can route them."
+  - q: "A multi-hop system returns a wrong answer. Why log every hop's query, retrieved content and reasoning?"
+    options: ["Per-hop logs make the final answer shorter and cheaper to generate", "Hop logs are required by the retriever to choose the next query", "It shows which hop failed: retrieval, intermediate reasoning, or final synthesis"]
+    answer: 2
+    why: "Each failure location needs a different fix, and only a per-hop trace can tell them apart."
 ---
 
 ## Why single-shot retrieval fails on genuinely multi-step questions

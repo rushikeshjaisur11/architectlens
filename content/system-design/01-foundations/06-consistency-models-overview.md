@@ -13,6 +13,24 @@ banner:
     - [db, "replica A"]
     - [db, "replica B"]
     - [user, "reader"]
+predict:
+  question: "Under pure eventual consistency, a reply replicates to one replica before the comment it answers. What can a reader on that replica see?"
+  options: ["The reply without the comment, since no causal ordering is enforced", "Nothing, because replicas always apply writes in one global order", "Only the comment, because replies are always delayed longer"]
+  answer: 0
+  why: "Eventual consistency permits out-of-order visibility; causal consistency exists to prevent the reply appearing before its comment."
+check:
+  - q: "Why not choose strong consistency everywhere to be safe?"
+    options: ["It breaks causal ordering for user-facing features like comment threads", "It forces conflict resolution through vector clocks on every write", "It adds coordination latency and cuts availability for data like view counters"]
+    answer: 2
+    why: "Strong consistency costs quorum round trips and availability, which is wasted on data that does not need it."
+  - q: "A chat app needs users to see their own messages instantly but not a global order. What fits best?"
+    options: ["Read-your-writes or causal consistency, as a middle ground", "Linearizability, because anything weaker risks showing stale data", "Pure eventual consistency, since a user's own reads never matter"]
+    answer: 0
+    why: "Read-your-writes and causal models give the user-facing guarantee without paying for full global ordering."
+  - q: "Why can eventual consistency surprise a team in production?"
+    options: ["It guarantees convergence within milliseconds, but only on a healthy network", "It gives no time bound, so convergence can take long under partition or load", "It guarantees replicas converge even while new updates keep arriving"]
+    answer: 1
+    why: "The model only promises convergence if updates stop, with no bound on how long that takes."
 ---
 
 ## Why consistency needs a spectrum, not a switch

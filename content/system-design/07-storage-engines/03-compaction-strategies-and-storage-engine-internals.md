@@ -7,6 +7,24 @@ sources:
   - "Apache Cassandra Documentation — Compaction strategies (DataStax/Cassandra docs)"
   - "The Log-Structured Merge-Tree (LSM-Tree), O'Neil et al., 1996"
   - "ScyllaDB Engineering Blog — Compaction strategy comparisons"
+predict:
+  question: "A disk holds a 500 GB live dataset under size-tiered compaction and has exactly 500 GB provisioned. What happens during a large compaction?"
+  options: ["Disk can run out, since old and new tables coexist, nearing 2x live size", "Nothing, since compaction rewrites tables in place with no extra space", "Disk use stays near 1.1x live size, as leveled compaction would"]
+  answer: 0
+  why: "Size-tiered compaction can reach roughly 2x the live dataset because old and new versions coexist until the merge finishes."
+check:
+  - q: "Why does leveled compaction bound read amplification better than size-tiered?"
+    options: ["Levels beyond L0 hold non-overlapping ranges, so a read checks one file per level", "Every level is held fully in memory, so reads never touch disk", "Leveled compaction merges all tables into one file after each flush"]
+    answer: 0
+    why: "Non-overlapping key ranges in each level beyond L0 mean at most one candidate file per level."
+  - q: "What do you pay for leveled compaction's low space and read amplification?"
+    options: ["Higher read amplification, because L0 files overlap in key range", "Higher write amplification, as keys are rewritten while cascading down levels", "Tombstones are kept longer, so deletes never reclaim space"]
+    answer: 1
+    why: "A key can be rewritten once per level, giving 10-30x write amplification in deep hierarchies."
+  - q: "Which workload does the lesson say should avoid size-tiered compaction?"
+    options: ["High-volume ingestion where disk space is not the binding constraint", "Time-series data with TTLs where whole windows expire", "Latency-sensitive point-lookup workloads that are read-heavy"]
+    answer: 2
+    why: "Under STCS the number of SSTables a read probes grows with data volume, so read-heavy OLTP-style loads want leveled compaction."
 ---
 
 ## Why LSM-trees need compaction at all

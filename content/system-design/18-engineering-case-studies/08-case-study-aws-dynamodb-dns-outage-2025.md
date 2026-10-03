@@ -5,6 +5,24 @@ tags: ["case-study", "dns", "race-condition", "cascading-failure", "control-plan
 sources:
   - "Amazon Web Services, 'Summary of the Amazon DynamoDB Service Disruption in the Northern Virginia (US-EAST-1) Region' (October 2025), aws.amazon.com/message/101925 (fetched October 2026)"
   - "Press and engineering analyses of the incident (secondary: The Register and others)"
+predict:
+  question: "A slow Enactor finishes applying an old plan after a faster one applied a newer plan and cleaned up old plans. What happens?"
+  options: ["Its newer-than-applied check fails and the write is rejected", "The stale plan overwrites the newer one and cleanup then empties the record", "The newer plan wins because the Planner re-sends it at once"]
+  answer: 1
+  why: "The freshness check was made at the start and was stale when acted on, so the old plan was applied and then deleted, leaving an empty DNS record."
+check:
+  - q: "Why did EC2 launches stay broken after DynamoDB's DNS was restored?"
+    options: ["Cached DNS records stayed wrong for the following several hours", "Route 53 needed each endpoint reconfigured by hand afterward", "Lease checks had timed out and the backlog took hours to clear"]
+    answer: 2
+    why: "EC2's internal control system depended on DynamoDB, so recovery of the fault lagged well behind recovery of the root cause."
+  - q: "What made the Enactor's check-then-act a race?"
+    options: ["The newer-plan check was stale by the time it acted", "No check was ever made before plans were applied", "The Planner issued two conflicting plans at the same time"]
+    answer: 0
+    why: "A decision made at the start of a long operation must be re-validated at the moment of action, for example with compare-and-swap."
+  - q: "Why were health-check failovers a problem during the cascade?"
+    options: ["They were too slow to remove the unhealthy capacity", "They removed healthy capacity and made the overload worse", "They never triggered because the health checks passed"]
+    answer: 1
+    why: "Failures in propagating network configuration triggered automatic failovers, hence the velocity limits AWS planned."
 ---
 
 ## What happened

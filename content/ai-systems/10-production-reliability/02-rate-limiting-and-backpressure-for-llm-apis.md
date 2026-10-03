@@ -15,6 +15,24 @@ banner:
     - [server, "token bucket"]
     - [queue, "queue"]
     - [model, "LLM"]
+predict:
+  question: "A service sends 10 requests per second with 8K-token prompts. Which provider limit does it hit first?"
+  options: ["Requests per minute, since 10 per second is a high request rate", "Tokens per minute, long before the request-count limit", "Neither, since limits are measured per minute, not per second"]
+  answer: 1
+  why: "Large prompts exhaust the TPM budget while barely touching RPM, so design for the tighter of the two."
+check:
+  - q: "What is the benefit of a bounded queue with explicit 429 rejection over an unbounded queue?"
+    options: ["Callers get a fast, typed error and can retry or degrade early", "Unbounded queues degrade gracefully, so users never see failures", "Silent dropping keeps the system looking healthy, which is ideal"]
+    answer: 0
+    why: "Rejecting early and cheaply beats accepting work that later fails expensively and confusingly."
+  - q: "Why are fixed-delay retries on 429s a problem across many clients?"
+    options: ["Fixed delays are safe because limits reset on a schedule", "Synchronized retries cause thundering-herd spikes at saturation", "Fixed delays spread clients out evenly so load stays smooth"]
+    answer: 1
+    why: "Exponential backoff with jitter desynchronizes clients, which fixed delays do not."
+  - q: "Why route background batch summarization through a provider's batch API?"
+    options: ["It shares the interactive TPM pool but at higher priority", "It costs more but returns results faster than interactive calls", "It runs on spare capacity at a discount, off the interactive limit pool"]
+    answer: 2
+    why: "Batch APIs trade a relaxed turnaround for roughly 50% discount and keep user-facing traffic's rate limits untouched."
 ---
 
 ## Why LLM rate limits are different from typical API limits

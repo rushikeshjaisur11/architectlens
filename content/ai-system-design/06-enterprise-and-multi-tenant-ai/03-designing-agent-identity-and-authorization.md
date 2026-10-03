@@ -16,6 +16,24 @@ banner:
     - [lock, "token"]
     - [shield, "policy"]
     - [server, "tool"]
+predict:
+  question: "A user approves an email, and a one-time mail.send token bound to that exact message is issued. A hidden instruction in a PDF told the agent to forward data elsewhere. What happens to that instruction?"
+  options: ["It succeeds because the user's approval covers the whole session", "It has no tool and no scope to act on, since the token covers one message", "It succeeds only if the new recipient appeared earlier in the thread"]
+  answer: 1
+  why: "The approval is bound to one specific action, so the hidden instruction has no scope to forward anything."
+check:
+  - q: "Why require the user, the agent and the task scope all to permit an action?"
+    options: ["It avoids both over-trusting the agent and over-trusting the user's broad rights", "It lets the agent inherit every right the user holds without extra checks", "It removes the need to check authorisation at the resource API"]
+    answer: 0
+    why: "The three-way check limits the agent to what the user may do, what the agent is allowed to use, and what this task needs."
+  - q: "Why must authority narrow, never widen, across an agent-to-agent delegation chain?"
+    options: ["A downstream agent may legitimately need more scope than its caller", "A downstream scope above the upstream would escalate privilege, so it is rejected", "Narrow scopes make tokens cheaper to sign and exchange"]
+    answer: 1
+    why: "Derived tokens must be a subset of the caller's scope; requests exceeding the upstream scope are rejected."
+  - q: "MCP is now stateless. What follows for authorisation?"
+    options: ["Authorise once per session and cache the decision on the gateway", "Rely on the initialize handshake to establish the caller's rights", "Check authorisation on every request, never remembered per session"]
+    answer: 2
+    why: "With no session or handshake, authorisation must be checked per request."
 ---
 
 ## The problem

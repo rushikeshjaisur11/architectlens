@@ -14,6 +14,24 @@ banner:
     - [model, "embed"]
     - [db, "ANN index"]
     - [user, "results"]
+predict:
+  question: "A user searches \"laptop won't charge after update\". Vector search ranks \"Battery not detected after BIOS update\" high, sharing no words with the query, while keyword search puts \"Charging indicator blinking orange\" first. After rank fusion, which article leads?"
+  options: ["The charging indicator article, because it matches the exact query words", "The BIOS article, as it appears in both ranked lists", "Neither, because fusion first needs calibrated scores from both lists"]
+  answer: 1
+  why: "Reciprocal rank fusion sums 1 over (constant plus rank) across lists and needs no score calibration, so the BIOS article wins by appearing in both lists."
+check:
+  - q: "Why is mixing vectors from two embedding models in one index dangerous?"
+    options: ["It silently ruins results, so you need a second index", "It raises memory per vector but leaves result quality as it was", "It breaks only the keyword side of the hybrid search"]
+    answer: 0
+    why: "Everything in the index is tied to its embedding model; mixing models gives meaningless distances without any error, so you build a new index and cut over."
+  - q: "Why must a selective metadata filter be applied inside the vector search rather than after it?"
+    options: ["Post-filtering is always slower than the embedding step itself", "Post-filtering removes the delta index from the search path", "Filtering after retrieval can leave almost nothing from the top k"]
+    answer: 2
+    why: "If the filter runs after the top-k is taken, most candidates may be dropped and the page comes back nearly empty."
+  - q: "Why run vector and keyword search together instead of vector search alone?"
+    options: ["Keyword search is faster, so it can replace the reranking stage", "Vectors blur exact tokens like codes, which keywords catch", "Vector search cannot handle paraphrased queries at all well"]
+    answer: 1
+    why: "Dense vectors catch paraphrases but blur exact strings, while BM25 does the opposite, so fusing both covers each other's gaps."
 ---
 
 ## The problem

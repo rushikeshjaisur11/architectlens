@@ -14,6 +14,24 @@ banner:
     - [doc, "issue"]
     - [model, "agent"]
     - [shield, "tests"]
+predict:
+  question: "After the fix, the broad test suite shows one unrelated flaky test. What does the agent do?"
+  options: ["It reruns the test and notes the flake in the pull request", "It deletes the flaky test so the suite passes cleanly", "It silently ignores the failure and reports all tests green"]
+  answer: 0
+  why: "The worked example has the agent rerun the flaky test and note it in the PR."
+check:
+  - q: "Why give the agent purpose-built search and edit tools instead of a raw shell?"
+    options: ["Raw shells cannot run tests inside a sandbox", "Concise results and lint feedback shrink context and catch mistakes immediately", "Purpose-built tools allow the agent to merge its own changes"]
+    answer: 1
+    why: "The lesson says good tools shrink context, give fast feedback and reduce errors more than prompt tweaks."
+  - q: "Why rely on external checks such as tests rather than the model's confidence?"
+    options: ["Model confidence is not available from the inference API", "Tests are quicker to run than the model is to answer", "Reliability comes from verifying results, not from how sure the model sounds"]
+    answer: 2
+    why: "The lesson says reliability comes from external checks; a change that passes no meaningful checks is reported as unverified."
+  - q: "Why replay your own closed tickets instead of trusting public benchmark scores?"
+    options: ["Scores do not predict performance on your repositories, tests and conventions", "Public benchmarks have been withdrawn by their authors", "Your own tickets are guaranteed free of contamination by training data"]
+    answer: 0
+    why: "The lesson says benchmark scores depend on the harness and do not predict performance on your own code."
 ---
 
 ## The problem

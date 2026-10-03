@@ -13,6 +13,24 @@ banner:
     - [server, "queue L"]
     - [server, "service W"]
     - [doc, "L = lambda W"]
+predict:
+  question: "A service receives 500 requests per second and each takes 200 ms in total. It has 64 workers handling one request each. What happens?"
+  options: ["Requests queue, because about 100 are in flight but only 64 workers exist", "Everything is served at once, since 64 workers exceed 500 / 200 = 2.5", "Each request finishes faster because the workers stay fully busy"]
+  answer: 0
+  why: "Little's Law gives L = 500 x 0.2 = 100 requests in flight, which exceeds 64 workers, so the excess waits in a queue."
+check:
+  - q: "Why plan for 60-70% utilisation rather than 90% or more?"
+    options: ["Delay grows linearly, so higher utilisation costs only slightly more latency", "Delay explodes near 100% utilisation, leaving no headroom for bursts or node loss", "Higher utilisation wastes money, though latency stays flat until 100%"]
+    answer: 1
+    why: "Average time in system is service time / (1 - utilisation), so it goes from 67 ms at 70% to 400 ms at 95%."
+  - q: "A page makes 20 backend calls and 1% of calls are slow. Why does p99 matter more than the mean?"
+    options: ["The mean already captures slow calls, so p99 adds little extra information", "Only the slowest backend call matters, so the other 19 can be ignored", "About 18% of pages hit at least one slow call, so rare slowness becomes common"]
+    answer: 2
+    why: "With fan-out, 1 - 0.99^20 is about 18%, so tail latency amplification makes rare slowness the common case."
+  - q: "Why bound queues instead of letting them grow without limit?"
+    options: ["An unbounded queue turns overload into slow failure and memory exhaustion", "A bounded queue improves throughput because workers process items faster", "Unbounded queues drop requests silently, hiding overload from clients"]
+    answer: 0
+    why: "Unbounded queues hide overload until memory runs out, while bounded queues allow load shedding."
 ---
 
 ## Why systems fall off a cliff
@@ -46,6 +64,8 @@ Utilisation rho is arrival rate divided by service capacity. For a simple single
 | 99% | 2,000 ms |
 
 Real services are not M/M/1, but the shape holds: delay grows slowly, then explodes as utilisation approaches 100%. Variability makes it worse: bursty arrivals and uneven request sizes produce queues even at moderate average load. Hence rules like "autoscale at 60 to 70% CPU" and "keep headroom for failures".
+
+<div data-anim="littles-law-queue"></div>
 
 ## Averages hide the tail
 

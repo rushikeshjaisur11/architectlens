@@ -7,6 +7,24 @@ sources:
   - "Humble and Farley, Continuous Delivery (2010), on separating deployment from release"
   - "Martin Fowler, articles on feature toggles"
   - "Prompt management tool comparisons, 2026 (secondary: arize.com, pydantic.dev, mlflow.org, promptlayer.com); Langfuse, LangSmith and MLflow documentation"
+predict:
+  question: "After a rare formatting bug appears, the team moves the production label of refund-reply from v14 back to v13. What happens to running applications?"
+  options: ["Every application must be redeployed before it can use v13", "Only versions numbered above 14 can be served to applications", "They pick up v13 within seconds, with no redeploy"]
+  answer: 2
+  why: "Applications request the label, not a version number, so moving the label restores behaviour in seconds without a redeploy."
+check:
+  - q: "What is the main cost of fetching prompts at runtime from a prompt service?"
+    options: ["Prompt changes need an application redeploy to take effect", "The application now depends on the service and needs a last-known-good copy", "Model calls can no longer log which prompt version they used"]
+    answer: 1
+    why: "Runtime fetch enables changes without deploys but adds a dependency, so apps keep a last-known-good copy for outages."
+  - q: "Why version the model and parameters together with the prompt text?"
+    options: ["A prompt tuned for one model often misbehaves on another", "Version lookups are faster when stored as a single record", "Providers require the model name inside the prompt template"]
+    answer: 0
+    why: "Prompts are tuned to a particular model, so changing the model without the prompt (or vice versa) breaks behaviour."
+  - q: "Why point the production label at a percentage split before moving to 100 percent?"
+    options: ["Labels cannot reference a version until staging tests pass twice", "A split avoids needing immutable versions for the old prompt", "Metrics on the new version can be watched before everyone is exposed"]
+    answer: 2
+    why: "Gradual rollout limits blast radius; promoting to everyone at once with no gradual rollout is listed as a common mistake."
 ---
 
 ## The problem

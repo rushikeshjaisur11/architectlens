@@ -14,6 +14,24 @@ banner:
     - [server, "batcher"]
     - [gpu, "GPU"]
     - [client, "tokens"]
+predict:
+  question: "A static batch holds four requests. Three finish after 20 tokens; the fourth needs 500 tokens. What happens to the three finished slots?"
+  options: ["Queued requests fill them immediately, so the GPU never has idle batch capacity", "They stay idle until the 500-token request finishes, because new requests cannot join a running batch", "The batch is cut short once most requests finish, and the long request restarts alone"]
+  answer: 1
+  why: "A static batch is only as fast as its slowest member, and new requests cannot join mid-batch. Continuous batching is what refills slots immediately."
+check:
+  - q: "A chat service stops accepting more concurrent users while GPU compute is far from saturated. What is the most likely ceiling?"
+    options: ["Raw arithmetic throughput, so the fix is a faster GPU", "KV cache memory, which grows with sequence length for every concurrent request", "Autoregressive sequencing, which blocks more than one user at once"]
+    answer: 1
+    why: "The KV cache must stay in GPU memory for each generation, so memory often caps concurrency before compute does."
+  - q: "Why does PagedAttention let one GPU support more concurrent requests than reserving a contiguous block per request?"
+    options: ["It allocates small pages as generation proceeds, so unused reservation and fragmentation are avoided", "It compresses the KV cache to lower precision so each request takes fewer bytes", "It skips attention over older tokens so each request needs less cache"]
+    answer: 0
+    why: "Contiguous up-front reservation wastes memory when responses are shorter than reserved and fragments memory. Paging allocates in small increments."
+  - q: "A team ships 8-bit quantization because a public benchmark showed minimal degradation. What is the architect-level flaw?"
+    options: ["8-bit is too aggressive for any production system, so 16-bit is mandatory", "Quantization only saves memory and never affects speed, so the risk is not worth it", "Quality impact varies by model and task, so it must be checked on a held-out eval for their use case"]
+    answer: 2
+    why: "The lesson says a generic benchmark does not guarantee the same result on your task; validate on your own eval set before committing."
 ---
 
 ## Why serving an LLM is a different problem than training one

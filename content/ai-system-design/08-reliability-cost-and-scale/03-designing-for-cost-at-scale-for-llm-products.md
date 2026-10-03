@@ -15,6 +15,24 @@ banner:
     - [server, "router"]
     - [model, "small model"]
     - [gpu, "large model"]
+predict:
+  question: "A prompt is 90 percent stable prefix, and cache reads cost 10 percent of normal input price. Roughly what share of the original input cost remains?"
+  options: ["About 10 percent, since the cached prefix is nearly free of charge", "About 50 percent, since caching only helps about half of the tokens", "About 19 percent, since the cached 90 percent costs a tenth of full price", "About 90 percent, since only the uncached tokens ever save any money"]
+  answer: 2
+  why: "0.1 x 90% + 10% = 19% of the original input cost."
+check:
+  - q: "When does a cascade end up costing more than calling the strong model directly?"
+    options: ["When the small model is self-hosted, because idle GPU time outweighs token savings", "When the router is a classifier rather than rules, since classifiers add per-call fees", "When too many requests escalate, since the cheap attempt is wasted before the strong call"]
+    answer: 2
+    why: "If the escalation rate is high, the cascade pays for both attempts."
+  - q: "Why does the lever hierarchy put waste removal ahead of routing or self-hosting?"
+    options: ["It is the safest lever and often cuts cost a lot, with little risk to quality", "It requires fine-tuning a small model, which must be done before other changes", "Routing only works once prompts fit inside the small model's context window"]
+    answer: 0
+    why: "Levers are ordered by impact and risk, applying the safest first; trimming waste had unchanged evaluation scores in the example."
+  - q: "Why does the lesson say verbose answers dominate the bill even on small models?"
+    options: ["Output tokens are billed at the same rate as input, so length matters only for latency", "Output tokens cost about 5x input on Claude and Gemini Flash, so short outputs save most", "Output costs apply only to self-hosted models, since APIs bundle them into input price"]
+    answer: 1
+    why: "Output tokens are priced about 5x input, so capping output length and asking for structured results is a major lever."
 ---
 
 ## The problem

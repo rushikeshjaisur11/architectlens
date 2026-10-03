@@ -13,6 +13,24 @@ banner:
     - [queue, "Kafka log"]
     - [server, "consumers"]
     - [db, "sinks"]
+predict:
+  question: "A topic has 64 partitions and one consumer group runs 100 consumers. How many consumers do useful work?"
+  options: ["All 100, because the group shares the load evenly", "64 of them, and the other 36 consumers sit idle", "Only 32, because each partition reserves a standby consumer"]
+  answer: 1
+  why: "Each partition is assigned to exactly one consumer in the group, so parallelism is capped at the partition count."
+check:
+  - q: "Why is writing every message to disk consistent with Kafka's speed goals?"
+    options: ["Brokers hold data in memory and disk is only a slow backup", "Random writes on modern disks are cheap enough per message", "Sequential appends plus the OS page cache make disk writes fast"]
+    answer: 2
+    why: "Sequential I/O is close to memory speed in aggregate and recent data is served from the page cache, so disk is the design, not a fallback."
+  - q: "What trade-off does partitioning force on ordering?"
+    options: ["Global ordering is given up, and order holds only within a partition", "Throughput is given up to keep ordering across all partitions", "Ordering disappears completely once a topic has two partitions"]
+    answer: 0
+    why: "Ordering is guaranteed only inside a partition, so keying by member ID keeps one key ordered while the topic scales out."
+  - q: "What is the failure mode of auto-committing offsets before processing?"
+    options: ["A crash after the commit reprocesses messages as duplicates", "A crash after the commit can skip messages that were never processed", "A crash after the commit stalls every consumer in the group"]
+    answer: 1
+    why: "The committed offset says the records were handled, so after a crash the consumer resumes past them and they are lost."
 ---
 
 *Provenance note: this lesson summarizes the published Kafka paper and LinkedIn's engineering writing from memory. Verify exact figures and release history in the primary sources.*

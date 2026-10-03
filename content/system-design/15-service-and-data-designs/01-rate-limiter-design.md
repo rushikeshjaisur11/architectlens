@@ -12,6 +12,24 @@ banner:
     - [server, "token bucket"]
     - [db, "counters"]
     - [server, "API"]
+predict:
+  question: "A fixed-window limiter allows 100 requests per clock-aligned minute. A client sends 100 requests at 12:00:59 and another 100 at 12:01:00. What happens?"
+  options: ["The second 100 are rejected, because the limiter remembers the burst just before", "All 200 are accepted, because the counter resets at the window boundary", "The second 100 are queued until the new window is a second old"]
+  answer: 1
+  why: "The counter resets abruptly at 12:01:00, so both bursts fit within their own windows. That is about 200 requests in two seconds against a nominal 100/minute limit."
+check:
+  - q: "Why do most production limiters use a sliding window counter instead of a sliding window log?"
+    options: ["It stores two window counts per key rather than a timestamp per request, approximating the rolling count", "It gives an exact rolling count like the log, but reads the clock less often", "It removes the boundary-burst problem completely, which the log cannot do"]
+    answer: 0
+    why: "The log is exact but needs a timestamp per request. The counter weights the previous and current windows to get most of the accuracy at a fraction of the memory."
+  - q: "A downstream system needs a strictly steady request rate, however bursty the input. Which fits best?"
+    options: ["A token bucket, because idle clients accumulate tokens and spend them smoothly", "A token bucket, because its refill rate turns bursts into a constant output", "A leaky bucket, because it queues requests and processes them at a constant rate"]
+    answer: 2
+    why: "A leaky bucket smooths bursts into a steady output stream. A token bucket deliberately lets accumulated tokens through as a burst."
+  - q: "The shared Redis store behind the limiter goes down. What is the sound design stance?"
+    options: ["Fail closed, so unmetered traffic never reaches the API", "Decide deliberately; failing open keeps the API available at the cost of temporary lost protection", "Let the unhandled exception propagate, since that is the safest default"]
+    answer: 1
+    why: "The lesson's example fails open so a limiter outage doesn't take down the API. Whatever the code happens to do on error is an accident, not a decision."
 ---
 
 ## Why systems need rate limiting

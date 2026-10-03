@@ -12,6 +12,24 @@ banner:
     - [server, "environment"]
     - [shield, "task success"]
     - [doc, "trajectory"]
+predict:
+  question: "An agent succeeds on 95% of individual steps and a task needs 10 steps. Roughly what task success should you expect?"
+  options: ["About 95%, since per-step accuracy sets the task rate", "About 85%, losing half a percent per step", "About 75%, since later steps recover earlier errors", "About 60%, since 0.95 is multiplied across all 10 steps"]
+  answer: 3
+  why: "Reliability is multiplicative, so 0.95 to the 10th power is near 60%, which is why long trajectories disappoint in production."
+check:
+  - q: "Why report 'passes every one of K runs' alongside mean success for an agent?"
+    options: ["Mean success is always lower than all-runs success, so it understates quality", "A customer experiences each run, so run-to-run variance hides behind a good average", "All-runs success removes the need for a safety check on tool calls", "It lets you run each task once instead of several times"]
+    answer: 1
+    why: "Sampling and tool latency make the same task pass one run and fail the next, and the stricter rate reflects what customers see."
+  - q: "Why score the final environment state rather than the agent's own claim that it finished?"
+    options: ["Agents never produce final answers, so there is nothing else to read", "State checks are slower, but they let you skip logging trajectories", "Claims can be wrong, while file, ticket or test state is checkable", "Final-state checks measure cost and steps directly without extra instrumentation"]
+    answer: 2
+    why: "The lesson lists trusting the agent's claim of success as a mistake; state checks verify the actual outcome."
+  - q: "Why can a public benchmark score like SWE-bench Verified mislead you about your own agent?"
+    options: ["Scores depend on the harness and may be contaminated or saturated", "Public benchmarks only test single model calls, never any tool use", "Benchmark scores are reported without any success criteria", "Higher benchmark scores always mean more steps and higher cost per task"]
+    answer: 0
+    why: "Harness differences make quoted numbers non-comparable, and saturation or contamination weakens them as predictors."
 ---
 
 ## Why agents need their own evaluation

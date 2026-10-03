@@ -13,6 +13,24 @@ banner:
     - [queue, "telemetry"]
     - [db, "store"]
     - [client, "alerts"]
+predict:
+  question: "The cart service's p50 stays near 80 ms while p99 jumps from 400 ms to 4 s. What does a dashboard showing only p50 reveal?"
+  options: ["A p50 near 80 ms, so the slow tail goes unnoticed", "A tenfold rise in p50 that matches the p99 jump", "A drop in p50 because fast requests dominate the sample"]
+  answer: 0
+  why: "Central measures hid the tail; percentiles like p99 are what expose slow requests."
+check:
+  - q: "Why not label a metric with user_id?"
+    options: ["Metrics cannot carry string labels, only numeric values", "Each user creates a separate time series, which can overwhelm the store", "User IDs in labels would let logs and traces be joined"]
+    answer: 1
+    why: "High-cardinality labels multiply time series; keep labels to values like service, region and status."
+  - q: "What is the trade-off of tail-based trace sampling versus head-based?"
+    options: ["Head-based keeps slow traces, because it decides after the response", "Tail-based lowers cost because it decides when a request starts", "Tail-based keeps slow or failed traces, but must buffer spans first"]
+    answer: 2
+    why: "Tail-based sampling sees the outcome before deciding, at the price of buffering."
+  - q: "Why put trace IDs in log lines?"
+    options: ["They let you jump from a slow span to its logs instead of searching separate haystacks", "They deduplicate repeated entries and so reduce log volume", "They make logs structured without any further field formatting"]
+    answer: 0
+    why: "Shared identifiers are what connect metrics, traces and logs."
 ---
 
 ## Monitoring versus observability

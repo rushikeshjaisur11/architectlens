@@ -12,6 +12,24 @@ banner:
     - [lock, "isolation"]
     - [db, "WAL"]
     - [shield, "commit"]
+predict:
+  question: "Two concurrent checkouts both read stock = 1 under Read Committed, then each decrements it using a check-then-act sequence. What is the final stock?"
+  options: ["0, because Read Committed serializes the two decrements", "1, because the second transaction is rolled back", "-1, because both passed the check and both decremented"]
+  answer: 2
+  why: "Read Committed keeps each read consistent but does not stop a concurrent write between the check and the act, so the item oversells."
+check:
+  - q: "Why prefer an atomic UPDATE ... SET stock = stock - 1 WHERE stock > 0 over SELECT ... FOR UPDATE for the inventory case?"
+    options: ["It holds no lock across the whole transaction, so throughput is higher", "It guarantees Serializable isolation for the entire application", "It lets two buyers both succeed when only one unit remains"]
+    answer: 0
+    why: "Pushing check and act into one atomic operation avoids holding a lock for the transaction's full duration."
+  - q: "A team sets Serializable everywhere to be safe. What does the lesson say about that?"
+    options: ["It is free, since modern databases make Serializable as fast as Read Committed", "It is correct but costly under contention, and a targeted lock usually suffices", "It is unnecessary because Repeatable Read already stops all anomalies"]
+    answer: 1
+    why: "Serializable may abort and retry transactions and hurts concurrency, whereas targeted locks fix specific races cheaply."
+  - q: "When does optimistic concurrency control beat pessimistic locking?"
+    options: ["When conflicts are frequent, since retries then resolve them quickly", "When transactions must block all other readers of the row", "When conflicts are rare, so retry logic is seldom needed"]
+    answer: 2
+    why: "Optimistic control avoids upfront locking and rejects the rare conflicting commit, which suits low-conflict workloads."
 ---
 
 ## What ACID actually guarantees

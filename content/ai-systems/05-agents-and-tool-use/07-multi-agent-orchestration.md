@@ -14,6 +14,24 @@ banner:
     - [model, "planner"]
     - [model, "coder"]
     - [model, "reviewer"]
+predict:
+  question: "A research assistant fans out three independent source searches to parallel workers instead of one agent doing them in turn. What changes?"
+  options: ["Wall-clock time and total cost both fall to about a third", "Wall-clock time stays the same because the orchestrator waits", "Wall-clock time falls, while cost rises with the extra agents"]
+  answer: 2
+  why: "Independent sub-tasks capture a latency benefit, but each agent is its own set of LLM calls plus coordination overhead."
+check:
+  - q: "When is a single agent with search_web and summarize tools preferable to a two-agent pipeline?"
+    options: ["When the sub-tasks do not need independent context or parallelism", "When the pipeline stages need different specialized behavior", "When the total context would overflow one agent's window"]
+    answer: 0
+    why: "Sequential tool calls in one loop give the same result with less coordination overhead and a simpler failure model."
+  - q: "What is the main risk of a sequential pipeline without validation between stages?"
+    options: ["Later agents run in parallel and conflict with each other", "An early error silently propagates and compounds through later stages", "Each stage must wait for the orchestrator to approve its input"]
+    answer: 1
+    why: "Validating at each stage catches the error where it originated."
+  - q: "Why was a critique agent left out of the research report example?"
+    options: ["Critique agents cannot review synthesized reports", "The orchestrator already catches errors while synthesizing", "The output is lower-stakes, so the extra latency and cost are not justified"]
+    answer: 2
+    why: "Debate/critique adds latency and cost and is justified mainly for high-stakes outputs."
 ---
 
 ## Why split one task across multiple agents at all

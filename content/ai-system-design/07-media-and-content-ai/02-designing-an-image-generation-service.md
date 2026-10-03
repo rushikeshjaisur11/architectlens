@@ -9,6 +9,24 @@ sources:
   - "C2PA Content Credentials specification v2.3 (December 2025), via secondary summaries"
   - "European Commission, Code of Practice on marking and labelling of AI-generated content (final, 10 June 2026), via secondary summaries"
   - "EU AI Omnibus summary, Gibson Dunn (Article 50 dates; fetched Oct 2026)"
+predict:
+  question: "A second user's interactive request is queued behind a bulk job. What happens?"
+  options: ["It waits until the bulk job completes because the queue is first-in first-out", "It is served first, and the bulk job finishes later on idle GPUs", "It is rejected by load shedding because the queue is non-empty"]
+  answer: 1
+  why: "Interactive requests have priority, and bulk work fills idle capacity at lower priority."
+check:
+  - q: "Why is generation asynchronous with a job id rather than a held-open request?"
+    options: ["Image models cannot return results over HTTP", "Job ids are required for provenance metadata", "Holding a request open for 10 seconds scales badly"]
+    answer: 2
+    why: "Submit returns a job id and status is streamed or polled, since long-held requests do not scale."
+  - q: "Why route jobs for the same model and settings to the same workers?"
+    options: ["Loading a multi-gigabyte model takes far longer than a generation", "It guarantees identical images across users", "Workers cannot hold more than one prompt at a time"]
+    answer: 0
+    why: "Model residency avoids repeated loads that cost more than the generation itself."
+  - q: "Why classify the output image as well as filtering the prompt?"
+    options: ["Prompt filters run only after GPU time is spent", "A passing prompt can still yield a disallowed image", "Output classifiers also embed the provenance watermark"]
+    answer: 1
+    why: "Safety checks only on prompts miss harmful outputs, so results are screened before users see them."
 ---
 
 ## The problem

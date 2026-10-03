@@ -15,6 +15,24 @@ banner:
     - [lock, "token"]
     - [shield, "policy"]
     - [server, "resource"]
+predict:
+  question: "An admin wants to revoke a stolen JWT that has 23 hours left. No blocklist exists. What happens?"
+  options: ["It is rejected at once, because the signature is rechecked against a user store", "It is rejected after the next refresh, since refresh tokens revoke access tokens", "It stays valid until its exp, because no server-side record exists to delete"]
+  answer: 2
+  why: "A JWT is self-contained and valid until it expires, which is why short expiry plus revocable refresh tokens are used."
+check:
+  - q: "Sessions revoke instantly but JWTs do not. What does each side cost?"
+    options: ["Sessions need a shared server-side store, while JWTs trade that for hard revocation", "Sessions are self-contained and need no store, while JWTs need a shared store", "Sessions carry signed claims, so revocation needs a blocklist while scaling is easy"]
+    answer: 0
+    why: "Deleting a session record revokes access at once but requires shared state; JWTs verify locally but cannot be revoked before expiry."
+  - q: "A service treats a valid OAuth2 access token as proof of who the user is. What is wrong?"
+    options: ["Access tokens are unsigned, so any client could forge a user identity", "Access tokens grant delegated access; identity needs an OIDC id_token", "OAuth2 already authenticates users, so only the scopes need checking"]
+    answer: 1
+    why: "OAuth2 is delegated authorization; OIDC adds the id_token that asserts who the user is."
+  - q: "Why must a JWT verifier pin the expected algorithm?"
+    options: ["Pinning lets the library cache results, which speeds up every request", "Pinning makes tokens revocable by tying them to one server-side algorithm", "A token's own alg header could trick a library into skipping or confusing verification"]
+    answer: 2
+    why: "Trusting the token's header enables alg: none and algorithm-confusion attacks, the root of most JWT library CVEs."
 ---
 
 ## Authentication vs. authorization

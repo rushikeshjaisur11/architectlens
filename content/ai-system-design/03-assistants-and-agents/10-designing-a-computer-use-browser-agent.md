@@ -9,6 +9,24 @@ sources:
   - "OSWorld leaderboard summaries, 2026 (secondary: leaderboard.steel.dev and trackers)"
   - "Anthropic documentation on browser-use prompt-injection risk, as quoted in secondary summaries (2026)"
   - "OWASP Top 10 for Agentic Applications 2026 (ASI01 Agent Goal Hijack, ASI02 Tool Misuse)"
+predict:
+  question: "The cart total differs by 12 percent from the previous order. What does the agent do?"
+  options: ["It submits the order since the user asked for the same paper", "It pauses and shows the cart, total and address for user confirmation", "It retries the page load until the original price appears"]
+  answer: 1
+  why: "The policy layer flags the change, and because ordering is irreversible the agent pauses for the user to confirm."
+check:
+  - q: "Why use hybrid perception, a screenshot annotated with DOM element markers?"
+    options: ["It gives the model visual context and precise element ids together", "Screenshots alone cannot be used on any real website", "The DOM alone always captures canvas apps and custom widgets"]
+    answer: 0
+    why: "Screenshots handle odd widgets but are error-prone, DOM is precise but misses visual state; hybrid gives both."
+  - q: "Why have a vault fill credentials at the browser layer instead of giving them to the model?"
+    options: ["Models cannot type into password fields rendered by the browser", "The model never sees the password, so injected page text cannot make it leak one", "Vaults complete logins faster than a model could by typing them"]
+    answer: 1
+    why: "The model sees only 'logged in', so an injection cannot extract credentials it never held."
+  - q: "Why prefer APIs and use a browser agent only where no API exists?"
+    options: ["Browser agents cannot reach sites that offer APIs", "Browser sessions cost more than any API call, ruling out UI agents", "Reading arbitrary pages amplifies prompt-injection risk across every page the agent sees"]
+    answer: 2
+    why: "The lesson says browser use widens the attack surface to every page read, so it is the last resort."
 ---
 
 ## The problem

@@ -12,6 +12,24 @@ banner:
     - [server, "planner"]
     - [db, "index scan"]
     - [doc, "EXPLAIN"]
+predict:
+  question: "EXPLAIN shows a Nested Loop join with an estimated 10 rows, but EXPLAIN ANALYZE reports 500,000 actual rows. What most likely happens at runtime?"
+  options: ["The query runs fast, because estimates rarely affect timing", "The planner replans mid-query and switches to a hash join", "The join is slow, since the plan assumed a small row count"]
+  answer: 2
+  why: "A big estimate gap means the planner chose a nested loop on a bad cardinality guess, which becomes a slow row-by-row scan."
+check:
+  - q: "You add an index on email, but WHERE lower(email) = ... still scans the whole table. Why?"
+    options: ["Applying a function to the column needs an expression index on lower(email)", "Indexes on text columns only work for exact case-sensitive matches", "The index needs ANALYZE to run before any query can use it"]
+    answer: 0
+    why: "A plain index on email does not match a function applied to the column, so an expression index is required."
+  - q: "A query is fast on a 10,000-row staging table but falls over at 50 million rows in production. What is the lesson's explanation?"
+    options: ["Production hardware is always slower than staging hardware", "The planner switches scan and join strategies at different scales", "Indexes stop working once a table passes a million rows"]
+    answer: 1
+    why: "Plan choices like seq vs index scan and join strategy change with data volume, so test on realistic sizes."
+  - q: "Why is EXPLAIN alone not enough to diagnose a slow query?"
+    options: ["EXPLAIN cannot show which indexes exist on the table", "EXPLAIN always picks a different plan than the real execution", "Its estimates depend on statistics and may be wrong without real timings"]
+    answer: 2
+    why: "Only EXPLAIN ANALYZE shows real row counts and timing, exposing estimates that stale statistics got wrong."
 ---
 
 ## The core mental model

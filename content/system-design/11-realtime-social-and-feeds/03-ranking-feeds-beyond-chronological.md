@@ -12,6 +12,24 @@ banner:
     - [model, "ranker"]
     - [doc, "scores"]
     - [user, "feed"]
+predict:
+  question: "A feed ranker is trained to maximize predicted likes and nothing else. Over time, what does the lesson expect to rise in the feed?"
+  options: ["Content from many diverse sources, since many sources earn likes", "Older posts, because ties in score are broken by recency", "Attention-grabbing content that users may not call valuable on reflection"]
+  answer: 2
+  why: "Optimizing a raw engagement proxy structurally favors strong immediate reactions over content users would call valuable."
+check:
+  - q: "Why separate candidate generation from ranking?"
+    options: ["Ranking models can only score posts from one author at a time", "Cheap scoring narrows thousands of posts so the costly model scores only a few", "Splitting guarantees the final feed stays in chronological order"]
+    answer: 1
+    why: "An expensive model over all content would miss the tight latency budget of a feed load."
+  - q: "Why apply a diversity step after ranking?"
+    options: ["The ranker cannot score posts from more than one account", "Diversity rules raise predicted engagement, so ranking depends on them", "Top scores may cluster on a few sources, so repetition needs separate correction"]
+    answer: 2
+    why: "A well-calibrated model can still produce a narrow feed because the highest scores cluster."
+  - q: "Why weight comments and shares more heavily than passive likes?"
+    options: ["It counteracts raw engagement favoring attention-grabbing but less valuable content", "Likes arrive too slowly to be used as a real-time ranking signal", "Comments are cheaper to collect than likes in a streaming pipeline"]
+    answer: 0
+    why: "Meaningful-interaction weighting is a corrective signal against engagement-only optimization."
 ---
 
 ## Why chronological order stops being the right default at scale

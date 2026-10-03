@@ -6,6 +6,24 @@ sources:
   - "OSWorld leaderboard summaries, 2026 (secondary: leaderboard.steel.dev and trackers)"
   - "Anthropic pricing documentation, computer-use and browser-use toolset overhead (fetched October 2026)"
   - "OWASP Top 10 for Agentic Applications 2026 (ASI01 Agent Goal Hijack, ASI02 Tool Misuse), via secondary summaries"
+predict:
+  question: "A computer-use task runs 40 steps, and the toolset adds about 4,500 input tokens per request. How much does the definition alone add?"
+  options: ["About 4,500 tokens in total, since the toolset is sent once", "About 180,000 tokens, before any screenshots are counted", "About 40,000 tokens, because definitions are billed per task"]
+  answer: 1
+  why: "The toolset is added to every request, so 40 x 4,500 = 180,000 input tokens before screenshots billed as image input."
+check:
+  - q: "Why are computer-use agents described as the riskiest agent type?"
+    options: ["They read untrusted content and can also act on it", "They need larger models than any other agent type", "They cannot be limited by step or cost caps"]
+    answer: 0
+    why: "Anything on a page can contain instructions aimed at the model, and the agent can click, send or pay."
+  - q: "Why must the confirmation screen show values read by code?"
+    options: ["Model descriptions are too slow for human reviewers", "The model's description of the action could be wrong or hijacked", "Code-rendered screens count against the step budget"]
+    answer: 1
+    why: "A reviewer should see the real old and new account numbers, not the model's account of what it will do."
+  - q: "Why is an OSWorld score a poor forecast for your own workflows?"
+    options: ["Benchmarks use human baselines that agents cannot reach", "Real apps add logins, pop-ups and UI changes that benchmarks lack", "Benchmark tasks need a different screenshot format"]
+    answer: 1
+    why: "Expect lower results and measure on your own workflows, re-testing after every application release."
 ---
 
 ## An agent that uses the same interface people do

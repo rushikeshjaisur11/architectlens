@@ -16,6 +16,24 @@ banner:
     - [server, "control"]
     - [server, "experiment"]
     - [shield, "compare"]
+predict:
+  question: "An experiment adds 2 seconds of latency to recommendation calls for 1 percent of users; callers time out at 500 ms and use a cached list. What is observed?"
+  options: ["Stream starts drop for affected users until recommendations recover", "Stream starts are unchanged, but the home page loads about 400 ms slower", "The home page loads about 2 seconds slower for affected users"]
+  answer: 1
+  why: "The fallback protects playback, but the timeout still waits its full duration, so the team lowers it and adds a cache."
+check:
+  - q: "Why does Chaos Monkey run during business hours?"
+    options: ["Traffic is lowest then, so any failure costs the least", "Auto-remediation tooling only operates during working hours", "Engineers are present to respond, instead of facing a 3 a.m. surprise"]
+    answer: 2
+    why: "Failures found when engineers are awake and at work get fixed in the design immediately."
+  - q: "Why define steady state with a customer-facing metric such as streams started per second?"
+    options: ["Internal health can look fine while customers still suffer an impact", "Internal metrics are too costly to collect in production", "Customer metrics let an experiment skip the control group"]
+    answer: 0
+    why: "Steady state is measured as what customers experience, so the experiment shows whether users were truly affected."
+  - q: "Why start with small experiments instead of a region failure first?"
+    options: ["Region failures cannot be simulated in a production system", "A small blast radius can be stopped fast with few users affected", "Small experiments do not need a steady-state metric"]
+    answer: 1
+    why: "Starting small on a fraction of traffic with a stop button limits damage if the hypothesis is wrong."
 ---
 
 *Provenance note (October 2026): the experiment steps and principles were checked against principlesofchaos.org, and the current-practice section against a report of Netflix's QCon SF 2025 talk. The 2008 corruption incident, Chaos Monkey details and the Simian Army tool list come from the author's recall of Netflix blog posts and were not re-fetched; check those before quoting.*

@@ -13,6 +13,24 @@ banner:
     - [queue, "broker"]
     - [server, "consumer"]
     - [shield, "ack"]
+predict:
+  question: "Payment events for customer A and customer B are sent to a topic partitioned by customer_id. Consumer retries make a refund for A arrive twice. What is guaranteed?"
+  options: ["Order within A's partition holds, and B's events may run in parallel", "Order across all customers holds, but A's refund can be skipped", "Neither order nor delivery is guaranteed across customers or within A"]
+  answer: 0
+  why: "A shared partition key keeps one customer's events ordered while different keys process in parallel; the duplicate still needs idempotency."
+check:
+  - q: "Why is at-least-once delivery the most common guarantee in practice?"
+    options: ["It prevents duplicates by recording each message in a processed table", "It is achievable without expensive coordination, but pushes duplicate handling to consumers", "It is cheaper because consumers never need to acknowledge messages"]
+    answer: 1
+    why: "Redelivery after a missed ack is cheap for the queue, so consumers must tolerate duplicates."
+  - q: "Why is 'increment balance by $10' a risk under at-least-once delivery while 'set status to active' is not?"
+    options: ["Increments run out of order, while status updates keep their order", "Status updates are idempotent; a redelivered increment would apply twice", "Increments are rejected by queues that advertise exactly-once delivery"]
+    answer: 1
+    why: "Naturally idempotent operations are safe to repeat; the increment needs an idempotency key."
+  - q: "What happens to an ordered partition if one malformed message has no dead-letter handling?"
+    options: ["The consumer skips it after one failed attempt and continues", "Only that message is lost, and later messages are unaffected", "The consumer keeps retrying it and blocks everything behind it"]
+    answer: 2
+    why: "In an ordered stream nothing behind the failing message can be processed, so retries stall the whole partition."
 ---
 
 ## Why decouple with a queue at all
@@ -26,6 +44,8 @@ The cost is complexity: a direct function call either succeeds or throws, immedi
 - **At-most-once** — a message is delivered zero or one times; if something fails after it's sent but before it's confirmed processed, it's simply lost. Rarely desirable on its own, but sometimes an acceptable tradeoff for high-frequency, loss-tolerant data (e.g., a metrics data point where losing an occasional sample doesn't matter).
 - **At-least-once** — a message is guaranteed to be delivered, but might be delivered more than once (e.g., the consumer processes it, crashes before acknowledging, and the queue redelivers it to be safe). This is the most common guarantee in practice, because it's achievable without expensive coordination — but it pushes the responsibility for handling duplicates onto the consumer.
 - **Exactly-once** — a message is delivered and processed exactly one time, no duplicates, no loss. This is what people actually want intuitively, but it's expensive or, across truly independent systems, sometimes provably impossible to guarantee end-to-end without extra coordination — most "exactly-once" systems actually provide at-least-once delivery plus idempotent processing, which achieves the same observable effect without the theoretical cost of true exactly-once semantics.
+
+<div data-anim="delivery-guarantees"></div>
 
 ## Idempotency: the practical answer to "exactly-once"
 

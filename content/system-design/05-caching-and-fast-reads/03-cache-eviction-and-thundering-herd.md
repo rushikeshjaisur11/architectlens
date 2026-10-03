@@ -12,6 +12,36 @@ banner:
     - [doc, "expiry"]
     - [client, "herd"]
     - [shield, "single flight"]
+predict:
+  question: "A 3-entry cache holds hot item A (read thousands of times). Then one-off keys X, Y and Z are each read once, after A's last read. Then A is requested again. What happens?"
+  options:
+    - "LRU still hits A, since A was read thousands of times earlier"
+    - "LRU has evicted A and misses, while LFU kept A and dropped a one-off key"
+    - "Both policies miss A, because three new keys always flush a 3-entry cache"
+  answer: 1
+  why: "LRU only tracks recency, so A becomes the oldest entry despite its track record, while LFU favors items with a history of repeated access."
+check:
+  - q: "Why is TTL not a capacity-management eviction policy on its own?"
+    options:
+      - "TTL evicts the most frequently used entries first, so it already manages space"
+      - "The cache can fill before entries expire, so LRU or LFU is still needed and TTL bounds staleness"
+      - "TTL is only supported by Redis, so other caches need LRU for expiry"
+    answer: 1
+    why: "TTL limits how old an entry may be, not how much space is used, so it is layered alongside LRU or LFU."
+  - q: "What does stale-while-revalidate trade for removing the latency and origin spike on a miss?"
+    options:
+      - "Up to one extra refresh cycle of staleness, in return for no latency or origin spike"
+      - "Higher origin load, because every request now triggers its own background refresh"
+      - "The ability to coalesce requests, since waiting requests no longer share one fetch"
+    answer: 0
+    why: "Requests get the previous cached value immediately while the refresh runs in the background, which costs a bounded amount of extra staleness."
+  - q: "A cache shows a 99 percent hit rate in steady state, yet the origin falls over when a popular key expires. Why?"
+    options:
+      - "The hit rate was likely measured wrongly, since 99 percent should always protect the origin"
+      - "LFU was chosen over LRU, and LFU drops popular keys at expiry"
+      - "The average hides the expiry instant, when concurrent requests all miss together and reach the origin"
+    answer: 2
+    why: "A healthy average says nothing about the worst-case instant, which needs coalescing, jitter or stale-while-revalidate."
 ---
 
 ## Why a cache needs an eviction policy at all
@@ -25,6 +55,8 @@ A cache is finite — it can't hold every piece of data a system might ever want
 - **TTL-based expiration** — entries are evicted once they exceed a configured age, independent of access frequency or recency. This isn't really a capacity-management eviction policy on its own (a cache can still fill up before entries' TTLs expire) — it's usually layered alongside LRU or LFU specifically to bound staleness (per this track's caching strategies lesson), not to manage cache size.
 
 Most production caches (Redis included) support multiple configurable eviction policies, and the right choice genuinely depends on the actual access pattern — LRU is a reasonable default, but a workload with strong frequency-based popularity skew (a small set of items accessed constantly, a long tail accessed rarely) often benefits measurably from LFU instead.
+
+<div data-anim="eviction-policies"></div>
 
 ## The thundering herd / cache stampede problem
 

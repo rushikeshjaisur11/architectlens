@@ -14,6 +14,36 @@ banner:
     - [cache, "local cache"]
     - [queue, "invalidations"]
     - [server, "node B"]
+predict:
+  question: "A cache cluster routes keys with consistent hashing and a new node is added. Roughly what share of keys move to it?"
+  options:
+    - "Nearly all keys, as with hash(key) % N routing"
+    - "None, because virtual nodes keep every key where it was"
+    - "Only a small slice, roughly 1/N of keys, near the new node"
+  answer: 2
+  why: "A key moves only if it falls between the new node and its neighbor on the ring, roughly 1/N of keys, unlike modulo routing which remaps nearly everything."
+check:
+  - q: "What can happen to writes during a Redis Cluster failover under a write burst?"
+    options:
+      - "No writes are lost, since replicas apply every acknowledged write before it returns"
+      - "Nothing is lost because Redis Cluster uses a majority quorum on each write"
+      - "Recently acknowledged writes can be lost, because replication to replicas is asynchronous"
+    answer: 2
+    why: "Writes go to the master and replicate asynchronously, so a failover can drop the last few acknowledged writes."
+  - q: "Why can a single viral key still overload one node even with consistent hashing or hash slots?"
+    options:
+      - "Both schemes spread keys evenly, not traffic, so one viral key still overloads its owner"
+      - "Consistent hashing with virtual nodes spreads a viral key's traffic across every node"
+      - "Redis hash slots automatically replicate a viral key to all nodes to share its reads"
+    answer: 0
+    why: "Sharding balances keys, not traffic, so hot keys need a separate mitigation such as local caching or key splitting."
+  - q: "Why is Memcached's lack of built-in replication an acceptable design?"
+    options:
+      - "Clients write each key to several servers by default, so losing one node costs no keys"
+      - "A failed node's keys are simply refetched from the source of truth, so it is never treated as durable"
+      - "Memcached uses fixed hash slots, which keep a second copy of each slot on another node"
+    answer: 1
+    why: "Memcached is a pure best-effort cache, so losing a node only means refetching, which keeps the model simple and fast."
 ---
 
 ## Why a single cache node isn't enough

@@ -14,6 +14,24 @@ banner:
     - [doc, "risk tier"]
     - [shield, "obligations"]
     - [user, "regulator"]
+predict:
+  question: "A lender starts building an EU-facing loan-summary assistant in 2026 and plans deployment in 2028. When do the Annex III high-risk duties apply to it, and what should design do?"
+  options: ["They apply from 2 December 2027, so it should build in logging and oversight from day one", "They apply from 2 August 2026, so the system is already non-compliant at launch", "They apply from 2 August 2028, so design can wait until the deployment year"]
+  answer: 0
+  why: "Stand-alone high-risk systems fall under Annex III from 2 December 2027, before the 2028 deployment, and building controls in early is cheaper than retrofitting."
+check:
+  - q: "Why track regulatory dates in a governance registry rather than hard-coding them in prose?"
+    options: ["Registries are required by the AI Act for any system that uses a general-purpose model", "The EU dates recently moved, so prose copies silently go stale and mislead teams", "Prose can't express dates, so a structured registry is the only supported format"]
+    answer: 1
+    why: "The lesson flags hard-coded dates as a mistake precisely because the EU dates just changed."
+  - q: "Why map NIST, EU and ISO 42001 requirements onto one control library?"
+    options: ["ISO 42001 certification legally satisfies the EU AI Act, so the other mappings are optional", "The three frameworks define identical controls, so a single mapping needs no adjustment", "One body of evidence can then serve several regimes instead of being rebuilt for each"]
+    answer: 2
+    why: "Using ISO/IEC 42001 as a single control library lets evidence stored once be mapped to NIST functions and EU articles."
+  - q: "A bank assumes generative AI is outside SR 26-2, so it needs no model-risk work for its assistant. What does the lesson say?"
+    options: ["Supervisors still ask, so the bank applies its model-risk programme by analogy", "Out-of-scope systems are exempt, so no model-risk programme is expected at all", "SR 26-2 applies fully to generative AI, so the bank must follow it directly"]
+    answer: 0
+    why: "'Not in scope' doesn't mean 'no expectations'; the worked example applies the model-risk programme by analogy."
 ---
 
 *This is an engineering overview, not legal advice. Dates and scope change; confirm with counsel.*

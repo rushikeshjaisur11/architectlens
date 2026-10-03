@@ -7,6 +7,24 @@ sources:
   - "Wei et al., 'Chain-of-Thought Prompting Elicits Reasoning in Large Language Models' (2022); Wang et al., 'Self-Consistency Improves Chain of Thought Reasoning' (2022)"
   - "Anthropic documentation, 'Extended thinking' (fetched October 2026)"
   - "DeepSeek-AI, 'DeepSeek-R1' (arXiv 2501.12948)"
+predict:
+  question: "An order-extraction service uses constrained decoding with a fixed JSON schema. A field comes back schema-valid but wrong. Why?"
+  options: ["Constrained decoding guarantees structure, not that content is correct", "Constrained decoding failed, so the output should have been malformed", "Schema-valid output is always correct if the types match"]
+  answer: 0
+  why: "Structural conformity and content correctness are separate guarantees; content still needs its own validation."
+check:
+  - q: "Why apply self-consistency to math tutoring but not to a low-stakes task?"
+    options: ["It only works with temperature 0, which suits math problems", "Its multiplied generation cost is worth paying only when errors are costly", "It cannot be used for tasks that lack a numeric answer at all"]
+    answer: 1
+    why: "Self-consistency multiplies cost for accuracy, so it fits high-error-cost tasks and adds little for low-stakes ones."
+  - q: "Why can constrained decoding be an easier default than self-consistency?"
+    options: ["It always reduces the number of tokens the model generates", "It improves the correctness of the reasoning in every answer", "It needs no extra generation passes; the cost is schema work upfront"]
+    answer: 2
+    why: "Constrained decoding adds no extra inference passes; the cost is defining the schema once."
+  - q: "Why was tree of thoughts not used for the math tutoring example?"
+    options: ["Chain-of-thought plus self-consistency was enough, so branching cost was unneeded", "Tree of thoughts cannot be combined with chain-of-thought prompting", "Branching exploration only works for free-form, non-math problems"]
+    answer: 0
+    why: "The problems were within reach of chain-of-thought plus self-consistency, so the extra branching cost was not justified."
 ---
 
 ## Why "return JSON" alone isn't reliable enough for production

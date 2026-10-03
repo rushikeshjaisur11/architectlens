@@ -14,6 +14,24 @@ banner:
     - [model, "LLM"]
     - [shield, "policy"]
     - [user, "human review"]
+predict:
+  question: "A comment 'people like you should disappear' scores 0.55 on the harassment classifier. The LLM judge returns low-to-medium severity, confidence 0.62, with ambiguous phrasing and no explicit threat. What action does the policy take?"
+  options: ["Immediate removal and account suspension", "A warning and reduced reach, not removal", "Left fully visible with no action until reported"]
+  answer: 1
+  why: "Policy says ambiguous low-severity items get graduated action: a warning and reduced reach."
+check:
+  - q: "Why not send every item straight to the LLM judge?"
+    options: ["Cost and latency force a funnel where cheap stages handle clear cases", "LLMs cannot read the written policy text", "Hash matching is less accurate than LLM judgement for known illegal material"]
+    answer: 0
+    why: "At 300 million items a day, hashes and fast classifiers handle volume and the LLM is reserved for uncertain cases."
+  - q: "Why sample random allowed content instead of measuring only reported items?"
+    options: ["Reports already give an unbiased estimate of misses", "False negatives only appear by sampling content that was allowed", "Allowed content is cheaper to label than removed content"]
+    answer: 1
+    why: "Missed violations are not reported, so only random sampling of allowed content estimates them."
+  - q: "A high appeal overturn rate for a rule signals what?"
+    options: ["Reviewers are too lenient and need retraining", "The classifier's recall is too high on severe harms", "Over-enforcement, so the rule or judge needs tuning"]
+    answer: 2
+    why: "The lesson reads a high overturn rate as over-enforcement."
 ---
 
 ## The problem

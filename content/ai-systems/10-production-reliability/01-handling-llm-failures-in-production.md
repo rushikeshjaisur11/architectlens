@@ -14,6 +14,24 @@ banner:
     - [server, "retry"]
     - [cache, "fallback"]
     - [doc, "safe reply"]
+predict:
+  question: "A product-description call returns HTTP 200 but fails schema validation, and the corrective retry also fails. What should happen next?"
+  options: ["Fall back to a template-based, non-LLM description", "Show a user-facing error, since the retry already failed", "Retry the same prompt until validation passes"]
+  answer: 0
+  why: "A feature that must always show output should degrade to a simpler default rather than break or loop."
+check:
+  - q: "Why track p99 latency instead of only the average for LLM calls?"
+    options: ["Rare very slow requests hurt users yet barely move an average", "Averages cannot be computed for streaming LLM responses", "p99 matters only when the provider is fully down"]
+    answer: 0
+    why: "LLM latency varies widely, so tail percentiles reveal user pain that averages hide."
+  - q: "Why is retrying immediately after a rate-limit error a mistake?"
+    options: ["It succeeds quickly because the limit resets per request", "It re-triggers the limit and adds load to a struggling provider", "It is fine as long as the retry count is capped at three"]
+    answer: 1
+    why: "Backoff gives the rate limit window time to reset; instant retries just add more load."
+  - q: "What does tracking validation failure rate over time catch?"
+    options: ["Provider outages, which uptime checks would miss", "Only cost anomalies from retry storms", "A silent quality regression, before it appears as hard errors"]
+    answer: 2
+    why: "Soft failures like a model version change show up in validation failures well before error rates spike."
 ---
 
 ## Why LLM calls fail differently than typical API calls

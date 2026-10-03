@@ -8,6 +8,24 @@ sources:
   - "NIST AI RMF 1.0 and NIST SP 800-207 (Zero Trust Architecture)"
   - "OWASP Top 10 for LLM Applications 2025, genai.owasp.org/llm-top-10 (fetched Oct 2026)"
   - "OWASP Top 10 for Agentic Applications 2026 (published December 2025), via secondary summaries"
+predict:
+  question: "In the email assistant, reading and sending run in separate sessions and the reading session has no send tool. A malicious email says to forward the last ten messages to an attacker. What happens?"
+  options: ["The reading session has no send tool, so the injection has nothing to act on", "The model refuses because the system prompt forbids forwarding mail", "The mail is forwarded, and a later alert flags the unusual recipient"]
+  answer: 0
+  why: "Splitting the sessions breaks the lethal trifecta: the session that sees untrusted content has no outbound channel."
+check:
+  - q: "Why design as if the model can be fooled rather than rely on a hardened system prompt?"
+    options: ["Injection is rare enough that code-level controls are not justified", "Prompts alone are not security, so the model is treated as untrusted", "Hardened prompts block direct injection but cost too many tokens"]
+    answer: 1
+    why: "The lesson treats the model as an untrusted component, so a successful injection must not be able to cause serious harm."
+  - q: "What does breaking the lethal trifecta mean in practice?"
+    options: ["Avoid combining private data, untrusted content and an outbound channel in one session", "Encrypt private data, untrusted content and outbound traffic separately", "Run three redundant classifiers over every prompt, retrieval and tool call"]
+    answer: 0
+    why: "An injected instruction needs all three legs to exfiltrate data; removing one in a session removes the path."
+  - q: "Where should authorisation, rate limits and schema validation live?"
+    options: ["In the system prompt, where the model can apply them contextually", "In code at the tool and API boundary, outside the model", "In the output classifier that screens final responses"]
+    answer: 1
+    why: "Deterministic enforcement belongs in code at the tool and API boundary, because the model can be fooled."
 ---
 
 ## The problem

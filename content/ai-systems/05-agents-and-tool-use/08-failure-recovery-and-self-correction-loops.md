@@ -12,6 +12,24 @@ banner:
     - [model, "attempt"]
     - [shield, "verify"]
     - [doc, "fix"]
+predict:
+  question: "A tool call fails because the vendor API is actually down, and retry middleware is capped at 4 attempts. What happens after attempt 4?"
+  options: ["The model rewrites its prompt and starts a new retry cycle", "The failure is surfaced upward as a genuine error", "The middleware keeps retrying with a longer delay"]
+  answer: 1
+  why: "Mechanical retries use backoff and jitter with a hard cap, then report the error instead of burning latency and cost on a down dependency."
+check:
+  - q: "Why return a tool failure as an error-flagged result instead of throwing an exception?"
+    options: ["The model can read why it failed and adapt, or ask the user", "Exceptions cannot be logged by the tool-use APIs", "Error flags make the call skip the retry middleware"]
+    answer: 0
+    why: "The failure becomes an observation the model can reason from, enabling self-correction instead of aborting the run."
+  - q: "Why does Reflexion work best with a clear pass/fail verifier?"
+    options: ["Reflections are only stored when tests are written in Python", "Without an external check, nothing confirms the reflection was correct", "The verifier generates the reflection text for the model"]
+    answer: 1
+    why: "Without external confirmation, a reflection can simply be a wrong diagnosis that the retry builds on."
+  - q: "Why use a real sandboxed test suite as the pass/fail signal for self-correction?"
+    options: ["Test suites run faster than a model judging its own work", "Model self-reports are cheaper but need a larger retry cap", "The model can pass by weakening the assertion if it judges itself"]
+    answer: 2
+    why: "An external verifier the model cannot game prevents it from relaxing the success criterion instead of fixing the problem."
 ---
 
 ## Failures compound differently in agent loops than in normal software

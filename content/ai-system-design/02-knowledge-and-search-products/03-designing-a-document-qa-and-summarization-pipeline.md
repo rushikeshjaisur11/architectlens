@@ -15,6 +15,24 @@ banner:
     - [server, "parse+chunk"]
     - [db, "index"]
     - [model, "answer"]
+predict:
+  question: "A user asks a 300-page contract's assistant \"What are the main risks?\" No single passage answers it. Which retrieval unit does the design use?"
+  options: ["The section summaries, since the question spans the document", "The single best-matching chunk from the termination clause", "The full 300 pages in one prompt, trusting the middle"]
+  answer: 0
+  why: "For questions spanning the whole document, the design uses section summaries as the retrieval unit because no single passage answers them."
+check:
+  - q: "What is the trade-off between map-reduce and refine summarization?"
+    options: ["Refine is parallel and cheap, while map-reduce keeps the narrative order intact", "Map-reduce is parallel but may lose cross-section links; refine keeps narrative but is slower", "Both are equally parallel and differ only in the wording of the final prompt"]
+    answer: 1
+    why: "Map-reduce summarizes sections independently so it is fast but can miss cross-section links; refine carries a running summary, preserving narrative at sequential cost."
+  - q: "Why attach a confidence to each OCR region and keep tables as structured rows?"
+    options: ["It lets the index skip scanned pages entirely to save cost", "It reduces the token cost of every summary the pipeline makes", "Otherwise a misread or detached number is presented confidently"]
+    answer: 2
+    why: "A flagged low-confidence region warns that a number may be misread, and structured tables keep each value attached to its column header."
+  - q: "Why not push a whole 500-page document into one prompt for the summary?"
+    options: ["It costs a lot and the model attends poorly to the middle", "Models refuse prompts longer than 100 pages", "It prevents citations from being attached to the summary"]
+    answer: 0
+    why: "A single call over a long document is expensive and recall degrades in the middle, which is why hierarchical patterns are used."
 ---
 
 ## The problem

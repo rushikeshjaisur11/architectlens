@@ -6,6 +6,24 @@ sources:
   - "Sandbox comparisons for AI code execution, 2026 (secondary: modal.com, northflank.com, fast.io, amux.io)"
   - "Firecracker and gVisor project documentation"
   - "OWASP Top 10 for Agentic Applications 2026, ASI05 Unexpected Code Execution (via secondary summaries)"
+predict:
+  question: "A malicious spreadsheet cell makes the agent's code run curl to an external host inside a sandbox with network denied. What happens?"
+  options: ["The request succeeds, but its output is scanned before reuse", "The request fails and the attempt is logged as a security event", "The sandbox is destroyed early and the task restarts"]
+  answer: 1
+  why: "Default-deny networking stops exfiltration, and logging network attempts supports audit and detection."
+check:
+  - q: "Why prefer microVMs over containers for untrusted model-generated code?"
+    options: ["Each microVM has its own kernel, while containers share the host kernel", "Containers cannot enforce CPU or memory limits", "MicroVMs start faster than containers in every setup"]
+    answer: 0
+    why: "A kernel vulnerability is a path out of a container, whereas escaping a microVM requires breaking hardware virtualisation."
+  - q: "A task needs Python packages. What is the better approach to \"allow internet to install\"?"
+    options: ["Open the internet in the sandbox but block uploads of files", "Install at run time through a proxy that logs each package", "Pre-build images with the libraries and keep network denied"]
+    answer: 2
+    why: "Open internet is how stolen data leaves, so pre-built images avoid installing from the internet at run time."
+  - q: "Why avoid a persistent sandbox shared across tenants?"
+    options: ["It accumulates secrets and state, so use one per task or user", "It cannot enforce wall-clock limits on any process", "It makes images impossible to pre-build in advance"]
+    answer: 0
+    why: "Shared persistent sandboxes leak state across tasks; ephemeral per-task sandboxes are destroyed when the task ends."
 ---
 
 ## Why agents need somewhere safe to run code

@@ -6,6 +6,24 @@ sources:
   - "Anthropic documentation, 'Extended thinking' and adaptive thinking migration guide, platform.claude.com/docs (fetched October 2026)"
   - "Snell et al., 'Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters' (2024)"
   - "DeepSeek-AI, 'DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning' (arXiv 2501.12948; Nature, 2025)"
+predict:
+  question: "A plain answer uses 300 output tokens; a reasoning answer uses 6,000 thinking plus 300 answer tokens at $10 per million. What is the cost ratio?"
+  options: ["About 21x, since thinking tokens are billed as output tokens", "About 2x, since thinking tokens are billed at a discounted rate", "About 1x, since only the 300-token final answer is billed"]
+  answer: 0
+  why: "$0.003 versus $0.063 is 21x, because thinking tokens count as output tokens."
+check:
+  - q: "In the routing example, why not run all support requests at high effort?"
+    options: ["High effort lowers accuracy on policy-heavy refund decisions", "Most volume is simple intent classification where thinking adds cost without gain", "High effort is only available asynchronously on the largest model"]
+    answer: 1
+    why: "80% of traffic is intent classification where no thinking suffices, so blanket high effort inflates cost for no measured gain."
+  - q: "Why hold one thinking configuration for the life of a cached conversation?"
+    options: ["Switching thinking modes is rejected with an HTTP 400 error", "Thinking settings are billed per change, which raises the cost", "Changing the configuration invalidates prompt-cache breakpoints"]
+    answer: 2
+    why: "The lesson documents that changing the thinking configuration between requests invalidates cache breakpoints."
+  - q: "Why avoid building a feature that parses the model's thinking output?"
+    options: ["It may be a summary or encrypted, and its format changes by version", "It is always empty unless the effort level is set to high", "It is billed separately and is too expensive to read in code"]
+    answer: 0
+    why: "Thinking output may be a summary and can be encrypted, with format and availability changing between versions."
 ---
 
 ## Two ways to buy accuracy

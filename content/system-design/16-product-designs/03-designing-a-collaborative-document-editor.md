@@ -6,6 +6,24 @@ sources:
   - "Ellis and Gibbs, 'Concurrency control in groupware systems' (SIGMOD 1989), operational transformation"
   - "Shapiro et al., 'Conflict-free Replicated Data Types' (2011); Yjs and Automerge documentation"
   - "Figma engineering blog, 'How Figma's multiplayer technology works' (2019)"
+predict:
+  question: "Bob types offline for two minutes, then reconnects with 90 buffered operations while Alice edited the same paragraph. What happens?"
+  options: ["The server keeps whichever paragraph version arrived last and discards the other edits", "Bob's client discards its buffer and reloads the latest snapshot from the server", "The server integrates his operations and returns what he missed, so both edits merge"]
+  answer: 2
+  why: "Buffered operations are integrated on reconnect and Alice's concurrent edits merge without loss."
+check:
+  - q: "Why might a team choose CRDTs over OT for a collaborative editor?"
+    options: ["CRDTs carry no per-character metadata, so they are smaller than OT operations", "CRDT operations commute, so they work offline and peer-to-peer with a simple relay server", "CRDTs rely on a central server to transform operations, which is easier to get right"]
+    answer: 1
+    why: "Commuting operations remove transformation logic and need only a relay, at the cost of id and tombstone overhead."
+  - q: "Why assign each document to a single collaboration server at a time?"
+    options: ["Ordering and merging happen in one place, avoiding distributed coordination for that document", "It guarantees no document is ever lost, so an operation log is unnecessary", "It lets every server apply edits independently and reconcile them later"]
+    answer: 0
+    why: "One owner per document avoids coordination, while the persisted log and snapshots still handle failover."
+  - q: "Why broadcast cursor positions without persisting them, at a throttled rate?"
+    options: ["Persisting cursors would break convergence because the log must order them", "Cursors are ephemeral, so storing them adds write load for no value", "Persisted cursors would leak positions to users without edit permission"]
+    answer: 1
+    why: "Presence data is ephemeral, so it is broadcast at roughly 10 to 20 updates a second and never stored."
 ---
 
 ## The problem

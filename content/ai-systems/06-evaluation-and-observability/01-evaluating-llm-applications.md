@@ -13,6 +13,24 @@ banner:
     - [model, "app"]
     - [shield, "metrics"]
     - [doc, "report"]
+predict:
+  question: "A RAG support bot's unit evals (format, citations, length) all pass after a change, but model-graded accuracy drops on questions tied to one document type. What should the team inspect first?"
+  options: ["The logged retrieved chunks for those specific queries", "The output format checks, which must have missed something", "The judge prompt, since the unit evals already passed", "The temperature setting used for the whole system"]
+  answer: 0
+  why: "Passing unit evals point to a quality regression, not a structural one. Retrieved-chunk logs separate retrieval getting worse from generation getting worse."
+check:
+  - q: "Why must a model-graded eval be checked against human-labeled examples before it gates releases?"
+    options: ["A judge can be lenient or favor longer answers, so its numbers may not track real quality", "A judge model is always less accurate than a regex check, so humans must replace it", "Human labels are cheaper than judge calls, so they should score every release", "A judge cannot score open-ended outputs unless humans first write all expected text"]
+    answer: 0
+    why: "The lesson warns that a miscalibrated judge produces numbers that look rigorous but do not track quality, so human-labeled validation is required."
+  - q: "Why log retrieved chunks and tool results rather than just the final answer for RAG and agent systems?"
+    options: ["Final answers are too large to store, while chunks are small and cheap to keep", "A bad answer could come from retrieval, reasoning or generation, and only intermediate logs show which", "Chunk logs let the judge model score answers without needing a rubric at all", "Regulators require intermediate logs, whereas final answers are optional to retain"]
+    answer: 1
+    why: "Without intermediate logging there is no way to tell which pipeline step failed, so debugging becomes guesswork."
+  - q: "Why build the eval set from real user queries and past production failures instead of developer-imagined examples?"
+    options: ["Imagined examples cannot be labeled, whereas logged queries always come pre-labeled", "Real queries are shorter, so each eval run finishes faster and costs far less", "Real usage surfaces edge cases nobody would write by hand, and past failures become permanent regression guards", "Generic benchmarks already cover real traffic, so only rare cases need to be added"]
+    answer: 2
+    why: "Actual usage exposes unexpected edge cases, and including known failures ensures a bug that broke once is guarded against forever."
 ---
 
 ## Why LLM applications need a different testing approach

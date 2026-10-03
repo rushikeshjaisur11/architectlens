@@ -12,6 +12,24 @@ banner:
     - [server, "spell fix"]
     - [db, "facet counts"]
     - [doc, "filtered"]
+predict:
+  question: "An observed query word is one edit away from both a very common brand name and a rare word. How does a Norvig-style corrector choose?"
+  options: ["It treats them as equally likely, because the edit distance is the same", "It prefers the common brand, since the word's own prior breaks the tie", "It prefers the rare word, since rare terms are more informative"]
+  answer: 1
+  why: "The model weighs how common the intended word is as well as how plausible the edit is. Equal edit distance does not make candidates equally plausible."
+check:
+  - q: "Why compute facet counts with the engine's native aggregations instead of one follow-up query per facet?"
+    options: ["Aggregations reuse the same index scan that produces the ranked results", "Application-level queries cannot filter by brand, price or rating", "Native aggregations return counts that never change after indexing"]
+    answer: 0
+    why: "The engine can compute counts as part of the scan already happening for the results. Separate queries repeat that work against the same data and add latency."
+  - q: "Why train the spelling model on the platform's own query logs instead of a generic dictionary?"
+    options: ["Generic dictionaries are too large to load into a search engine's memory", "Logs show which terms are common in this domain, such as \"iphone\"", "Query logs make edit distance unnecessary for choosing corrections"]
+    answer: 1
+    why: "Domain terms like brand names may be absent from a general dictionary yet extremely common in real queries. The log reflects the distribution being corrected."
+  - q: "Why should facet counts change as the user applies filters?"
+    options: ["Static counts take more storage than counts recomputed per query", "Filters are applied only after counts are shown, so they must be reset", "Static counts misstate how many results remain for each further option"]
+    answer: 2
+    why: "Users expect counts to describe the currently filtered result set. Unfiltered counts misrepresent what narrowing is actually available and undermine trust."
 ---
 
 ## Why "did you mean" is a genuinely different problem than fuzzy matching

@@ -5,6 +5,24 @@ tags: ["analytics", "sketches", "bloom-filters", "hyperloglog"]
 sources:
   - "Burton Bloom, 'Space/Time Trade-offs in Hash Coding with Allowable Errors' (1970)"
   - "Flajolet et al., 'HyperLogLog: the analysis of a near-optimal cardinality estimation algorithm' (2007)"
+predict:
+  question: "A Bloom filter checks whether a one-time coupon was already redeemed. A customer redeems a valid coupon for the first time. What can go wrong?"
+  options: ["A false negative can let a coupon be redeemed twice", "The filter always answers correctly for items never inserted", "A false positive can wrongly deny a legitimate first redemption"]
+  answer: 2
+  why: "Bloom filters never give false negatives but can give false positives. Here a false positive denies a valid user, which is a real bug."
+check:
+  - q: "Why use HyperLogLog for daily unique visitors instead of an exact set?"
+    options: ["Exact sets cannot deduplicate IDs that arrive from different servers", "HyperLogLog is exact for small counts and approximate only above a billion", "An exact set must hold every ID, while HyperLogLog needs kilobytes at ~1-2% error"]
+    answer: 2
+    why: "Exact deduplication grows with the number of uniques, while HyperLogLog's memory stays a few kilobytes regardless of the true count, at a small error."
+  - q: "Why does Count-Min Sketch report the minimum of its hashed counters?"
+    options: ["Collisions only inflate counters, so the smallest is closest to the truth", "The minimum counter always corresponds to the least-recent update", "Taking the minimum removes the need for multiple hash functions"]
+    answer: 0
+    why: "Hash collisions can only add to a counter, never subtract. The least-damaged counter gives the tightest estimate, which is still an overestimate."
+  - q: "A Bloom filter sized for a million items is fed a billion. What happens?"
+    options: ["It stops accepting inserts once its capacity is reached", "False positives climb continuously well before any hard capacity limit", "It switches to exact storage, so accuracy is kept at the cost of memory"]
+    answer: 1
+    why: "The false-positive rate is a continuous function of load, not a cliff. The filter must be sized against the real expected item count up front."
 ---
 
 ## Why exact answers sometimes aren't worth the cost

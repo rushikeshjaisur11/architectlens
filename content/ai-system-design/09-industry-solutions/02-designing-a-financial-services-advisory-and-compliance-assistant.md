@@ -14,6 +14,24 @@ banner:
     - [model, "assistant"]
     - [shield, "compliance"]
     - [db, "audit log"]
+predict:
+  question: "While preparing a wealth-client meeting, the portfolio exceeds the client's stated risk limit in one asset class. How does the advisor see this finding?"
+  options: ["The LLM judges the exposure while drafting the brief and states it in prose", "As a rules-based finding from the suitability engine, with a policy reference", "The advisor must spot it, since the copilot may not show risk-limit findings"]
+  answer: 1
+  why: "A deterministic suitability engine produces the flag; the LLM presents rather than decides."
+check:
+  - q: "Why render balances and rates from structured data instead of model-generated text?"
+    options: ["Statements about money must be correct, and generated figures can be wrong", "Rendering from data removes the need to retain prompts under books-and-records rules", "Model text cannot carry citations, which approved disclosures always require"]
+    answer: 0
+    why: "Figures come from systems of record; the model explains but does not compute."
+  - q: "Why store prompt, sources, model version, output and human decision as an immutable record?"
+    options: ["Observability logs cannot capture model versions, only inputs and raw outputs", "Short-retention logs fall short, since these logs count as records in supervision or customer use", "Immutable storage is faster to search than observability tooling during audits"]
+    answer: 1
+    why: "Do not rely on observability logs with short retention; prompt and output logs can be regulated records."
+  - q: "Why separate 'inform' from 'act' in the risk tiers?"
+    options: ["Informational tools need no records, while action tools need only one approval", "Acting tools are cheaper to supervise, so they can share the lowest tier", "Action-taking tools raise supervisory and recordkeeping duties, needing human approval"]
+    answer: 2
+    why: "Once an agent can act, duties increase materially, so it needs approval and a distinct tier."
 ---
 
 *Engineering patterns only; regulatory obligations vary by jurisdiction and product and must be confirmed with compliance and legal.*

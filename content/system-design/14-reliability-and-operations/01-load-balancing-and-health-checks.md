@@ -6,6 +6,24 @@ sources:
   - "NGINX documentation on load balancing algorithms"
   - "Google SRE Book, chapter on load balancing at the frontend and backend"
   - "Amazon Web Services, 'Summary of the Amazon DynamoDB Service Disruption in the Northern Virginia (US-EAST-1) Region' (October 2025), aws.amazon.com/message/101925 (fetched October 2026)"
+predict:
+  question: "One of 10 servers hangs from a memory leak. The balancer uses least-connections plus active health checks every few seconds. What happens to its traffic?"
+  options: ["It keeps receiving traffic until an operator removes it by hand", "The balancer restarts it while leaving it in the rotation", "It is dropped from rotation and the other 9 share the load"]
+  answer: 2
+  why: "Active checks detect the failure and remove the server automatically, with no manual reconfiguration."
+check:
+  - q: "Why should /health verify the database connection rather than always return 200?"
+    options: ["A process can be up yet unable to do its job, which shallow checks miss", "Database checks let the balancer route requests by URL path", "Unconditional 200s make passive checks eject the server too early"]
+    answer: 0
+    why: "The common failure is a live process that cannot reach a dependency; only a deeper check catches it."
+  - q: "Why keep passive health checks when active checks already exist?"
+    options: ["Passive checks catch failures before any real request is affected", "They give an independent backstop if /health misses the symptom", "Active checks cannot run against servers that serve real traffic"]
+    answer: 1
+    why: "Two independent detection paths mean one imperfect check does not leave a bad server in rotation."
+  - q: "Why avoid consistent hashing for a stateless service?"
+    options: ["It cannot route around servers that fail their health checks", "It forces Layer 7 inspection of every request, slowing routing", "Hot keys can skew load while no state needs pinning"]
+    answer: 2
+    why: "Stickiness only helps when servers hold per-key state; otherwise it just creates uneven distribution."
 ---
 
 ## What a load balancer is actually for

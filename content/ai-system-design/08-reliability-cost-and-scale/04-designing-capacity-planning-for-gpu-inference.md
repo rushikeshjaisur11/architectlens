@@ -15,6 +15,24 @@ banner:
     - [doc, "forecast"]
     - [gpu, "GPUs"]
     - [queue, "headroom"]
+predict:
+  question: "A node sustains about 45 requests per second and the plan needs 12 nodes. Prefix caching (55 percent hit rate) lifts a node to 58 requests per second. What happens to the fleet plan?"
+  options: ["It stays at 12 nodes, because headroom and redundancy rules ignore per-node capacity", "It drops to 6 nodes, because a 55 percent hit rate directly halves the requirement", "It drops to about 9 nodes with the same headroom, since fewer nodes cover peak demand"]
+  answer: 2
+  why: "Higher per-node capacity shrinks the node count the same method produces; the lesson's plan falls from 12 to 9."
+check:
+  - q: "Why size the fleet on goodput at the latency target rather than maximum throughput?"
+    options: ["Maximum throughput is reached at latencies that miss the p95 target, so the usable point is lower", "Goodput excludes batch traffic, which would otherwise inflate the replica count unnecessarily", "Maximum throughput differs by GPU model, while goodput is identical across all hardware"]
+    answer: 0
+    why: "The usable operating point is where p95 latency still meets targets, below the maximum throughput."
+  - q: "Why plan from the token-length distribution rather than average lengths?"
+    options: ["Averages overstate prefill cost, which would lead the team to buy too many GPUs", "Averages hide the interactive versus batch mix, which would shift scheduling priorities", "The long tail drives KV-cache memory, which often caps concurrency before compute does"]
+    answer: 2
+    why: "Memory for weights plus KV cache limits concurrent sequences, and long requests dominate it."
+  - q: "Why scale on queue depth or tokens in flight and keep a warm pool?"
+    options: ["Utilisation metrics are unavailable on GPU clusters, so queue depth is the only signal left", "New replicas take minutes to become useful, so leading indicators and warm capacity cover the lag", "Queue-based scaling lets the autoscaler shrink the fleet faster, which cuts committed cost"]
+    answer: 1
+    why: "Cold start and scaling lag mean reactive scaling is too late; leading indicators plus warm pools hide start-up time."
 ---
 
 ## The problem

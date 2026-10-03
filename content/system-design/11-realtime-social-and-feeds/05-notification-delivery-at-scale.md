@@ -13,6 +13,24 @@ banner:
     - [queue, "queue"]
     - [server, "provider"]
     - [phone, "device"]
+predict:
+  question: "Idempotency keys like like:{post_id}:{user_id} are in place, but there is no coalescing. Five different users like a post within a minute. How many pushes does the owner get?"
+  options: ["One push, since all five keys refer to the same post", "Five pushes, since each like has a distinct key", "Zero pushes, since the duplicates are all dropped"]
+  answer: 1
+  why: "Keys only dedupe the same event; five different likes are five valid events, so coalescing is needed to merge them."
+check:
+  - q: "Why publish notification events to a queue instead of calling FCM or APNs directly from the request path?"
+    options: ["Provider latency and rate limits should not block the action that triggered the event", "FCM and APNs reject any call that arrives from a user request path", "A queue removes the need to store device tokens for each user"]
+    answer: 0
+    why: "Decoupling keeps provider outages and limits from blocking the producing service."
+  - q: "What happens if 'unregistered token' responses from FCM or APNs are ignored?"
+    options: ["FCM deletes dead tokens automatically, so nothing changes", "Sends to live devices get rejected until every token is reset", "A growing share of sends silently fail against dead tokens"]
+    answer: 2
+    why: "Tokens rotate and expire, so the token table rots without cleanup."
+  - q: "Why need both idempotency keys and product-level coalescing?"
+    options: ["Keys group five likes into one message, making coalescing a repeated step", "Keys stop one event firing twice; coalescing tames many distinct events", "Coalescing prevents queue redelivery, while keys only reduce user noise"]
+    answer: 1
+    why: "They solve different problems: retries duplicating one event versus a storm of separate events."
 ---
 
 ## The multi-channel fanout problem

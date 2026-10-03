@@ -16,6 +16,24 @@ banner:
     - [gpu, "vLLM"]
     - [gpu, "TGI"]
     - [gpu, "TensorRT"]
+predict:
+  question: "A workload runs tree-of-thought search, where many branches share a long partial history. Which mechanism lets the server reuse KV cache across those branches?"
+  options: ["RadixAttention's radix tree, which matches any shared token prefix dynamically", "TensorRT compilation, which fixes one preconfigured prefix for every request", "Rule-based routing, which sends every branch to a separate model tier"]
+  answer: 0
+  why: "SGLang's RadixAttention reuses KV cache for any shared prefix, which suits branching and multi-turn agent workloads."
+check:
+  - q: "An LLM-only team picks Triton because it is the most general server. What is the trade-off they overlooked?"
+    options: ["Triton cannot serve LLMs at all, so the stack will not run", "Its configuration and per-GPU compilation overhead only pay off for heterogeneous model fleets", "Triton lacks an OpenAI-compatible endpoint, so clients need rewriting"]
+    answer: 1
+    why: "Triton's steeper setup and TensorRT-LLM compilation step add machinery that LLM-only serving rarely needs."
+  - q: "Why should a new build avoid Hugging Face TGI in October 2026?"
+    options: ["Its throughput is permanently half of vLLM's on every workload", "It does not support quantization formats such as AWQ or GPTQ", "It is frozen, reported in maintenance mode and archived read-only in 2026"]
+    answer: 2
+    why: "The lesson reports TGI as archived, so maintenance health matters alongside peak numbers."
+  - q: "A framework comparison uses single-request latency tests. Why is this misleading?"
+    options: ["Differences show up mainly under concurrent, variable-length load with continuous batching", "Single-request tests favor the slowest server, which skews rankings", "Frameworks behave identically on one request, so only model size matters"]
+    answer: 0
+    why: "Single-request benchmarks understate the gap; use realistic concurrency, prompt lengths and your own model."
 ---
 
 ## Why the choice of server matters

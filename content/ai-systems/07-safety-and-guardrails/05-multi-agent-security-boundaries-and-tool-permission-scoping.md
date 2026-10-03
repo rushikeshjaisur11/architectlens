@@ -16,6 +16,24 @@ banner:
     - [shield, "boundary"]
     - [lock, "scoped token"]
     - [server, "tool"]
+predict:
+  question: "A system has agent A that reads private customer files, agent B that browses arbitrary web pages, and agent C that can send email. Each agent alone looks safe. What happens if a web page B reads contains a hidden instruction?"
+  options: ["Nothing, because each agent holds only one or two of the dangerous capabilities", "The injection can chain across agents to exfiltrate private data through legitimate tool access", "The attack fails because B has no direct access to the private files that A reads"]
+  answer: 1
+  why: "Private data, untrusted content and an external channel assembled across agents form the lethal trifecta, with no tool vulnerability needed."
+check:
+  - q: "Why scope tool allowlists per agent at instantiation rather than once for the whole pipeline?"
+    options: ["One compromised sub-agent would otherwise have the same blast radius as the orchestrator", "Central allowlists are slower to evaluate, which adds latency to every inter-agent call", "Sub-agents cannot read a central allowlist, so each must carry its own copy of permissions"]
+    answer: 0
+    why: "Granting the orchestrator's tool set to every sub-agent collapses the point of scoping; per-agent scope limits what each compromised agent can do."
+  - q: "Why require human confirmation for irreversible actions even when the agent's reasoning looks correct?"
+    options: ["Agent reasoning is usually flawed on long tasks, so review catches ordinary logic errors", "Reasoning can be manipulated by injected content the agent cannot tell from legitimate instructions", "Confirmation prompts are required by tool protocols before any write operation can run"]
+    answer: 1
+    why: "The risk is manipulation, not bad reasoning; plausible-looking reasoning may be the product of an injection."
+  - q: "A downstream agent treats a sub-agent's summary of a scraped webpage like a direct user instruction. What is the failure?"
+    options: ["The summary is too lossy, so the downstream agent will lack details needed for its task", "Entry-point guardrails already cleaned it, so only the extra token cost is wasted", "Injected content passes through the summary and becomes an executed instruction"]
+    answer: 2
+    why: "Message provenance matters: guardrails at the entry point don't cover content agents generate internally, so outputs should be handled as data."
 ---
 
 ## Why multi-agent systems widen the attack surface

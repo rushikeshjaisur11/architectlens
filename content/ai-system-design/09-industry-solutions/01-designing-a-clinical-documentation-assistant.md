@@ -16,6 +16,24 @@ banner:
     - [model, "STT + LLM"]
     - [doc, "draft note"]
     - [user, "clinician"]
+predict:
+  question: "During a visit the audio around a drug name is unclear, though the patient said 'ten milligrams'. What does the draft note show?"
+  options: ["A flagged placeholder asking the clinician to confirm the drug and dose", "The most likely drug from the EHR medication list, inserted silently", "The sentence is dropped from the note with no marker at all"]
+  answer: 0
+  why: "Ambiguous or inaudible content is flagged for the clinician rather than guessed."
+check:
+  - q: "Why extract facts into a typed structure first and render the note from those facts?"
+    options: ["Typed structures make speech recognition more accurate in noisy rooms", "The generator then cannot add content that has no supporting extracted fact", "It lets the EHR accept the note without needing a clinician signature"]
+    answer: 1
+    why: "Constrained generation limits the note to extracted, evidence-linked facts."
+  - q: "Why should accepting a flagged item not be easier than reading it?"
+    options: ["Quick acceptance raises edit rates, which hides quality problems in each section", "Flags come from the verifier, so clinicians should never need to read them", "Easy acceptance invites automation bias, so errors pass through unread"]
+    answer: 2
+    why: "The lesson warns about automation bias in the review UI."
+  - q: "Why is auto-populating billing codes without clinician review a design risk?"
+    options: ["It can push the product toward Software as a Medical Device, off the documentation side", "It breaks the BAA, because billing data falls outside protected health information", "It raises recording-consent exposure under state wiretap laws for every visit"]
+    answer: 0
+    why: "Tools that auto-populate billing codes without review can move toward regulated device territory."
 ---
 
 *Engineering patterns only; clinical and legal requirements vary by jurisdiction and must be confirmed with clinical safety, privacy and legal teams.*

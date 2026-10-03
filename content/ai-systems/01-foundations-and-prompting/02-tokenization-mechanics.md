@@ -5,6 +5,24 @@ tags: ["tokenization", "bpe", "foundations"]
 sources:
   - "OpenAI tiktoken documentation and source"
   - "Sennrich et al., 'Neural Machine Translation of Rare Words with Subword Units' (BPE paper)"
+predict:
+  question: "A product budgets cost from word count for Hindi content, assuming English ratios. Roughly how will real token usage compare?"
+  options: ["About the same, since tokens track words in any language", "Lower, because non-English words are usually shorter in tokens", "Often 2-3x higher per word, since fewer subword merges were learned"]
+  answer: 2
+  why: "Languages underrepresented in tokenizer training, like many Indic ones, can need 2-3x more tokens per word than English."
+check:
+  - q: "Your code trims user input to 4000 characters to stay under a 1000-token limit. What is the flaw?"
+    options: ["Character limits are rejected by most providers", "Token-dense text can still exceed 1000 tokens within 4000 characters", "Trimming by characters always removes too much valid content"]
+    answer: 1
+    why: "Truncation must operate on tokens; a character heuristic can silently exceed the token limit for token-dense content."
+  - q: "Why is a BPE tokenizer able to handle text in a language barely seen in training?"
+    options: ["It falls back to a separate model for that language", "It rejects unknown text and asks for a supported language", "It splits unseen text into smaller pieces, down to bytes, at lower efficiency"]
+    answer: 2
+    why: "BPE starts from bytes or characters, so any input is representable; rare sequences are just split into more, smaller tokens."
+  - q: "An LLM keeps making errors on multi-digit arithmetic. Per the lesson, what is one tokenizer-rooted cause?"
+    options: ["Numbers are split into chunks that don't align with place value", "Numbers are stored as single tokens with no digit information", "Digits are always tokenized as full words by the vocabulary"]
+    answer: 0
+    why: "Numbers are often tokenized digit-by-digit or in small groups, so the model does not see a coherent numeral."
 ---
 
 ## What a token actually is

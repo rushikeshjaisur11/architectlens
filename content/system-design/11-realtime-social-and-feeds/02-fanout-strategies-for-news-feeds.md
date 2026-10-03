@@ -12,6 +12,24 @@ banner:
     - [queue, "fanout"]
     - [cache, "feed cache"]
     - [user, "followers"]
+predict:
+  question: "A hybrid feed uses fanout-on-write below 1 million followers. An account with 10 million followers posts. How many timeline writes does the post trigger?"
+  options: ["10 million writes, one into each follower's timeline", "Zero pushes; followers fetch it when loading their feed", "1 million writes, up to the threshold, then it stops"]
+  answer: 1
+  why: "Accounts above the threshold use fanout-on-read, so their posts are stored once and merged in at read time."
+check:
+  - q: "Why use a hybrid instead of pure fanout-on-read for everyone?"
+    options: ["Most accounts are small, so push keeps their reads cheap; pull is kept for celebrities", "Pull makes posting slow for every account, so push is needed for all authors", "Pull cannot merge posts from more than a few followed authors at once"]
+    answer: 0
+    why: "Follower counts are skewed, so push serves the common case and pull isolates the rare expensive one."
+  - q: "Why cap each precomputed timeline at a few hundred to a couple thousand entries?"
+    options: ["Redis cannot hold lists longer than that, so the cap is a hard limit", "Capped lists let celebrity posts reach followers faster than uncapped ones", "Storage per user stays predictable, and older items fall back to read-time queries"]
+    answer: 2
+    why: "An unbounded list grows with account age, so bounding keeps cost predictable."
+  - q: "What goes wrong first with pure fanout-on-write when a huge account posts?"
+    options: ["Reads slow down for everyone because timelines are rebuilt on each load", "The write backlog delays delivery for followers of other accounts queued behind it", "Followers of that account see duplicate copies of the post in their timelines"]
+    answer: 1
+    why: "Millions of writes sit in the queue ahead of ordinary posts, degrading the common case."
 ---
 
 ## The core problem a social feed has to solve

@@ -16,6 +16,24 @@ banner:
     - [doc, "registry"]
     - [shield, "review"]
     - [db, "audit trail"]
+predict:
+  question: "Reviewers of a high-risk screening tool override the model's recommendation in 0 percent of cases. What does the lesson suggest this may mean?"
+  options: ["Evidence of excellent accuracy and a reason to reduce review", "A possible sign of rubber-stamping rather than real oversight", "A sign the override option should be removed to save cost"]
+  answer: 1
+  why: "A 0 percent override rate may mean reviewers are not truly disagreeing, so oversight exists in name only."
+check:
+  - q: "Why tier review by risk instead of applying the full process to every use case?"
+    options: ["Uniform review slows low-risk work and under-reviews high-risk work", "Regulators only require review of internal brainstorming tools", "Tiering removes the need for an AI registry"]
+    answer: 0
+    why: "One-size-fits-all review is slow for low-risk use cases and thin for high-risk ones."
+  - q: "Why is logging every interaction in full a governance risk?"
+    options: ["Full logs prevent reconstructing what happened for audits", "Logs are themselves sensitive and can create a new privacy risk", "Log volume makes the policy engine reject requests"]
+    answer: 1
+    why: "Logs should be minimised, redacted and retention-limited, because they can become a new privacy exposure."
+  - q: "Why store EU AI Act deadlines as data in the registry rather than in prose?"
+    options: ["Prose cannot be read by auditors during a review", "Deadlines are fixed by law and never change once published", "Dates slip, as this one just did, so they must be easy to update"]
+    answer: 2
+    why: "The Annex III date moved from 2 August 2026 to 2 December 2027, so deadlines should be updatable data."
 ---
 
 *This lesson describes engineering patterns for governance, not legal advice. Regulations differ by jurisdiction and change; check requirements with your legal and compliance teams.*

@@ -16,6 +16,24 @@ banner:
     - [server, "autoscaler"]
     - [gpu, "GPU pool"]
     - [client, "SLO"]
+predict:
+  question: "A traffic spike lasts about 60 seconds. A reactive autoscaler triggers once latency degrades, and the new replica needs about 90 seconds to load weights. What do users experience?"
+  options: ["Degraded latency for the spike, since the new replica arrives after it is over", "Normal latency, since scale-up begins as soon as the spike starts", "Brief degradation only, since weights load in seconds from NVMe"]
+  answer: 0
+  why: "Weight loading takes tens of seconds to minutes, so reactive scaling responds too late for short spikes."
+check:
+  - q: "Why keep a warm pool instead of scaling to zero for a latency-sensitive endpoint?"
+    options: ["Scale-to-zero cannot be configured for GPU workloads in any stack", "Idle replicas improve KV cache quality, since caches never expire", "A warm floor trades idle GPU cost for avoiding cold-start latency on the next request"]
+    answer: 2
+    why: "Scale-to-zero brings back the full cold-start penalty, so reserve it for bursty, latency-tolerant workloads."
+  - q: "Which scaling signal is better for LLM replicas than CPU utilization?"
+    options: ["Queue depth per replica, since it shows falling behind whatever resource is the bottleneck", "Request count per pod, since it transfers directly from stateless CPU services", "Network throughput, since token streams are limited by outbound bandwidth"]
+    answer: 0
+    why: "Queue depth, TTFT/ITL and KV-cache occupancy reflect real inference pressure; CPU and fixed request counts do not."
+  - q: "A replica looks compute-idle but users see slow responses under long contexts. What is the likely cause?"
+    options: ["The autoscaler has scaled too many replicas, so requests are spread thin", "KV-cache memory is full under continuous batching, which compute metrics do not show", "Container image pulls are slowing every request on a running replica"]
+    answer: 1
+    why: "KV-cache occupancy is a separate scaling dimension and the more common bottleneck for long-context or high-concurrency loads."
 ---
 
 ## Why GPU autoscaling is harder than CPU autoscaling

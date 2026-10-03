@@ -6,6 +6,24 @@ sources:
   - "Anthropic documentation, 'Web search tool', platform.claude.com/docs (fetched October 2026)"
   - "Google Gemini API pricing, grounding with Google Search (fetched October 2026)"
   - "Tow Center for Digital Journalism, study of citation accuracy in AI search engines (March 2025), via Nieman Lab"
+predict:
+  question: "A research session runs fifteen searches at $10 per 1,000 searches, so about $0.15 in search fees. Which cost line is likely larger?"
+  options: ["Input tokens, since results are re-read on every later turn that keeps them", "Search fees, since each search is billed at a higher rate than tokens", "Neither, since provider-hosted tools bundle result tokens into the search fee"]
+  answer: 0
+  why: "Results become input tokens on that turn and every later turn that keeps them, so cap searches and trim results."
+check:
+  - q: "A search tool returns an answer with citations attached. How should a product treat them?"
+    options: ["As proof, because citations are tied to the specific sentences they support", "As claims to verify, since studies found AI search often misattributes sources", "As optional, because the answer text already carries the information needed"]
+    answer: 1
+    why: "A cited AI-search source can still fail to support the sentence, so a verifier should check each claim against the cited passage."
+  - q: "A legal-research product turns on web search. Why restrict it to an allow-list of authoritative domains?"
+    options: ["It removes the per-search fee, since fewer domains are billed", "It stops queries from being sent to a third-party search provider", "SEO spam ranks well, so the list acts as a quality and safety control"]
+    answer: 2
+    why: "Low-quality and manipulated sources are a real risk, and domain controls are used in regulated areas. Use an allow-list or a block-list, not both."
+  - q: "Why should a search-enabled agent with powerful write tools require confirmation steps?"
+    options: ["Web pages can contain text addressed to the model, so results are untrusted", "Write tools slow the search loop, so confirmations are used to batch writes", "Confirmations raise search accuracy, since the user can tweak each query"]
+    answer: 0
+    why: "Prompt injection from pages is the most serious risk, so search results should never trigger actions unchecked."
 ---
 
 ## When the model's knowledge is not enough

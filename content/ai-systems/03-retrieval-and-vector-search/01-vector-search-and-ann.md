@@ -12,6 +12,24 @@ banner:
     - [model, "embed"]
     - [db, "ANN index"]
     - [user, "nearest"]
+predict:
+  question: "You run IVF with a small nprobe, and a query vector sits right at the edge of its assigned cell. What happens?"
+  options: ["True neighbors in the adjacent cell may never be probed, so recall drops", "The query automatically probes every cell and becomes brute-force speed", "The index returns exact results, because the query's own cell is searched fully"]
+  answer: 0
+  why: "With low nprobe only the nearest cells are scanned, so neighbors lying across a cell boundary can be missed, which craters recall."
+check:
+  - q: "Your corpus has heavy delete and update churn. Why is HNSW a risky default?"
+    options: ["Deletes are tombstoned, and accumulating tombstones silently degrade recall until a rebuild", "HNSW stores no vectors, so deleted items cannot be removed from disk", "Each delete forces an immediate full rebuild, which blocks all queries"]
+    answer: 0
+    why: "HNSW lacks native exact deletes, so tombstones build up and recall quietly drops until the index is rebuilt."
+  - q: "A corpus of 800M vectors must fit a tight RAM budget and tens-of-millisecond queries are acceptable. Which is the better fit and why?"
+    options: ["HNSW, because it keeps single-digit millisecond latency at any scale", "DiskANN, which scores from compressed in-memory data and fetches full vectors from SSD", "ScaNN, because it needs no memory for the quantized representation"]
+    answer: 1
+    why: "DiskANN keeps the memory footprint proportional to the compressed index and trades higher tail latency for disk residency, matching the over-500M, RAM-constrained case."
+  - q: "Two teams compare HNSW and IVF using each library's default ef_search and nprobe. What is wrong with this?"
+    options: ["Defaults are always set to the maximum, which makes both indexes exact", "Index comparison only makes sense on filtered queries, never unfiltered ones", "It compares tuning laziness rather than the algorithms, since each knob trades accuracy for latency"]
+    answer: 2
+    why: "Each index has a runtime accuracy and latency knob, so comparing at defaults does not reveal how the algorithms actually perform."
 ---
 
 ## What a vector search index is actually doing

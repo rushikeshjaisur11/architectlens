@@ -12,6 +12,24 @@ banner:
     - [queue, "repl log"]
     - [db, "follower"]
     - [db, "follower"]
+predict:
+  question: "A leader uses asynchronous replication, acknowledges a write, then fails before shipping it to any follower. What happens after a follower is promoted?"
+  options: ["The write is recovered from the quorum of followers", "The acknowledged write no longer exists anywhere", "The write is replayed once the old leader rejoins"]
+  answer: 1
+  why: "Async replication acks before any follower has the write, so if the leader is lost first, that acknowledged write is gone."
+check:
+  - q: "Why does multi-leader replication need an explicit conflict strategy when single-leader does not?"
+    options: ["Followers apply changes out of order, which only multi-leader can fix", "Two leaders can accept conflicting writes before hearing of each other", "Single-leader replication relies on timestamps to order every write"]
+    answer: 1
+    why: "Single-leader structurally cannot have write-write conflicts because only one node accepts writes."
+  - q: "Why might last-write-wins be fine for user preferences but wrong for shopping carts?"
+    options: ["It can silently discard a legitimate concurrent update to the cart", "Carts need synchronous replication, which last-write-wins forbids", "Preferences are written more often, so clocks stay better synchronized"]
+    answer: 0
+    why: "Preference updates are rare and rarely concurrent, while concurrent cart edits would lose data under LWW."
+  - q: "A team assumes leaderless quorum reads always return the latest data. What is wrong with that?"
+    options: ["Quorum reads only work when a single coordinator serializes all writes", "Staleness depends on the chosen R and W sizes relative to replica count", "Quorum reads are always stale unless every replica is contacted"]
+    answer: 1
+    why: "Quorums reduce but do not always eliminate stale reads; it is a tunable consistency and availability trade-off."
 ---
 
 ## Why replicate data at all

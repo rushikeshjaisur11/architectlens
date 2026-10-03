@@ -15,6 +15,24 @@ banner:
     - [server, "quantize"]
     - [gpu, "int4"]
     - [shield, "quality"]
+predict:
+  question: "A 70B model needs about 140 GB for FP16 weights. It is quantized to 4-bit. What is the expected effect on weights and decode?"
+  options: ["About 70 GB of weights, and decode latency is unchanged because decode is compute-bound", "About 35 GB of weights, and decode latency drops because fewer bytes move per step", "About 35 GB of weights, and decode latency is unchanged because decode is compute-bound"]
+  answer: 1
+  why: "INT4 quarters memory versus FP16, and decode is memory-bandwidth bound, so fewer bytes read per step cuts latency."
+check:
+  - q: "Why is AWQ often the default for W4A16 serving over GPTQ?"
+    options: ["It is faster to produce and comparably accurate, while GPTQ's calibration can take hours", "It is the only method that keeps activations in 16-bit precision during inference", "It needs no calibration data and no knowledge of which channels matter"]
+    answer: 0
+    why: "AWQ avoids GPTQ's expensive reconstruction step and protects salient channels; both are weight-only and keep activations at higher precision."
+  - q: "A team assumes INT4 will speed up every workload. Where can the gain shrink?"
+    options: ["Decode with small batches, since reading fewer bytes per step does not matter there", "Compute-bound prefill with long prompts, where dequantization overhead offsets the win", "Single-GPU serving, since INT4 only helps when the model is split across several GPUs"]
+    answer: 1
+    why: "Decode is bandwidth-bound so INT4 helps, but compute-bound prefill pays dequantization overhead that can partly cancel the gain."
+  - q: "A code model is quantized with GPTQ using general web text as the calibration set. What is the likely outcome?"
+    options: ["No effect, since calibration only matters for the speed of quantization", "Better results, since broader calibration data always generalizes more safely", "Degraded quality on code outputs, since calibration decides what gets protected"]
+    answer: 2
+    why: "Calibrating on the wrong domain degrades exactly the outputs you care about, because calibration data guides what the method protects."
 ---
 
 ## Why quantize at all
@@ -38,6 +56,8 @@ In practice: AWQ is the more common default for W4A16 (4-bit weights, 16-bit act
 **INT8** (e.g., `bitsandbytes` LLM.int8()) roughly halves memory versus FP16 and is close to lossless for most models — it's a safe default when memory pressure is moderate. It decomposes matrix multiplication to handle outlier feature dimensions in FP16 while quantizing the rest, avoiding the accuracy cliff that naive INT8 rounding causes on transformer activations.
 
 **INT4** (AWQ, GPTQ, GGUF Q4) quarters memory versus FP16 and is where quantization gets serving-relevant: it's often the difference between a model fitting on one GPU versus needing two, or fitting on consumer hardware at all. The accuracy cost is real but usually small (low single-digit percentage degradation on standard benchmarks) for well-calibrated 4-bit methods — below 4 bits, quality degrades much faster and is rarely used in production serving.
+
+<div data-anim="quantization-tradeoff"></div>
 
 ## GGUF and CPU/edge serving
 

@@ -15,6 +15,24 @@ banner:
     - [model, "secondary"]
     - [cache, "cache"]
     - [doc, "static"]
+predict:
+  question: "A provider is degraded, timing out at 20 seconds, and you have a fallback chain but no circuit breaker. What happens to end-to-end latency?"
+  options: ["Every request waits out the timeout before falling back", "Requests fail fast because the fallback answers instantly", "Latency is unchanged, since fallback only fires on clean errors"]
+  answer: 0
+  why: "Without an open circuit, each request pays the full timeout of the half-dead primary, which can make an outage worse than no fallback."
+check:
+  - q: "Your request returns a 400 for a malformed function-calling schema. Should the chain fall back to another provider?"
+    options: ["No: the bug will reproduce identically on any provider", "Yes, since another model may parse the schema differently", "Yes, but only after retrying the same model with backoff"]
+    answer: 0
+    why: "Non-retryable client errors indicate a bug, so falling back only adds latency."
+  - q: "The primary returns a 429. What is the better response?"
+    options: ["Retry the same model with backoff, since limits clear within 500ms", "Fall back immediately, since a short retry cannot clear a capacity limit", "Open the circuit permanently for that provider"]
+    answer: 1
+    why: "A rate limit reflects a capacity constraint that will not resolve on a short retry, so alternate providers are faster."
+  - q: "The fallback path serves 30% of requests. How should you read that?"
+    options: ["It is a healthy safety net working as designed", "The circuit breaker threshold is set too high", "It is effectively the primary path with extra latency"]
+    answer: 2
+    why: "A fallback that fires that often means the primary provider or model choice needs revisiting."
 ---
 
 ## Why single-provider dependency is a production risk

@@ -15,6 +15,24 @@ banner:
     - [user, "tenant A"]
     - [user, "tenant B"]
     - [db, "shared index"]
+predict:
+  question: "Tenant A bulk-uploads 40 million documents while tenant B runs a live support assistant. Ingestion uses per-tenant queues with weighted fair scheduling. What happens to B's small updates?"
+  options: ["They queue behind A's backlog and wait until A's upload finishes", "They are applied within seconds because A holds only a capped share of workers", "They are rejected until A's upload drops below a size threshold"]
+  answer: 1
+  why: "Per-tenant queues with a capped share of embedding workers stop A's bulk load from delaying B's small updates."
+check:
+  - q: "Why should the tenant id come from the authenticated identity rather than the request body?"
+    options: ["Client-supplied tenant ids are ignored, so a caller cannot name another tenant", "Token claims are faster to parse than request parameters at the edge", "Request bodies cannot be forwarded through the data access layer"]
+    answer: 0
+    why: "The id is derived at the edge from the authenticated identity, so a caller cannot choose a different tenant."
+  - q: "Why use a single data access layer instead of asking each feature team to add a tenant filter?"
+    options: ["It lets the vector database skip building an index per tenant", "Isolation then does not depend on every developer remembering a filter", "It removes the need for cross-tenant tests and canary documents"]
+    answer: 1
+    why: "One enforced path injects the tenant scope into every query, so a forgotten filter cannot cause a breach. Tests and canaries are still added on top."
+  - q: "A semantic cache is shared across all tenants to save cost. What is the architectural problem?"
+    options: ["Cache entries expire too quickly to be worth the saving", "Cached answers cannot be compared against query embeddings", "Shared caches are a classic leakage path unless keys include tenant"]
+    answer: 2
+    why: "Caches, logs and traces must be scoped by tenant, and semantic cache keys must include tenant and permissions."
 ---
 
 ## The problem

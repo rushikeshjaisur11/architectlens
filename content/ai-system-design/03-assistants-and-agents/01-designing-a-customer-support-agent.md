@@ -14,6 +14,24 @@ banner:
     - [model, "agent"]
     - [server, "CRM tools"]
     - [shield, "handoff"]
+predict:
+  question: "A customer asks to return a blender bought 45 days ago, but the return window is 30 days. What does the agent do?"
+  options: ["It issues the refund anyway, since the customer says the item is broken", "It explains the 30-day policy and offers a human for an exception request", "It ends the chat because the request falls outside the return flow"]
+  answer: 1
+  why: "The lesson's worked example says that for a 45-day-old order the agent explains the policy and offers a human for an exception."
+check:
+  - q: "Why build a router plus narrow flows instead of one agent holding twenty tools?"
+    options: ["Narrow flows are easier to test, cheaper, and far less likely to misbehave", "One general agent cannot call backend APIs, but narrow flows can", "Narrow flows remove the need for any human escalation path"]
+    answer: 0
+    why: "The lesson says narrow tool sets and short flows are easier to test, cheaper and less likely to misbehave than a general agent."
+  - q: "Why must the platform inject the customer id instead of letting the model pass it to tools?"
+    options: ["It shortens the tool schema and saves prompt tokens on each call", "Models cannot copy identifiers from context without making errors", "The model cannot choose whose data it touches, so other customers stay protected"]
+    answer: 2
+    why: "The tool checks that the order belongs to the authenticated customer, so the model has no way to reach another customer's data."
+  - q: "Why count a conversation as resolved only if the customer does not return on the same issue?"
+    options: ["Vendor resolution metrics often count conversations that were not truly solved", "Returning customers always indicate a failure of the escalation path", "A time window is required by regulators to report resolution at all"]
+    answer: 0
+    why: "The lesson warns that vendor resolution metrics often ignore repeat contacts, which inflates the apparent success rate."
 ---
 
 ## The problem

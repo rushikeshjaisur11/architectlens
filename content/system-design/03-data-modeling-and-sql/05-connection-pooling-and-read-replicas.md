@@ -12,6 +12,24 @@ banner:
     - [lb, "pooler"]
     - [db, "primary"]
     - [db, "replica"]
+predict:
+  question: "A user saves their profile, and the app immediately reads it back from a read replica that is a few hundred milliseconds behind. What does the user see?"
+  options: ["The old profile data, because the replica has not caught up", "The new profile data, because replicas replicate synchronously", "An error, because replicas reject reads right after a write"]
+  answer: 0
+  why: "Replicas are eventually consistent, so a read-your-writes violation can show stale data."
+check:
+  - q: "Fifty app pods each run their own pool of 20 connections to Postgres. What is the risk?"
+    options: ["Pools reuse connections, so the database sees only 20 in total", "Pods multiply connections to 1000, which can exceed the database limit", "Application pools cannot be used alongside an external pooler"]
+    answer: 1
+    why: "Per-instance pools multiply, so an external pooler like PgBouncer is often needed on top."
+  - q: "Why is transaction-mode pooling risky for code that relies on session state?"
+    options: ["Connections swap per transaction, so SET or prepared statements vanish", "It holds one connection per client for the whole session, wasting idle slots", "It forces every statement onto the primary database, ignoring replicas"]
+    answer: 0
+    why: "Transaction pooling returns the connection after each transaction, which breaks session-scoped features."
+  - q: "Adding read replicas to a write-saturated primary will do what?"
+    options: ["Raise write throughput, since replicas also accept writes", "Fix write load because replicas share the transaction log", "Not help writes, since all writes still go through the primary"]
+    answer: 2
+    why: "Replicas scale reads only; every write still goes through the primary and replicates outward."
 ---
 
 ## Why connections are expensive

@@ -13,6 +13,24 @@ banner:
     - [queue, "outbox/WAL"]
     - [server, "CDC"]
     - [queue, "topic"]
+predict:
+  question: "A service writes an order to its database, then crashes before publishing the event to the broker. What is the result without an outbox?"
+  options: ["The order exists but no event is sent, so downstream never learns of it", "The database write rolls back automatically when the publish fails", "The event is published on restart because the broker retains the order"]
+  answer: 0
+  why: "The database and broker cannot be updated atomically, so a crash between them leaves the two disagreeing."
+check:
+  - q: "Why does the outbox table sit in the same database as the business data?"
+    options: ["So the broker can read the order table directly without a connector", "So one local transaction commits the state change and its event together or not at all", "So events are deleted automatically once the order is committed"]
+    answer: 1
+    why: "A single local transaction removes the need for a distributed transaction across two systems."
+  - q: "Why must consumers be idempotent even with the outbox?"
+    options: ["Outbox rows are written twice by the local transaction", "Brokers reorder outbox events, so the same event can arrive first", "A relay crash after publishing can republish the same event"]
+    answer: 2
+    why: "Delivery is at-least-once: the connector can crash before saving its log offset and republish."
+  - q: "Why prefer CDC over polling the outbox table?"
+    options: ["It reads the transaction log, so latency and extra queries on tables drop", "It removes the need for consumers to deduplicate events", "It lets the service publish before the transaction commits"]
+    answer: 0
+    why: "CDC tails the WAL or binlog, which already records every committed change in order, with no polling load."
 ---
 
 ## The dual-write problem

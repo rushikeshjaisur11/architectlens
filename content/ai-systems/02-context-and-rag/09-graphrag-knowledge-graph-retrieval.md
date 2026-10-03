@@ -7,6 +7,24 @@ sources:
   - "Microsoft GraphRAG open-source project documentation (microsoft/graphrag on GitHub)"
   - "Neo4j GraphRAG documentation and LangChain Neo4j integration docs"
   - "LlamaIndex Knowledge Graph Index / Property Graph Index documentation"
+predict:
+  question: "A user asks \"what are the main themes across this entire corpus?\" in a GraphRAG system. Which mode answers it, and what does it query?"
+  options: ["Local search, traversing outward from entities matched in the question", "Global search, running map-reduce over pre-computed community summaries", "Local search, ranking raw chunks by embedding similarity to the question"]
+  answer: 1
+  why: "No single chunk holds a corpus-wide answer. Global search aggregates community summaries built at index time."
+check:
+  - q: "A corpus is mostly simple fact lookups over well-chunked documents. Why is GraphRAG the wrong tool?"
+    options: ["Graph traversal cannot answer fact lookups, which need exact keyword matching", "Vector RAG is cheaper and simpler and just as accurate, and extraction adds errors", "Fact lookups need community detection, which GraphRAG does not support"]
+    answer: 1
+    why: "The extraction and summarization cost buys nothing if relational or global questions never occur."
+  - q: "What is the risk of treating LLM-extracted relationships as ground truth?"
+    options: ["The extraction step runs only at query time, so errors cost extra latency", "Extracted edges cannot carry metadata such as source chunk or confidence", "It can hallucinate or miss relationships, silently corrupting the graph queries trust"]
+    answer: 2
+    why: "Extraction has real error rates, so graphs should be validated or spot-checked."
+  - q: "Why is adding documents to a knowledge graph costlier than adding chunks to a vector index?"
+    options: ["It can force recomputing entity resolution and community detection, unlike vector upserts", "Graphs must be stored in RDF triples, which cannot be updated incrementally", "Vector indexes accept new documents only in batches, unlike graph stores"]
+    answer: 0
+    why: "Reindexing is not an incremental, low-latency operation for graphs the way vector upserts are."
 ---
 
 ## What vector RAG structurally can't answer

@@ -5,6 +5,24 @@ tags: ["analytics", "data-pipelines", "stream-processing"]
 sources:
   - "Nathan Marz, 'Big Data' (2015), chapters introducing the Lambda Architecture"
   - "Jay Kreps, 'Questioning the Lambda Architecture' (2014, proposing the Kappa Architecture)"
+predict:
+  question: "A Kappa pipeline's Kafka topic retains 2 days of events. A revenue-logic bug that affected the last 30 days is fixed. What does replaying the log achieve?"
+  options: ["All 30 days get corrected, since replay covers any history", "Only the 2 retained days can be recomputed, undercutting Kappa's premise", "A batch layer is invoked automatically to recompute the older 28 days"]
+  answer: 1
+  why: "Kappa relies on replaying a retained log. With short retention, replay cannot reach far enough back, which undermines its core assumption."
+check:
+  - q: "What is the main ongoing risk of running a Lambda architecture?"
+    options: ["The batch layer cannot see data older than the speed layer's window", "The serving layer can only return approximate numbers, never exact ones", "Logic is implemented twice, so the layers can silently diverge"]
+    answer: 2
+    why: "Lambda needs the same logic maintained in a batch framework and a stream framework. If changes are not replicated correctly, the two layers' results drift apart."
+  - q: "When is accepting Lambda's added complexity justified?"
+    options: ["A specific batch-only capability is needed that streaming lacks", "Whenever a dashboard needs both hourly and daily aggregates", "Whenever the team already runs Kafka with long event retention"]
+    answer: 0
+    why: "Kappa is the default because it removes dual-implementation cost. Lambda needs a concrete reason, such as a mature batch tool for a complex computation."
+  - q: "Why can a pure stream job not easily repair results after a logic bug?"
+    options: ["Stream frameworks cannot restart once a job has produced any output", "It handled each event once, so a fix needs historical reprocessing", "Stream results are stored only as approximations that cannot be rewritten"]
+    answer: 1
+    why: "A stream processes events as they arrive, so correcting past output means rerunning history. Kappa does this by replaying the log; Lambda uses its batch layer."
 ---
 
 ## The problem: analytics needs both accuracy and speed, which pull in different directions

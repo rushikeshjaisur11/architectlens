@@ -13,6 +13,36 @@ banner:
     - [doc, "term vote"]
     - [server, "leader"]
     - [doc, "log entries"]
+predict:
+  question: "In a 5-node Raft cluster, a candidate whose log is missing a committed entry asks for votes. Can it win?"
+  options:
+    - "Yes, any candidate that gets one vote per node becomes leader"
+    - "Yes, but it must first copy the committed entry from followers"
+    - "No, a majority will refuse because its log is less up to date"
+  answer: 2
+  why: "The election restriction means a candidate wins only if its log is at least as up to date as a majority, so a new leader always holds every committed entry."
+check:
+  - q: "Why does Raft use randomized election timeouts instead of a fixed value?"
+    options:
+      - "A fixed timeout would be simpler but cannot detect leader failure at all"
+      - "Randomization avoids repeated split votes where candidates keep tying"
+      - "Randomized timeouts make the leader send heartbeats less often to save bandwidth"
+    answer: 1
+    why: "Followers rarely time out together, so one candidate usually collects a majority first."
+  - q: "What does the choice between Raft and Paxos mostly come down to today?"
+    options:
+      - "Mostly implementation and ecosystem maturity, since both give the same guarantees"
+      - "Raft, because it tolerates Byzantine nodes while Paxos only tolerates crashes"
+      - "Paxos, because Raft's safety rests on weaker guarantees than Paxos provides"
+    answer: 0
+    why: "Both provide identical formal guarantees under the same crash-stop model, so the choice is practical."
+  - q: "Why is the election timeout a deliberate trade-off rather than a default to leave alone?"
+    options:
+      - "Timeouts do not affect availability, so the library default is fine for any network"
+      - "Too short only slows failover, while too long causes needless elections"
+      - "Too short triggers needless elections under jitter, too long slows failover"
+    answer: 2
+    why: "The value balances stability against how fast the cluster recovers from a dead leader."
 ---
 
 ## Why two algorithms for the same problem
@@ -32,6 +62,8 @@ Raft's central move was **decomposition**: split consensus into three largely in
 - **Leader election.** Every node is Follower, Candidate, or Leader. Followers expect periodic heartbeats from a leader; if none arrive before a randomized election timeout, a follower becomes a Candidate, increments a monotonic **term** number, and requests votes. Randomized timeouts (not a fixed value) are the key trick that avoids repeated split votes.
 - **Log replication.** The leader is the only node that accepts client writes. It appends entries to its own log and replicates them via `AppendEntries` RPCs; an entry is committed once replicated to a majority. Followers are strictly passive — they never originate entries, which sidesteps much of Paxos's proposer-vs-proposer conflict handling.
 - **Safety.** The **election restriction** guarantees a candidate can only win if its log is at least as up-to-date as a majority of the cluster (compared by last log term, then index), so a newly elected leader always already holds every committed entry. This replaces Paxos's per-value negotiation with a single up-front check at election time.
+
+<div data-anim="raft-election"></div>
 
 ## Practical differences that matter
 

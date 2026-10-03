@@ -13,6 +13,24 @@ banner:
     - [db, "inventory"]
     - [lock, "reserve"]
     - [server, "checkout"]
+predict:
+  question: "In the sneaker sale, 500 reservations are made and 40 expire unpaid. What happens to those 40 pairs?"
+  options: ["They stay reserved until a nightly job clears them", "They are released back to the pool for the next buyers in line", "They are counted as sold because the stock was already decremented"]
+  answer: 1
+  why: "Expired reservations are released, returning stock to the pool for waiting buyers."
+check:
+  - q: "Why reserve stock with an expiry instead of decrementing only when payment succeeds?"
+    options: ["Payment-time decrements need a distributed transaction, which is too slow", "The database cannot make a decrement atomic at payment time", "Two customers could both pay for the last item, and expiry frees abandoned reservations"]
+    answer: 2
+    why: "Reservations prevent double payment for the last item, and expiry avoids locking stock for abandoned checkouts."
+  - q: "Why model checkout as a saga rather than one distributed transaction?"
+    options: ["Each service owns its data, so compensating actions undo steps if a later one fails", "Sagas give stronger isolation than transactions, so no half-done state is ever visible", "Sagas are faster because they skip persisting progress between steps"]
+    answer: 0
+    why: "No single transaction spans the services, so local transactions with compensations handle failures."
+  - q: "Why store the charged price on the order line rather than recomputing it from the catalog?"
+    options: ["Catalog lookups are served from slow caches, making recomputation expensive", "Recomputing later would rewrite history, since catalog prices change", "Stored prices let checkout skip re-validating the cart's prices and discounts"]
+    answer: 1
+    why: "Prices change, so recomputing from the live catalog would alter past orders."
 ---
 
 ## The core tension

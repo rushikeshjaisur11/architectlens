@@ -7,6 +7,24 @@ sources:
   - "Yao et al., 'Tree of Thoughts: Deliberate Problem Solving with Large Language Models' (2023)"
   - "Public documentation of long-running agent and workflow execution engines"
   - "DeepResearch Bench (Du et al., 2025) and DeepResearch Bench II (arXiv 2601.08536), plus 2026 leaderboard summaries (secondary)"
+predict:
+  question: "Two sources report conflicting benchmark numbers during a research run. What does the lead agent do?"
+  options: ["It averages the two numbers and cites both sources", "It drops both sources and removes the claim from the report", "It launches a short follow-up worker to find the test configurations"]
+  answer: 2
+  why: "The worked example has the lead notice the conflict and launch a follow-up worker to find the test configurations."
+check:
+  - q: "Why have workers write to a shared notebook and return only a short summary?"
+    options: ["It keeps each call's context bounded and makes state recoverable", "It lets workers skip citations because the lead re-checks sources", "It guarantees that every worker reads the same set of pages"]
+    answer: 0
+    why: "The lesson externalises memory so context stays bounded and the lead reads the notebook, not raw pages."
+  - q: "Why enforce search and token budgets in the runtime instead of prompting the model to be economical?"
+    options: ["Prompts cannot state numeric limits, so the model never learns its budget", "A prompted model may ignore the limit, while the runtime gives deterministic stopping", "Runtime budgets make each worker write more accurate and complete notes"]
+    answer: 1
+    why: "The lesson lists budgets enforced only by prompting as a mistake; the runtime provides deterministic stopping."
+  - q: "Why add a separate verifier stage after the writer drafts the report?"
+    options: ["Writers cannot cite sources, so the verifier adds all citations", "Verification replaces the need for parallel research workers", "A report can read well while many cited passages do not support the claim"]
+    answer: 2
+    why: "Citation accuracy was the most volatile metric (about 33% to 83%), so the verifier checks that each passage supports its claim."
 ---
 
 ## The problem

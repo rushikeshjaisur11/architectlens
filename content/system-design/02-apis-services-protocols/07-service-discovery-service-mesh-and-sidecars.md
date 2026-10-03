@@ -6,6 +6,24 @@ sources:
   - "Istio documentation, 'Ambient mode' (ztunnel and waypoint proxies; GA in Istio 1.24, November 2024), istio.io (via search results, October 2026)"
   - "Kubernetes documentation, Services, EndpointSlices and Gateway API, kubernetes.io"
   - "Service mesh comparisons, 2026 (secondary: reintech.io, dev.to, zylos.ai)"
+predict:
+  question: "A platform with 120 services moves to Istio ambient mode and wants layer-7 canary routing for 20 of them. What does it add?"
+  options: ["Nothing extra, since the per-node ztunnel handles all layer-7 features", "Waypoint proxies for those 20, while ztunnel covers layer-4 mTLS for everyone", "A sidecar added back to every pod across all 120 services"]
+  answer: 1
+  why: "ztunnel covers layer-4 duties per node, and waypoint proxies provide layer-7 features only for services that need them."
+check:
+  - q: "Why shouldn't a team adopt a mesh for five services?"
+    options: ["Libraries, an ingress and network policies suffice, so a mesh is mostly overhead", "A mesh cannot issue workload identities unless the cluster has dozens of nodes", "Sidecar proxies only support clusters that already run over a hundred services"]
+    answer: 0
+    why: "A mesh is justified for dozens of services; for a handful, cheaper building blocks avoid its operational cost."
+  - q: "Retries are configured in both the mesh and the application. What goes wrong?"
+    options: ["Retries cancel each other out, so failed calls are never retried", "The mesh ignores application retries, so only the mesh's settings apply", "Attempts multiply across layers, amplifying load on an already struggling service"]
+    answer: 2
+    why: "Each layer retries independently, so the total attempts are the product of both settings."
+  - q: "A mesh enforces mTLS between services. Why is that not authorisation?"
+    options: ["mTLS encrypts traffic but cannot identify the caller, so policy is separate", "Identity proves who is calling, not what they may do, so policy is still needed", "mTLS authorises every call by default, so extra policy only duplicates it"]
+    answer: 1
+    why: "mTLS gives each workload a cryptographic identity, but rules such as only checkout may call payments are separate policy."
 ---
 
 ## How does service A find service B?

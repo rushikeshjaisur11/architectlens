@@ -15,6 +15,24 @@ banner:
     - [server, "connector"]
     - [server, "chunk+embed"]
     - [db, "index"]
+predict:
+  question: "A document is shared with a new group but its text is unchanged. What does the pipeline do?"
+  options: ["It re-parses, re-chunks and re-embeds the whole document", "It waits for the periodic full reconciliation to notice the change", "It updates the ACL metadata on the chunks in seconds, with no re-embedding"]
+  answer: 2
+  why: "Permission-only changes update metadata in the index without re-embedding, so access is corrected quickly and cheaply."
+check:
+  - q: "Why pair incremental sync with a periodic full reconciliation?"
+    options: ["Change feeds can miss events, so reconciliation catches what was missed", "Incremental sync cannot detect newly created documents, only edits", "Full reconciliation is cheaper than change feeds at large scale"]
+    answer: 0
+    why: "Incremental sync via change feeds is efficient but can drop events, so periodic full reconciliation restores correctness."
+  - q: "Why must deletion and access revocation reach the index and caches within a stated SLA?"
+    options: ["It shrinks the index enough to cut embedding costs noticeably", "Stale chunks always lower retrieval recall for every other user", "It is a compliance requirement (erasure, revoked access), not an optimisation"]
+    answer: 2
+    why: "The lesson frames propagation as compliance: removed content left searchable is a listed mistake."
+  - q: "Why build a new index with the new embedding model alongside the old one instead of updating in place?"
+    options: ["Embedding providers reject overwriting stored vectors with new-model output", "Mixed-model vectors are not comparable, and the new index can be evaluated first", "Parallel indexes mean the re-embedding cost is not paid at all"]
+    answer: 1
+    why: "Blue-green re-indexing lets you evaluate before switching aliases; changing models in place is listed as a mistake."
 ---
 
 ## The problem

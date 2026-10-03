@@ -15,6 +15,24 @@ banner:
     - [client, "client"]
     - [shield, "auth + limits"]
     - [server, "services"]
+predict:
+  question: "A fixed-window limit of 100 per minute resets at :00. A client sends 100 requests at 11:59:59 and 100 more at 12:00:00. What happens?"
+  options: ["The second batch is rejected, because the limit is 100 per minute", "Both batches pass, giving a 2x burst across the window boundary", "Half of the second batch passes, since the windows are averaged"]
+  answer: 1
+  why: "Fixed windows reset sharply, so a client can burst 2x the limit around the boundary."
+check:
+  - q: "Why does a per-instance in-memory counter break rate limits on a scaled gateway?"
+    options: ["Memory counters reset on every request, so no limit is ever enforced", "In-memory counters add enough latency that the gateway times out", "A client hitting N gateway pods gets N times the limit, so a shared store is needed"]
+    answer: 2
+    why: "Without a shared store such as Redis, horizontal scaling silently multiplies the effective limit."
+  - q: "Which fits a public API, and which fits protecting a fixed-capacity worker pool?"
+    options: ["Token bucket allows short bursts for public APIs; leaky bucket smooths load for a worker pool", "Leaky bucket allows bursts for public APIs; token bucket smooths load for a worker pool", "Both behave identically, since each rejects traffic only when its bucket is empty"]
+    answer: 0
+    why: "Token bucket spends accumulated tokens on bursts; leaky bucket drains at a constant rate to protect downstream stability."
+  - q: "Why is IP-only rate limiting weak?"
+    options: ["The gateway cannot read client IPs, so counting by IP is impossible", "Users behind NAT are throttled together, yet distributed attackers still evade it", "IP limits cost more memory than API-key limits because addresses are longer"]
+    answer: 1
+    why: "NAT and carrier CGNAT put many real users behind one IP, while a distributed attacker spreads across many."
 ---
 
 ## Why a gateway sits in front of everything

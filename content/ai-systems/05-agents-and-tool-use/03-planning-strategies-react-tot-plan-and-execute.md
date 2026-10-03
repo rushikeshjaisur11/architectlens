@@ -13,6 +13,24 @@ banner:
     - [model, "plan"]
     - [server, "act"]
     - [doc, "observe"]
+predict:
+  question: "A team replaces a single ReAct pass with Tree-of-Thought over its whole agent loop. What happens to token cost?"
+  options: ["It stays near the same because pruning offsets the branching", "It roughly doubles, from one added evaluation pass per step", "It can rise 5 to 30 times, since candidates are generated and scored per node"]
+  answer: 2
+  why: "Cost multiplies by branching factor and depth, which is why ToT is reserved for bounded sub-tasks."
+check:
+  - q: "Why does plan-and-execute without a replan step fail?"
+    options: ["The agent keeps executing a stale plan after an early step fails", "The executor's context grows with every step in the history", "The planner model is too weak to produce an ordered task list"]
+    answer: 0
+    why: "An immutable plan is run against a changed world, so replanning must be an explicit step after each execution."
+  - q: "Why is Tree-of-Thought a poor fit for half-finished customer support resolutions?"
+    options: ["Support tasks need a larger branching factor than ToT supports", "There is no cheap way to score partial states, so search becomes sampling", "ToT cannot call tools, so it cannot touch support systems"]
+    answer: 1
+    why: "Without an evaluator for partial states, the search degenerates into expensive random sampling."
+  - q: "What is the common production way to combine the strategies?"
+    options: ["Run ToT over the full loop and ReAct only for the final answer", "Run ReAct at the top level and plan-and-execute for each tool call", "Plan-and-execute at the top, ReAct per sub-task, ToT for combinatorial bits"]
+    answer: 2
+    why: "This gets an auditable plan and reactive execution while limiting ToT's cost to sub-tasks that are cheaply evaluable."
 ---
 
 ## Why planning strategy is a separate design choice

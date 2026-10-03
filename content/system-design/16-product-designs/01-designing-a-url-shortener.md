@@ -4,6 +4,24 @@ short_title: "Designing a URL Shortener"
 tags: ["product-design", "case-study", "interview-practice"]
 sources:
   - "System design interview practice materials (general pattern, synthesized from multiple public writeups)"
+predict:
+  question: "A shortener gets 100M new URLs per month at a 100:1 read-to-write ratio. Roughly how many redirects per second on average, before peaks?"
+  options: ["About 38 per second", "About 3,800 per second", "About 380,000 per second"]
+  answer: 1
+  why: "Writes average about 38 per second, and a 100:1 ratio makes reads about 3,800 per second."
+check:
+  - q: "Why does the redirect path get stricter availability than the create path?"
+    options: ["A failed redirect breaks every shared link, while a failed create affects one user", "Creates are far more frequent than redirects, so they are cheaper to degrade", "Redirects write to the database, so they need stronger durability than creates"]
+    answer: 0
+    why: "A broken redirect breaks links everywhere they were shared, so treating both paths equally would over-engineer writes and under-engineer reads."
+  - q: "What is the main risk of truncated-hash short codes compared with counter-based Base62 codes?"
+    options: ["Hashes are non-deterministic, so repeat URLs always get different codes", "Hashes always exceed seven characters and cannot fit the key-value store", "Different URLs can truncate to the same code, so collisions must be handled"]
+    answer: 2
+    why: "Truncating a hash means different inputs can map to the same short code, which counter-based codes avoid."
+  - q: "Why use cache-aside for the redirect cache rather than pre-populating every short code?"
+    options: ["Pre-populating is impractical and unnecessary, since popular codes get cached on a miss", "Cache-aside guarantees the cache never serves stale data after a URL changes", "Cache-aside removes the need for a database on the redirect path entirely"]
+    answer: 0
+    why: "Pre-filling every possible code isn't practical; popular codes warm the cache on first miss while the long tail falls back to the database."
 ---
 
 ## Why this is a useful design to walk through fully

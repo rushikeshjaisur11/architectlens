@@ -14,6 +14,24 @@ banner:
     - [cloud, "region A"]
     - [cloud, "region B"]
     - [gpu, "GPU capacity"]
+predict:
+  question: "An EU region's LLM endpoint degrades and the failover sends EU users' calls to a non-EU provider region. What is the outcome?"
+  options: ["Availability returns but the EU data-residency requirement is violated", "Availability returns and compliance is unaffected", "Nothing changes, since only your own infrastructure counts"]
+  answer: 0
+  why: "The LLM call is part of processing the user's data, so a naive fail-over can break compliance while restoring uptime."
+check:
+  - q: "What is the trade-off of always calling the geographically closest provider region?"
+    options: ["Lowest latency, but a degraded provider region hits all calls routed there", "Lowest latency with no resilience cost, since failures are local", "Highest resilience, because traffic stays near each user"]
+    answer: 0
+    why: "Spreading provider-region calls across your regions costs some latency but avoids correlated failure."
+  - q: "Why must you reason about your own regions and the provider's regions separately?"
+    options: ["Provider outages track your own, so one plan covers both", "They are largely independent failure domains that can fail separately", "Multi-region app infrastructure automatically covers the provider"]
+    answer: 1
+    why: "A regional outage in your infrastructure does not imply one at your provider, and vice versa."
+  - q: "How do active-passive and active-active compare?"
+    options: ["Active-active removes cross-region consistency concerns", "Active-passive has no failover delay but wastes capacity", "Active-passive avoids write conflicts but idles capacity"]
+    answer: 2
+    why: "Active-active gives no failover delay but reintroduces multi-region consistency questions for state like conversation history."
 ---
 
 ## Why multi-region matters more, not less, for LLM-dependent applications

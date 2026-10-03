@@ -6,6 +6,24 @@ sources:
   - "LMAX Architecture, Martin Fowler's description of the LMAX Disruptor and single-threaded business logic (martinfowler.com, 2011)"
   - "Thompson et al., 'Disruptor: High performance alternative to bounded queues for exchanging data between concurrent threads' (LMAX, 2011)"
   - "Public exchange documentation on price-time priority matching (for example Nasdaq and CME order matching overviews)"
+predict:
+  question: "Asks: A 500 at 10.02 (earlier), B 300 at 10.02 (later), 800 at 10.03. A buy limit of 700 at 10.02 arrives. What results?"
+  options: ["B fills 300 and A fills 400, leaving 100 of A resting", "A fills 500 and the next 200 buy from the 10.03 level", "A fills 500 and B fills 200, leaving 100 of B resting at 10.02"]
+  answer: 2
+  why: "Price-time priority fills the earlier order A first; a 10.02 limit cannot reach the 10.03 level."
+check:
+  - q: "Why run matching on a single thread per book instead of using locks?"
+    options: ["Locks add jitter and non-determinism, and partitioning by instrument still scales out", "A single thread is faster only because it can use more cores than lock-based code", "Locks cannot protect an order book, so only lock-free queues work"]
+    answer: 0
+    why: "One thread avoids locks and context switches; parallelism comes from separate books per thread or machine."
+  - q: "Why order events with sequencer-assigned numbers rather than wall-clock timestamps?"
+    options: ["Reading wall clocks is too slow for microsecond latency targets", "Timestamps cannot be written to the journal in a replicated form", "One authoritative order makes replay and failover reproduce identical results"]
+    answer: 2
+    why: "A monotonically increasing sequence is the single order that deterministic replay depends on."
+  - q: "Why can a hot standby take over without losing or duplicating trades?"
+    options: ["The primary streams its in-memory book to the standby after every trade", "The engine is deterministic, so replaying the same journal gives an identical book", "Clients resubmit all of their open orders to the standby after a failover"]
+    answer: 1
+    why: "A deterministic function of the sequenced input means the standby resumes at the next sequence number."
 ---
 
 ## The problem

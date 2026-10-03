@@ -15,6 +15,24 @@ banner:
     - [shield, "detect"]
     - [server, "redact"]
     - [model, "LLM"]
+predict:
+  question: "A ticket contains a name, an email and a card number. The name becomes <PERSON_1>, and the model's summary says '<PERSON_1> reports a duplicate charge; reply to <EMAIL_1>'. What does the authorised support agent see?"
+  options: ["The tokens, because the mapping is discarded after the model call", "The real name and email, restored by de-tokenising at egress", "The real name only, because emails are always fully masked"]
+  answer: 1
+  why: "The mapping stays in a vault, and egress de-tokenises the response for the authorised requester only."
+check:
+  - q: "Why tokenise a customer's name rather than mask it with a label?"
+    options: ["Stable tokens keep reasoning consistent and allow restoring the real name later", "Masked labels are reversible, so tokens are safer for logs", "Tokens remove the need for a vault because the mapping stays in the prompt"]
+    answer: 0
+    why: "Masking is irreversible; a stable token with a vaulted mapping lets the model reason consistently and the answer be restored."
+  - q: "Why measure PII detection recall more closely than precision?"
+    options: ["Over-redaction is the larger legal risk, while missed PII only hurts utility", "Missed PII is the dangerous error, while over-redaction mainly hurts utility", "Recall is cheaper to compute, so it is the default quality measure"]
+    answer: 1
+    why: "Missed PII is the dangerous error; low precision over-redacts and harms usefulness."
+  - q: "The prompt is redacted before the model call. Where does raw personal data most likely still sit?"
+    options: ["In the model provider's weights after a single call", "In the mapping vault that has already been destroyed", "In logs, caches and vector indexes that keep the raw text"]
+    answer: 2
+    why: "Most incidents come from forgotten paths such as logs, caches and indexes, not the main request."
 ---
 
 *This lesson covers engineering patterns, not legal advice; check obligations with your privacy and legal teams.*

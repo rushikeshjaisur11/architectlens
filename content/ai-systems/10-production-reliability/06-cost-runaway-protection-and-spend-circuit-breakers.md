@@ -15,6 +15,24 @@ banner:
     - [shield, "breaker"]
     - [model, "LLM"]
     - [user, "alert"]
+predict:
+  question: "A recursive agent calls itself 500 times before anyone notices. How does the resulting cost compare to a runaway VM fleet?"
+  options: ["It can spike within minutes, since cost scales with tokens processed", "It is bounded by the number of provisioned resources", "It grows slowly enough that alerts catch it in time"]
+  answer: 0
+  why: "LLM spend has no natural ceiling tied to provisioned capacity, so a single loop can multiply consumption quickly."
+check:
+  - q: "Why are billing dashboards and alerts alone insufficient protection?"
+    options: ["Dashboards lag by hours, so the damage precedes any alert", "Dashboards are real time, but humans respond too slowly", "Alerts already act as spend circuit breakers"]
+    answer: 0
+    why: "A code-enforced limit stops spend automatically, with no human needed in the loop."
+  - q: "A spend cap trips. Which response is preferable?"
+    options: ["Hard-fail every request, since cost matters more than availability", "Degrade to a cheaper model or disable non-essential features", "Raise the cap automatically until the billing month ends"]
+    answer: 1
+    why: "Hard-failing everything turns a cost problem into an availability problem; tiered degradation keeps core features alive."
+  - q: "Why add rate-of-change anomaly detection on top of hard caps?"
+    options: ["Hard caps are too tight, so legitimate peaks keep tripping them", "Anomaly detection makes hard caps unnecessary", "Hard caps are loose, so slow runaways slip under them"]
+    answer: 2
+    why: "Caps allow legitimate peaks, leaving room for a feature burning 10x the expected rate while within the daily cap."
 ---
 
 ## Why LLM spend runs away differently than typical cloud spend

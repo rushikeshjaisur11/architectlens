@@ -12,6 +12,24 @@ banner:
     - [model, "CF model"]
     - [db, "candidates"]
     - [doc, "top-N"]
+predict:
+  question: "A brand-new user with no history signs up for a platform that uses only collaborative filtering. What do they get?"
+  options: ["Strong recommendations from similar users, available right away", "Recommendations based on the content of items they browse", "Generic or poor recommendations until interactions accumulate"]
+  answer: 2
+  why: "Collaborative filtering has no signal without interaction history, which is the cold-start problem."
+check:
+  - q: "Why is item-based filtering often more stable than user-based?"
+    options: ["Item similarity changes slowly and can be precomputed and cached", "User similarity is cheap to compute and rarely noisy for sparse users", "Item-based needs no interaction data, so it avoids cold start entirely"]
+    answer: 0
+    why: "User preferences shift faster than item-to-item similarity, so item similarity can be reused."
+  - q: "What is the main weakness of relying only on content-based filtering?"
+    options: ["It cannot recommend brand-new items that have no interaction history", "It yields narrow, more-of-the-same results with no cross-user discovery", "It needs many other users' behavior, so it fails for a lone user"]
+    answer: 1
+    why: "Content similarity has no way to suggest something different that similar users enjoyed."
+  - q: "Why do hybrid systems use content signals early and collaborative signals later?"
+    options: ["Collaborative works with zero history, while content is better with lots of data", "The blend is tuned once at launch and then left fixed", "Content works with no history; collaborative is more serendipitous once data builds"]
+    answer: 2
+    why: "Each approach covers the other's weakness, and the blend is tuned on engagement metrics."
 ---
 
 ## The core problem: predicting what a user hasn't told you they'd like

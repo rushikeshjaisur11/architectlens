@@ -14,6 +14,24 @@ banner:
     - [model, "encoder"]
     - [db, "joint index"]
     - [user, "query"]
+predict:
+  question: "A shopper clicks \"find similar\" on a sneaker, then adds \"but in green\". What does the system do?"
+  options: ["It reruns a text-only search for the word green", "It filters the similar shoes by OCR text containing green", "It blends the stored image embedding with the text embedding for green"]
+  answer: 2
+  why: "For image plus text queries the system combines the embeddings, a weighted sum, so results stay visually similar but shift toward green."
+check:
+  - q: "Why must a change of embedding model be run as a blue-green re-index?"
+    options: ["Vectors only compare within one model version, so all are re-embedded", "Product quantization tables cannot be reused across model versions", "The reranker must be retrained before any new vectors are indexed"]
+    answer: 0
+    why: "Vectors from different models are not comparable, so you build and compare a second index offline, then switch."
+  - q: "Why deduplicate near-identical images by perceptual hash or embedding distance?"
+    options: ["Duplicates cannot be embedded by the image encoder", "Otherwise results are flooded by copies of one picture", "Duplicates break the metadata filters inside the search"]
+    answer: 1
+    why: "Without deduplication the top results can be the same image repeated, hiding other relevant items."
+  - q: "Why embed images through an asynchronous queue instead of synchronously at upload?"
+    options: ["Queued embedding produces better vectors than inline embedding does", "The text encoder must finish before the image encoder can start", "Embedding is costly, so uploads return fast and workers scale with the queue"]
+    answer: 2
+    why: "Embedding is GPU-heavy, so a queue keeps uploads fast and lets workers batch and scale independently."
 ---
 
 ## The problem

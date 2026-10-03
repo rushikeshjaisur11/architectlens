@@ -13,6 +13,24 @@ banner:
     - [server, "temperature"]
     - [server, "top-p"]
     - [doc, "next token"]
+predict:
+  question: "A pipeline extracts invoice fields at temperature 1.2 with no other changes. What is the likely effect?"
+  options: ["Output becomes more deterministic because the distribution sharpens", "More variance in what should be a deterministic extraction pipeline", "Nothing changes, because temperature only affects creative writing"]
+  answer: 1
+  why: "Temperature above 1 flattens the distribution, adding variance; extraction tasks should use low temperature (0-0.3)."
+check:
+  - q: "Why is top-p generally preferred over a fixed top-k cutoff?"
+    options: ["Top-p always produces fully deterministic output at any setting", "Top-p is the only filter that can combine with temperature", "The candidate pool adapts to how confident the model is at each step"]
+    answer: 2
+    why: "A fixed k is too permissive when the model is confident and too narrow when it is uncertain; top-p adapts."
+  - q: "You set temperature 0 and still see slightly different outputs across calls. What explains it?"
+    options: ["Batched parallel computation causes small floating-point differences", "Temperature 0 is ignored by most providers and treated as 1", "The model resamples from the full vocabulary on each new call"]
+    answer: 0
+    why: "Floating-point non-associativity in batched inference means temperature 0 is highly consistent, not guaranteed identical."
+  - q: "After a model upgrade, your thinking-enabled requests start failing. What does the lesson suggest checking?"
+    options: ["Whether the new model's temperature range was lowered globally", "Whether the deprecated fixed-budget parameter is now rejected", "Whether the model rejects every sampling parameter on all requests"]
+    answer: 1
+    why: "The lesson notes budget_tokens is rejected on 4.7 and later, and parameters accepted on one generation may be rejected on the next."
 ---
 
 ## From logits to a chosen token

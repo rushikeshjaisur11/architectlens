@@ -13,6 +13,24 @@ banner:
     - [db, "shard 1"]
     - [db, "shard 2"]
     - [db, "shard 3"]
+predict:
+  question: "An index has 3 primary shards, each with 1 replica. You raise it to 4 replicas per shard. What happens to throughput?"
+  options: ["Read throughput rises, but write throughput does not improve and may dip", "Both rise, because every replica accepts writes independently", "Neither changes, because replicas matter only for failover"]
+  answer: 0
+  why: "Searches can be served by any replica, so reads scale with replica count. Writes still go to the primary first and are forwarded, so more copies add consistency work."
+check:
+  - q: "Why can't the primary shard count be changed after index creation without reindexing?"
+    options: ["Lucene segments cannot be split once they have been flushed to disk", "Routing hashes the document ID against the count, so a change remaps documents", "The cluster coordination layer locks the shard count after the first write"]
+    answer: 1
+    why: "A document's shard comes from hash(_id) modulo the number of primaries. Changing the count changes the mapping for every document."
+  - q: "A team's index is running out of capacity. Why won't adding replicas fix it?"
+    options: ["Replicas copy data rather than split it, so only more primaries add capacity", "Replicas are read-only and are deleted whenever a primary shard fills up", "Replicas can be added only to the oldest shards, so capacity stays flat"]
+    answer: 0
+    why: "Replicas are full copies that add read throughput and resilience. Holding more data needs more primary shards, which is fixed at creation."
+  - q: "Why does Elasticsearch allow near-real-time reads instead of making every read see the latest write?"
+    options: ["Linearizable reads are impossible on any system that uses Lucene indexes", "Replicas never receive writes, so staleness is unavoidable for them", "Search tolerates slight staleness better than writes blocked on full sync"]
+    answer: 2
+    why: "It is a deliberate trade-off: reads can lag a replica or the roughly 1-second refresh. That is preferred to slow writes waiting for every copy."
 ---
 
 ## Why a single inverted index doesn't scale

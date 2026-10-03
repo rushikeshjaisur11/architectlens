@@ -15,6 +15,24 @@ banner:
     - [shield, "validate"]
     - [server, "tool"]
     - [doc, "result"]
+predict:
+  question: "A tool parameter is described only as \"date\". A user writes \"03/04/2026\". What is the likely risk?"
+  options: ["The model picks a locale-biased guess such as MM/DD over DD/MM", "The model refuses the call because the format is unstated", "The schema validator rejects it before the model generates it"]
+  answer: 0
+  why: "Models guess formats when they are unstated, often locale-biased, so descriptions should state formats like YYYY-MM-DD, UTC."
+check:
+  - q: "Strict constrained decoding guarantees schema-valid arguments. Why still validate server-side?"
+    options: ["Constrained decoding is only applied to the first tool call in a run", "Schema-valid arguments can still be wrong, like a past date or missing ID", "Server-side validation is what makes the enum constraints take effect"]
+    answer: 1
+    why: "Valid types do not mean valid business meaning, and the model's JSON is untrusted input like an HTTP client's."
+  - q: "A parameter in a live tool must be renamed. What is the safer move?"
+    options: ["Rename it in place, since the model reads the schema on every call", "Rename it and update the few-shot examples after incidents appear", "Version it explicitly, like create_order_v2, rather than mutating it"]
+    answer: 2
+    why: "Few-shot examples and learned routing are built against the old shape, so silent mutation is a breaking change."
+  - q: "Why is one mega-tool with a mode parameter a poor design?"
+    options: ["The model sees one blob of description and cannot tell which behavior fits", "Mode parameters cannot be expressed as enums in JSON Schema", "It raises token cost because the description is sent only once"]
+    answer: 0
+    why: "Splitting into narrower tools lets the model reason about which tool fits the task from distinct names and descriptions."
 ---
 
 ## The tool definition is a prompt, not just an API contract

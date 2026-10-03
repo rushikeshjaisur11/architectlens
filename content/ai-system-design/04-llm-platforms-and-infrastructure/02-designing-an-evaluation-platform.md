@@ -14,6 +14,24 @@ banner:
     - [model, "run"]
     - [shield, "judge"]
     - [server, "dashboard"]
+predict:
+  question: "A team's cheaper summarizer scores within noise overall and costs 62 percent less, but 31 cases regress on the numeric tables slice. What do they do?"
+  options: ["Route table-heavy documents to the expensive model and the rest to the cheaper one", "Reject the cheaper model completely since any regression blocks a change", "Ship the cheaper model everywhere because the overall average is within noise"]
+  answer: 0
+  why: "Slice-level comparison exposed the table regression, so the team splits traffic by document type and adds the 31 cases as a permanent CI slice."
+check:
+  - q: "Why must published dataset versions be immutable?"
+    options: ["Immutable data is cheaper to store and faster to load per run", "If cases change under a run, comparisons between runs become meaningless", "Judges cannot score cases edited after they were first published"]
+    answer: 1
+    why: "Runs are only comparable when they used the same cases; mutable datasets make results incomparable."
+  - q: "Why cache target outputs keyed by input and target config?"
+    options: ["Re-scoring with a new judge then does not need to re-run the model", "It guarantees stochastic targets produce identical outputs on every run", "It lets the platform skip scoring for cases that passed before"]
+    answer: 0
+    why: "Caching model outputs separates generation from scoring, so a new judge can re-score cheaply without paying for the model again."
+  - q: "Why calibrate an LLM judge against human labels even when its scores are highly self-consistent?"
+    options: ["Humans label faster than judges once a calibration set exists", "Self-consistent judges are always biased toward longer, verbose outputs", "Self-consistency does not prove the judge measures the right thing"]
+    answer: 2
+    why: "The lesson cites work arguing high self-consistency does not prove validity, so judges need agreement checks against human labels."
 ---
 
 ## The problem

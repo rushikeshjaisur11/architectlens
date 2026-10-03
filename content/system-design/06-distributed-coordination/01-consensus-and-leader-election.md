@@ -13,6 +13,36 @@ banner:
     - [server, "follower"]
     - [server, "follower"]
     - [server, "follower"]
+predict:
+  question: "In a 5-node Raft cluster, a write has reached the leader and one follower when the leader crashes. Is the write committed?"
+  options:
+    - "Yes, two nodes hold it and the leader's acknowledgement was enough"
+    - "No, only 2 of 5 nodes hold it, so it is uncommitted and discarded after re-election"
+    - "Yes, as long as the new leader asks the client to resend it"
+  answer: 1
+  why: "Commit needs a majority, 3 of 5, so a write that never reached one is safely discarded rather than left ambiguous."
+check:
+  - q: "Why does a 4-node cluster give no more fault tolerance than a 3-node one?"
+    options:
+      - "A 4-node cluster tolerates 2 failures because 2 remaining nodes can still agree"
+      - "A 4-node cluster tolerates 1 failure but gains throughput from the extra voter"
+      - "A 4-node cluster tolerates only 1 failure, the same as 3 nodes, but costs more"
+    answer: 2
+    why: "Losing 2 of 4 leaves no majority, so the extra node adds cost without adding tolerance."
+  - q: "Why did Raft see wider adoption than Paxos in systems like etcd and Consul?"
+    options:
+      - "Its split into election, replication and safety makes it feasible to implement correctly"
+      - "It gives stronger guarantees than Paxos, which only offers best-effort agreement"
+      - "It needs no majority, so it keeps working when most nodes are down"
+    answer: 0
+    why: "Raft was designed for understandability, so implementers can reason about it without subtle bugs."
+  - q: "Why is leader replication without majority acknowledgement not consensus?"
+    options:
+      - "It is still consensus, as long as the followers eventually apply the entries"
+      - "It can lose committed-looking writes on leader failure, so it gives no real agreement"
+      - "It is safer than consensus, since it avoids waiting on a slow majority"
+    answer: 1
+    why: "Without a majority overlap, a new leader may lack a write that looked committed."
 ---
 
 ## Why distributed nodes need to agree on anything

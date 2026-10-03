@@ -14,6 +14,24 @@ banner:
     - [model, "assistant"]
     - [db, "catalog"]
     - [lock, "checkout"]
+predict:
+  question: "A shopper wants a waterproof jacket under $150, preferably green, but only two of the four best matches are green. What does the assistant do with the colour?"
+  options: ["It treats green as a soft constraint, ranks green higher and notes the other options", "It hides every non-green jacket because the shopper named a colour", "It asks the shopper to restate the request until all four are green"]
+  answer: 0
+  why: "In the worked example colour is a soft constraint: green items are ranked up but not required, and the reply notes that only two are green."
+check:
+  - q: "Why render product cards from structured data instead of letting the model write prices and links?"
+    options: ["Model-written text is slower to stream than rendered cards", "Cards let the model remember the catalogue between sessions", "Prices and links cannot be hallucinated when they come straight from data"]
+    answer: 2
+    why: "The lesson renders cards from structured records so that prices and links are never model-generated text."
+  - q: "Why should the model propose purchase actions while deterministic services execute them?"
+    options: ["Services validate parameters and apply confirmation, fraud and idempotency checks", "Models are unable to produce valid JSON for checkout calls", "Execution by the model would exceed the latency budget for a session"]
+    answer: 0
+    why: "The lesson says the model proposes and deterministic services execute with validated parameters, after explicit confirmation."
+  - q: "Why evaluate on return rate as well as conversion?"
+    options: ["Return rate is the only metric the checkout protocols report", "Conversion alone can reward pushy or unsupported claims that damage trust", "Returns measure catalogue coverage of attributes more directly"]
+    answer: 1
+    why: "The lesson warns that optimising only for conversion damages trust through pushy or unsupported claims."
 ---
 
 ## The problem

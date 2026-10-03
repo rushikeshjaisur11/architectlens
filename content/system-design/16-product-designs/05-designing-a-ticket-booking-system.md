@@ -13,6 +13,24 @@ banner:
     - [lock, "seat hold"]
     - [server, "checkout"]
     - [db, "orders"]
+predict:
+  question: "Two buyers run the conditional hold update for seat 14B in the same millisecond. What does the second buyer's update report?"
+  options: ["One row updated, so both hold the seat until payment resolves it", "A deadlock error, so both requests must retry", "Zero rows updated, so they see that the seat was just taken"]
+  answer: 2
+  why: "The database serializes the updates; the second finds the seat held and unexpired, so it matches no rows."
+check:
+  - q: "Why do the availability check and hold in one conditional UPDATE instead of reading in application code first?"
+    options: ["The read-then-write gap lets two buyers both succeed, which the single update closes", "Application code cannot read the seat table without taking a table-wide lock", "A single update makes the hold last longer than a two-step check would"]
+    answer: 0
+    why: "The database serializes concurrent updates to a row, so only one conditional update wins."
+  - q: "Why should the authoritative seat hold not live only in a TTL cache?"
+    options: ["Caches cannot expire keys, so abandoned holds would lock seats forever", "A cache restart can lose holds, so the database must remain the source of truth", "Caches cannot do single-key atomic updates, so double booking is unavoidable"]
+    answer: 1
+    why: "A volatile hold lost on restart creates inconsistencies unless the sale re-validates against durable storage."
+  - q: "Why use a virtual waiting room rather than letting the on-sale spike reach the booking database?"
+    options: ["It removes the need for seat holds because admitted users never compete", "It makes seat availability exactly consistent for every user in the queue", "It turns a destructive spike into a controlled stream the backend can handle"]
+    answer: 2
+    why: "Admitting users at a sustainable rate protects the booking database from the thundering herd."
 ---
 
 ## What makes booking hard

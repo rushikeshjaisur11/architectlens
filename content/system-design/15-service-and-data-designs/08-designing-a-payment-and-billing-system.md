@@ -13,6 +13,24 @@ banner:
     - [lock, "PSP"]
     - [db, "ledger"]
     - [doc, "reconcile"]
+predict:
+  question: "A customer's $49.99 charge request times out, and the client retries with the same idempotency key K-831. What happens?"
+  options: ["The PSP returns the stored original result, and no second charge occurs", "A second $49.99 charge is made, because the timeout proves the first failed", "The retry is rejected as a conflict, and the customer must start a new checkout"]
+  answer: 0
+  why: "A repeat with the same key returns the stored result without redoing the work. A timeout is ambiguous, so retrying safely needs the key."
+check:
+  - q: "Why fix a ledger mistake with a reversing entry rather than editing the original?"
+    options: ["Editing is slower because every row needs re-signing", "Appending keeps history intact, so balances stay explainable by replaying entries", "Reversing entries avoid the need to write both sides in one transaction"]
+    answer: 1
+    why: "Immutable entries give auditability. Corrections are appended, never made by erasing history."
+  - q: "Why must webhook handling include deduplication and state-transition checks?"
+    options: ["Webhooks arrive exactly once and in order, so these checks are merely optional extras", "The PSP signs events, and a valid signature already guarantees each arrives only once", "Delivery repeats and reorders, so a late duplicate could revert a refund to succeeded"]
+    answer: 2
+    why: "Webhook delivery can repeat or reorder. Dedupe by event ID and a legal-transition state machine stop late events corrupting status."
+  - q: "Why is nightly reconciliation needed when idempotency keys and webhooks already exist?"
+    options: ["Records can still disagree with the PSP's, and reconciliation catches what the online path missed", "Idempotency keys expire overnight, so reconciliation must re-apply the charges", "Webhooks are unreliable, so reconciliation replaces them altogether"]
+    answer: 0
+    why: "Even careful engineering leaves mismatches such as missing payments or amount differences. Reconciliation compares the ledger to settlement reports as a safety net."
 ---
 
 ## What makes payments different

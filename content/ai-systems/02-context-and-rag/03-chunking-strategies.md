@@ -16,6 +16,24 @@ banner:
     - [server, "splitter"]
     - [doc, "chunks"]
     - [db, "index"]
+predict:
+  question: "A semantic chunker cuts wherever the cosine distance between adjacent sentence embeddings exceeds a threshold. The threshold is set too sensitive. What do you get?"
+  options: ["A few huge chunks, because almost no sentence pair crosses the threshold", "Identical chunks to recursive splitting, because both respect paragraph breaks", "Many tiny fragments, because small meaning shifts now trigger a cut"]
+  answer: 2
+  why: "Too sensitive a threshold over-splits into tiny fragments. Too loose a threshold falls back to arbitrary boundaries."
+check:
+  - q: "A corpus of docs with real headings is being chunked. Why might recursive chunking on structural separators beat semantic chunking?"
+    options: ["It often matches the quality at a fraction of the cost and latency", "It reads meaning shifts more accurately than embeddings of each sentence", "It removes the need for any chunk size or separator tuning on the corpus"]
+    answer: 0
+    why: "Semantic chunking adds an embedding call per sentence and a tunable threshold. With real headings, structural splits are often as good."
+  - q: "Why index single sentences but pass the generator a window of neighbouring sentences?"
+    options: ["Single sentences are cheaper to store, and windows only exist to save tokens", "It splits matching from context: precise small matches, readable large context", "Windows let the retriever skip the embedding step for the neighbouring sentences"]
+    answer: 1
+    why: "Small chunks match more precisely but read poorly alone. The cost is metadata bookkeeping for positions and larger payloads per hit."
+  - q: "A team uses fixed-size chunks with zero overlap. What failure does this invite?"
+    options: ["Duplicate chunks fill the top-k, since every chunk repeats its neighbour's text", "Retrieval slows down, since zero overlap needs more chunks to cover the text", "A fact straddling a boundary is lost, since neither chunk embeds the whole fact"]
+    answer: 2
+    why: "Overlap of roughly 10-20% keeps a boundary-spanning sentence whole in at least one chunk."
 ---
 
 ## Why chunking determines retrieval quality before anything else runs
@@ -25,6 +43,8 @@ Chunking splits a source document into the units a retriever indexes and a gener
 ## Fixed-size chunking
 
 The baseline: split text every N tokens or characters, usually with an **overlap** (commonly 10-20% of chunk size) so a sentence straddling a boundary isn't fully lost from either chunk. Simple, fast, and library-supported everywhere (`CharacterTextSplitter` in LangChain). Its weakness is that it's blind to structure — it will cut a sentence, a table row, or a code block in half with no regard for meaning. It works acceptably on homogeneous prose but degrades on structured or heterogeneous documents (mixed markdown, code, tables).
+
+<div data-anim="chunking-playground"></div>
 
 ## Recursive chunking
 

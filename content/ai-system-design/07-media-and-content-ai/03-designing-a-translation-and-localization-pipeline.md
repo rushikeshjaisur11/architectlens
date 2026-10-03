@@ -7,6 +7,24 @@ sources:
   - "Unicode Consortium, CLDR (Common Locale Data Repository) documentation"
   - "ICU MessageFormat specification for plural and gender-aware message formatting"
   - "Findings of the WMT25 General Machine Translation Shared Task (ACL Anthology, 2025) and WMT25 Metrics and Quality Estimation findings, via search results"
+predict:
+  question: "A Polish and Japanese rollout has a short toast string and a long Japanese help article. The article gets a lower quality estimate. What happens?"
+  options: ["Both ship automatically because structure checks passed", "The article goes to a linguist while the toast ships after automatic checks", "Both go to a linguist because Japanese is treated as high risk"]
+  answer: 1
+  why: "Review is routed by quality score and risk, so the weak long article gets a linguist and the toast ships."
+check:
+  - q: "Why replace placeholders with opaque tokens before translating?"
+    options: ["So the engine can translate variable names into the target language", "So the translation memory can fuzzy-match them across files", "So each variable is restored afterwards and verified to appear once"]
+    answer: 2
+    why: "Tokens are restored and checked to appear exactly once in a valid position, so the UI does not break."
+  - q: "Why use ICU message formats instead of concatenating strings for plurals?"
+    options: ["Languages have multiple plural forms, so concatenation breaks", "Concatenated strings cannot be stored in translation memory", "ICU formats make translation cheaper per word"]
+    answer: 0
+    why: "Polish has four plural forms, which message formats can express and concatenation cannot."
+  - q: "Why route review by risk and quality score rather than reviewing everything?"
+    options: ["Quality estimators agree with human judgement in every language", "Full review is unaffordable, so spend human effort where risk is high", "Low-score segments are cheaper to fix automatically than review"]
+    answer: 1
+    why: "Reviewing everything is unaffordable, so legal and high-traffic content gets humans and low-risk content relies on checks."
 ---
 
 ## The problem

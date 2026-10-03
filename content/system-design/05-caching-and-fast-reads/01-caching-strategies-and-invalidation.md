@@ -13,6 +13,36 @@ banner:
     - [cache, "cache"]
     - [db, "database"]
     - [shield, "TTL + purge"]
+predict:
+  question: "A bulk migration script updates prices in the database but never touches the cache. The product-page entries have a 30-second TTL. Roughly how long can a shopper see the old price?"
+  options:
+    - "Until someone restarts the cache server"
+    - "Only a few milliseconds, since the cache sees the change"
+    - "Up to about 30 seconds, until the entry expires"
+  answer: 2
+  why: "The missed code path never invalidates the key, but the TTL expires the entry anyway, so staleness is bounded by the TTL instead of lasting forever."
+check:
+  - q: "Why does checkout re-check price and stock in the database rather than trusting the cached product page?"
+    options:
+      - "The cached page can lag by up to a TTL, fine for browsing but not for charging money"
+      - "Cache-aside forbids any read of prices from the cache, so checkout must go to the database"
+      - "Cached pages are only built for display and cannot hold price or stock fields at all"
+    answer: 0
+    why: "The page is cached with a short TTL and accepts bounded staleness, so any step that commits money must check the source of truth."
+  - q: "Why is one blanket TTL usually a poor setting across a display name and a stock count?"
+    options:
+      - "The cache engine permits only one TTL value per running instance"
+      - "A longer TTL is always safer for correctness, so the blanket value should be maximal"
+      - "A long TTL leaves fast-changing stock stale, while a short one wastes misses on rarely changing names"
+    answer: 2
+    why: "The right staleness bound depends on how fast each kind of data changes, so a single value is wrong for most of what it covers."
+  - q: "What does event-driven invalidation trade away compared with explicit invalidation on write?"
+    options:
+      - "It removes the need for a TTL safety net, since events are always processed reliably"
+      - "Write code no longer knows the cache, but a stale window opens and a dead subscriber fails silently"
+      - "It gives stronger consistency than explicit invalidation because events arrive in order"
+    answer: 1
+    why: "Publishing a change event decouples writers from the cache, but the window before the event is processed is stale and a dead subscriber fails quietly."
 ---
 
 ## Why caching works

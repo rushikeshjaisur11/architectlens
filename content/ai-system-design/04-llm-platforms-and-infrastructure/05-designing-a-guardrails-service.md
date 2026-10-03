@@ -16,6 +16,24 @@ banner:
     - [server, "policy engine"]
     - [doc, "allow/block"]
     - [db, "audit log"]
+predict:
+  question: "A hidden instruction in an email thread scores 0.93 on the injection classifier against a policy threshold of 0.8. What happens next?"
+  options: ["The flagged span is stripped and logged, and the model summarises the cleaned thread", "The whole request is blocked and the user sees a refusal message", "The request proceeds unchanged because the PII masking already ran"]
+  answer: 0
+  why: "The policy's action for this outcome is 'strip the flagged span and log', so the summary proceeds on the cleaned text."
+check:
+  - q: "Why order detectors as a cascade of rules, small classifiers and then LLM judges?"
+    options: ["Cheap layers run first, so slow judges handle only uncertain or high-risk cases", "Rules are the most accurate, so later layers only confirm their verdicts", "LLM judges cannot run in parallel with any other detector"]
+    answer: 0
+    why: "Cost and latency rise down the cascade, so expensive judges are reserved for uncertain or high-risk cases."
+  - q: "The guardrails service goes down. What is the sound design?"
+    options: ["Always fail closed, since any unscreened call is unacceptable", "Always fail open, since availability matters more than screening", "Decide per policy: high-risk apps fail closed, low-risk may fail open"]
+    answer: 2
+    why: "Fail-open versus fail-closed is a per-policy decision tied to risk, with alerts."
+  - q: "Why keep hard controls like tool permissions in deterministic code rather than in classifiers?"
+    options: ["Classifier latency is too high to run before every tool call", "Classifiers are probabilistic, so they cannot enforce authorisation", "Deterministic code is better at spotting novel jailbreak phrasing"]
+    answer: 1
+    why: "Guardrail classifiers reduce risk but do not enforce authorisation; least-privilege tools and sandboxing remain necessary."
 ---
 
 ## The problem

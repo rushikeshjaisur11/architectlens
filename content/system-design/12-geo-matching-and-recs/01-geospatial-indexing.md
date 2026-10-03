@@ -12,6 +12,24 @@ banner:
     - [doc, "geohash/S2"]
     - [db, "cell index"]
     - [user, "nearby"]
+predict:
+  question: "A rider's geohash starts with 9q8yy. A driver 20 m away sits just across the cell boundary and has a different prefix. What does an exact-prefix search for 9q8yy return?"
+  options: ["The driver, since nearby points always share a prefix", "Not the driver, since adjacent cells can have very different prefixes", "The driver, since a sorted index scan crosses cell boundaries"]
+  answer: 1
+  why: "Shared prefix usually means nearby, but not always, so neighboring cells must be checked too."
+check:
+  - q: "Why might a quadtree beat a fixed-resolution grid for real location data?"
+    options: ["Quadtrees give every cell equidistant neighbors, which fixed grids cannot", "Fixed grids cannot be stored in a sorted index, but quadtrees can", "Dense areas get finer cells while sparse areas stay coarse, matching clustered data"]
+    answer: 2
+    why: "Location data clusters in populated areas, and a quadtree subdivides only where density requires it."
+  - q: "What goes wrong if the cell resolution is much finer than the query radius?"
+    options: ["A small radius spans many cells, each needing its own lookup", "Too many irrelevant candidates come back to filter through", "Neighbor-cell checks become unnecessary, hiding real matches"]
+    answer: 0
+    why: "Too fine means many lookups; too coarse means many irrelevant candidates."
+  - q: "Why might a ride-hailing system choose H3 hexagons over a square grid?"
+    options: ["Hexagons nest exactly inside each other, removing any boundary problems", "All six neighbors are equidistant, so proximity behaves the same in every direction", "Hexagons let a standard B-Tree answer radius queries without neighbor checks"]
+    answer: 1
+    why: "Square cells have diagonal neighbors farther than adjacent ones, which skews nearest-neighbor reasoning."
 ---
 
 ## Why "find nearby" is a harder query than it looks

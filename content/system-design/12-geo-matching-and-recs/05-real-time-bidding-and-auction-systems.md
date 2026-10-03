@@ -6,6 +6,24 @@ sources:
   - "IAB Tech Lab, OpenRTB specification (bid request and bid response model)"
   - "Vickrey, 'Counterspeculation, Auctions, and Competitive Sealed Tenders' (1961), on second-price auctions"
   - "Public engineering write-ups on ad exchange and demand-side platform latency budgets"
+predict:
+  question: "An exchange gets 200,000 requests per second and fans each out to 50 DSPs. How many outbound bid requests per second does it send?"
+  options: ["About 200,000, one per incoming request", "About 10 million, one per request per DSP", "About 4,000, since DSPs share requests between them"]
+  answer: 1
+  why: "200,000 times 50 is 10 million, which is why fan-out nodes are many, stateless and use persistent connections."
+check:
+  - q: "A DSP's bid arrives after the exchange's timeout. What is the right handling?"
+    options: ["Retry it once, since a lost bid wastes the advertiser's spend", "Extend the timeout until the slowest bidder has answered", "Drop it; retries add load at the worst moment for an auction that moved on"]
+    answer: 2
+    why: "A late bid is a lost bid, and the exchange never waits for the slowest participant."
+  - q: "Why avoid one global budget counter across bidder instances?"
+    options: ["It becomes a bottleneck and single point of failure; slices with reconciliation avoid that", "It prevents pacing, so spend cannot follow a target curve", "It is fine if replicated, and local slices only add overspend risk"]
+    answer: 0
+    why: "Local slices trade a bounded small overspend for speed and resilience."
+  - q: "Why keep billing out of the auction's hot path?"
+    options: ["Inline billing would be needed to enforce the floor price", "The auction must not wait on accounting; events go to a durable log for later settlement", "Asynchronous logging loses events, so billing has to run inline"]
+    answer: 1
+    why: "A durable stream and later reconciliation keep the auction small without losing records."
 ---
 
 ## The problem in one sentence

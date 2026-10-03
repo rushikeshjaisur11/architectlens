@@ -15,6 +15,24 @@ banner:
     - [server, "VPC"]
     - [gpu, "local GPUs"]
     - [shield, "no egress"]
+predict:
+  question: "The air-gapped bank wants to adopt a new model version. How does it get into production?"
+  options: ["Pulled from the public model hub through a temporary firewall rule", "Through a scanned staging zone, then evaluation and a 5 percent canary", "Copied straight to production nodes once the checksum matches"]
+  answer: 1
+  why: "Quarterly updates are imported via a scanned staging zone, evaluated, then canaried to 5 percent of users."
+check:
+  - q: "Why choose a model by testing on your own tasks rather than by leaderboard?"
+    options: ["Generic rank may not reflect your domain, tool use or hardware fit", "Leaderboards are not published for open-weight models", "Licences require a private evaluation before commercial use"]
+    answer: 0
+    why: "The lesson evaluates on your tasks, such as the bank's 400 questions, because leaderboard position does not guarantee fit."
+  - q: "Why is 'it is inside the firewall' a weak reason to relax security?"
+    options: ["Firewalls cannot be configured to cover GPU clusters", "Zero-trust applies only to services exposed to the internet", "Prompt injection and leakage threats apply inside the boundary too"]
+    answer: 2
+    why: "The same AI threats apply inside, so zero-trust, segmentation and guardrails are still needed."
+  - q: "Why can a half-idle private cluster lose to a hosted API on cost?"
+    options: ["Hosted APIs charge nothing for the first million tokens", "Utilisation drives cost per token, so idle GPUs make it worse", "Private clusters cannot use quantized models"]
+    answer: 1
+    why: "Fixed hardware cost is spread over fewer tokens when utilisation is low."
 ---
 
 ## The problem

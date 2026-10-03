@@ -13,6 +13,24 @@ banner:
     - [gpu, "DPO"]
     - [model, "policy"]
     - [shield, "eval"]
+predict:
+  question: "A team has finished SFT, has preference pairs, and has no dedicated RL expertise. The model is still verbose. Which path fits best?"
+  options: ["PPO-based RLHF, since DPO cannot learn from preference pairs", "Skip SFT and apply preference tuning directly to the base model", "DPO, extending the existing SFT pipeline with no reward model or PPO loop"]
+  answer: 2
+  why: "DPO reuses standard supervised-style training on the preference pairs, so it is a small extension of the pipeline they already have."
+check:
+  - q: "What goes wrong when preference pairs consist of near-identical candidate responses?"
+    options: ["They yield low-information, noisy preference judgments", "They give precise signals since the differences are small", "They only matter for PPO and have no effect on DPO"]
+    answer: 0
+    why: "Raters cannot form a confident preference between near-identical responses, so the pairs carry little training signal."
+  - q: "Why is PPO-based RLHF rarely a team's first choice for preference tuning?"
+    options: ["It cannot use preference data, only exact verifiable rewards", "It coordinates several models and is sensitive to hyperparameters and collapse", "It needs no reward model but far more labeled examples"]
+    answer: 1
+    why: "PPO needs a policy, reward model and often a reference model, and is prone to instability, whereas DPO trains like standard supervised learning."
+  - q: "Why run SFT before preference-based tuning rather than skipping it?"
+    options: ["SFT removes the need to collect any preference data later", "Preference tuning only runs on models that have a reward model", "Preference tuning refines a reasonable baseline; skipping SFT is less stable"]
+    answer: 2
+    why: "The classical ordering is SFT then preference tuning, because preference methods refine behavior relative to a decent starting point."
 ---
 
 ## Connecting preference-based training to the fine-tuning decision process

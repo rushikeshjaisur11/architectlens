@@ -12,6 +12,24 @@ banner:
     - [server, "clean"]
     - [shield, "dedupe"]
     - [db, "training set"]
+predict:
+  question: "Half of a fine-tuning dataset follows one formatting convention and half follows a subtly different one. What does the model learn?"
+  options: ["Only the majority convention, treating the minority as noise", "Both conventions, choosing the right one based on each input", "A blended, inconsistent behavior rather than either convention cleanly"]
+  answer: 2
+  why: "The model cannot tell a correct approach from noise without a consistent signal, so it learns a blend of the two."
+check:
+  - q: "A team can use 20,000 noisy, inconsistent examples or 1,000 carefully curated ones. Which typically fine-tunes better?"
+    options: ["The noisy set, since more examples average out the noise", "The curated set, since the model cannot separate signal from noise", "Both equally, since volume and quality trade off evenly"]
+    answer: 1
+    why: "A smaller curated, consistent set typically outperforms a larger noisy one because the model has no way to discount bad examples."
+  - q: "A fine-tuned model scores excellently on training examples but poorly on held-out validation examples. What does this indicate?"
+    options: ["Overfitting: the set may be too small or narrow, or ran too many passes", "Underfitting: the model needs fewer examples and fewer passes", "Success: validation sets are expected to score far lower"]
+    answer: 0
+    why: "A train/validation gap on the same task means the model memorized specifics instead of learning the generalizable pattern."
+  - q: "What is the main quality risk of using a stronger model to generate fine-tuning data?"
+    options: ["It is always cleaner than human data, so no review is needed", "It cannot be produced faster than pure human curation", "It can inherit and amplify the generating model's own errors"]
+    answer: 2
+    why: "Synthetic data needs genuine review or validated checks, because the generator's errors and quirks flow straight into the training set."
 ---
 
 ## Why data quality dominates fine-tuning outcomes more than most other choices

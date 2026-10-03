@@ -16,6 +16,24 @@ banner:
     - [server, "metering"]
     - [db, "ledger"]
     - [doc, "chargeback"]
+predict:
+  question: "A route's tokens tripled after a prompt change. The team trims the history to the last five messages and caches the shared instructions. What happens to evaluation quality scores?"
+  options: ["They drop by roughly 70 percent along with cost", "They show no change while cost per call falls by 70 percent", "They improve because shorter prompts always help"]
+  answer: 1
+  why: "The route's cost per call fell 70 percent with no change in quality scores in the evaluation platform."
+check:
+  - q: "Why reject untagged gateway calls or put them in a reported 'unattributed' bucket?"
+    options: ["Untagged calls cannot be priced because the price catalogue needs a tag", "Spend with no team or feature cannot be charged back or explained", "Providers refuse requests that lack a cost-centre header"]
+    answer: 1
+    why: "Attribution by team and feature is the point of metering, so unattributed spend is treated as a problem to report."
+  - q: "Why show idle GPU capacity separately instead of spreading it across team costs?"
+    options: ["Hidden idle cost makes teams' own usage look more expensive than it is", "Idle capacity is free once the node is purchased", "Spreading it would double count tokens already metered"]
+    answer: 0
+    why: "Unused capacity is shown separately so it is not hidden inside team costs."
+  - q: "Why add budget alerts and circuit breakers instead of only reviewing spend monthly?"
+    options: ["Alerts replace the need to meter tokens at the gateway", "Circuit breakers are cheaper than computing monthly invoices", "Monthly review finds a runaway only after the money is gone"]
+    answer: 2
+    why: "Hourly anomaly detection and breakers catch loops within hours, while a monthly review is too late."
 ---
 
 ## The problem

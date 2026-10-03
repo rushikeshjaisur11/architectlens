@@ -12,6 +12,24 @@ banner:
     - [server, "backfill"]
     - [server, "dual-write"]
     - [doc, "drop old"]
+predict:
+  question: "During a dual-write migration, the app crashes between writing the old table and writing the new one. What state results?"
+  options: ["Both tables roll back atomically, so they stay identical", "The two locations are inconsistent until reconciliation catches it", "The old table is deleted since the new write failed"]
+  answer: 1
+  why: "Dual writes are not atomic, which is why a verification and reconciliation step exists."
+check:
+  - q: "Why does gh-ost tail the binary log instead of using triggers like pt-online-schema-change?"
+    options: ["Binary logs are faster than triggers at copying existing rows", "Triggers cannot capture writes made during the batch copy", "Triggers add write overhead and can conflict with other triggers"]
+    answer: 2
+    why: "gh-ost avoids triggers because of their write overhead and conflicts with existing triggers."
+  - q: "A team enables dual writes and declares the migration complete without a backfill. What is wrong?"
+    options: ["Dual writes only cover new data, so historical rows are missing", "Dual writes copy history automatically but too slowly", "The old table must be dropped before dual writes begin"]
+    answer: 0
+    why: "Dual-writing covers only future writes, so history needs an explicit, verified backfill."
+  - q: "Why keep writing to both structures after cutting reads over to the new one?"
+    options: ["To double write throughput on the new structure", "As a safety net until reads have proven the new path", "Because the old structure can never be removed safely"]
+    answer: 1
+    why: "The old path stays as a fallback until the new path has run long enough to build confidence, and is then removed."
 ---
 
 ## Why naive migrations don't scale

@@ -5,6 +5,24 @@ tags: ["file-sync", "storage", "chunking", "deduplication", "design", "metadata"
 sources:
   - "Dropbox Tech Blog, 'Rewriting the heart of our sync engine' (Nucleus, 2020) and 'Inside the Magic Pocket' (2016)"
   - "Muthitacharoen, Chen and Mazieres, 'A Low-bandwidth Network File System' (SOSP 2001), content-defined chunking"
+predict:
+  question: "Alice changes 3% of a 400 MB file split into about 100 chunks of 4 MB, and 3 chunks differ. How much does her client upload?"
+  options: ["All 400 MB, because any change creates a new file version", "About 12 MB, only the 3 chunks whose hashes the server lacks", "About 4 MB, since only one chunk per commit can be uploaded"]
+  answer: 1
+  why: "The client asks for missing hashes and uploads only those, so 3 chunks (12 MB) are sent."
+check:
+  - q: "Why separate the metadata service from block storage?"
+    options: ["Blocks need transactions to stay consistent, while metadata only needs cheap archival storage", "Metadata is small and needs strong consistency and transactions, while blocks are huge and need cheap durable storage", "A single store would work, but separating them is only needed for encryption at rest"]
+    answer: 1
+    why: "The two have opposite needs, so each gets a suited store."
+  - q: "Two devices edit the same file from version 7. What should the server do with the second commit?"
+    options: ["Keep last-writer-wins, since the newest edit is always the one the user wants", "Automatically merge the two versions, which is safe for any file format", "Reject the stale commit and keep both versions, saving the loser as a conflicted copy"]
+    answer: 2
+    why: "Last-writer-wins would silently lose data, and merging is only safe for formats the service understands."
+  - q: "Why must garbage collection prove a block is unreferenced before deleting it?"
+    options: ["Older versions or retention policies may still reference a block, so deletion needs proof it is unused", "Blocks are mutable, so deleting early would corrupt files edited since then", "Cold-tier blocks cannot be deleted until they are promoted back to the hot tier"]
+    answer: 0
+    why: "A block shared across versions or deduplicated files is live until nothing references it."
 ---
 
 ## The problem

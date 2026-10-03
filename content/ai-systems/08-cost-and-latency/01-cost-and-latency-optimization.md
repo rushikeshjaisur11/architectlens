@@ -14,6 +14,24 @@ banner:
     - [cache, "cache"]
     - [model, "right-size"]
     - [client, "fast reply"]
+predict:
+  question: "Two prompts have the same total token count and share the same 2,000-token instructions block. One puts the instructions first and the per-request question last; the other puts the question first. Which benefits from prompt caching?"
+  options: ["Both benefit equally, because the cache keys on the total token count", "Only the instructions-first prompt, because caching reuses a shared prefix", "Only the question-first prompt, because variable content is cached most often"]
+  answer: 1
+  why: "Caching reuses a shared prefix, so putting variable content first defeats it even when the token count is identical."
+check:
+  - q: "Why use a router model rather than always calling the cheapest model?"
+    options: ["Routing keeps most of the cheap-model savings without hurting quality on requests that need a stronger model", "Routing removes the need for an eval set, because the router itself judges quality for each request", "Routing makes the cheap model as capable as a flagship model on the hardest requests it receives"]
+    answer: 0
+    why: "A cheap router classifies difficulty and escalates only hard requests, capturing most savings without sacrificing quality on those."
+  - q: "A team tunes model choice but keeps retrieving a large, untrimmed context. Why might the cheaper model still cost more overall?"
+    options: ["Cheaper models charge more per input token once the context grows beyond a certain size", "A bloated context can cost more than a stronger model given a tight, curated one", "Cheaper models ignore long context, so the team has to retry each request several times"]
+    answer: 1
+    why: "Cost optimization has to cover the whole pipeline, not just model choice in isolation."
+  - q: "Streaming is enabled on a chat product. What does it change about latency?"
+    options: ["It shortens total generation time by sending tokens in parallel across the connection", "It lowers perceived latency by showing output sooner, while total generation time stays the same", "It lowers both total generation time and perceived latency by skipping the decoding step"]
+    answer: 1
+    why: "Decoding is sequential and token by token, so streaming only changes when the user starts seeing output."
 ---
 
 ## Why LLM cost and latency need explicit design attention

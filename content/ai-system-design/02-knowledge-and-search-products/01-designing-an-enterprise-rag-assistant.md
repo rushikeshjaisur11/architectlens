@@ -16,6 +16,24 @@ banner:
     - [shield, "ACL filter"]
     - [db, "retrieve"]
     - [model, "cited answer"]
+predict:
+  question: "An engineer asks about EU data retention. Retrieval returns chunks from policy version 4 (30 days) and an outdated version 2 (90 days). What does the assistant do?"
+  options: ["It refuses to answer because the sources conflict with each other", "It silently uses whichever chunk the reranker scored highest", "It answers 30 days citing version 4 and notes version 2 said 90 days, with dates"]
+  answer: 2
+  why: "The design surfaces conflicting sources with dates rather than silently picking one, so the user sees the current answer and the superseded one."
+check:
+  - q: "Why prefer filtering by permissions inside the search instead of post-filtering retrieved results?"
+    options: ["Post-filtering can return too few results and may leak through scores or snippets", "Post-filtering cannot read the access control list stored on each chunk", "Pre-filtering removes the need to sync permission changes to the index"]
+    answer: 0
+    why: "Dropping forbidden hits after retrieval leaves gaps in the result list and risks leaking through scores or snippets, so filtering inside the search is preferred."
+  - q: "Why not instruct the LLM to avoid mentioning restricted content instead of excluding it at retrieval?"
+    options: ["Instructions are ignored by most models once the prompt holds several chunks", "Citation checks cannot run on any prompt that contains restricted text", "The model must never see it; an instruction cannot guarantee silence"]
+    answer: 2
+    why: "Security is a hard requirement, so restricted text must be excluded before generation; relying on the model to stay quiet is not a control."
+  - q: "Why measure retrieval and generation separately in the golden-set evaluation?"
+    options: ["Generation metrics cannot be computed before retrieval metrics exist", "It shows if a bad answer came from missing chunks or unfaithful text", "Retrieval scores are cheaper to compute, so they can replace generation checks"]
+    answer: 1
+    why: "An end-to-end score hides the failing stage; separate metrics show whether the right chunk was retrieved and whether the answer was faithful to it."
 ---
 
 ## The problem

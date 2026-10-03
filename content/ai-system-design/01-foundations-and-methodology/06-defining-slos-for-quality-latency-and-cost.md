@@ -17,6 +17,24 @@ banner:
     - [server, "latency SLO"]
     - [db, "cost SLO"]
     - [shield, "error budget"]
+predict:
+  question: "A support assistant has a faithfulness SLO of 97 percent of sampled answers at 0.9 or higher. After a prompt change, compliance falls to 94 percent within 36 hours. With burn-rate alerting, what happens?"
+  options: ["Nothing fires until users complain, since 94 percent still looks high", "Every single unfaithful answer pages the on-call engineer", "The burn-rate alert fires, links to the prompt version, and a rollback restores 97 percent"]
+  answer: 2
+  why: "Alerts are on error-budget burn, not single events, and they link to a runbook; rolling back the prompt version restored compliance to 97 percent."
+check:
+  - q: "The assistant meets its aggregate quality SLO but Spanish conversations run at 91 percent compliance. What does this show?"
+    options: ["Aggregates hide failing segments, so objectives need per-language targets", "The aggregate SLO should be raised to cover Spanish traffic", "Spanish quality cannot be measured with the existing judges"]
+    answer: 0
+    why: "Averages hide pain; segment objectives by language, tier and region so a failing market is not masked."
+  - q: "A change improves quality 2 points but doubles cost. Why review quality and cost budgets together?"
+    options: ["Cost budgets only apply to self-hosted models", "Dimensions trade off, so the change must be justified against both budgets", "Quality gains always lower cost through fewer retries"]
+    answer: 1
+    why: "A bigger model raises quality and cost together, so an improvement is judged against every budget it consumes."
+  - q: "Why calibrate LLM judges against human labels and re-calibrate them on a schedule?"
+    options: ["Human labels are cheaper than judge calls", "Judges can only score deterministic checks like schema validity", "Judges drift, and an uncalibrated judge makes quality alerts untrustworthy"]
+    answer: 2
+    why: "Quality SLIs depend on the judge, so its agreement with humans must be tracked and refreshed as the judge drifts."
 ---
 
 ## The problem

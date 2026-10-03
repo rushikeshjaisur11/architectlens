@@ -13,6 +13,24 @@ banner:
     - [doc, "TrueTime"]
     - [db, "Paxos group"]
     - [db, "replica"]
+predict:
+  question: "Spanner's TrueTime uncertainty window grows from a few milliseconds to a much larger value. What happens to commits?"
+  options: ["Every commit waits out the larger window, so write latency grows", "Commits still finish in a few milliseconds and only reads slow", "Spanner drops external consistency so that latency stays flat"]
+  answer: 0
+  why: "Commit-wait waits out the uncertainty interval on every commit, so a looser clock bound directly increases commit latency."
+check:
+  - q: "Why does TrueTime return an interval instead of a single timestamp?"
+    options: ["It hides clock drift so applications never have to see it", "It makes uncertainty explicit so commit-wait can wait it out", "It lets every node agree on the exact time with no waiting"]
+    answer: 1
+    why: "The interval is guaranteed to contain true time, so Spanner can wait out its length and guarantee ordering across datacenters."
+  - q: "Why is Spanner not simply a better version of Dynamo or TAO?"
+    options: ["It beats Dynamo on every workload, so all systems should adopt it", "It avoids the CAP tradeoff, so it carries no cost at all", "It suits workloads needing strong consistency and clock infrastructure"]
+    answer: 2
+    why: "It is a different deliberately engineered point on the same tradeoff, paying commit latency and infrastructure cost for a stronger guarantee."
+  - q: "What does Spanner Omni's software time source imply for commits?"
+    options: ["Looser time bounds mean longer commit-wait and higher latency", "Software clocks keep commit-wait identical to atomic clocks", "Software clocks remove the need for commit-wait entirely"]
+    answer: 0
+    why: "External consistency still needs bounded uncertainty, so cheaper clocks with looser bounds make commit-wait longer."
 ---
 
 ## The problem: wanting both global distribution and strong consistency

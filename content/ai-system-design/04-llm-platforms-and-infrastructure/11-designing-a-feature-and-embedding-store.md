@@ -14,6 +14,24 @@ banner:
     - [server, "pipeline"]
     - [cache, "online store"]
     - [model, "model"]
+predict:
+  question: "A training set joins each labelled impression to the latest feature values instead of values as of the impression time. What happens?"
+  options: ["Training errors out because feature timestamps are missing", "Online reads slow down because the store holds extra history", "The model looks better offline than it is, since labels leak future information"]
+  answer: 2
+  why: "Without as-of joins the features include information from after the label, inflating offline metrics relative to real serving."
+check:
+  - q: "Why use the same transformation code for training and serving?"
+    options: ["It avoids training-serving skew from separate implementations", "It lets on-demand features be precomputed in batch", "It removes the need for a separate online store at serving time"]
+    answer: 0
+    why: "Separate code paths cause skew; guaranteeing equivalence is the point of the store."
+  - q: "Why must vectors from different embedding model versions not be mixed in one similarity search?"
+    options: ["Mixed versions slow down approximate nearest neighbour queries", "A vector is only meaningful relative to the model and version that produced it", "Version tags are required for metadata filters to work"]
+    answer: 1
+    why: "Each vector is tied to its producing model and version, and mixing versions in one index is a listed mistake."
+  - q: "Why avoid building a feature platform before several teams share features?"
+    options: ["Streaming features cannot be added once batch features exist", "Managed stores cannot be adopted later without rewriting definitions", "The store pays off through sharing, so a single consumer gets little back"]
+    answer: 2
+    why: "The lesson advises a minimal registry plus shared code and warns against a platform before there are shared features to serve."
 ---
 
 ## The problem

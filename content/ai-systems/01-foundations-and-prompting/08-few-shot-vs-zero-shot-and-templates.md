@@ -13,6 +13,24 @@ banner:
     - [doc, "examples"]
     - [model, "LLM"]
     - [doc, "answer"]
+predict:
+  question: "A classification prompt has 5 few-shot examples, 4 labeled 'positive'. What is the likely effect on predictions?"
+  options: ["Predictions balance out because the model weights examples equally", "Predictions lean toward 'positive' regardless of the actual input", "Only the first example is used, so the label mix does not matter"]
+  answer: 1
+  why: "The lesson describes majority-label bias: unbalanced example labels push predictions toward the more common class."
+check:
+  - q: "When is few-shot worth its per-call token cost over zero-shot?"
+    options: ["For common tasks like standard summarization or translation", "Whenever you are prototyping and want a quick baseline", "For strict formats, house conventions, or hard-to-describe edge cases"]
+    answer: 2
+    why: "Few-shot earns its cost for unusual formats, house-specific conventions, and edge cases that are easier to show than describe."
+  - q: "A model keeps omitting a required constraint. What does the lesson suggest first?"
+    options: ["State the constraint explicitly, rather than patching with examples", "Add five more examples that all demonstrate the constraint", "Switch to fine-tuning because instructions cannot fix this issue"]
+    answer: 0
+    why: "Examples demonstrate patterns, not patch vague instructions; add the missing constraint first."
+  - q: "Why store few-shot examples in the template rather than hardcoding them inline?"
+    options: ["Inline examples are never read by the model at all", "They can be swapped, A/B tested, or trimmed apart from the instructions", "Templates avoid paying tokens for examples on repeated calls"]
+    answer: 1
+    why: "Keeping examples separate lets you swap, test, and trim them independently of the instruction text."
 ---
 
 ## Zero-shot: instructions alone

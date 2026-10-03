@@ -13,6 +13,24 @@ banner:
     - [server, "presence"]
     - [cache, "TTL store"]
     - [user, "friends"]
+predict:
+  question: "A presence system uses a 45-second heartbeat timeout. A user closes their laptop lid without a clean disconnect. What do contacts see?"
+  options: ["Offline instantly, since the connection table updates at once", "Online until the 45-second timeout lapses with no heartbeat", "Online indefinitely, until the user reopens the application"]
+  answer: 1
+  why: "Presence is a guess from heartbeats, so a silent drop shows as online until the timeout expires."
+check:
+  - q: "Why not shorten the timeout to a few seconds to remove stale 'online' status?"
+    options: ["Clients cannot send heartbeats more often than once a minute", "Shorter timeouts make closed laptops stay online even longer", "Brief network blips, like WiFi switching to cellular, would cause constant flicker"]
+    answer: 2
+    why: "The timeout trades 'looks stale' against 'flickers constantly'."
+  - q: "Why use subscription-based presence fanout instead of broadcasting to all contacts?"
+    options: ["Fanout stays proportional to what is on-screen, not the whole social graph", "Subscriptions let the server skip heartbeat tracking for subscribed users", "Subscribed clients get presence stored durably in the primary database"]
+    answer: 0
+    why: "Broadcasting in a 10,000-member channel is O(n squared), while subscriptions bound it to visible users."
+  - q: "Why can typing indicators be fire-and-forget?"
+    options: ["Retries would reorder messages in the durable message log", "The signal expires in seconds, so losing one is invisible to the user", "Typing events are too large to persist next to the messages"]
+    answer: 1
+    why: "Durability and ordering cost nothing worth paying for a signal designed to be thrown away."
 ---
 
 ## What presence actually means

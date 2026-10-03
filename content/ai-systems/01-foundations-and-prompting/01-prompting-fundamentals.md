@@ -12,6 +12,24 @@ banner:
     - [doc, "context"]
     - [model, "LLM"]
     - [doc, "output"]
+predict:
+  question: "A 60-line system prompt buries the rule 'answer in one sentence' in the middle, followed by a long task. What most likely happens?"
+  options: ["The rule is followed as reliably as if it were stated last", "The rule gets weighted less and may be ignored; move it near the task", "The model stops and asks which rule should take priority"]
+  answer: 1
+  why: "The lesson says instructions buried in the middle of a long prompt are weighted less than ones near the end, so critical constraints belong close to the task."
+check:
+  - q: "A team pastes each request's document into the system prompt. Why is that a poor design?"
+    options: ["It changes every call, which hurts caching and makes prompt versioning harder", "It exceeds the system prompt's size limit, so the document is truncated", "It makes the model treat the document text as trusted instructions"]
+    answer: 0
+    why: "Per-request content belongs in the user message because mixing it into the constant system prompt hurts caching and versioning."
+  - q: "Your pipeline classifies support tickets into 5 categories. Why not add 'think step by step' by default?"
+    options: ["Reasoning text cannot be parsed by downstream code in any format", "It helps on simple tasks but costs tokens, with no real accuracy gain", "It adds latency and tokens, and can talk the model into a wrong answer"]
+    answer: 2
+    why: "For simple classification, chain-of-thought costs latency and tokens and can make the model overthink an obvious answer into an inconsistent one."
+  - q: "A prompt works on your first test input, so you ship it. What is the main risk?"
+    options: ["The model will not remember the test input in later calls", "Edge cases like empty, very long or adversarial input may fail untested", "Prompts that work once are cached and cannot later be changed"]
+    answer: 1
+    why: "A single success is an anecdote; behavior must be evaluated across a representative set including edge cases."
 ---
 
 ## The core mental model

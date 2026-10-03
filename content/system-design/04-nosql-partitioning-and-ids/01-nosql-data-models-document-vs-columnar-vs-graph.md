@@ -12,6 +12,24 @@ banner:
     - [doc, "document"]
     - [db, "columnar"]
     - [db, "graph"]
+predict:
+  question: "A social platform stores each profile with its settings and recent posts as one document. How many fetches does loading the full profile take?"
+  options: ["One document fetch, with no join needed", "Several fetches, one per nested field", "One fetch plus a join against a posts table"]
+  answer: 0
+  why: "Document stores nest related data in a single aggregate, so reading the whole entity is one fetch."
+check:
+  - q: "Why is a columnar database a poor fit for ad-hoc queries across arbitrary columns?"
+    options: ["It cannot store more than one column per row", "Queries must go through the partition key or need extra infrastructure", "Its LSM-Tree makes all reads slower than relational reads"]
+    answer: 1
+    why: "Columnar stores are designed around known partition-key queries, so other access paths are expensive or unsupported."
+  - q: "Why does the lesson say 'NoSQL scales better' is not a coherent reason to choose a database?"
+    options: ["Document databases actually scale worse than relational ones at any size", "Scale comes from a particular write and key-query model your workload may lack", "NoSQL databases cannot be scaled horizontally across machines at all"]
+    answer: 1
+    why: "Columnar scalability stems from its particular write pattern and key-based queries, which may not fit your workload."
+  - q: "Why is 'friends-of-friends who work at company X' better suited to a graph database?"
+    options: ["Graph stores keep relationships as direct pointers, avoiding multi-way joins", "Graph stores hold data in rows, which makes joins unnecessary", "Graph stores compress edges, so they need less disk space"]
+    answer: 0
+    why: "Traversals follow stored edges instead of resolving costly multi-way self-joins that worsen with each hop."
 ---
 
 ## NoSQL isn't one thing — it's several different tradeoffs

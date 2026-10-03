@@ -14,6 +14,24 @@ banner:
     - [shield, "classifier"]
     - [doc, "allow/block"]
     - [user, "appeals"]
+predict:
+  question: "A writing assistant uses a keyword filter that blocks any mention of a serious theme like loss or conflict. Users write fiction. What is the likely result?"
+  options: ["Many legitimate creative requests get blocked, with little real safety benefit gained", "Harmful content is blocked, and legitimate fiction is unaffected since themes aren't keywords", "Fiction passes untouched, but harmful content phrased without flagged words still gets through"]
+  answer: 0
+  why: "Blunt keyword filters over-trigger on innocuous context; the lesson tunes thresholds to clearly disallowed categories instead of any serious theme."
+check:
+  - q: "Why run output moderation in addition to input moderation?"
+    options: ["Output moderation is cheaper than input moderation, so it can replace it in most applications", "A benign-looking input can still lead the model to produce an inappropriate output", "Input moderation can't detect disallowed requests, so only the output check does the real work"]
+    answer: 1
+    why: "Input checks can't catch every case where the model itself generates problematic content from an unremarkable input."
+  - q: "When would you choose an LLM-as-judge over a dedicated moderation classifier?"
+    options: ["When you need to check a product-specific policy that general categories don't map onto, accepting slower, costlier checks", "When you want a faster, cheaper check on every request, since judges outperform classifiers on latency", "When the policy is covered by standard categories, because judges are more deterministic than classifiers"]
+    answer: 0
+    why: "Judges are more flexible for custom rules but slower, costlier and carry judge-reliability caveats, so classifiers handle the bulk."
+  - q: "A model correctly refuses a request, but users complain the product feels hostile. What does the lesson suggest?"
+    options: ["Lower the moderation threshold, since the refusal itself was probably a false positive", "Redesign how the refusal is communicated, since deciding whether to refuse and how to phrase it are separate", "Remove explanations from refusals, because explaining the boundary helps attackers probe it"]
+    answer: 1
+    why: "Whether to refuse is a safety decision, while how to communicate it is a product design decision that should explain briefly and redirect."
 ---
 
 ## Why output safety is a separate concern from prompt injection

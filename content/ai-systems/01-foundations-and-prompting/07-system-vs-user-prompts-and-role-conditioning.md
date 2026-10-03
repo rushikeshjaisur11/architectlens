@@ -12,6 +12,24 @@ banner:
     - [user, "user turn"]
     - [model, "LLM"]
     - [shield, "role"]
+predict:
+  question: "A developer puts the rule 'never reveal pricing' only in a user-turn template. What risk does the lesson identify?"
+  options: ["The rule is billed at a higher rate than system-level rules", "That content sits at the same trust level as arbitrary user input", "The model cannot read rules placed inside any user message"]
+  answer: 1
+  why: "Hard constraints in a user-turn template are fragile because they sit at the same trust level as user input."
+check:
+  - q: "A team treats the instruction hierarchy as a full defense against prompt injection. What is wrong with that?"
+    options: ["Hierarchy is a trained tendency, so untrusted input still needs guardrails", "Hierarchy only applies to the tool role, not to user messages", "Hierarchy is enforced by the API, but only for developer roles"]
+    answer: 0
+    why: "The hierarchy reduces but does not eliminate override risk; it is a trained tendency, not a hard guarantee."
+  - q: "Why is 'You are a helpful assistant' a weak persona?"
+    options: ["Personas must always name a job title to be accepted by the API", "Persona text is ignored whenever a system prompt is also set", "Nearly the whole training distribution matches it, so little is narrowed"]
+    answer: 2
+    why: "A vague role adds almost no conditioning signal because almost everything matches 'helpful assistant'."
+  - q: "Why keep a document to summarize out of the system prompt?"
+    options: ["The system prompt cannot hold more than a few hundred tokens", "Per-request data there breaks caching and blurs separate versioning", "Documents in the system prompt are treated as lower-trust content"]
+    answer: 1
+    why: "Stuffing per-request documents into the system prompt breaks prompt caching and conflates content that should be versioned independently."
 ---
 
 ## Three layers, not one

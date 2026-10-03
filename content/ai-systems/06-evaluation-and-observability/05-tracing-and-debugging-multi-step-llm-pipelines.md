@@ -13,6 +13,24 @@ banner:
     - [queue, "spans"]
     - [doc, "trace tree"]
     - [client, "debug"]
+predict:
+  question: "A support agent quotes a wrong refund. The trace shows correct order data, an outdated policy document from the policy tool, and sound reasoning from that policy. Where is the defect?"
+  options: ["In the agent's prompt, which should be tuned for arithmetic", "In the model choice, since reasoning must have been faulty", "In the order lookup, which returned data too late", "In the policy tool's data freshness, not the agent's reasoning"]
+  answer: 3
+  why: "The agent reasoned correctly from the stale policy it was shown, so the fix is refreshing the tool's data source."
+check:
+  - q: "Why store traces as a tree of nested spans rather than a flat log stream?"
+    options: ["Trees compress better, so the trace takes less storage than flat logs", "Trees allow dropping the trace ID, since nesting already links the steps", "Flat logs cannot record timing, whereas spans always can", "Trees mirror execution, so you can drill into the failing branch directly"]
+    answer: 3
+    why: "A tree mirroring root request, retrieval, generation and tool spans lets you locate the failing branch directly."
+  - q: "What is the cost of truncating logged prompts and tool results to save space?"
+    options: ["The exact detail explaining a subtle bug is often what gets cut, defeating the trace", "Truncation changes the model's output, because logs feed back into the context", "Truncation is harmless, as only the first token of a prompt affects the output", "It raises latency, since truncated logs must be re-fetched at query time"]
+    answer: 0
+    why: "Aggressive truncation can remove precisely the detail needed to diagnose subtle issues."
+  - q: "Why does a trace need to rule out retrieval and tool failures before you tune the prompt?"
+    options: ["Prompt tuning is impossible once a trace exists", "Retrieval or tool faults can look like reasoning faults, so you tune the wrong part", "Tool failures are always fixed automatically by retries inside the agent", "Reasoning failures never occur when retrieval returned relevant chunks"]
+    answer: 1
+    why: "Without ruling out other categories first, it is easy to misdiagnose a retrieval or tool problem as a prompting problem and waste effort."
 ---
 
 ## Why multi-step LLM systems need tracing, not just logging

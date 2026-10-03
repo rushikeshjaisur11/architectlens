@@ -15,6 +15,24 @@ banner:
     - [lb, "federate"]
     - [db, "connectors"]
     - [model, "copilot"]
+predict:
+  question: "In the Acme renewal question, the CRM record and a chat message disagree on the discount. What does the copilot do?"
+  options: ["It uses the CRM value alone and hides the chat message", "It reports the disagreement with citations to each source", "It averages the two values into one confident answer"]
+  answer: 1
+  why: "Conflicting sources are shown with dates and authors rather than blended, so the copilot notes the CRM and chat disagree."
+check:
+  - q: "When would you add federated search (querying the source live) alongside crawl-based indexing?"
+    options: ["When the source is small enough to copy quickly", "When the system supports delta change feeds with no rate limits", "When copying is not allowed or content changes too fast to index"]
+    answer: 2
+    why: "Federated search suits sources where copying is prohibited or content moves faster than sync, and results are blended by relevance."
+  - q: "Why add a query-time permission check against the source for sensitive repositories, despite indexed ACLs?"
+    options: ["It catches stale ACLs, at the cost of extra latency", "It removes the need for group membership resolution", "It speeds up retrieval by skipping the ACL filter"]
+    answer: 0
+    why: "Indexed ACLs can lag behind revocations; verifying against the source catches this, which is why it is used for sensitive sources despite latency."
+  - q: "Why is denying access the safe default when a permission change is in doubt?"
+    options: ["Denied results always improve the relevance ranking for other users", "A wrongly shown file is a leak; a wrongly hidden one is a miss", "Denial lets the audit store skip logging the request entirely"]
+    answer: 1
+    why: "Showing content a user cannot open breaks the central requirement, whereas hiding a result is a recoverable quality miss."
 ---
 
 ## The problem

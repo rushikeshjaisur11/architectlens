@@ -16,6 +16,24 @@ banner:
     - [user, "request"]
     - [model, "small"]
     - [model, "large"]
+predict:
+  question: "Mixtral 8x7B has about 47B total parameters and activates 2 of 8 experts (about 13B) per token. What sets GPU memory and what sets per-token compute?"
+  options: ["Memory tracks the 13B active parameters, and compute tracks all 47B", "Memory must hold all 47B parameters, while compute tracks the 13B active", "Both track the 13B active parameters, since idle experts need no residence"]
+  answer: 1
+  why: "Any expert might be needed, so all must be resident, while only the active ones run per token."
+check:
+  - q: "What is the core risk of deploying a cascade?"
+    options: ["Under-escalation ships bad answers cheaply, which can cost more than the savings", "Cascades always raise cost, since the large model runs on every query", "Confidence signals cannot be measured, so thresholds are always arbitrary"]
+    answer: 0
+    why: "The lesson says false negatives are the core trade-off, so measure escalation miss rate and not only aggregate cost."
+  - q: "When can a sequential cascade be slower than calling the large model directly?"
+    options: ["When the small model is faster, since its output must be reformatted", "When it escalates often, since small-model time and wait are added before the large call", "When the router is learned, since learned routers always add a second model call"]
+    answer: 1
+    why: "Escalated queries pay for both calls in sequence, so p99 can worsen without parallel calls or aggressive thresholds."
+  - q: "A team expects an MoE model to need less VRAM than a dense model of equal quality. Why is this wrong?"
+    options: ["MoE models store each expert at higher precision, which raises the footprint", "The gating network is trained jointly, so it adds the memory of a full extra model", "Routing is data-dependent, so all experts must stay resident even if few run per token"]
+    answer: 2
+    why: "Inference cost tracks active parameters, but memory must hold every expert."
 ---
 
 ## Two different problems called "routing"

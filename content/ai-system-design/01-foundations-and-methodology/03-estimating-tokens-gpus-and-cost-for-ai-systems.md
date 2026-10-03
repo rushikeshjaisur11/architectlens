@@ -16,6 +16,24 @@ banner:
     - [doc, "tokens"]
     - [gpu, "GPUs"]
     - [doc, "monthly cost"]
+predict:
+  question: "An assistant peaks at 5 requests per second with 300 output tokens each, and one GPU node sustains 3,000 output tokens per second at the latency target. What does this imply for self-hosting?"
+  options: ["Demand is only 1,500 tokens per second, so fixed GPU cost dominates and the API wins", "Demand exceeds one node, so the fleet needs at least three nodes plus spares", "Self-hosting is cheaper here because the token volume is low and GPUs are cheap"]
+  answer: 0
+  why: "5 times 300 is 1,500 output tokens per second, within one node, so the fixed GPU cost dominates rather than volume and the API is likely cheaper."
+check:
+  - q: "Why size a self-hosted fleet from measured benchmarks rather than from peak FLOPs or a guess?"
+    options: ["Peak FLOPs are always lower than what the hardware delivers", "Throughput varies several-fold with quantization, batching and sequence lengths", "Benchmarks are required by GPU rental providers for billing"]
+    answer: 1
+    why: "Real goodput depends on quantization, batching and sequence lengths, so only a measurement for your model gives a trustworthy fleet size."
+  - q: "A 70B model in 8-bit is about 70 GB and the GPU has 80 GB. Why is one GPU still not enough?"
+    options: ["8-bit weights must be stored twice for decoding", "The KV cache needs memory too, leaving little room for a useful batch", "Tensor parallelism is mandatory for any model above 7B"]
+    answer: 1
+    why: "The weights nearly fill the card, so the KV cache for concurrent sequences cannot fit, which forces tensor parallelism across GPUs."
+  - q: "In the cached-prefix Sonnet example, caching cuts the cost, yet output is still the largest line. Why?"
+    options: ["Output costs about 5x input per token and caching never discounts it", "Cached tokens are billed at the same per-token price as output tokens", "Output tokens are always more numerous than input tokens in a turn"]
+    answer: 0
+    why: "Caching only discounts input; output at 5x the per-token price, 400 tokens in the example, remains the dominant cost."
 ---
 
 ## Why estimate

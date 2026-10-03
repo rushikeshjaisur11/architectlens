@@ -12,6 +12,24 @@ banner:
     - [doc, "GenAI spans"]
     - [queue, "collector"]
     - [client, "backend"]
+predict:
+  question: "A request takes 14 s against a 6 s target. The trace shows retrieval 0.4 s, model call 2.1 s, CRM tool 7.8 s, second model call 1.9 s, final answer 1.8 s. Where should the team look first?"
+  options: ["The first model call, because model calls dominate latency", "The CRM tool call, the largest single span, and its output size", "The retrieval step, since it runs before everything else", "The final answer step, because users notice it most"]
+  answer: 1
+  why: "The CRM span is 7.8 s of 14 s, and its large output also fed 38,000 tokens into the second call."
+check:
+  - q: "Why instrument with OpenTelemetry even though every gen_ai.* attribute is still at Development status?"
+    options: ["Development status means the attributes are frozen and guaranteed not to change", "The alternative is lock-in to one vendor's schema, and an adapter makes renames cheap", "Stable status is not required, so no adapter module is ever needed", "OTel is the only way to capture token counts for any provider"]
+    answer: 1
+    why: "The lesson recommends OTel for vendor neutrality while wrapping attribute names in one adapter so a rename costs one edit."
+  - q: "Why not capture full prompt and completion text by default in traces?"
+    options: ["It is highly sensitive, so gate it behind a flag with redaction", "Prompt text cannot be attached to spans, only token counts can", "Capturing content makes the model's answers slower to generate", "Metadata alone is useless, so content is only needed for cost tracking"]
+    answer: 0
+    why: "Prompts hold customer messages, documents and secrets; the lesson says to gate and redact content while always capturing metadata."
+  - q: "Why propagate trace context across services and agents rather than tracing each model call separately?"
+    options: ["Separate traces are required for sampling to work", "Context headers are what let the backend compute token cost", "Without shared ids, multi-agent flows fragment into disconnected traces", "Propagation removes the need for any child spans per tool call"]
+    answer: 2
+    why: "Propagating trace and span ids lets a multi-agent flow form one trace so cost and latency can be broken down."
 ---
 
 ## Why a standard helps

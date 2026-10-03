@@ -12,6 +12,24 @@ banner:
     - [lb, "coordinator"]
     - [db, "partitions"]
     - [doc, "replicas"]
+predict:
+  question: "With N=3, W=2 and R=2, a client writes a key successfully and another client then reads it. What does the read see?"
+  options: ["Possibly stale data, because the third replica may not have the write yet", "The latest write, because any read quorum overlaps any write quorum in at least one node", "Possibly stale data, because leaderless stores cannot offer strong consistency"]
+  answer: 1
+  why: "W + R = 4 > N = 3, so the two quorums must share a node holding the latest write. That gives strong consistency even in a leaderless, partition-tolerant system."
+check:
+  - q: "Why use consistent hashing rather than hash(key) % N for partitioning?"
+    options: ["Modulo hashing spreads keys unevenly, while consistent hashing balances them perfectly", "Adding or removing a node avoids reshuffling most of the data", "Consistent hashing removes the need to replicate each key to many nodes"]
+    answer: 1
+    why: "Adding or removing a node changes N under naive modulo and moves most keys. Consistent hashing avoids that massive reshuffle, which a growing store needs."
+  - q: "Why does the lesson favour an LSM-Tree over a B-Tree for each node's storage engine?"
+    options: ["Write-heavy point lookups suit the sequential-write throughput of an LSM-Tree", "Range-scan-heavy reads suit the sorted on-disk files of an LSM-Tree", "B-Trees cannot store key-value pairs, so LSM is the only choice"]
+    answer: 0
+    why: "The dominant cost is write volume and get(key) rarely needs a range scan. That favours LSM sequential writes over a B-Tree's more balanced but lower write ceiling."
+  - q: "A replica is unreachable during a write. Why use hinted handoff instead of rejecting the write?"
+    options: ["Rejecting writes is safer, and handoff is only an optimisation for reads", "Handoff guarantees that every replica is consistent before the write returns", "A reachable node holds the write until the original recovers, keeping the store always writable"]
+    answer: 2
+    why: "Hinted handoff serves the always-writable requirement from Step 1. A different node holds the write temporarily and hands it off after recovery."
 ---
 
 ## Why this is a strong synthesis exercise

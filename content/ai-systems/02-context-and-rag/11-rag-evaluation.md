@@ -14,6 +14,24 @@ banner:
     - [db, "retrieval"]
     - [model, "generation"]
     - [shield, "judge"]
+predict:
+  question: "An eval shows faithfulness of 0.95 but context recall of 0.4. Where should the team focus?"
+  options: ["Retrieval: chunking, indexing or retrieval depth, since needed context is missing", "The generation prompt, since low recall means the model ignored the context", "The judge model, since faithfulness and recall should always move together"]
+  answer: 0
+  why: "Low recall means the retriever misses needed information regardless of what the generator does with what it got."
+check:
+  - q: "A team skips a golden set because reference-free metrics exist. What gap remains?"
+    options: ["Faithfulness cannot be computed without a reference answer to compare", "Recall failures go uncaught, because completeness needs a reference answer", "Answer relevancy depends on a reference answer to estimate synthetic questions"]
+    answer: 1
+    why: "Reference-free metrics catch groundedness and relevance but not missing information the answer never mentions."
+  - q: "How should LLM-as-judge scores be used?"
+    options: ["As absolute quality certificates, since the judge is validated once at launch", "As exact numbers, so longer answers should score higher in every comparison", "Comparatively, for regression tests, with the judge checked against human ratings"]
+    answer: 2
+    why: "Judge scores are noisy and biased, such as toward longer or more confident answers, so treat them as directional."
+  - q: "A pipeline was evaluated at launch and never again. What risk does that carry?"
+    options: ["Corpus drift, embedding updates and chunking changes silently shift retrieval quality", "The golden set expires after launch, so its labels are no longer valid", "Reference-free metrics stop working once the pipeline leaves staging"]
+    answer: 0
+    why: "Eval should run as a regression check on every pipeline change, not as one-time validation."
 ---
 
 ## Why RAG evaluation needs its own metrics

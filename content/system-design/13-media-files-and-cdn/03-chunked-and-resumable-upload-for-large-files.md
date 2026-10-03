@@ -13,6 +13,24 @@ banner:
     - [server, "upload API"]
     - [db, "chunk store"]
     - [doc, "assemble"]
+predict:
+  question: "A phone uploads a 2 GB video as 128 parts of 16 MB. The app is killed after part 60 completes. What happens on relaunch?"
+  options: ["All 2 GB is resent, because the session is lost when the app dies", "Only parts 61 to 128 are sent, skipping the 960 MB already stored", "Parts 1 to 60 are resent, because only the final object is confirmed"]
+  answer: 1
+  why: "The server remembers which parts it holds, so the client asks for completed parts and resumes at 61."
+check:
+  - q: "Why not use the smallest possible chunks for flaky mobile networks?"
+    options: ["Small chunks cannot be uploaded in parallel over one connection", "They add requests and metadata, and stores cap part counts (S3: 10,000)", "Small chunks lose their checksums, so integrity cannot be verified"]
+    answer: 1
+    why: "Tiny chunks are cheap to retry but multiply overhead and can hit the part-count limit for large files."
+  - q: "Why issue pre-signed URLs instead of proxying upload bytes through app servers?"
+    options: ["Heavy traffic bypasses your fleet; only initiate and complete calls hit it", "Pre-signed URLs let the client skip authorization on the storage side", "Proxying corrupts checksums because app servers rewrite the part bytes"]
+    answer: 0
+    why: "The API authorizes, then the client uploads straight to storage, saving the fleet's bandwidth and CPU."
+  - q: "Why keep upload session metadata in a shared database instead of one server's memory?"
+    options: ["Memory is too small to hold the part list for very large files", "Shared databases verify part checksums faster than memory can", "A restart or different server would lose the part list, breaking resume"]
+    answer: 2
+    why: "Resumability needs durable session state; in-memory state vanishes with the server."
 ---
 
 ## Why one big request fails

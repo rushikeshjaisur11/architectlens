@@ -17,6 +17,24 @@ banner:
     - [cloud, "buy API"]
     - [gpu, "self-host"]
     - [shield, "risk"]
+predict:
+  question: "A note summariser costs about $9,000 a month via API at 200,000 notes, versus about $14,000 in GPUs plus two engineers to self-host. What happens to the analysis when volume reaches 3 million notes a month?"
+  options: ["It flips: bulk work moves to self-hosted inference, with a hosted model for hard cases", "It stays with the API because self-hosting never beats per-token pricing", "It flips fully to self-hosting with no hosted fallback kept"]
+  answer: 0
+  why: "Per-token API cost scales with volume while self-hosting is mostly fixed, so at 3 million notes the bulk moves in-house while a hosted frontier model stays for hard cases and fallback."
+check:
+  - q: "Why keep an internal gateway and a quarterly evaluation of three models on your own tasks?"
+    options: ["It guarantees the lowest sticker price from each vendor", "It makes switching a measured decision instead of a rewrite", "It lets the vendor handle data retention on your behalf"]
+    answer: 1
+    why: "A thin abstraction plus continuous evaluation on your tasks means a vendor change becomes configuration backed by data."
+  - q: "Why compare total cost of ownership rather than per-token sticker prices?"
+    options: ["Sticker prices are rarely published by the vendors", "Self-hosting has no GPU cost once the model is downloaded", "Engineers, on-call and switching cost change the real comparison"]
+    answer: 2
+    why: "Self-hosting adds engineers, on-call, evaluation and safety work, and switching cost, so list price alone misleads."
+  - q: "Why keep a fine-tuned open-weight model warm on a small cluster even though APIs win on cost?"
+    options: ["It serves a hospital that demands on-premises and acts as an exit path", "It lowers the API price automatically through volume tiers", "It removes the need for a data-processing agreement"]
+    answer: 0
+    why: "An open-weight option covers customers needing private deployment and doubles as an exit path and negotiating lever."
 ---
 
 ## The problem

@@ -13,6 +13,24 @@ banner:
     - [server, "bigger server"]
     - [lb, "more servers"]
     - [db, "shared state"]
+predict:
+  question: "A team shards its database across 8 nodes by user ID, but one celebrity user generates most of the traffic. What happens?"
+  options: ["Load spreads evenly, since sharding adds capacity on all 8 nodes", "The celebrity's node is overloaded while the other nodes sit mostly idle", "The load balancer splits the celebrity's data across the other nodes"]
+  answer: 1
+  why: "A hot shard key routes a disproportionate share of traffic to one node, so adding nodes does not help unless the key distributes load."
+check:
+  - q: "A stateful database keeps growing and a larger instance is still available. What does the lesson favor?"
+    options: ["Stay vertical until cost or the ceiling forces sharding, which is hard to undo", "Shard early, because sharding later is a cheap and reversible change", "Go horizontal now, because it gives databases free fault tolerance"]
+    answer: 0
+    why: "Sharding a database is a one-way commitment with permanent query complexity, so stateful tiers should delay it until vertical scaling truly runs out."
+  - q: "Why is a stateless web tier scaled differently from a database?"
+    options: ["Stateless tiers need consensus protocols, while databases just clone behind a balancer", "Stateless tiers hit a hard ceiling, so only horizontal scaling can work for them", "Cloning behind a balancer is nearly free, while databases need sharding or replication"]
+    answer: 2
+    why: "A stateless tier scales out trivially behind a load balancer; state must be partitioned or replicated, bringing consistency trade-offs."
+  - q: "A team claims its horizontally scaled system has no single point of failure. What does the lesson warn?"
+    options: ["Adding more nodes always removes single points, regardless of the replication scheme", "A badly sharded system without replication still has a single point of failure per shard", "Fault tolerance only comes from vertical scaling onto larger, more reliable instances"]
+    answer: 1
+    why: "Redundancy only holds if the partitioning and replication scheme is correct; an unreplicated shard still takes its data down when it fails."
 ---
 
 ## Two axes of growth

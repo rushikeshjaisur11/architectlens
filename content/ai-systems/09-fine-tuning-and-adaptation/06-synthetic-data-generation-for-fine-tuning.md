@@ -15,6 +15,24 @@ banner:
     - [doc, "synthetic"]
     - [shield, "filter"]
     - [gpu, "train"]
+predict:
+  question: "Several successive model generations are trained purely on each other's outputs with no fresh human data. What happens?"
+  options: ["The output distribution narrows and tail behaviors are lost", "Quality compounds upward since each generation is stronger", "Nothing, because errors cancel out across generations"]
+  answer: 0
+  why: "This is model collapse: errors and distributional narrowing compound each generation."
+check:
+  - q: "Why does training on a teacher's step-by-step explanations beat training on final answers alone?"
+    options: ["Final answers transfer better because explanations add noise", "The target learns how to reach an answer, not just what it looks like", "Both transfer equally since the target sees the same answers"]
+    answer: 1
+    why: "Orca showed explanation traces transfer reasoning capability far more effectively than imitating outputs."
+  - q: "Why spot-check by hand when an LLM judge filters your synthetic data?"
+    options: ["A same-family judge shares the generator's blind spots", "A same-family judge is stricter because it knows the style", "Judge filtering makes diversity filtering unnecessary"]
+    answer: 0
+    why: "Automated filters from the same model family miss the same errors, so a manual sample is needed."
+  - q: "What is the constraint on distilling training data from a commercial model's API?"
+    options: ["Anything the model can generate is allowed for training", "It is restricted only for pretraining, never for fine-tuning", "Provider terms often restrict using outputs to train other models"]
+    answer: 2
+    why: "Being able to generate data is not the same as being allowed to train on it; terms of service are a real constraint."
 ---
 
 ## Why synthetic data

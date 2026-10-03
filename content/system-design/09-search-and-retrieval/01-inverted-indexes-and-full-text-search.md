@@ -12,6 +12,24 @@ banner:
     - [server, "tokenize"]
     - [db, "postings"]
     - [user, "query"]
+predict:
+  question: "A search for \"fast reliable database\" looks up each term's document list. Document A contains \"fast\" and \"database\" but not \"reliable\". Is A returned?"
+  options: ["Yes, under both AND-style and OR-style matching of the terms", "Only under OR-style matching, because AND intersects the lists", "No, under either style, because a missing term always disqualifies"]
+  answer: 1
+  why: "AND-style matching intersects the per-term document lists, so A drops out for lacking \"reliable\". OR-style matching unions them, so A is kept."
+check:
+  - q: "Users of a docs site type \"how do I log a user in\", but the right page only says \"authenticate\". Why add vector search to the BM25 index?"
+    options: ["BM25 cannot weigh term frequency, so vectors must replace its scoring", "Keyword matching misses pages that share meaning but not words", "Vector lookups are faster than inverted lookups for exact API names"]
+    answer: 1
+    why: "A pure keyword index would miss the page entirely because no query term appears in it. Semantic matching catches the conceptual match, and hybrid search merges both."
+  - q: "Why is `LIKE '%term%'` on a database column not a substitute for an inverted-index search?"
+    options: ["It can only match whole-word values, so partial text is never found", "It ranks results by relevance, but cannot ignore letter case", "It scans every row's text per query with no ranking, and slows with data"]
+    answer: 2
+    why: "The inverted index is a direct term lookup, while LIKE scans all text on every query and gives no relevance ranking. It gets untenably slow as data grows."
+  - q: "A medical search product tunes its stemmer aggressively. What is the main risk?"
+    options: ["Distinct terms like \"acute\" and \"chronic\" can get conflated, hurting precision", "Fewer word variants match, so recall drops below an unstemmed index", "The index grows larger because every word form is stored separately"]
+    answer: 0
+    why: "Stemming trades precision for recall, and an overzealous stemmer can merge unrelated words sharing a root. In domains where exact terms matter, that is harmful."
 ---
 
 ## Why a database index doesn't solve full-text search

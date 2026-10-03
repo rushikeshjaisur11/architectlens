@@ -7,6 +7,24 @@ sources:
   - "Netflix Tech Blog on experimentation platforms"
   - "OpenAI/Anthropic API usage and evaluation documentation"
   - "Experimentation guidance, 2026 (secondary: Statsig, Datadog LLM Observability docs, Optimizely; arXiv 2606.18750)"
+predict:
+  question: "A team randomizes an LLM chat feature per request instead of per user. What happens to a single user's session?"
+  options: ["Nothing, since the average effect is unchanged", "Each user sees only the treatment, which raises power", "They may see inconsistent prompt styles turn to turn, confounding metrics", "The test becomes shadow mode, so no user sees the variants"]
+  answer: 2
+  why: "Per-request randomization produces inconsistent behavior across a session, so randomize by user or session unless the test is request-scoped."
+check:
+  - q: "Why track latency and cost per request as guardrail metrics even when they are not the primary metric?"
+    options: ["Guardrails replace the primary metric whenever they move", "A verbose prompt can win the primary metric while silently doubling cost", "Latency and cost are the only metrics that stay stable under LLM noise", "Guardrails are needed only for shadow mode, not for live A/B tests"]
+    answer: 1
+    why: "The lesson warns that a verbose prompt can win on the primary metric while quietly doubling cost and latency."
+  - q: "Why run offline evals before an online A/B test rather than going straight to users?"
+    options: ["Offline evals cheaply disqualify broken variants, so real users are not wasted on them", "Offline evals produce the behavioral outcomes that A/B tests only estimate", "A/B tests cannot run unless a golden set exists in the same repository", "Offline results can replace the online test once the judge agrees with itself"]
+    answer: 0
+    why: "Skipping offline filtering wastes real user exposure on variants a cheap golden-set run would already have rejected."
+  - q: "Why is stopping an LLM A/B test the moment significance appears a problem?"
+    options: ["Early stopping lowers the sample size below the golden-set minimum", "Peeking is only a problem at nonzero temperature", "Significance can only be computed after novelty effects have been removed by hand", "Peeking inflates the false-positive rate, so use a pre-registered size or sequential method"]
+    answer: 3
+    why: "Ad hoc peeking inflates false positives; the lesson recommends pre-registered sample sizes or always-valid p-values."
 ---
 
 ## Why online testing is still necessary

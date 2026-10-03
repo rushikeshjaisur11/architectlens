@@ -6,6 +6,24 @@ sources:
   - "Ghemawat, Gobioff and Leung, 'The Google File System' (SOSP 2003)"
   - "Shvachko, Kuang, Radia and Chansler, 'The Hadoop Distributed File System' (MSST 2010)"
   - "Apache Hadoop documentation: HDFS architecture, erasure coding and NameNode high availability, hadoop.apache.org"
+predict:
+  question: "A cluster holds 100 million small files, each only a few KB. What is the main problem for the NameNode?"
+  options: ["Almost no memory is used, because metadata size follows file size and these files are tiny", "Roughly 100 MB of heap, because only block locations are kept in memory", "Tens of gigabytes of heap, because each file costs about 150 bytes regardless of its size"]
+  answer: 2
+  why: "Each file, directory and block costs roughly 150 bytes of NameNode memory. So 100 million files consume tens of gigabytes however small they are."
+check:
+  - q: "Why do clients read data directly from data servers instead of through the metadata server?"
+    options: ["Keeping it out of the data path avoids a throughput bottleneck", "Data servers hold the only copy of each file namespace entry", "It lets the metadata server verify checksums for every read"]
+    answer: 0
+    why: "The client only asks the metadata server where a block lives. Bulk data flows between client and data servers, so one metadata machine does not cap throughput."
+  - q: "Why does HDFS put the second and third replicas on the same remote rack?"
+    options: ["All three replicas should sit on different racks for the strongest survival", "All three replicas should sit on one rack to avoid cross-rack write traffic", "It balances write bandwidth against surviving a rack failure"]
+    answer: 2
+    why: "One replica is local, the other two share a different rack. That limits cross-rack write traffic yet still survives losing the writer's rack."
+  - q: "Which data should be erasure coded, and why?"
+    options: ["Hot data, because 50% overhead matters most where reads are frequent", "Cold data, because reads and reconstruction cost extra network and CPU", "Any data, because erasure coding has no read-time cost over replication"]
+    answer: 1
+    why: "Erasure coding cuts storage from 3x to 1.5x but costs network and CPU on reads and reconstruction. Doing it on hot data pays that cost on every read."
 ---
 
 ## The problem

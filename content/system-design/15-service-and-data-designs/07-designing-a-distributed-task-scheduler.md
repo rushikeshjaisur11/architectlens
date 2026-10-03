@@ -6,6 +6,24 @@ sources:
   - "Public documentation of task-queue systems such as Celery, Sidekiq and Amazon SQS (visibility timeout model)"
   - "Kleppmann, Designing Data-Intensive Applications (2017), chapters on batch processing and message brokers"
   - "Google SRE Book, chapter on distributed periodic scheduling"
+predict:
+  question: "A worker leases a task for 60 seconds, then crashes 10 seconds in without acknowledging. What happens?"
+  options: ["The task is lost, because the worker removed it from the queue when it took it", "The task is retried immediately, because the scheduler detects the crash at once", "The lease expires at 60 seconds and the task becomes available to another worker"]
+  answer: 2
+  why: "A leased task is not removed; it is marked leased until its deadline. After expiry it returns to the queue, giving at-least-once execution."
+check:
+  - q: "Why must tasks be idempotent in this design?"
+    options: ["Idempotency lets the scheduler skip leases and worker heartbeats entirely", "Exactly-once is achievable only when a dead-letter queue is present", "A lost ack can cause a rerun; exactly-once is unachievable across failures"]
+    answer: 2
+    why: "A worker may finish but its ack get lost, so the task runs again. Idempotency keys or upserts make the second run harmless."
+  - q: "Why have long-running tasks heartbeat to extend their lease?"
+    options: ["A slow healthy worker is not mistaken for a dead one", "Heartbeats make each task execute exactly once", "Heartbeats let failed tasks bypass the dead-letter queue"]
+    answer: 0
+    why: "Without heartbeats a slow worker's lease expires and another worker starts the same task. Heartbeats separate slow from dead."
+  - q: "Why use separate priority queues rather than strict priority on one queue?"
+    options: ["Strict priority makes high-priority work slower than separate queues", "A steady stream of urgent work could block lower priorities indefinitely", "Separate queues guarantee exactly-once delivery per priority"]
+    answer: 1
+    why: "Pure strict priority starves everything else. Workers poll high first but reserve some capacity for low."
 ---
 
 ## The problem

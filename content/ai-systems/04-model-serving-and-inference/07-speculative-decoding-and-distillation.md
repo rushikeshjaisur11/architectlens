@@ -12,6 +12,24 @@ banner:
     - [model, "target model"]
     - [shield, "verify"]
     - [doc, "tokens"]
+predict:
+  question: "A draft model proposes 5 tokens. The target verifies in one forward pass; the first 3 match but the 4th diverges. What happens?"
+  options: ["The whole draft is discarded and the target generates all 5 tokens one by one", "All 5 tokens are kept, since the output distribution is statistically identical anyway", "The first 3 are accepted, the target's own token replaces the 4th, and drafting resumes there"]
+  answer: 2
+  why: "Matching tokens are accepted for free, and at the divergence the target's own token is used and drafting restarts from that point."
+check:
+  - q: "Where does speculative decoding give the smallest speedup?"
+    options: ["Open-ended creative generation, where the draft's guesses often diverge from the target", "Code completion, where boilerplate makes several tokens predictable in a row", "Structured output, where formats constrain the likely next tokens"]
+    answer: 0
+    why: "The benefit depends on the draft's match rate, which is lower for unpredictable text."
+  - q: "A student model is distilled with no narrow target task. What is the likely surprise?"
+    options: ["It beats the teacher on rare tasks, since distillation adds capability", "It underperforms the teacher broadly, since distillation trades generality for efficiency", "It is no cheaper to serve, since it still needs the teacher at inference"]
+    answer: 1
+    why: "Distillation works best with a well-defined target distribution and a student that keeps quality only there."
+  - q: "Why is choosing between distillation and speculative decoding a false choice?"
+    options: ["Both change the deployed model, so using either one makes the other redundant", "Speculative decoding only works on undistilled models, so they cannot be combined", "One changes which model is deployed and the other speeds that model's decoding, so they stack"]
+    answer: 2
+    why: "Distillation is model-level and speculative decoding is serving-level, and the code-completion example combines both."
 ---
 
 ## Two different problems, two different techniques

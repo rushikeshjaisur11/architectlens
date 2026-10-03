@@ -6,6 +6,24 @@ sources:
   - "Burrows, 'The Chubby Lock Service for Loosely-Coupled Distributed Systems' (Google, OSDI 2006)"
   - "Kleppmann, 'How to do distributed locking' (2016) and Designing Data-Intensive Applications (2017), fencing tokens"
   - "Apache ZooKeeper and etcd documentation on locks, leases and ephemeral nodes"
+predict:
+  question: "Client A holds a lock with a 30-second lease and a fencing token of 33. It freezes for 40 seconds, B acquires with token 34 and writes, then A wakes and writes. What happens to A's write?"
+  options: ["It is rejected, because the resource has already seen token 34 and refuses lower tokens", "It succeeds, because A checked the lock before it froze", "It succeeds, but B's write is then rolled back by the lock service"]
+  answer: 0
+  why: "The resource rejects any token lower than the highest it has seen. The safety check lives in the resource, which is the only party that can order operations reliably."
+check:
+  - q: "Why is a single Redis node with SET NX a poor basis for a correctness lock?"
+    options: ["SET NX is not atomic, so two clients can both create the key", "Failover can grant the lock twice and no fencing tokens are issued", "Redis cannot expire keys, so crashed holders block everyone"]
+    answer: 1
+    why: "The lesson names failover double-grants and the lack of fencing tokens. That makes it acceptable for efficiency locks but not for correctness."
+  - q: "Duplicate runs of a nightly report job would only waste effort. Which lock is justified?"
+    options: ["A consensus-replicated lock with fencing tokens, since every lock needs full guarantees", "No lock at all, because a lock service always costs more than duplicate work", "A simple, fast lock, since rare double runs only waste effort"]
+    answer: 2
+    why: "This is an efficiency lock, so occasional double execution breaks nothing. Correctness locks, where two holders cause damage, need fencing and stronger guarantees."
+  - q: "Why does checking 'do I still hold the lock?' just before writing not make a lease lock safe?"
+    options: ["A pause right after the check can let the lease expire before the write", "The check is too slow to run before every single write", "Lock services do not let a client read its own lease at all"]
+    answer: 0
+    why: "Garbage-collection pauses, VM stalls or partitions can strike between check and write. Only a check at the resource, via fencing tokens, closes that gap."
 ---
 
 ## Why a distributed lock

@@ -12,6 +12,24 @@ banner:
     - [db, "retrieve"]
     - [doc, "context"]
     - [model, "answer"]
+predict:
+  question: "A support bot gives a wrong answer. Logs show the chunk with the correct answer sits in the index but was not among the top-k chunks put in the prompt. Where is the defect?"
+  options: ["Generation, because the model should have found the answer on its own", "Retrieval, because the right chunk never reached the prompt at all", "Ingestion, because the manual has to be retrained into the model"]
+  answer: 1
+  why: "The correct chunk was never in the prompt, so this is a retrieval failure. Fixes include better embeddings, hybrid search, re-ranking or better chunking."
+check:
+  - q: "A team raises retrieval from top-3 to top-20 chunks \"to be safe\". What is the likely effect?"
+    options: ["Irrelevant chunks compete for attention and can degrade answers even when the right chunk is present", "Answers improve, because extra context never hurts once the right chunk is included", "Hallucinations stop, because every possible source is now covered in the prompt"]
+    answer: 0
+    why: "More context is not strictly better. Irrelevant chunks compete with the right one for the model's attention."
+  - q: "Only the final answers are logged, and some are wrong. Why is that a problem?"
+    options: ["Final answers alone are too short to run any evaluation metrics on", "Logs without answers cannot be compared against the original manual text", "You cannot tell whether retrieval missed the chunk or generation misused it"]
+    answer: 2
+    why: "Diagnosing needs the retrieved chunks and the answer logged separately, to separate retrieval failures from generation failures."
+  - q: "Retrieval returns nothing relevant and the prompt has no \"say you don't know\" instruction. What does the model often do?"
+    options: ["It refuses to answer, since an empty context always blocks generation", "It writes a plausible answer from training data, defeating the grounding purpose", "It repeats the retrieved chunks, because it has nothing else to rely on"]
+    answer: 1
+    why: "Without that instruction a model often falls back on training data, which defeats the point of grounding."
 ---
 
 ## The problem RAG solves

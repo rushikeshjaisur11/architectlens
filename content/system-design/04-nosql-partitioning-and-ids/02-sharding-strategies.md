@@ -12,6 +12,24 @@ banner:
     - [db, "shard 1"]
     - [db, "shard 2"]
     - [db, "shard 3"]
+predict:
+  question: "A table is sharded with hash(key) % 10 and you add an 11th server. Roughly how much existing data must move?"
+  options: ["About 10 percent, the share the new shard takes", "Almost none, because hashing keeps keys in place", "Nearly all of it, since the modulus changes"]
+  answer: 2
+  why: "Changing N reshuffles almost every key's assignment under plain modulus hashing, unlike consistent hashing."
+check:
+  - q: "Posts are sharded by user_id rather than post_id. What trade-off does this accept?"
+    options: ["Profile reads hit one shard but a global feed must query all shards", "Global feeds become cheap but profile reads fan out", "Writes become uneven but reads stay on one shard"]
+    answer: 0
+    why: "Sharding by user_id optimizes the common per-user query and pays fan-out on the rarer global feed."
+  - q: "Why is range-based sharding on signup date risky?"
+    options: ["Range queries get slower since data spreads evenly", "Current writes pile onto the newest shard while old ones idle", "It reshuffles almost every key whenever a shard is added"]
+    answer: 1
+    why: "Access correlated with the range creates a hot spot on the newest shard."
+  - q: "Why might sharding early be a mistake?"
+    options: ["Sharded databases lose the ability to use replication or secondary indexes", "A single server cannot be made highly available without sharding first", "It adds cross-shard query and rebalancing complexity before it is needed"]
+    answer: 2
+    why: "A well-provisioned server with read replicas handles more than expected, and sharding adds real operational complexity."
 ---
 
 ## Why shard at all

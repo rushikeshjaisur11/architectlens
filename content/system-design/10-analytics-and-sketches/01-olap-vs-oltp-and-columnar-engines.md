@@ -15,6 +15,24 @@ banner:
     - [queue, "ETL"]
     - [db, "column store"]
     - [client, "BI"]
+predict:
+  question: "A table has 50 columns. A query aggregates 3 of them across a billion rows. Roughly how much data does a columnar engine read?"
+  options: ["About 3/50ths (6%) of the data, since unused columns are never touched", "All of it, since the aggregate needs every row in the table", "About half, since columnar files are split into two row groups"]
+  answer: 0
+  why: "Each column is stored as its own stream, so a query reading 3 of 50 columns reads roughly 3/50ths of the data. A row store would read whole rows."
+check:
+  - q: "Why are star-schema dimension tables deliberately denormalized?"
+    options: ["Join count and scan volume dominate cost, and compression absorbs redundancy", "Normalized dimensions cannot hold the foreign keys that fact tables need", "Denormalization lowers storage cost, which is the main OLAP bottleneck"]
+    answer: 0
+    why: "OLAP cost is driven by joins and scans rather than storage. Fewer joins help the planner, and columnar compression hides most repeated values."
+  - q: "Why do columnar OLAP engines favor batch appends over single-row updates?"
+    options: ["Column files cannot be modified after they are written, under any engine", "Changing one row touches every column file it spans, which is costly", "Batch loads skip compression, which makes writing much cheaper overall"]
+    answer: 1
+    why: "A row's values live in separate per-column streams, so one update touches them all. Batching amortizes that cost."
+  - q: "A dashboard needs strictly real-time figures. What is the risk of reading from a materialized view?"
+    options: ["The view only supports full recomputation, so it cannot ever be refreshed", "Views scan raw rows on each read, so latency is higher than the base table", "It reflects data as of its last refresh, so results may lag the base table"]
+    answer: 2
+    why: "A materialized view trades freshness for speed; staleness is bounded by refresh lag. Strict real-time needs must account for that or query the base table."
 ---
 
 ## OLTP and OLAP are optimized for opposite access patterns

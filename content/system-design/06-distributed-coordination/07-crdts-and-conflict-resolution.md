@@ -6,6 +6,36 @@ sources:
   - "Shapiro, Preguica, Baquero and Zawirski, 'Conflict-free Replicated Data Types' (2011) and 'A comprehensive study of Convergent and Commutative Replicated Data Types' (INRIA, 2011)"
   - "Kleppmann et al., 'Local-first software: you own your data, in spite of the cloud' (Ink & Switch, 2019)"
   - "Yjs and Automerge project documentation (open-source CRDT libraries)"
+predict:
+  question: "Two offline replicas each increment a shared counter by 1 from the same start. After reconnecting, what do a G-counter and an LWW register show?"
+  options:
+    - "Both show +2, because any convergent merge keeps every increment"
+    - "The G-counter shows +2, but an LWW register keeps only +1"
+    - "Both show +1, because concurrent updates to one value always collapse"
+  answer: 1
+  why: "G-counter merge takes the element-wise maximum per replica, so both increments survive, while LWW discards one side's work."
+check:
+  - q: "Alice removes milk (seen as tag a1) while offline Bob re-adds milk (tag b7). What does an OR-set show after merge?"
+    options:
+      - "The remove deletes only tag a1, so Bob's re-add survives and milk stays"
+      - "The remove wins, because removal always overrides concurrent adds of the same item"
+      - "Milk disappears on one phone and stays on the other, as the replicas never converge"
+    answer: 0
+    why: "A remove only deletes tags it has seen, giving add-wins semantics."
+  - q: "Why can a CRDT alone not enforce one booking per seat?"
+    options:
+      - "CRDT merges are too slow to check a seat, so the check runs asynchronously"
+      - "Uniqueness and non-negativity invariants need coordination, which merging alone cannot enforce"
+      - "CRDTs lose updates under concurrency, so two bookings would both be silently dropped"
+    answer: 1
+    why: "Merging guarantees convergence, not business invariants."
+  - q: "What do CRDTs trade against operational transformation?"
+    options:
+      - "CRDTs need a central server to order operations, but they avoid any metadata growth"
+      - "OT works peer-to-peer as easily as with a server, so CRDTs only add extra complexity"
+      - "CRDTs carry extra metadata like unique ids and tombstones, but can merge anywhere, even peer-to-peer"
+    answer: 2
+    why: "OT leans on a central server, CRDTs pay in metadata for location independence."
 ---
 
 ## The conflict problem

@@ -16,6 +16,24 @@ banner:
     - [doc, "requirements"]
     - [model, "design"]
     - [shield, "evaluate"]
+predict:
+  question: "In the HR policy assistant design, an employee asks a question and retrieval returns only weakly related policy chunks. What does the assistant do?"
+  options: ["It answers from the model's general knowledge and adds a disclaimer", "It abstains and offers the human escalation path for the case", "It retries with a larger model until a citation appears"]
+  answer: 1
+  why: "The design says to abstain when retrieval is weak and keeps a human escalation path, because wrong answers about leave or pay are high risk."
+check:
+  - q: "Why does the framework tell you to stop at the first rung of the complexity ladder that meets the requirements?"
+    options: ["Each added rung brings extra cost, risk and operational burden", "Later rungs such as agents are less accurate on most tasks", "Vendors restrict fine-tuning and agents to enterprise contracts"]
+    answer: 0
+    why: "Every rung up the ladder adds cost, risk and operational burden, so you only pay for it when a simpler rung fails the requirements."
+  - q: "A team builds the architecture first and decides how to measure quality after launch. What is the main consequence?"
+    options: ["The index must be rebuilt because metadata schemas get locked", "Gateways cannot log latency until a quality metric exists", "Improvement cannot be measured, so changes cannot be shown to help"]
+    answer: 2
+    why: "Defining quality after building leaves no baseline or golden set, so you cannot tell whether a prompt, model or retrieval change helped."
+  - q: "Why does the enterprise pattern insist on a gateway abstraction plus per-model prompts and evaluations?"
+    options: ["Providers deprecate and reprice models on their own schedule, so you need an exit path", "It lets one prompt run unchanged on any model without re-evaluating", "It removes the need to name a fallback model in the design record"]
+    answer: 0
+    why: "Vendor change is outside your control, so abstraction and per-model evaluations make a model swap a measured decision."
 ---
 
 ## Why AI systems need their own method

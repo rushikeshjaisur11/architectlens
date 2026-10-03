@@ -7,6 +7,24 @@ sources:
   - "Graham Cormode & S. Muthukrishnan, 'An Improved Data Stream Summary: The Count-Min Sketch and its Applications' (2005)"
   - "ClickHouse documentation — Bloom filter indexes and skip indexes"
   - "Redis documentation — Bloom and Cuckoo filter modules (RedisBloom)"
+predict:
+  question: "A standard Bloom filter holds items X and Y, which share one bit position. You clear X's bits to delete X. What happens to Y?"
+  options: ["Y may now be reported absent, a false negative", "Y stays correct, since only X's other bits changed", "Y is reported present with a higher false-positive chance"]
+  answer: 0
+  why: "Clearing a shared bit can un-set one Y depends on, reintroducing false negatives. That is why standard Bloom filters do not support deletion."
+check:
+  - q: "What does a Counting Bloom Filter trade for supporting deletion?"
+    options: ["It uses small counters instead of single bits, costing more memory", "It permits false negatives so that deleted items can be forgotten", "It drops the hash functions, so lookups become exact but slower"]
+    answer: 0
+    why: "Replacing each bit with a small counter, typically 4 bits, lets entries be decremented. The cost is extra memory."
+  - q: "Why is Count-Min Sketch trustworthy for heavy hitters but not for long-tail counts?"
+    options: ["Heavy hitters get their own exact counter row, so they are never shared", "The sketch discards the rarest items entirely once it fills up", "Overestimation bias is proportionally largest for rare items"]
+    answer: 2
+    why: "Collisions add a similar absolute error to every item. That error is small relative to a large count and large relative to a rare one."
+  - q: "Why is a Bloom filter safe as a per-SSTable gate before a disk read?"
+    options: ["It stores the actual keys, so a match can be returned directly", "A negative is trustworthy, so it skips the seek; a positive just triggers normal lookup", "It guarantees no false positives, so every positive answer is a real hit"]
+    answer: 1
+    why: "Because false negatives cannot happen, \"absent\" safely avoids work. A false positive costs only the lookup that would have happened anyway."
 ---
 
 ## The problem both structures solve

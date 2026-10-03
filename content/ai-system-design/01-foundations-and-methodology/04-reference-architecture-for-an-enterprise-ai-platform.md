@@ -18,6 +18,24 @@ banner:
     - [db, "retrieval"]
     - [shield, "guardrails"]
     - [server, "agents"]
+predict:
+  question: "Two pilot teams migrate onto a reference RAG template that ships with permission-aware retrieval, guardrails, an evaluation harness and tracing. What happens to their time to production?"
+  options: ["It stays near five months because each team repeats the security review", "It rises to six months while teams learn the template", "It falls from five months to about six weeks as controls are inherited"]
+  answer: 2
+  why: "The paved-road template wires in the shared controls, so teams stop rebuilding them; the example cuts time to production from five months to six weeks."
+check:
+  - q: "Why should platform success be measured by adoption, time to first release and incident rate rather than component count?"
+    options: ["A platform wins only if teams use it and ship faster and safer on it", "More components always lower the incident rate of the platform", "Component counts are hard to collect from the gateway logs"]
+    answer: 0
+    why: "The platform wins by making the right way the easy way, so adoption and delivery speed show whether it works."
+  - q: "Why avoid mandating one model or orchestration framework at the platform level?"
+    options: ["Gateways cannot route to more than one provider at once", "Those layers change monthly, so lock-in is costly; use standard interfaces", "Security teams cannot audit more than one framework at a time"]
+    answer: 1
+    why: "Models and orchestration frameworks change fast, so the platform integrates through standard interfaces to keep them replaceable."
+  - q: "Why allow escape hatches (custom models, special tools) through a reviewed process instead of banning them?"
+    options: ["Reviewed exceptions are cheaper than the paved road", "A ban would remove the owner and budget requirements", "Innovation is not blocked and exceptions stay visible"]
+    answer: 2
+    why: "A reviewed process lets teams deviate when needed while keeping the exceptions visible to the platform and governance teams."
 ---
 
 ## The problem

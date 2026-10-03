@@ -17,6 +17,24 @@ banner:
     - [cache, "prefix cache"]
     - [gpu, "GPU"]
     - [doc, "reused KV"]
+predict:
+  question: "A 5-minute cache entry is written at 1.25x the base input price and read at 0.1x. A prefix is written once and read once within the window. Compared with two uncached calls (2.0x), the cost is:"
+  options: ["About 1.35x, cheaper than two uncached calls", "About 2.5x, since the write premium outweighs the read discount", "About 2.0x, since writes and reads average out to base price"]
+  answer: 0
+  why: "1.25x for the write plus 0.1x for the read is 1.35x, which is why a 5-minute entry pays for itself after one read."
+check:
+  - q: "A prompt puts a per-request timestamp as its first line, followed by a long static system prompt. What happens to caching?"
+    options: ["Only the timestamp line misses; the static prompt after it is still reused", "The static prompt is reused, but the provider charges an extra write fee", "Reuse is lost for everything after the timestamp, since matching is prefix-based"]
+    answer: 2
+    why: "Prefix caching needs an exact-match prefix, so one varying token at the start invalidates all downstream content."
+  - q: "Why can RadixAttention reuse cache in cases where an exact-match preconfigured prefix cannot?"
+    options: ["It keys cached KV in a radix tree by token sequence, so any partial shared prefix is found dynamically", "It caches the final output text, so identical questions skip generation entirely", "It rewrites prompts into a canonical order so differing requests become identical"]
+    answer: 0
+    why: "The radix tree lets requests share any matching path, such as overlapping conversation branches, not only one static prefix."
+  - q: "A team enables API prompt caching on a prefix that is used only once every few hours. What is the likely result?"
+    options: ["Costs fall, since cache reads are always cheaper than normal input", "Costs can rise, since the entry expires and the write premium is never amortized", "No change, since caching bills identically to normal input on every call"]
+    answer: 1
+    why: "Caching only pays when the prefix is reused enough within the TTL to amortize the write premium."
 ---
 
 ## What's actually being cached
@@ -35,6 +53,8 @@ The naive approach — cache the exact KV tensors for an exact-match prefix stri
 ## API-level prompt caching
 
 Anthropic and OpenAI expose prompt caching as an **API-level** feature: mark a portion of the prompt (e.g., a long system prompt or document context) as cacheable, and the provider's backend reuses the KV state for that segment across calls within a cache TTL (typically minutes), charging a reduced rate for cache hits versus full-price for cache writes and misses. Functionally this is the provider running server-side prefix caching (conceptually similar to PagedAttention/RadixAttention) and exposing the cost savings directly rather than leaving it invisible infrastructure. For application teams calling a hosted API rather than running their own server, this is the practical lever: structuring prompts so the **large, stable portion comes first** (system instructions, long context, tool definitions) and the **small, variable portion comes last** (the actual user turn) maximizes cache hit rate, since caching is prefix-based — any variation early in the prompt invalidates the cache for everything after it.
+
+<div data-anim="prefix-caching"></div>
 
 ## Why ordering matters so much
 

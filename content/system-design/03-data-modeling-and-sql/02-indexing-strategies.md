@@ -13,6 +13,24 @@ banner:
     - [db, "B-tree index"]
     - [doc, "row pointer"]
     - [db, "table"]
+predict:
+  question: "A composite index exists on (user_id, created_at). A query filters only on created_at > ? with no user_id. What does the database most likely do?"
+  options: ["Use the index efficiently, since created_at is in the index", "Fall back to scanning broadly, since the leading column is missing", "Use the index only after sorting results by user_id"]
+  answer: 1
+  why: "A composite index efficiently serves prefixes of its columns, so filtering only on a non-leading column cannot use it efficiently (phone-book analogy)."
+check:
+  - q: "Why not just add an index for every column that appears in a WHERE clause?"
+    options: ["Indexes cannot be created on columns that are filtered often", "Each index adds write and storage cost on every insert, update and delete", "The planner refuses to use more than two indexes per table"]
+    answer: 1
+    why: "Every index must be updated on writes and consumes storage, so indexes should follow measured query patterns."
+  - q: "When is a covering index on (status, created_at) including id justified for a dashboard query?"
+    options: ["When the query runs often enough to justify a larger index and extra write cost", "When the query runs rarely, since covering indexes are cheap to build", "When the table is small, since it avoids any extra storage"]
+    answer: 0
+    why: "Covering indexes remove the row lookup but cost storage and write overhead, so they pay off only for hot queries."
+  - q: "A BRIN index is a poor choice in which situation?"
+    options: ["An append-only table indexed on its created_at timestamp", "A very large table where the column tracks physical row order", "A column whose values are scattered randomly across storage"]
+    answer: 2
+    why: "BRIN trades precision for a tiny footprint and only works when the column correlates strongly with physical storage order."
 ---
 
 ## Why a primary key index alone isn't enough

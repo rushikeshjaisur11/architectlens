@@ -17,6 +17,24 @@ banner:
     - [shield, "permissions"]
     - [db, "memory"]
     - [server, "sandbox"]
+predict:
+  question: "A worker dies right after the hardware-order tool call succeeded but before the step was logged. What happens when the run resumes?"
+  options: ["The run restarts and orders a second monitor because the step was never logged", "The resumed run sees the recorded idempotent response and orders nothing new", "The run fails permanently and the manager must approve the order again"]
+  answer: 1
+  why: "Tool calls carry idempotency keys and steps are persisted, so the resumed run reuses the earlier result instead of repeating the side effect."
+check:
+  - q: "Why enforce max steps, tokens and spend in the runtime rather than in the prompt?"
+    options: ["Prompt text is the first thing dropped when context fills up", "Instructions to the model can be ignored; the runtime enforces limits outside it", "Runtime limits make every loop iteration cheaper to execute"]
+    answer: 1
+    why: "Limits enforced only in the prompt are a listed mistake; the runtime and tool gateway enforce controls outside the model."
+  - q: "Why implement approval waits as durable timers instead of sleeping workers?"
+    options: ["Durable timers make approvals complete faster than polling would", "Sleeping workers cannot call the tool gateway once they wake up", "Sleeping workers tie up capacity and lose the wait if they die"]
+    answer: 2
+    why: "Pause and resume as durable timers means a run waiting hours for approval holds no worker and survives crashes."
+  - q: "Why grant agents tool sets by policy instead of letting them discover every registered tool?"
+    options: ["Unreviewed dynamic discovery gives agents capabilities nobody assessed", "Discovery requires a second model call before every tool invocation", "MCP clients cannot enumerate the tools held in a registry"]
+    answer: 0
+    why: "Dynamic discovery with no governance is a listed mistake; the registry's review, risk class and scopes only matter if grants follow policy."
 ---
 
 ## The problem

@@ -15,6 +15,24 @@ banner:
     - [db, "candidates"]
     - [model, "LLM re-rank"]
     - [doc, "feed"]
+predict:
+  question: "An LLM writes descriptions and tags for every title offline, and the embeddings are stored as features for the existing ranker. What happens to serving latency?"
+  options: ["It rises by about 1.8 seconds at p95, since each request waits on the LLM", "It rises mildly, because the ranker must wait for new titles to be described", "It stays the same, since precomputed features are served by the existing stack"]
+  answer: 2
+  why: "Offline enrichment is stored as features and vectors, so the hot path is unchanged."
+check:
+  - q: "Why keep the LLM out of the hot path of every request?"
+    options: ["LLMs cannot produce embeddings, so they cannot contribute to retrieval at all", "At this scale, per-request LLM calls are too slow and costly for a 100-200 ms budget", "LLM output is non-deterministic, which breaks point-in-time correct training features"]
+    answer: 1
+    why: "The lesson says calling an LLM per request at this scale is too slow and costly."
+  - q: "Why verify that every recommended title exists in the catalogue and is available in region?"
+    options: ["Catalogue checks are what make the two-tower embeddings searchable at all", "LLM re-ranking is disabled unless every catalogue ID has been signed", "The LLM can hallucinate items that do not exist or are unavailable to the user"]
+    answer: 2
+    why: "Hallucinated items are a named failure mode of the conversational path."
+  - q: "Why not judge a new recommender by offline metrics alone?"
+    options: ["Offline gains often fail to predict online impact, so A/B tests with guardrails decide", "Offline metrics ignore cold-start items, so they always understate real gains", "Offline metrics are too costly at 50 million items, so online tests replace them"]
+    answer: 0
+    why: "Offline metrics are necessary but unreliable predictors of online impact."
 ---
 
 ## The problem

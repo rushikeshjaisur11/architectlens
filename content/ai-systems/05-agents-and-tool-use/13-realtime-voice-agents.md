@@ -11,6 +11,24 @@ banner:
     - [model, "STT"]
     - [model, "LLM"]
     - [phone, "TTS"]
+predict:
+  question: "A clinic line has a 700 ms budget with STT about 150 ms, LLM first token about 250 ms and TTS about 150 ms. Where does it land?"
+  options: ["About 550 ms, with about 150 ms to spare", "About 550 ms, which is over the 700 ms budget", "About 700 ms, only if the stages overlap"]
+  answer: 0
+  why: "150 + 250 + 150 = 550 ms, which is inside the budget with 150 ms of headroom."
+check:
+  - q: "What is the main trade-off of cascaded STT-LLM-TTS versus native speech-to-speech?"
+    options: ["Native gives more control over each stage, but is slower and costlier", "Cascaded gives per-stage control, at the cost of latency and prosody", "Cascaded is faster end to end but cannot log or inspect transcripts"]
+    answer: 1
+    why: "Native hears tone and is faster, but gives less control, harder transcripts and guardrails, and vendor lock-in."
+  - q: "Why read back key values before an irreversible action in a voice agent?"
+    options: ["Read-back is required to satisfy the latency budget", "The booking tool cannot accept spoken input directly", "Recognition errors can turn \"fifteen\" into \"fifty\""]
+    answer: 2
+    why: "Confirming key values and waiting for a clear yes guards against speech recognition mistakes."
+  - q: "Why measure p95 time to first audio instead of only the average?"
+    options: ["Tail pauses ruin calls even when the average looks fine", "Average latency cannot be measured on real phone calls", "The p95 value is cheaper to collect than the mean"]
+    answer: 0
+    why: "Optimising the average hides slow outliers that make calls feel broken."
 ---
 
 ## Why voice is a different engineering problem

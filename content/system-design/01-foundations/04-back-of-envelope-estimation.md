@@ -11,6 +11,24 @@ banner:
     - [doc, "QPS"]
     - [db, "storage"]
     - [server, "servers"]
+predict:
+  question: "A URL shortener gets 100 million new URLs per month. About how many writes per second is that on average?"
+  options: ["About 3,800 per second, matching the read rate", "About 38 per second, averaged over the month", "About 380 per second after a 10x peak multiplier"]
+  answer: 1
+  why: "100,000,000 / 30 / 86,400 is about 38 writes per second; the 3,800 figure is the read rate at 100:1."
+check:
+  - q: "The 5-year storage estimate comes to about 1 TB. What does the lesson conclude about sharding?"
+    options: ["Storage alone does not force sharding on day one, though throughput or availability might", "Sharding is mandatory, because 1 TB cannot fit on any single database server", "Sharding is pointless here, since throughput and availability never require it"]
+    answer: 0
+    why: "1 TB fits on one well-provisioned server, but write throughput or availability can still justify sharding."
+  - q: "Why estimate storage separately from throughput?"
+    options: ["Storage always dictates the design, so throughput can be derived from it", "They always scale together, so one number gives you the other", "They can point to different bottlenecks, such as video archival being storage-bound"]
+    answer: 2
+    why: "A system can be throughput-bound with modest storage or storage-bound with modest request rates."
+  - q: "Why ask for the read/write ratio early?"
+    options: ["It fixes peak traffic, which removes any need to estimate average rates", "Many systems are read-heavy by 10-1000x, shifting where caching and replicas matter", "It determines record size, which is the main input to the storage estimate"]
+    answer: 1
+    why: "A heavy read skew changes where caching and read replicas pay off most."
 ---
 
 ## Why estimate at all

@@ -15,6 +15,24 @@ banner:
     - [shield, "validation"]
     - [doc, "docs"]
     - [user, "risk board"]
+predict:
+  question: "A provider announces a model update. The regression suite on the new version shows a regression on exclusion wording. What happens?"
+  options: ["The update ships because the adjuster reviews every letter anyway", "The update ships with a warning added to the monthly report", "The update is deferred until prompts are adjusted and the suite passes"]
+  answer: 2
+  why: "Model changes go through change control, so the update waits until the regression suite passes."
+check:
+  - q: "Why keep the model advisory with a transparent, deterministic decision rule for high-impact decisions?"
+    options: ["LLM drafts are generally too long for adjusters to review in practice", "Models cannot be fully explained, so the decision rule stays inspectable", "Regulators prohibit LLM output from appearing in any claims document"]
+    answer: 1
+    why: "Full explainability is not available, so the decision rule itself is kept transparent while the model advises."
+  - q: "Why treat prompt, model and retrieval-corpus changes as model changes?"
+    options: ["Each can change outputs, so an earlier validation no longer holds", "Regulators define prompts as separate registered models", "Version control tools require formal approval for each commit"]
+    answer: 0
+    why: "Validating once and then letting prompts or versions change freely is a listed mistake; material changes trigger re-validation."
+  - q: "Why does a provider's silent model update matter for the inventory?"
+    options: ["Provider updates only change pricing, not behaviour", "Updates are blocked by contract, so no check is needed", "It is a change you never approved, so pin versions and re-validate"]
+    answer: 2
+    why: "A silent update changes behaviour without your approval, so versions are pinned and re-validated on change."
 ---
 
 *This lesson describes engineering and process patterns, not legal advice. Requirements vary by jurisdiction and sector; confirm with compliance and legal teams.*

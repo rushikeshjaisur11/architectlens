@@ -15,6 +15,24 @@ banner:
     - [cloud, "region A"]
     - [cloud, "region B"]
     - [cloud, "region C"]
+predict:
+  question: "The EU region's primary model endpoint hits a 25 percent error rate, and EU tenants' residency rules forbid sending prompts to the US. Where does the gateway send their traffic?"
+  options: ["To the US region, because it normally has the most spare model capacity", "To the second provider's EU endpoint, queueing batch jobs to protect its quota", "To a cached read-only mode for all EU tenants until the primary recovers"]
+  answer: 1
+  why: "The gateway shifts to an evaluated second provider in the same region and queues batch work so the 70-percent-used quota is not exhausted."
+check:
+  - q: "What goes wrong when one region's full load fails over to a region with no warm capacity?"
+    options: ["Replication lag grows until the vector indexes in both regions diverge permanently", "The surviving region collapses because model capacity is scarce and was not pre-provisioned", "Routing falls back to DNS, which cannot shift load once health probes have failed"]
+    answer: 1
+    why: "A failover needs pre-provisioned or warm capacity, otherwise the survivor collapses."
+  - q: "A residency-bound tenant's home region fails and no approved failover region exists. What should the product do?"
+    options: ["Spill to the nearest region with headroom and log the out-of-region traffic afterwards", "Hold every request in a queue indefinitely until the home region fully recovers", "Degrade with read-only or cached answers and a clear message, not violate policy"]
+    answer: 2
+    why: "The lesson says the product degrades rather than violating residency policy."
+  - q: "Why does the gateway track model quota per region instead of assuming one global quota?"
+    options: ["One region can run out of capacity while another has headroom, so spillover needs per-region data", "Quotas are identical everywhere, but per-region tracking helps attribute billing to teams", "Per-region tracking matters only for self-hosted capacity, not for provider API quotas"]
+    answer: 0
+    why: "Capacity and quotas are per region and per provider, so exhaustion in one place can coexist with headroom elsewhere."
 ---
 
 ## The problem

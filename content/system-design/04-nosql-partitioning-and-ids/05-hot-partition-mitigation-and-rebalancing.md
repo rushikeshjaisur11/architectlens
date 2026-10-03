@@ -13,6 +13,24 @@ banner:
     - [db, "hot shard"]
     - [server, "split"]
     - [db, "rebalanced"]
+predict:
+  question: "A table is partitioned on a status field with values active and inactive. How many partitions can share the load, however far you scale?"
+  options: ["As many as there are servers added", "At most two, one per distinct value", "Exactly one, because status is a string"]
+  answer: 1
+  why: "Low-cardinality keys cap the number of partitions at the number of distinct values, the textbook DynamoDB anti-pattern."
+check:
+  - q: "You salt a hot key as user123#0 through user123#7. What new burden appears?"
+    options: ["Reads must fan out across all 8 suffixes and merge results", "Writes must all be sent to the primary suffix", "The key can no longer be read at all"]
+    answer: 0
+    why: "Salting trades write distribution for read complexity, and forgetting the fan-out returns partial data."
+  - q: "Why does plain consistent hashing not fix a celebrity-user hotspot?"
+    options: ["Celebrity keys always hash to the same node by design", "Consistent hashing cannot add nodes while serving traffic", "It balances data volume, but the problem is traffic skew"]
+    answer: 2
+    why: "Hot partitions are a traffic skew problem, so rebalancing data volume does not solve them."
+  - q: "Why is adaptive capacity a safety net rather than a substitute for key design?"
+    options: ["It requires downtime to isolate a hot key", "It still enforces per-partition and per-item throughput ceilings", "It only works on tables with fewer than N partitions"]
+    answer: 1
+    why: "Adaptive capacity mitigates after the fact within limits, so choosing a high-cardinality key remains essential."
 ---
 
 ## What a hot partition actually is

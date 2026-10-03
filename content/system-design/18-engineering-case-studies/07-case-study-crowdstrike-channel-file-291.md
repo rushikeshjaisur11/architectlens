@@ -5,6 +5,24 @@ tags: ["case-study", "deployment", "canary", "validation", "blast-radius", "inci
 sources:
   - "CrowdStrike, 'External Technical Root Cause Analysis: Channel File 291' (6 August 2024), crowdstrike.com (fetched October 2026)"
   - "Press and security reporting on the incident scope (secondary: The Hacker News, TechTarget)"
+predict:
+  question: "Suppose the bad update had first gone to a 1 percent ring with automatic halt on crash telemetry. Roughly how many machines would have crashed?"
+  options: ["About 85,000 machines, instead of the 8.5 million that did", "About 850,000 machines, since the ring crashes tenfold", "Still 8.5 million, as the halt acts after full rollout"]
+  answer: 0
+  why: "The lesson estimates that catching the bug at the 1 percent ring limits damage to roughly 85,000 machines."
+check:
+  - q: "Why is a content validator that is separate from the runtime risky?"
+    options: ["It runs too slowly to gate rapid-response content releases", "It cannot read template instances written by the sensor", "It can disagree with the real interpreter and pass bad content"]
+    answer: 2
+    why: "Validation should load content in the actual interpreter, since a separate implementation can share wrong assumptions."
+  - q: "Why should urgent threat-detection content skip staged rollout?"
+    options: ["It should, because attackers move too fast for any staging", "It should not; speed needs strong automated gating, not its absence", "It should, because staging applies only to compiled binaries"]
+    answer: 1
+    why: "The urgency justified fast delivery, but fast delivery needs automated gating rather than none."
+  - q: "Why did many machines need hands-on repair after the bad file?"
+    options: ["The kernel sensor crashed before it could fetch a remote fix", "Reverting the file remotely never reached any machine", "Boot loops ended by themselves once the file was reverted"]
+    answer: 0
+    why: "A crash before remediation makes remote rollback impossible, so recovery paths must work in the failure state."
 ---
 
 ## What happened

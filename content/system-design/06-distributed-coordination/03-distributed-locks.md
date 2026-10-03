@@ -6,6 +6,36 @@ sources:
   - "Martin Kleppmann, 'How to do distributed locking' (2016 blog post, critiquing the Redlock algorithm)"
   - "ZooKeeper documentation on distributed locks and leader election recipes"
   - "Amazon Web Services, 'Summary of the Amazon DynamoDB Service Disruption in the Northern Virginia (US-EAST-1) Region' (October 2025), aws.amazon.com/message/101925 (fetched October 2026)"
+predict:
+  question: "A job's lock TTL is 10 minutes but the job runs 12. A second instance acquired the lock at minute 10 and already wrote its result. The storage layer checks fencing tokens. What happens to the first instance's write?"
+  options:
+    - "Storage rejects it because its token is lower"
+    - "Both writes succeed and the later one silently overwrites"
+    - "The lock service cancels it once the TTL lapses"
+  answer: 0
+  why: "The resource rejects any operation with a token lower than the highest it has seen, so the stale holder cannot corrupt the result."
+check:
+  - q: "What is the trade-off in setting a longer lock TTL?"
+    options:
+      - "A longer TTL cuts duplicate-work risk but a crashed holder then blocks others longer before release"
+      - "A longer TTL is strictly safer, because crashed holders release immediately regardless"
+      - "A shorter TTL is strictly safer, since the holder can always renew it in time"
+    answer: 0
+    why: "Too short risks the lock expiring mid-work, too long delays recovery after a crash."
+  - q: "Why add fencing tokens rather than trying to build a better lock?"
+    options:
+      - "A well-built lock can be made unbreakable, but tokens are cheaper to implement"
+      - "Tokens stop the holder from pausing, which is the real cause of double-holding"
+      - "A long pause can outlast any TTL, so the resource itself must reject stale holders"
+    answer: 2
+    why: "Pauses are external to the lock code, so correctness has to be checked where the effect happens."
+  - q: "Why store a unique value in the lock key and check it on release?"
+    options:
+      - "It extends the TTL each time the holder checks it, keeping the lock alive during long work"
+      - "It lets the holder delete only its own lock, not one a new holder acquired after expiry"
+      - "It guarantees a fencing order, so the resource can reject stale writes without extra work"
+    answer: 1
+    why: "Otherwise a late holder could release the new holder's lock after its own had expired."
 ---
 
 ## Why a single-machine lock doesn't translate to distributed systems

@@ -13,6 +13,24 @@ banner:
     - [gpu, "prefill"]
     - [cache, "KV cache"]
     - [gpu, "decode"]
+predict:
+  question: "A 20,000-token repo context prefills at about 8,000 tokens/s (2.5 s). A router sends the repeat request to the replica holding that prefix, so only 200 new tokens are prefilled. Time-to-first-token is about:"
+  options: ["About 2.6 s, since the full context is still processed on every request", "About 0.1 s, since only the new tokens need prefill", "About 1.3 s, since a cache hit halves the prefill work"]
+  answer: 1
+  why: "200 tokens at 8,000 tokens/s is about 25 ms of prefill, so TTFT drops from about 2.6 s to about 0.1 s."
+check:
+  - q: "A team's problem is tail latency from long prefills stalling other users' decoding. What does disaggregation give them?"
+    options: ["Higher raw throughput, since prefill and decode pools double the GPUs in use", "Independent tuning of TTFT and ITL, with prefill no longer interrupting decode", "Free KV cache transfer, since both pools share the same GPU memory"]
+    answer: 1
+    why: "vLLM's docs say it controls tail latency but does not improve throughput, and it costs KV transfer and complexity."
+  - q: "Why does round-robin load balancing perform badly in front of a cache-heavy workload?"
+    options: ["It sends a repeat conversation to a random replica, forcing recomputation of the prefix", "It overloads one replica, since it always favors the first instance", "It disables prefix caching on every replica it touches"]
+    answer: 0
+    why: "Each instance keeps its own cache, so which replica receives the request decides whether the prefix hits."
+  - q: "Why might pure session stickiness be a poor routing policy?"
+    options: ["It prevents any cache from forming, since requests move constantly", "It creates hot replicas, so good routers score cache overlap together with queue depth", "It forces every request through a single replica, which holds all prefixes"]
+    answer: 1
+    why: "Stickiness ignores load; the lesson says routers should balance cache overlap against queue depth."
 ---
 
 ## Two phases with different bottlenecks

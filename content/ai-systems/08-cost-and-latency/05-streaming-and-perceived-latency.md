@@ -13,6 +13,24 @@ banner:
     - [queue, "token stream"]
     - [client, "UI"]
     - [user, "first token"]
+predict:
+  question: "A response takes 4 seconds to fully generate and the first token arrives at 300 ms. What changes when you turn streaming on?"
+  options: ["The full response finishes in about 300 ms, since tokens are sent in parallel", "Nothing changes for the user, because the response still finishes at 4 seconds", "Text starts appearing near 300 ms, while the full response still takes about 4 seconds"]
+  answer: 2
+  why: "Streaming exposes sequential generation sooner; it doesn't reduce total generation time."
+check:
+  - q: "Why track time-to-first-token separately from total latency for a streaming product?"
+    options: ["Good average total latency can hide a poor first-token time that still feels slow to users", "Total latency is only measured for background jobs, so chat needs a different metric", "The two metrics always move together, so tracking one is enough for most dashboards"]
+    answer: 0
+    why: "A system can look healthy on total latency dashboards while streaming users still wait long for the first visible text."
+  - q: "Why not enable streaming for a background project-scaffold job?"
+    options: ["Streamed responses cost more per token than non-streamed ones in most APIs", "No one watches partial output, so it adds client complexity for no perceived-latency gain", "Background jobs cannot hold a connection open, so streaming fails for them entirely"]
+    answer: 1
+    why: "The streaming benefit depends on a user watching output appear."
+  - q: "The chat feature needs a JSON diff object. Why generate it as a separate non-streamed call instead of streaming it?"
+    options: ["Constrained decoding is unavailable on streamed calls, so JSON would be unreliable", "A partial JSON object is not valid JSON, so streaming it needs incremental parsing logic", "JSON tokens are generated slower than prose tokens, so streaming adds no visible benefit"]
+    answer: 1
+    why: "The hybrid keeps streaming for explanatory text while avoiding incremental-JSON-parsing complexity."
 ---
 
 ## Why perceived latency and actual latency are different metrics

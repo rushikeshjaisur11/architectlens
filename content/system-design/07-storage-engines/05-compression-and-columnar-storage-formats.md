@@ -14,6 +14,24 @@ banner:
     - [server, "encode"]
     - [db, "column chunks"]
     - [doc, "zstd"]
+predict:
+  question: "A table has 30 columns and a query needs only 2 of them across millions of rows. How does columnar storage change the I/O compared with row storage?"
+  options: ["Both read the same bytes, but columnar decompresses them faster", "Columnar reads only those 2 columns and skips the other 28", "Columnar reads all 30 columns but compresses the results better"]
+  answer: 1
+  why: "Each column is stored contiguously, so the engine reads just the needed columns instead of every row's full width."
+check:
+  - q: "Why is dictionary encoding a poor choice for a unique order ID column?"
+    options: ["Unique IDs are numeric, and dictionaries only work for strings", "Dictionaries slow down predicate pushdown on any column", "With no repeated values, there is no repetition to exploit"]
+    answer: 2
+    why: "Dictionary encoding pays off for low-cardinality columns; a high-cardinality column has nothing to deduplicate."
+  - q: "Why do OLTP databases stay row-oriented despite columnar's compression advantage?"
+    options: ["Rebuilding one full row from many column locations costs more than one contiguous read", "Columnar formats cannot store the data types relational tables use", "Columnar storage cannot be compressed when rows are frequently updated"]
+    answer: 0
+    why: "Columnar's strength for few-columns-many-rows queries is its weakness for all-columns-few-rows access."
+  - q: "What failure follows from exporting data to Parquet once, with no refresh cadence?"
+    options: ["Min/max metadata becomes invalid, so predicate pushdown returns wrong rows", "Dictionary codes drift out of sync with the column values", "The analytical copy silently diverges from the live source"]
+    answer: 2
+    why: "Without ongoing synchronization the columnar copy goes stale, much like a cache entry."
 ---
 
 ## Row-oriented vs. column-oriented storage: matching layout to access pattern

@@ -13,6 +13,24 @@ banner:
     - [server, "ingest"]
     - [server, "transcode"]
     - [cdn, "CDN"]
+predict:
+  question: "Classic HLS uses 6-second segments and the player buffers three. Roughly what glass-to-glass delay results?"
+  options: ["About 1 second, as the CDN delivers segments instantly", "About 6 seconds, one segment's duration", "20 to 30 seconds, as segment length and buffering add up"]
+  answer: 2
+  why: "The lesson states delay is easily 20 to 30 seconds with this configuration."
+check:
+  - q: "Why avoid WebRTC for a huge passive audience?"
+    options: ["It lacks CDN-style caching and costs more per viewer, whereas cacheable segment delivery is far cheaper", "WebRTC cannot transcode multiple renditions, so viewers could not adapt bitrate", "WebRTC adds 20 to 30 seconds of delay, which makes it unsuitable for any audience"]
+    answer: 0
+    why: "WebRTC suits smaller, interactive audiences."
+  - q: "What is the trade-off of pushing latency lower?"
+    options: ["Lower latency has no downside once partial segments are used, only a small CPU cost", "Lower latency improves caching because shorter segments are reused more often", "Less buffer means higher stall risk, more infrastructure cost, and weaker caching"]
+    answer: 2
+    why: "A concert may prefer smooth playback with 15 seconds of delay over fragile low latency."
+  - q: "Why is request collapsing at the edge essential for live manifests?"
+    options: ["Manifests are unique per viewer, so collapsing merges them into one personalized file", "The manifest has a very short cache life, so millions of polls could all miss and hit the origin", "Collapsing lowers segment size so players download each segment faster"]
+    answer: 1
+    why: "One shared origin fetch serves all waiting requests, turning a flood into a trickle."
 ---
 
 ## How live differs from video on demand

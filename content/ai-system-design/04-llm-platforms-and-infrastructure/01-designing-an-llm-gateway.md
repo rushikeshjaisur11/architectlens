@@ -16,6 +16,24 @@ banner:
     - [model, "model A"]
     - [model, "model B"]
     - [shield, "policy"]
+predict:
+  question: "An upstream stream dies midway after the gateway has already sent part of the answer to the caller. What does the gateway do?"
+  options: ["It silently switches to the secondary provider and continues the stream", "It surfaces a clean error and lets the client retry", "It replays the full answer from the exact-match cache"]
+  answer: 1
+  why: "Text already sent would be inconsistent with a different provider's continuation, so the gateway cannot silently switch; it errors cleanly and the client retries."
+check:
+  - q: "A primary provider returns a safety refusal for a prompt. What should the gateway's fallback chain do?"
+    options: ["Retry on a second provider, since another model may answer", "Surface the refusal; fallback is for timeouts, 5xx and rate limits", "Retry on the same provider with a lower temperature setting"]
+    answer: 1
+    why: "Fallback chains retry only retryable failures such as timeouts, 5xx and rate limits, never safety refusals or client errors."
+  - q: "Why must fallback targets be evaluated for quality and not just checked for availability?"
+    options: ["Prompts behave differently across models, so a healthy fallback can still answer worse", "Health checks cannot detect provider outages quickly enough to help", "Fallback providers usually cost more, so spend must be validated first"]
+    answer: 0
+    why: "The lesson warns that prompts differ in how they behave across models, so failing over to a never-evaluated model is a common mistake."
+  - q: "Why should the gateway's cache be scoped by tenant and user instead of being one global cache?"
+    options: ["A global cache lowers hit rates because keys collide across teams", "A global cache cannot hash model, parameters and messages together", "A global cache could serve one tenant's private-data answer to another"]
+    answer: 2
+    why: "A global cache ignoring tenant and user leaks data; keys must include the user whenever responses contain user-specific private data."
 ---
 
 ## The problem

@@ -5,6 +5,24 @@ tags: ["eventual-consistency", "nosql", "distributed-systems"]
 sources:
   - "Shapiro et al., 'Conflict-Free Replicated Data Types' (2011)"
   - "Cassandra documentation on read repair and hinted handoff"
+predict:
+  question: "A key is written stale to one replica and is never read again. Which mechanism repairs it?"
+  options: ["Read repair, which fires on every write", "Anti-entropy, which compares replicas independent of reads", "Nothing, since stale replicas stay stale until rewritten"]
+  answer: 1
+  why: "Read repair only fires when a read touches the data, so anti-entropy covers rarely-read keys."
+check:
+  - q: "Why do anti-entropy processes use Merkle trees?"
+    options: ["To skip matching subtrees instead of comparing every key", "To encrypt replica data during transfer between nodes", "To guarantee that all replicas are always identical"]
+    answer: 0
+    why: "Matching hashes let replicas skip consistent subtrees, making comparison affordable at scale."
+  - q: "What is the main limitation of CRDTs as a conflict-resolution strategy?"
+    options: ["They require a central coordinator to merge replicas", "They only exist for a bounded set of data structures", "They need vector clocks to detect each conflict first"]
+    answer: 1
+    why: "Not every data model maps to an available CRDT, so Dynamo-style application resolution remains necessary there."
+  - q: "Why choose a text-editing CRDT over last-write-wins for collaborative editing?"
+    options: ["Last-write-wins merges both users' edits but too slowly", "CRDTs avoid network use by editing only locally", "It merges concurrent edits automatically instead of discarding one"]
+    answer: 2
+    why: "A CRDT merges divergent states deterministically, so no custom merge logic is needed and no edit is lost."
 ---
 
 ## Eventual consistency is a guarantee about convergence, not correctness at any given moment

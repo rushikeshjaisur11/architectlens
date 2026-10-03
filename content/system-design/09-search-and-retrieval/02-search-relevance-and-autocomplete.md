@@ -12,6 +12,24 @@ banner:
     - [server, "prefix"]
     - [doc, "BM25 + signals"]
     - [doc, "ranked"]
+predict:
+  question: "A search engine allows up to 2 character edits for fuzzy matching on every term. Which query suffers the most spurious matches?"
+  options: ["A 10-character term, because longer words have more near neighbours", "Both equally, because edit distance ignores the length of the term", "A 3-character term, because 2 edits is a huge share of its length"]
+  answer: 2
+  why: "Two edits on a 3-character string changes most of it, so many unrelated terms fall within tolerance. On a 10-character term the same tolerance is a much smaller relative change."
+check:
+  - q: "Why does autocomplete use a separate prefix-optimized index rather than the full-text index?"
+    options: ["The full-text index cannot store product titles, only long body fields", "Raising BM25 boosts on prefixes would let one index serve both well", "Prefix lookups and instant latency need a different structure than scoring"]
+    answer: 2
+    why: "Autocomplete needs prefix matching with sub-100ms latency on every keystroke. That has different performance characteristics from full-text relevance scoring."
+  - q: "For a 3-character prefix, why rank suggestions by search popularity rather than text relevance?"
+    options: ["A few characters carry little text to score, so frequent completions help more", "Popularity is always a stronger signal than text relevance at any query length", "Relevance scores cannot be computed for strings shorter than four characters"]
+    answer: 0
+    why: "With so few typed characters there is little signal for relevance scoring. The most commonly searched completions for that prefix are usually more useful."
+  - q: "Why must boost weights be re-tuned periodically instead of being set once at launch?"
+    options: ["Boost values expire in the engine and fall back to defaults over time", "Catalog, users and queries drift, so launch weights silently go stale", "Click data is only collected after launch, so it cannot affect scoring"]
+    answer: 1
+    why: "Weights that were reasonable at launch can mismatch as the catalog, user base or query patterns evolve. Without re-evaluation against real usage data, ranking quality drifts."
 ---
 
 ## Why "search works" and "search is good" are different bars

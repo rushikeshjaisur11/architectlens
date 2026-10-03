@@ -14,6 +14,24 @@ banner:
     - [doc, "timestamp"]
     - [doc, "worker bits"]
     - [doc, "sequence"]
+predict:
+  question: "A Snowflake worker's clock jumps backward after an NTP correction and it keeps issuing IDs naively. What can happen?"
+  options: ["Nothing, since the sequence counter prevents repeats", "It can re-issue an ID it already issued", "IDs just become non-sortable, but stay unique"]
+  answer: 1
+  why: "Snowflake depends on clock discipline, so real implementations check now < lastTimestamp and stall or error."
+check:
+  - q: "Why is random UUIDv4 a poor clustered primary key at high write volume?"
+    options: ["Random inserts scatter across the B-tree, causing page splits", "Its 128 bits are too large to index at all", "It needs a central service to avoid duplicates"]
+    answer: 0
+    why: "Random keys defeat B-tree insert locality, degrading throughput as the table grows."
+  - q: "Can Snowflake IDs from two different workers be used as a global happens-before order?"
+    options: ["Yes, since larger IDs always mean later events across all workers", "Yes, provided both workers use the same custom epoch and sequence bits", "No, since clock skew between machines makes cross-node order unreliable"]
+    answer: 2
+    why: "Close timestamps from different workers carry no reliable ordering because their clocks can disagree."
+  - q: "When would you pick UUIDv7 over a Snowflake-style ID?"
+    options: ["You want zero coordination and sortability, not compact 64-bit IDs", "You need compact 64-bit IDs with embedded shard information", "You need IDs that hide their creation time completely"]
+    answer: 0
+    why: "UUIDv7 gives zero coordination plus time ordering, while Snowflake suits compact 64-bit values with embedded worker data."
 ---
 
 ## Why auto-increment doesn't survive sharding

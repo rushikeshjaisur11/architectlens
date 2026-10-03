@@ -15,6 +15,24 @@ banner:
     - [server, "shards"]
     - [db, "HNSW index"]
     - [user, "top-k"]
+predict:
+  question: "A tenant upserts 100,000 vectors and queries immediately with a category filter. Are the new vectors searched?"
+  options: ["Yes, the mutable segment is brute-force scanned and includes them", "No, they appear only once the background index build finishes", "Yes, but only after compaction merges them into a sealed segment"]
+  answer: 0
+  why: "Queries search every segment, with the mutable one scanned by brute force, so fresh writes are visible before any ANN index exists for them."
+check:
+  - q: "Why does post-filtering fail for a very selective filter?"
+    options: ["It forces a rebuild of the HNSW graph for every query", "The ANN search returns top-k first, so discarding non-matches leaves few results", "Metadata filters cannot be evaluated after vectors are scored"]
+    answer: 1
+    why: "Post-filtering throws away most results when the filter is selective, which is why production systems use filter-aware search."
+  - q: "Why can adding more shards hurt query performance?"
+    options: ["Fan-out to every shard raises cost and tail latency, offsetting smaller indexes", "Smaller shards force a full re-index each time a vector is deleted", "Shards must be scaled with replicas, which doubles total storage"]
+    answer: 0
+    why: "A query fans out to all shards and merges, so over-sharding makes fan-out the latency bottleneck."
+  - q: "Why monitor recall by sampling exact search rather than watching latency alone?"
+    options: ["Exact search is cheap enough to run on every query in production", "Latency percentiles cannot be computed once data is sharded", "Fast ANN answers can still miss true neighbours, and only exact results expose it"]
+    answer: 2
+    why: "Latency says nothing about quality; comparing sampled ANN output with exact search yields the recall figure (96 percent in the example)."
 ---
 
 ## The problem

@@ -14,6 +14,24 @@ banner:
     - [server, "batcher"]
     - [model, "LLM"]
     - [db, "results"]
+predict:
+  question: "A pipeline needs 10 independent LLM calls, each taking about 3 seconds, before a final synthesis step. Roughly how long does the fan-out take with asyncio.gather versus sequentially?"
+  options: ["About 30 seconds with gather and about 3 seconds sequentially", "About 3 seconds with gather, versus about 30 seconds sequentially", "About 3 seconds either way, since the API processes calls in parallel"]
+  answer: 1
+  why: "Concurrency collapses wall-clock time to roughly the slowest single call instead of the sum, though it doesn't cut token cost."
+check:
+  - q: "A team assumes making its calls async will cut the bill like a batch API does. What is wrong with that?"
+    options: ["Async calls are billed at a higher rate than synchronous calls on most providers", "Async only helps with rate limits, and batch discounts need a paid support tier", "Concurrency cuts wall-clock time while the batch API cuts token cost, so they solve different problems"]
+    answer: 2
+    why: "Conflating the two levers is the lesson's named confusion; they compose rather than substitute."
+  - q: "Why cap concurrent in-flight requests with a semaphore instead of firing hundreds at once?"
+    options: ["Uncapped fan-out hits rate limits, and the retries and backoff can erase the latency win", "Providers bill each concurrent request separately, so a cap reduces the bill", "The model produces lower quality output when many requests arrive at the same moment"]
+    answer: 0
+    why: "Per-tier requests-per-minute and tokens-per-minute limits mean uncapped fan-out causes 429s."
+  - q: "Why is a batch API the wrong tool for a job with a hard SLA under an hour?"
+    options: ["Batch discounts disappear for jobs under an hour, so the savings no longer apply", "Batch jobs complete in minutes but the results can't be polled until the 24 hours pass", "The completion window can stretch to hours, so downstream steps assuming minutes would break"]
+    answer: 2
+    why: "Batch trades latency for cost; the guaranteed ceiling is 24 hours, so tight SLAs need synchronous calls."
 ---
 
 ## The core tradeoff

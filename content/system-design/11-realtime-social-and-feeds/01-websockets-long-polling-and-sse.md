@@ -12,6 +12,24 @@ banner:
     - [lb, "gateway"]
     - [server, "conn server"]
     - [doc, "push"]
+predict:
+  question: "A client polls every 10 seconds. A score changes 1 second after a poll returned 'nothing new'. About how long until the client sees it?"
+  options: ["Almost immediately, because the server pushes it over the open poll connection", "About 9 seconds, when the next scheduled poll fires", "About 20 seconds, because two polls are needed to confirm a change"]
+  answer: 1
+  why: "Plain polling has a latency floor equal to the poll interval, so the update waits for the next request."
+check:
+  - q: "Why use SSE rather than WebSockets for a live score ticker?"
+    options: ["The ticker only needs server-to-client push, so SSE's simpler connection suffices", "WebSockets cannot broadcast one message to many viewers at once", "SSE delivers events faster than WebSockets on any connection"]
+    answer: 0
+    why: "The ticker is one-directional, so WebSockets' bidirectional capability would cost more resources for nothing."
+  - q: "Why does long polling still fall short of SSE for frequent updates?"
+    options: ["It needs a special protocol that many proxies refuse to carry", "Each cycle needs a new request, so streaming many updates is awkward", "The server cannot hold a request open for more than milliseconds"]
+    answer: 1
+    why: "Long polling is still request-response under the hood, with setup and teardown on each cycle."
+  - q: "Why can a WebSocket design that works in testing fail at production scale?"
+    options: ["Stateless HTTP handling already covers persistent connections without planning", "The connection state lives only in the proxy, not on application servers", "Each open connection holds server memory, so few test connections hide the limits"]
+    answer: 2
+    why: "Per-connection resource cost must be included in capacity planning up front."
 ---
 
 ## The core problem: HTTP wasn't built for the server to speak first

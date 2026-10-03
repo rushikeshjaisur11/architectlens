@@ -14,6 +14,24 @@ banner:
     - [doc, "prompt"]
     - [gpu, "fine-tune"]
     - [shield, "eval"]
+predict:
+  question: "A support bot's knowledge base changes weekly and the team fine-tunes a model on it. What happens between fine-tuning runs?"
+  options: ["Answers go stale, and every update means another fine-tuning run", "The model notices changed facts and updates its own weights", "Answers stay current because new documents are absorbed on indexing"]
+  answer: 0
+  why: "Fine-tuned facts have no mechanism to detect staleness, so a changing knowledge base forces constant re-training. RAG avoids this by re-indexing."
+check:
+  - q: "Format deviations hit 15% of outputs even with good prompting, and the review task is stable. What is the best next step?"
+    options: ["Fine-tune with LoRA, since the gap is consistency rather than knowledge", "Switch to RAG, since retrieval is the fix for format compliance", "Keep prompting only, since fine-tuning is never worth its cost"]
+    answer: 0
+    why: "A measured consistency gap on a stable task is what fine-tuning is suited to close; RAG addresses knowledge access, not behavior."
+  - q: "Why is fine-tuning a poor way to inject facts that must stay current?"
+    options: ["Fine-tuned models cannot absorb any factual content at all", "Fine-tuned facts cannot be traced to a source or flagged as stale", "Fine-tuned facts are always less accurate than retrieved ones"]
+    answer: 1
+    why: "The model can absorb facts, but it cannot cite them or know when they are out of date, unlike retrieved RAG context."
+  - q: "Why do LoRA adapters make maintaining several fine-tuned variants practical?"
+    options: ["Each adapter needs its own full copy of the base model in memory", "Adapters are merged permanently, so tasks cannot be switched later", "Base weights stay frozen, so adapters swap over one shared base model"]
+    answer: 2
+    why: "Because the original weights are untouched, one base model can host many task adapters without multiple full copies."
 ---
 
 ## Three different tools for three different problems

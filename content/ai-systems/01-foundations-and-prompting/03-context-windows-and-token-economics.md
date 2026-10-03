@@ -7,6 +7,24 @@ sources:
   - "Hugging Face tokenizers documentation"
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
   - "Anthropic Engineering, 'Effective context engineering for AI agents', anthropic.com/engineering (fetched October 2026)"
+predict:
+  question: "A chat app resends the full history every turn and the conversation keeps growing. What happens as turns accumulate?"
+  options: ["Cost per turn rises, and eventually the request fails or truncates at the limit", "Cost per turn stays flat because earlier turns are cached for free", "The model automatically summarizes old turns to stay under the limit"]
+  answer: 0
+  why: "Token count and cost grow with each exchange, and exceeding the hard context limit fails outright or silently truncates."
+check:
+  - q: "A model offers a huge window. Why not just include everything on every call?"
+    options: ["Windows that large are billed at a much higher per-token rate", "Cost scales with tokens used, and recall degrades as the context fills", "Models ignore anything beyond the first part of the window"]
+    answer: 1
+    why: "Cost scales with tokens regardless of window size, and context rot or lost-in-the-middle effects reduce reliable use of buried facts."
+  - q: "In the coding-assistant example, why are old file contents dropped and re-read later?"
+    options: ["Files cannot be sent to the model more than once per session", "Re-reading is always cheaper than caching the file contents", "Keeping every viewed file forever costs tokens regardless of relevance"]
+    answer: 2
+    why: "The design avoids paying to keep every previously viewed file in context when it is no longer relevant, re-reading it when needed."
+  - q: "Why might summarization be chosen over a plain sliding window for chat history?"
+    options: ["It retains the gist of older turns, at the cost of some fidelity and a summarization step", "It guarantees no information is lost from earlier turns of the chat", "It is simpler to build and removes the need to count any tokens"]
+    answer: 0
+    why: "A sliding window drops older information entirely, while summarization keeps the gist but loses some fidelity and adds complexity."
 ---
 
 ## What a token actually is

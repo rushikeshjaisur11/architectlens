@@ -7,6 +7,24 @@ sources:
   - "Redis documentation on semantic caching patterns for LLM applications"
   - "Secondary reports on semantic cache hit rates and AWS-published chatbot research, 2026 (futureagi.com, spheron.network, getmaxim.ai)"
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
+predict:
+  question: "A support bot caches responses semantically and gets \"what's the status of my order\" from two different users. What happens when the second query matches the first?"
+  options: ["The second user gets the first user's order status, which is wrong, not just unhelpful", "The second user gets a fresh answer, since similarity matching considers account context", "The second user gets a correct answer, because identical wording implies the same order"]
+  answer: 0
+  why: "Account-specific answers depend on the individual's data, so even an exact text match doesn't imply the same correct answer."
+check:
+  - q: "Why choose a more conservative semantic similarity threshold than hit-rate optimization alone suggests?"
+    options: ["A wrong cached hit produces a plausible but incorrect answer, which is worse than a plain miss", "A tighter threshold always raises hit rate, since fewer queries are rejected as near-misses", "Embedding models become unreliable above a certain similarity score, so lower is always safer"]
+    answer: 0
+    why: "A miss just costs latency, while an over-loose match serves a confident wrong answer that is hard to notice."
+  - q: "Why can response caching change application behavior at non-zero temperature?"
+    options: ["Caching forces temperature to zero, which makes every later response less accurate", "Cached entries are re-sampled on each hit, so the same prompt yields noisier output", "Serving one stored sample repeatedly replaces fresh sampling with always returning that sample"]
+    answer: 2
+    why: "Equally valid outputs differ per call; a cache pins one sample, which may or may not be the intended behavior."
+  - q: "Why put a TTL on cached answers about return-policy questions?"
+    options: ["TTLs make semantic matching more accurate by expiring low-similarity entries", "A policy change would otherwise keep being served stale, with fluent phrasing hiding the staleness", "TTLs are required for prompt caching, which response caching depends on to work"]
+    answer: 1
+    why: "A TTL bounds how long an outdated answer can propagate after the underlying fact changes."
 ---
 
 ## Two different kinds of caching for LLM applications

@@ -15,6 +15,24 @@ banner:
     - [queue, "traces"]
     - [db, "store"]
     - [client, "dashboards"]
+predict:
+  question: "Faithfulness for the refund feature drops from 0.91 to 0.74 at 14:10, and many low-scoring traces show an empty retrieval span. Most likely cause?"
+  options: ["The provider raised latency, which lowers faithfulness scores", "Retrieval returned zero documents, so the model answered from nothing", "Sampling dropped the good traces, skewing the average downward"]
+  answer: 1
+  why: "In the lesson an index alias pointed at an empty collection; the LLM span then answered with nothing retrieved, and the trace tree made this visible."
+check:
+  - q: "Why prefer tail-based sampling over head-based sampling for traces?"
+    options: ["Head-based decides before the outcome, so it misses rare failures", "Tail-based sampling stores fewer traces, so it is always cheaper", "Head-based sampling cannot produce aggregate metrics at all"]
+    answer: 0
+    why: "Tail-based keeps errors, low scores and expensive traces after the outcome is known; head-based is cheaper but misses rare failures."
+  - q: "Why export spans asynchronously with bounded buffers and drop policies?"
+    options: ["Dropped spans are cheaper to reprocess than delayed spans", "Collectors reject spans that arrive synchronously", "Instrumentation must never slow or break the application"]
+    answer: 2
+    why: "Observability is secondary to the product, so under load it should drop or sample data rather than block requests."
+  - q: "Why not capture prompt and completion content by default?"
+    options: ["Content is too large for any span store to hold", "It is the most sensitive data, so gate it behind a flag with redaction", "Semantic conventions forbid recording content on spans"]
+    answer: 1
+    why: "Prompts hold personal and confidential data; capture content only behind a flag with redaction, short retention and tenant-scoped access, keeping metadata always on."
 ---
 
 ## The problem

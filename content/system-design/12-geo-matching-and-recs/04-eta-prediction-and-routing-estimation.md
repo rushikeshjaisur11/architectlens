@@ -13,6 +13,24 @@ banner:
     - [db, "road graph"]
     - [model, "ETA model"]
     - [doc, "estimate"]
+predict:
+  question: "The router returns a 4-minute baseline, and live segment speeds show congestion that the learned model corrects by about 3 minutes. What does the app show?"
+  options: ["7 minutes: the baseline plus the learned correction", "4 minutes: the router's baseline is authoritative", "3 minutes: only the model's residual is shown"]
+  answer: 0
+  why: "The model predicts a residual on top of the routing baseline, so the two add up."
+check:
+  - q: "Why do contraction hierarchies clash with live traffic?"
+    options: ["Hierarchies are slower than plain Dijkstra on large road networks", "Preprocessing assumes fixed weights, so use customizable variants or a correction", "Live traffic only affects A* heuristics, not hierarchical routers"]
+    answer: 1
+    why: "Static shortcuts go stale when edge weights change, so systems re-weight cheaply or correct on top."
+  - q: "Why not replace the router with an ETA model entirely?"
+    options: ["The model is too slow to run, even compared with Dijkstra", "The router already includes live traffic, making a model redundant", "The router gives path structure the model can't learn cheaply; the model fixes the rest"]
+    answer: 2
+    why: "Each handles what the other cannot: structure versus unknown conditions."
+  - q: "Why smooth the ETA as it is recomputed during a trip?"
+    options: ["A display flickering from 4 to 9 minutes hurts trust more than a steady, slightly off one", "Smoothing makes each recomputed estimate more accurate on every ping", "Recomputation is expensive, so it is limited to once per trip"]
+    answer: 0
+    why: "Stability of the displayed number matters to users more than reacting to every ping."
 ---
 
 ## Two different questions

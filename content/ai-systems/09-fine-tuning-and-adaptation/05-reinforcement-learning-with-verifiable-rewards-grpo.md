@@ -12,6 +12,24 @@ banner:
     - [model, "sample"]
     - [shield, "verify"]
     - [gpu, "update"]
+predict:
+  question: "GRPO samples 8 answers to one prompt; the verifier marks 3 correct and 5 wrong. What does the update do?"
+  options: ["Raises all 8 equally, since they share the same prompt", "Raises probability of the 3 above-mean answers and lowers the 5 below", "Trains a critic network to score each of the 8 answers"]
+  answer: 1
+  why: "Advantages are computed relative to the group mean, so correct answers are pushed up and wrong ones down with no critic."
+check:
+  - q: "A code reward is computed only from a visible test suite. What is the likely failure?"
+    options: ["The model special-cases the tests; hidden tests guard against this", "Nothing, since visible tests are exact and objective rewards", "Reward hacking only occurs with learned reward models"]
+    answer: 0
+    why: "The model optimizes exactly what is rewarded, loopholes included, so rewards should check outcomes the model cannot see."
+  - q: "Why can GRPO drop the value network that PPO needs?"
+    options: ["It trains a larger critic for more accurate baselines", "The group's own mean serves as the baseline, so no critic is trained", "It replaces the verifier with human preference rankings"]
+    answer: 1
+    why: "Group-relative advantages provide the baseline, which removes the memory-hungry critic."
+  - q: "SQL accuracy rose from 61% to 78% on the training schema but not on a new schema. What should the team conclude?"
+    options: ["Gains prove general SQL skill, so no further data is needed", "Gains are invalid because held-out sets cannot measure RL", "Gains did not transfer to new schemas; add schema variety to the tasks"]
+    answer: 2
+    why: "The model improved only where it trained, so the team adds schema variety to the training tasks."
 ---
 
 ## The problem with learning from human preferences

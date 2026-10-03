@@ -13,6 +13,36 @@ banner:
     - [cache, "cache"]
     - [db, "DB"]
     - [doc, "write policy"]
+predict:
+  question: "Under write-behind, a view counter on one key is incremented many times within a single flush interval. How many database writes result?"
+  options:
+    - "One, because writes to the same key coalesce into a single flush"
+    - "One per increment, since every cache write is flushed separately"
+    - "Zero, because write-behind never reaches the database"
+  answer: 0
+  why: "Write-behind defers the database write, so repeated writes to the same key can be coalesced into one, which is why it suits counters."
+check:
+  - q: "Which strategy fits an inventory count near zero, and why?"
+    options:
+      - "Write-behind, because fast writes matter most and a brief database lag is acceptable"
+      - "Cache-aside with no TTL, because the app never writes stale data into the cache"
+      - "Write-through, because a read right after a write must see the fresh count and the write latency is affordable"
+    answer: 2
+    why: "Write-through guarantees a read after a write sees the fresh value, at the cost of blocking each write on both stores."
+  - q: "Why does write-behind need a durable queue or replay log in front of the cache?"
+    options:
+      - "To bound the writes lost if the cache node crashes before the flush reaches the database"
+      - "To speed up reads by keeping recently written keys in a queue next to the cache"
+      - "To avoid cache pollution from cold values that are written but never read back"
+    answer: 0
+    why: "The database is behind until the flush, so a crash loses unflushed writes unless something durable can replay them."
+  - q: "Why is cache-aside paired with a short TTL plus invalidate-on-write instead of aiming for perfect consistency?"
+    options:
+      - "Cache-aside has no stale-read race, so the TTL is only a memory-saving measure"
+      - "A concurrent read can refill the cache with a value about to be overwritten, and the TTL bounds that"
+      - "The TTL lets the app skip writing to the database during peak traffic"
+    answer: 1
+    why: "The race between a database write and a cache refill cannot be closed cheaply, so the design accepts bounded staleness."
 ---
 
 ## The three strategies

@@ -7,6 +7,24 @@ sources:
   - "LLMLingua / LongLLMLingua papers (Microsoft Research)"
   - "\"Lost in the Middle: How Language Models Use Long Contexts\" (Liu et al., 2023)"
   - "LlamaIndex Response Synthesis / Refine and Tree Summarize documentation"
+predict:
+  question: "A ContextualCompressionRetriever with an LLM extractor is placed over a base retriever returning 20 chunks. By default, how many extra LLM calls does each query add?"
+  options: ["One call in total, since the extractor processes all 20 chunks together", "Two calls, one to filter the chunks and one to merge the survivors", "Twenty calls, since it issues one LLM call per retrieved chunk"]
+  answer: 2
+  why: "By default it makes one call per chunk, so at scale compression can cost more than the generation call it is meant to make cheaper."
+check:
+  - q: "For a legal or financial RAG system, why prefer extractive or token-level compression over free-form summarization?"
+    options: ["Summaries are always longer than the extracted sentences they replace", "Extractive methods can recombine facts split across several chunks", "Summarization tends to drop or blur specific figures and named entities"]
+    answer: 2
+    why: "Extractive compression removes text without rewriting it, so it cannot hallucinate new numbers."
+  - q: "What is the trade-off between index-time and retrieval-time compression?"
+    options: ["Index-time is reusable but fixed, retrieval-time is query-aware but adds latency", "Index-time is query-aware but slow, retrieval-time is cheap but never reusable", "Both are equally precise, and differ only in where the summary text is stored"]
+    answer: 0
+    why: "Index-time summaries amortize cost but cannot be tailored to a question. Retrieval-time compression cannot be precomputed."
+  - q: "Why might a team choose tree summarize over refine for many chunks?"
+    options: ["Tree summarize needs fewer LLM calls than refine for the same chunks", "Refine runs in parallel, so tree summarize is chosen to save latency", "Refine can anchor on early chunks, while tree summarize is parallel but costs more calls"]
+    answer: 2
+    why: "Refine is sequential and order-sensitive. Tree summarize is parallelizable and less order-sensitive, at the cost of more total calls."
 ---
 
 ## The problem compression solves

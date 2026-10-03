@@ -12,6 +12,24 @@ banner:
     - [cloud, "partition"]
     - [db, "node B"]
     - [shield, "C or A"]
+predict:
+  question: "A shopping cart is replicated across 3 regions and two regions are partitioned from each other. In the CP design, what happens to the minority region?"
+  options: ["It keeps accepting writes and merges them once the partition heals", "It stops accepting writes rather than risk divergence", "It accepts writes locally but rejects all reads until healing"]
+  answer: 1
+  why: "A CP design requires majority acknowledgement, so the minority side refuses writes instead of diverging."
+check:
+  - q: "Why is the 'pick two of three' shorthand misleading?"
+    options: ["Partitions will happen anyway, so the real choice is C or A during one", "Partition tolerance is optional on a fast network, so any two can be picked", "Consistency and availability can both always be kept during a partition"]
+    answer: 0
+    why: "Since partitions are a fact of life, CAP actually asks whether to sacrifice consistency or availability when one occurs."
+  - q: "Why is PACELC often more useful day to day than CAP?"
+    options: ["It removes the partition tradeoff, so systems can be both C and A", "It shows that AP systems have no consistency guarantee at all", "It captures that even without a partition you trade consistency against latency"]
+    answer: 2
+    why: "Every synchronous replication step added for consistency costs response time even when the network is healthy."
+  - q: "A payments flow and a product view counter live in one architecture. How should CAP apply?"
+    options: ["Label the whole system CP, since the payments flow needs consistency", "Choose per operation: CP for payments, AP for view counts", "Label the whole system AP, since view counts dominate traffic volume"]
+    answer: 1
+    why: "Real systems are often CP for some operations and AP for others, so a single system-wide label is a mistake."
 ---
 
 ## The three properties
@@ -32,6 +50,8 @@ The common shorthand — "pick two of three" — is misleading. In practice, net
 - **AP systems** (e.g. Cassandra in its default configuration, DynamoDB) keep serving requests during a partition, even if that means a client might read stale data from a node that hasn't caught up yet.
 
 Outside of partitions, most systems try to offer both C and A — CAP only bites when the network actually splits.
+
+<div data-anim="cap-partition"></div>
 
 ## Why this matters in practice
 

@@ -15,6 +15,24 @@ banner:
     - [lb, "gateway"]
     - [model, "LLM pool"]
     - [db, "memory"]
+predict:
+  question: "A user closes the browser tab halfway through a streamed answer. What should the chat service do?"
+  options: ["Keep generating to the end so the full answer is cached for later", "Cancel generation and store the partial message so a reconnect can resume", "Discard the partial output and restart the answer on reconnect"]
+  answer: 1
+  why: "The lesson says to cancel generation on disconnect to save GPU time and store partial output so a reconnect resumes."
+check:
+  - q: "Why scale the chat tier on concurrent streams rather than on request rate?"
+    options: ["Each reply is a long-lived connection, so the tier is connection-bound", "Request rate cannot be measured once responses are streamed", "Streams use more CPU per token than ordinary web requests do"]
+    answer: 0
+    why: "Long-lived SSE or WebSocket connections make the edge and chat tiers connection-bound, so concurrency is the limiting factor."
+  - q: "Why give paid users a separate queue with reserved capacity rather than one shared queue?"
+    options: ["Separate queues make every request faster during normal load", "A single queue cannot enforce per-user message limits", "Priority classes keep a surge from starving the traffic that must stay served"]
+    answer: 2
+    why: "Demand exceeds capacity at peaks, so priority classes and reservations decide who is degraded first; the worked example keeps paid users on a reserved pool."
+  - q: "Why disable the code-execution tool for the free tier during a launch surge?"
+    options: ["It protects limited sandbox capacity while core chat keeps working", "Free users are not allowed to run code under the terms of service", "Code execution is the main cause of prompt injection in surges"]
+    answer: 0
+    why: "The worked example degrades heavy tools first to protect sandbox capacity, and lifts the degradations in reverse order as queues drain."
 ---
 
 ## The problem

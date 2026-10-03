@@ -13,6 +13,24 @@ banner:
     - [db, "new data"]
     - [shield, "old tasks"]
     - [doc, "replay"]
+predict:
+  question: "A model gets 10+ epochs on a few hundred examples of one JSON output format. What is a likely symptom?"
+  options: ["General capabilities improve since extra epochs strengthen learning", "Only task accuracy changes; unrelated prompts stay unaffected", "Outputs drift toward that format even on unrelated prompts"]
+  answer: 2
+  why: "More epochs on narrow, repetitive data raises forgetting risk, visible as outputs collapsing toward the trained format."
+check:
+  - q: "A team evaluates only on the fine-tuning task's held-out set and sees big gains. What is the risk?"
+    options: ["Silent regression on general capabilities that were never re-measured", "None, since forgetting only affects the target task", "None, as long as the training loss is low enough"]
+    answer: 0
+    why: "Keep a general-capability eval running alongside task evals, because target-task gains can hide regressions elsewhere."
+  - q: "How do per-task LoRA adapters compare with rehearsal for avoiding forgetting?"
+    options: ["Adapters need replayed data in batches; rehearsal needs routing", "Adapters sidestep forgetting but need routing to the right adapter", "Both remove the need for general-capability evals"]
+    answer: 1
+    why: "Separate adapters never modify the base model, at the cost of routing requests; rehearsal instead mixes old data into training."
+  - q: "Does using LoRA guarantee that fine-tuning causes no forgetting?"
+    options: ["Yes, because the base weights are frozen during training", "No, LoRA forgets more than full fine-tuning at equal gain", "No: regressions can remain, especially at higher rank or when merged"]
+    answer: 2
+    why: "LoRA reduces forgetting substantially but not to zero, particularly when adapters are merged and reused as a new starting point."
 ---
 
 ## The problem

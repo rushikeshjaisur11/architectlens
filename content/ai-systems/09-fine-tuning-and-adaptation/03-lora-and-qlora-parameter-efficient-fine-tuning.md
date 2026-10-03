@@ -15,6 +15,24 @@ banner:
     - [gpu, "adapters"]
     - [doc, "small delta"]
     - [model, "tuned"]
+predict:
+  question: "A 4096x4096 attention projection is adapted with LoRA at rank 8. How many parameters are trained for that layer?"
+  options: ["About 8.4 million, half of the full matrix", "65,536, about 250x fewer than full fine-tuning of that matrix", "About 32,768, since only one rank-8 matrix is trained"]
+  answer: 1
+  why: "LoRA trains A and B: 4096x8 + 8x4096 = 65,536, versus about 16.8M for the full matrix."
+check:
+  - q: "GPU memory is not a constraint for your training run. Which is the better choice, LoRA or QLoRA?"
+    options: ["LoRA, since QLoRA's dequantization can make each step slower", "QLoRA, since 4-bit weights always shrink compute per step", "QLoRA, since it matches LoRA on speed and saves memory"]
+    answer: 0
+    why: "QLoRA saves memory, not time; dequantizing on the fly and paged optimizer swaps can make it slower per step."
+  - q: "Is a rank-4 adapter enough to teach a model a very different domain's vocabulary?"
+    options: ["Likely not: rank 4 can teach a format but lacks the capacity", "Yes, since low rank captures any task shift equally well", "Yes, provided alpha is raised to compensate for the rank"]
+    answer: 0
+    why: "Higher rank gives capacity for tasks far from the base distribution; low rank suits lightweight format or style changes."
+  - q: "What is the deployment trade-off between merged and unmerged LoRA adapters?"
+    options: ["Unmerged adapters add no latency because A and B are tiny", "Merging adapters improves accuracy over keeping them separate", "Merging into W removes added latency; unmerged adapters add some"]
+    answer: 2
+    why: "W' = W + BA gives zero added latency, while an unmerged adapter adds small but real inference cost, so serving needs an explicit strategy."
 ---
 
 ## The core idea

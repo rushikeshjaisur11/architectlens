@@ -11,6 +11,24 @@ banner:
     - [queue, "queue"]
     - [server, "channels"]
     - [phone, "devices"]
+predict:
+  question: "A platform announcement is fanned out as 5 million notification jobs all in the first few seconds. What does the lesson predict?"
+  options: ["The queue and downstream providers are overwhelmed exactly when the announcement most needs to go out reliably", "Delivery finishes fastest because workers parallelize without limit and providers simply absorb the burst", "Users receive duplicates because the preference lookup is skipped for bulk sends"]
+  answer: 0
+  why: "Broadcasts must be throttled and paced in controlled batches, because an instant fan-out overwhelms both internal queue capacity and provider rate limits."
+check:
+  - q: "Why does the triggering service publish to a queue instead of calling delivery synchronously?"
+    options: ["Queues guarantee push providers never rate-limit requests, so retries are unnecessary", "Its response time and reliability would otherwise be coupled to slow, third-party-dependent delivery", "Synchronous calls cannot read the user's preferences store before sending"]
+    answer: 1
+    why: "Async decoupling keeps the triggering service fast and independent of the less reliable provider path."
+  - q: "A push provider is failing continuously. What does the lesson recommend?"
+    options: ["Keep retrying every request with backoff until the provider recovers, never switching channels", "Drop the notifications, since delivery cannot be guaranteed while the provider is down", "Trip a circuit breaker to stop doomed requests, and try a fallback channel like SMS for important ones"]
+    answer: 2
+    why: "A circuit breaker stops wasted sends, and a fallback channel avoids giving up on genuinely important notifications."
+  - q: "Why batch rapid related events into one notification like '5 people liked your post'?"
+    options: ["It avoids flooding the user with near-identical alerts, a quality problem unrelated to delivery failure", "Push providers reject any user receiving more than one notification per minute", "It is required so that retries with backoff stay idempotent across channels"]
+    answer: 0
+    why: "The lesson frames batching as a product-quality concern: a small amount of logic prevents an overwhelming experience."
 ---
 
 ## Why notification systems are a genuinely distinct design problem

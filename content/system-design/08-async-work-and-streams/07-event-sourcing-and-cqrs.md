@@ -12,6 +12,24 @@ banner:
     - [db, "event log"]
     - [server, "projector"]
     - [db, "read model"]
+predict:
+  question: "An event-sourced order has accumulated thousands of events over its life. What keeps reading its current state fast?"
+  options: ["Snapshots, so a read replays only events after the latest one", "Deleting old events once they are older than the latest status", "Caching the full replay result permanently, with no further updates"]
+  answer: 0
+  why: "Snapshots materialize state periodically so reads avoid replaying the entire history, like compaction bounds LSM reads."
+check:
+  - q: "What is the main reason to choose event sourcing for a regulated order system?"
+    options: ["It makes reads faster than a conventional current-state model", "It removes the need for read-side projections or snapshots", "Audit and point-in-time reconstruction come from the architecture itself"]
+    answer: 2
+    why: "The event log is the full history, so no separate and possibly incomplete audit log is needed."
+  - q: "What breaks if event schema evolution is not planned from the start?"
+    options: ["Old-schema events cannot be replayed beside new ones, breaking reconstruction", "Snapshots stop being taken, so reads replay the whole log", "Projections become strongly consistent and block incoming writes"]
+    answer: 0
+    why: "Event sourcing's historical-reconstruction guarantee depends on replaying old events correctly."
+  - q: "A user reads right after writing and sees stale data from a CQRS read model. Why?"
+    options: ["The write side skipped validating the command before recording it", "The projection updates asynchronously and may lag behind the event log", "Snapshots were applied to the read model instead of the event log"]
+    answer: 1
+    why: "Projections are eventually consistent with the event log, so the application must handle or accept lag."
 ---
 
 ## The core idea behind event sourcing: store what happened, not just the current state

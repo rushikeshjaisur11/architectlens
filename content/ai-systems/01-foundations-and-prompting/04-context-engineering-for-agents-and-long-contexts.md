@@ -6,6 +6,24 @@ sources:
   - "Anthropic Engineering, 'Effective context engineering for AI agents' (September 2025), anthropic.com/engineering (fetched October 2026)"
   - "Liu et al., 'Lost in the Middle: How Language Models Use Long Contexts' (2023)"
   - "Anthropic pricing documentation, prompt caching and long-context pricing (fetched October 2026)"
+predict:
+  question: "An agent appends 6,000 tokens of test output per turn instead of keeping a 300-token failing assertion. What is the likely result by turn 8?"
+  options: ["Context is bloated with stale output and the agent repeats earlier mistakes", "Context stays small because old tool output is auto-evicted", "Accuracy improves since the agent sees every detail of each run"]
+  answer: 0
+  why: "The lesson's naive example reaches about 140,000 mostly stale tokens by turn 8, and the agent starts repeating earlier mistakes."
+check:
+  - q: "Why should variable content go last and stable content first in a context?"
+    options: ["Models read the beginning of a prompt with more attention", "A stable cached prefix stays valid; changing data at the top breaks it", "Variable content placed first is dropped when the window fills"]
+    answer: 1
+    why: "Putting changing data at the top breaks the cache on every request, while a stable prefix can be cached and reused."
+  - q: "Why delegate a codebase search to a sub-agent rather than run it in the main context?"
+    options: ["Sub-agents are more accurate than the coordinator at searching", "Sub-agents don't charge for the tokens they read while exploring", "It explores in a clean context and returns only a short summary"]
+    answer: 2
+    why: "The sub-agent may burn tens of thousands of tokens but hands back roughly 1,000-2,000 tokens, keeping the main context clean."
+  - q: "When tuning a compaction summary, why favor recall first?"
+    options: ["Losing a requirement is worse than keeping a redundant line", "Shorter summaries always cost more to generate than long ones", "Recall-focused summaries remove the need for any note-taking"]
+    answer: 0
+    why: "The lesson warns that lossy compaction dropping early constraints is a common failure, so recall comes before trimming."
 ---
 
 ## From prompts to context

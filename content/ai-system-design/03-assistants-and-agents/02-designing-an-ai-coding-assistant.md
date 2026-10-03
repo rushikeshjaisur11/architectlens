@@ -15,6 +15,24 @@ banner:
     - [db, "repo index"]
     - [model, "LLM"]
     - [doc, "suggestion"]
+predict:
+  question: "A developer keeps typing while a completion request for an older prefix is still in flight. What happens?"
+  options: ["The stale request finishes first and its suggestion is shown, then replaced", "The new request waits in a queue until the stale one has returned", "The stale request is cancelled and a new request fires for the current prefix"]
+  answer: 2
+  why: "The worked example says continued typing cancels the in-flight request for the stale prefix, and a new request fires."
+check:
+  - q: "Why route completion, chat and agent edits to different model tiers?"
+    options: ["One large model is too slow for completions and wasteful for chat", "Small models are always more accurate than large ones on completions", "Different tiers are needed because only large models can stream tokens"]
+    answer: 0
+    why: "The latency budgets differ (about 300 ms versus seconds versus tens of seconds), so a single big model fits none of them well."
+  - q: "Why treat acceptance rate as the north-star metric rather than latency alone?"
+    options: ["Acceptance rate is cheaper to collect than latency in the editor", "A fast but wrong suggestion is just noise to the developer", "Latency stops mattering once the model tier has been chosen"]
+    answer: 1
+    why: "The lesson states that a fast wrong suggestion is noise, so speed only helps if the suggestion is kept."
+  - q: "Why measure pull-request cycle time and revert rates instead of asking developers how much faster they feel?"
+    options: ["Developers are reluctant to report real speedups in surveys", "Self-reports are unreliable: METR found 19% slower work that felt about 20% faster", "Cycle time is required by the vendors' contract terms for rollout"]
+    answer: 1
+    why: "In METR's trial developers took 19% longer while believing they were about 20% faster, so auditable outcomes beat perception."
 ---
 
 ## The problem

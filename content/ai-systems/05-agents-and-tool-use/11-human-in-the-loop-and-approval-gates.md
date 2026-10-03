@@ -15,6 +15,24 @@ banner:
     - [shield, "approval gate"]
     - [user, "human"]
     - [server, "action"]
+predict:
+  question: "A human rejects an agent's refund call, and the agent's retry logic proposes a slightly different refund. If retries bypass the gate, what happens?"
+  options: ["The retry is blocked automatically by the earlier rejection", "The retry runs only after an automatic risk score", "The rejection is silently circumvented by the changed call"]
+  answer: 2
+  why: "A retry should re-enter the approval gate, otherwise the agent routes around the human's decision."
+check:
+  - q: "What should decide whether a tool call needs a gate?"
+    options: ["Irreversibility and blast radius, not task difficulty", "How complex the agent's reasoning for the task was", "How many steps the agent has already taken"]
+    answer: 0
+    why: "A single email send needs a gate, while a hard read-only research task does not."
+  - q: "When is post-hoc review with rollback the wrong choice?"
+    options: ["When actions are logged with an audit trail", "When actions are irreversible, like payments or sent emails", "When writes are versioned or soft-deleted"]
+    answer: 1
+    why: "A log entry after money has moved is forensics, not prevention."
+  - q: "What is the cost of gating every tool call uniformly?"
+    options: ["Agents lose the ability to propose actions at all", "Reviewers must approve each plan before it is written", "Approval fatigue, as reviewers stop reading and rubber-stamp"]
+    answer: 2
+    why: "Uniform gating erodes the safety benefit it was meant to provide."
 ---
 
 ## Why autonomy needs a throttle, not an on/off switch

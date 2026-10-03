@@ -12,6 +12,24 @@ banner:
     - [model, "think"]
     - [server, "tool"]
     - [doc, "observe"]
+predict:
+  question: "A support agent has a 10-tool-call cap per request. At call 10 it still has not resolved the request. What should happen?"
+  options: ["It keeps retrying with a fresh cap until the request resolves", "It hands off to a human with the full trace attached", "It returns its best guess to the user without flagging it"]
+  answer: 1
+  why: "The lesson's design hands off to a human with the trace rather than retrying indefinitely, so a stuck agent surfaces its failure."
+check:
+  - q: "Why prefer get_order_by_id over a broad run_arbitrary_query tool?"
+    options: ["Narrow tools bound what can go wrong even if the model's reasoning fails", "Narrow tools make the model write more accurate SQL statements", "Narrow tools remove the need for a step cap on the loop"]
+    answer: 0
+    why: "A tool schema limits the possible actions, so a bad prompt, adversarial input or model mistake cannot trigger a destructive query."
+  - q: "How should issue_refund be guarded in an otherwise autonomous agent?"
+    options: ["Let the model execute any refund once it states its reasoning", "Auto-approve under a dollar threshold and route larger ones to a human", "Require human approval for every tool, including order lookups"]
+    answer: 1
+    why: "Gating by risk keeps low-value refunds fast while a wrong irreversible action above the threshold gets a human check."
+  - q: "Why log the full thought, tool call and result trace instead of only the final output?"
+    options: ["Full traces let the agent skip reasoning steps on later runs", "A good step cap makes final-output logs sufficient for debugging", "The final output cannot show which step led to a wrong action"]
+    answer: 2
+    why: "Debugging a wrong refund needs the observation or reasoning step that caused it, which the outcome alone does not record."
 ---
 
 ## What makes something an "agent" rather than a chatbot
@@ -29,6 +47,8 @@ The model never directly executes anything — it only requests a call; the appl
 ## The ReAct pattern: reasoning interleaved with acting
 
 A common structure for agent loops, formalized as **ReAct** (Reason + Act), interleaves the model's reasoning about what to do with the actual tool calls and their results: the model produces a thought ("I need to check the user's order history before refunding"), an action (call `get_order_history`), observes the result, produces another thought based on what it found, and continues. Making the reasoning step explicit — rather than jumping straight to actions — measurably improves an agent's ability to handle multi-step tasks and recover from unexpected tool results, since the model has a visible place to reconsider its plan rather than committing to a rigid pre-planned sequence.
+
+<div data-anim="agent-loop"></div>
 
 ## Why agent loops need harder guardrails than single-shot prompts
 

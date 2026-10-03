@@ -13,6 +13,24 @@ banner:
     - [model, "prompt v2"]
     - [shield, "regression"]
     - [server, "CI gate"]
+predict:
+  question: "A prompt tweak raises overall golden-set accuracy from 89% to 91%, but the out-of-scope category, a small slice of traffic, fails far more often. What does the lesson's CI practice imply?"
+  options: ["Merge it, since the blended score went up", "Block or inspect it, because gating is on category-level regressions", "Merge it and re-run the set only after a provider model update", "Delete the out-of-scope examples so the set stays representative"]
+  answer: 1
+  why: "The lesson says to gate on category-level regressions, not a single blended number, which can hide a drop in a hard slice."
+check:
+  - q: "Why tag golden examples by category and difficulty rather than keeping one flat list of cases?"
+    options: ["Aggregates can hide a regression on the hard 10% of traffic, while category tags show which slice degraded", "Category tags let exact-match graders replace every LLM judge in the pipeline", "Flat lists cannot be put into version control, but tagged lists can", "Tags reduce the dataset to under 100 examples, which is the required maximum"]
+    answer: 0
+    why: "A flat list of easy cases hides regressions on hard traffic; tags make the regression report show which category degraded."
+  - q: "Why re-run the full golden set when the model provider updates, even if your prompt did not change?"
+    options: ["Prompts are re-tokenized on each provider update, so they must be rewritten", "A silent model version bump behind the same endpoint can shift behavior on the exact same prompt", "Provider updates automatically delete cached baselines, forcing a fresh run", "The golden set expires after a fixed number of days and must be regenerated"]
+    answer: 1
+    why: "The lesson notes an API endpoint can change model versions silently, shifting behavior without any change on your side."
+  - q: "Why check the golden set into version control next to the prompts it tests?"
+    options: ["It prevents anyone from adding new production failures to the set later", "Git history is what computes the pass/fail delta, so no baseline is needed", "Prompt and test set move together, so old runs stay reproducible and comparisons have a fixed baseline", "Version control makes the set statistically significant at only 100 examples"]
+    answer: 2
+    why: "Versioning keeps changes and tests in sync and gives a fixed comparison point, so regressions are shown in a diff instead of argued about."
 ---
 
 ## Why prompts need regression tests

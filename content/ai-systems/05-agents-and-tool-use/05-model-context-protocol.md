@@ -13,6 +13,24 @@ banner:
     - [server, "MCP client"]
     - [server, "MCP server"]
     - [db, "tools"]
+predict:
+  question: "Three AI applications must each use five tools. How many integrations are needed without MCP versus with MCP?"
+  options: ["15 without MCP, and 8 with MCP", "15 without MCP, and 5 with MCP", "8 without MCP, and 15 with MCP"]
+  answer: 0
+  why: "Without a standard it is N x M (3 x 5 = 15) bespoke integrations; with MCP each side is wrapped once, N + M (3 + 5 = 8)."
+check:
+  - q: "Why does the host, not the model, sit at the trust boundary?"
+    options: ["The model talks to servers directly, so the host only logs calls", "The host mediates all server access, so permissions and logging live there", "Servers hold the permissions, so the host only starts them"]
+    answer: 1
+    why: "The model never talks to a server directly; the host handles permission prompts, allow-lists and logging."
+  - q: "Why are a malicious MCP server's tool descriptions a risk?"
+    options: ["Descriptions run as code inside the host process on connection", "Descriptions are cached forever, so a bad one cannot be removed", "Descriptions enter the model's context and can carry injected instructions"]
+    answer: 2
+    why: "It is indirect prompt injection through a new channel, so descriptions should be reviewed like code."
+  - q: "Why does the 2026-07-28 stateless design help operations?"
+    options: ["Servers can sit behind round-robin load balancers without a shared session store", "Servers no longer need any authorisation checks on requests", "Clients can keep long-lived sessions open to many servers cheaply"]
+    answer: 0
+    why: "Each request carries its own version and capabilities, so stateless servers scale horizontally."
 ---
 
 ## The integration problem MCP exists to solve

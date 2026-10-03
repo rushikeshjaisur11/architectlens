@@ -13,6 +13,24 @@ banner:
     - [cache, "result cache"]
     - [db, "index"]
     - [doc, "top-k"]
+predict:
+  question: "A write-heavy index refreshes every 1 second, and its aggregations use the shard request cache. What hit rate should you expect?"
+  options: ["High, because identical aggregation requests repeat all day long", "Low, because each refresh invalidates the shard's cached results", "Unaffected, because the cache is keyed only by the request body"]
+  answer: 1
+  why: "The shard request cache is invalidated whenever the shard's data changes on refresh. A short refresh interval on a busy index therefore clears it constantly."
+check:
+  - q: "Why is moving an exact-match clause from `must` to `filter` context a performance win?"
+    options: ["Filter clauses skip scoring and produce cacheable bitsets", "Filter clauses are always evaluated before must clauses on the shard", "Filter context reads from the replica instead of the primary shard"]
+    answer: 0
+    why: "Filters are yes/no, so no scoring is needed, and their matching-document bitsets can be reused across many requests."
+  - q: "What is the main reason doc values replaced lazily built fielddata for sorting and aggregations?"
+    options: ["Doc values compress better than fielddata, shrinking the on-disk index", "Doc values let analyzed text fields be sorted without a keyword sub-field", "The cost is paid once at index time, not unpredictably at query time"]
+    answer: 2
+    why: "Fielddata was built at query time in uncapped heap memory and often caused OOMs. Doc values are column-oriented on-disk structures built during indexing."
+  - q: "Why prefer `search_after` over deep `from/size` pagination?"
+    options: ["Deep paging makes each shard compute and drop all the preceding hits", "from/size results cannot be sorted when the offset exceeds 10,000 hits", "search_after caches every page so later requests skip the shards"]
+    answer: 0
+    why: "With from/size each shard must handle from + size results, so cost grows the deeper you page. search_after avoids discarding all preceding hits each time."
 ---
 
 ## Where caching happens in a search stack

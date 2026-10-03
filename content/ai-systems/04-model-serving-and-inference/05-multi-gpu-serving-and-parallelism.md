@@ -12,6 +12,24 @@ banner:
     - [gpu, "GPU 0"]
     - [gpu, "GPU 1"]
     - [gpu, "GPU 2"]
+predict:
+  question: "A model needs about twice the memory of one GPU. The team adds a second identical GPU as a data-parallel replica. What happens?"
+  options: ["The model is split across both GPUs, so it now fits and serves at half the memory per GPU", "Each GPU holds half of the layers, so requests flow through both in sequence", "The model still does not fit on either GPU, because each replica needs the whole model"]
+  answer: 2
+  why: "Data parallelism replicates the entire model to scale throughput; it cannot split a model that does not fit."
+check:
+  - q: "Why is tensor parallelism across servers connected only by standard networking a poor design?"
+    options: ["Each layer boundary needs frequent partial-result exchange, so slow links erase the benefit", "Tensor parallelism cannot run on more than one server under any interconnect", "Weights must be duplicated on every server, which exhausts memory"]
+    answer: 0
+    why: "Tensor parallelism communicates at every layer, so interconnect bandwidth is a hard constraint."
+  - q: "Why is pipeline parallelism the better choice for spanning servers than tensor parallelism?"
+    options: ["It removes the need to communicate between servers, so network speed is irrelevant", "It communicates only at layer-range boundaries, which tolerates lower-bandwidth links", "It keeps every GPU fully busy, so no scheduling is required"]
+    answer: 1
+    why: "Communication happens only between assigned layer ranges, though bubbles still need micro-batching."
+  - q: "A naive pipeline-parallel deployment shows low GPU utilization. What is the likely cause and fix?"
+    options: ["Interconnect bandwidth is too low; switch to data parallelism", "The model is too small to shard; move to a single GPU", "Pipeline bubbles leave GPUs idle; micro-batching keeps more stages busy"]
+    answer: 2
+    why: "Later stages wait for earlier ones, and splitting batches into overlapping micro-batches fills the idle gaps."
 ---
 
 ## Why a single GPU eventually stops being enough

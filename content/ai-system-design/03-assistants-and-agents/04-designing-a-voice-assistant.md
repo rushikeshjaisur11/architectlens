@@ -7,6 +7,24 @@ sources:
   - "WebRTC specification and documentation on real-time audio transport"
   - "Public engineering articles on voice agents, turn detection and barge-in"
   - "Provider documentation and independent benchmark reports on OpenAI Realtime and Gemini Live APIs, September 2026 (secondary: inworld.ai, softcery.com, foundrysoft.co)"
+predict:
+  question: "The user reads out a prescription number and ASR confidence is low. What does the assistant do before calling the refill tool?"
+  options: ["It calls the tool with its best guess and corrects it if the user objects", "It reads the number back and waits for the user to confirm it", "It transfers the call to a human agent without asking the user again"]
+  answer: 1
+  why: "The worked example has the assistant read the number back for confirmation rather than act on a low-confidence transcript."
+check:
+  - q: "Why combine VAD, transcript completeness and prosody instead of one fixed silence timeout?"
+    options: ["A fixed timeout is either too slow for long pauses or cuts people off mid-thought", "VAD alone cannot detect silence, so other signals are always required", "A fixed timeout is more expensive to run than a combined detector"]
+    answer: 0
+    why: "The lesson says a fixed timeout is too slow or too eager, so better systems combine signals with a short timeout as fallback."
+  - q: "Why autoscale voice workers on active sessions rather than on CPU?"
+    options: ["CPU metrics are unavailable on GPU pools used for ASR and TTS", "Calls hold long-lived streams, so the system is bound by connections", "Sticky routing makes CPU usage identical across all replicas"]
+    answer: 1
+    why: "Each call holds long-lived streams, making the system connection-bound, so active sessions track real load."
+  - q: "Why might a team choose a cascaded STT-LLM-TTS pipeline over a native speech-to-speech API?"
+    options: ["Native APIs cannot reach latencies below one second end to end", "Cascaded pipelines are always cheaper per minute than native APIs", "It gives control of each stage, easy tool use and the ability to swap vendors"]
+    answer: 2
+    why: "The lesson says cascaded designs give control over each stage and easy tool use, while native APIs trade that for lower reported latency."
 ---
 
 ## The problem

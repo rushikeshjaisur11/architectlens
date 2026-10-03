@@ -13,6 +13,24 @@ banner:
     - [queue, "partitions"]
     - [server, "consumer group"]
     - [db, "log segments"]
+predict:
+  question: "A topic has 6 partitions and the consumer group runs 3 instances. One instance crashes. What happens?"
+  options: ["Its 2 partitions go idle until a replacement joins the group", "The group rebalances, giving its 2 partitions to the survivors", "The topic is repartitioned into 4 partitions to match"]
+  answer: 1
+  why: "The coordinator triggers a rebalance and reassigns the crashed instance's partitions, briefly pausing consumption."
+check:
+  - q: "Why does over-partitioning for parallelism have a cost?"
+    options: ["Ordering is lost entirely once a topic passes a set number of partitions", "Rebalances get larger and slower, with more file handles and replication overhead", "Each consumer must then read every partition, duplicating work"]
+    answer: 1
+    why: "More partitions give headroom but slow rebalances and add per-broker overhead."
+  - q: "What is the risk of auto-committing offsets on a timer regardless of processing outcome?"
+    options: ["A crash can skip messages that were never actually finished", "Messages are redelivered forever because offsets never advance", "Consumer groups lose their ability to rebalance after a commit"]
+    answer: 0
+    why: "Committing before processing completes makes the consumer resume past work it never finished."
+  - q: "What does Pulsar's architecture gain by separating brokers from BookKeeper storage?"
+    options: ["Pulsar guarantees ordering across a whole topic, unlike Kafka", "Consumers no longer track any position, so offsets become unnecessary", "A broker crash fails over without moving any stored data"]
+    answer: 2
+    why: "Brokers are stateless regarding storage, so topic ownership moves without data movement."
 ---
 
 ## The log as the core abstraction
