@@ -7,6 +7,8 @@ sources:
   - "Basiri et al., 'Chaos Engineering', IEEE Software (2016)"
   - "Principles of Chaos Engineering (principlesofchaos.org)"
   - "Netflix Hystrix project documentation (circuit breaker and bulkhead patterns)"
+  - "InfoQ, 'Enhancing Reliability Using Service-Level Prioritized Load Shedding: Netflix at QCon SF 2025' (November 2025), infoq.com/news/2025/11/netflix-prioritized-loadshedding (fetched October 2026)"
+  - "Basiri et al., 'Automating Chaos Experiments in Production' (ICSE-SEIP 2019), arXiv 1905.04648"
 ---
 
 *Provenance note: this lesson summarizes publicly described practices from memory of the sources above. Specific dates and tool details should be checked against the primary posts before being quoted.*
@@ -71,6 +73,10 @@ Chaos engineering tests resilience patterns, and Netflix popularized several:
 - **Limit blast radius** and keep a stop button.
 - **Culture matters as much as tooling.** The monkey works because teams are expected to build for it.
 - **Begin modestly.** You do not need Netflix's scale to run a game day that kills one instance in staging, then one in production.
+
+## Current practice (verified October 2026)
+
+The Simian Army era gave way to targeted platforms: **ChAP** (Chaos Automation Platform) diverts a small slice of production traffic into an experiment cluster and a matching control cluster, injects failure into the experiment, and compares the two. At QCon SF in November 2025 Netflix described **service-level prioritized load shedding**: decisions moved from central API gateways into each service, request priority is set early and propagated by header (user-initiated playback high; prefetch and background work low; data writes ahead of reads), per-cluster shedding functions are generated from CPU, latency and concurrency metrics, and chaos experiments validate every configuration. The model keeps a **success buffer** (capacity for normal traffic) and a **failure buffer** (capacity reserved to reject excess traffic cleanly), which matters for content launches where traffic outruns autoscaling. This lesson's Hystrix material is historical: Hystrix is in maintenance mode, so use a current resilience library or the mesh. Source for the 2025 talk is a secondary news report of the presentation.
 
 ## Common mistakes when adopting the approach
 

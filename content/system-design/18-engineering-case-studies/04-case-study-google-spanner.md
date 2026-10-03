@@ -4,6 +4,8 @@ short_title: "Case Study: Google Spanner"
 tags: ["case-study", "spanner", "consistency", "distributed-systems"]
 sources:
   - "Corbett et al., 'Spanner: Google's Globally-Distributed Database' (OSDI 2012)"
+  - "Google Cloud, 'Introducing Spanner Omni' (announced 23 April 2026, preview), cloud.google.com/blog/products/databases/introducing-spanner-omni (fetched October 2026)"
+  - "Google Cloud Spanner product page, cloud.google.com/spanner (via search results, October 2026)"
 ---
 
 ## The problem: wanting both global distribution and strong consistency
@@ -33,6 +35,10 @@ Where Dynamo and TAO deliberately chose availability over strict consistency for
 - **Without TrueTime-style bounded clock uncertainty**, guaranteeing this ordering globally would require either sacrificing availability during any partition (a CP choice, per this track's CAP theorem lesson, likely with real latency cost from needing wide-area consensus per transaction) or accepting some risk of the audit query missing the debit if clock skew between datacenters isn't tightly bounded and accounted for.
 - **With TrueTime and commit-wait**, the debit transaction's commit genuinely waits out its uncertainty interval before completing, guaranteeing that by the time it's visible anywhere, real time has passed its commit timestamp everywhere — the audit query, running afterward in real time from any datacenter, is guaranteed to see it, achieving the external-consistency requirement directly rather than through application-level coordination workarounds.
 - **The cost is accepted deliberately**: the added per-commit latency from commit-wait is judged worthwhile specifically because this system's correctness requirement (financial-ledger ordering guarantees) genuinely needs this strength of consistency, unlike Dynamo's shopping-cart or TAO's social-graph use cases, which explicitly didn't need it and chose to avoid this cost in favor of better availability and lower latency for their different requirements.
+
+## Current practice (verified October 2026)
+
+Spanner has moved beyond the 2012 paper. **Spanner Omni** (announced 23 April 2026, preview; Developer Edition for non-production use, Commercial Edition by early access) is a downloadable, self-managed Spanner that runs on-premises, across clouds, or on a laptop. Its notable change for this lesson: it replaces hardware TrueTime (atomic clocks and GPS) with a **software-based, error-bounded time source** that tolerates weaker uncertainty bounds. External consistency still depends on bounded uncertainty, and looser bounds mean longer commit-wait, so the latency cost shown above is the price of cheaper clocks. The managed service offers single-region, dual-region and multi-region configurations with availability up to 99.999% (Google's product page), and the Enterprise edition adds a columnar engine for analytics next to transactions. Check current editions and SLAs before quoting them.
 
 ## Common mistakes when applying this case study's lessons
 

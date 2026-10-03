@@ -6,6 +6,8 @@ sources:
   - "Uber Engineering blog, 'Designing Schemaless, Uber Engineering's Scalable Datastore Using MySQL' (2016)"
   - "Uber Engineering blog and open-source repository for DOSA (Declarative Object Store Abstraction)"
   - "Chang et al., 'Bigtable: A Distributed Storage System for Structured Data' (Google, OSDI 2006), for the data model Schemaless resembles"
+  - "Uber Engineering, 'Evolving Schemaless into a Distributed SQL Database' (Docstore, 23 February 2021), uber.com/us/en/blog/schemaless-sql-database (fetched October 2026)"
+  - "Uber Engineering, 'MySQL to MyRocks Migration in Uber's Distributed Datastores' (2022), uber.com (via search results, October 2026)"
 ---
 
 *Provenance note: this summary comes from recollection of the public Uber engineering posts above, written years ago. Uber's platform has evolved since, so treat details as a snapshot of the design thinking rather than the current system, and check the original posts.*
@@ -59,6 +61,10 @@ The notable design point is that DOSA presented a **uniform interface across dif
 - When the trip ends, a second cell is appended for column `STATUS` with reference key 2 (completed fare, end time). Readers asking for the trip fetch the latest version of each column.
 - A secondary index keyed by driver ID and date lets the driver app list recent trips; it updates asynchronously, so a trip may appear in the list a moment after completing.
 - A trigger on the trip data stream feeds the billing pipeline, processing cells in order without the trip service needing to publish a separate event.
+
+## Current practice (verified October 2026)
+
+Schemaless evolved into **Docstore**, a general-purpose multi-model database Uber describes as offering strict serializability per partition. Its layers are a stateless query engine, a distributed storage engine and a control plane. Storage is still MySQL, now on **MyRocks** (an LSM-tree engine on RocksDB), and **Raft** replicates each partition across 3 to 5 nodes, with a MySQL transaction as the replication unit. Uber reported moving all Schemaless and some Docstore instances to MyRocks since 2019, because disk space was the bottleneck at tens of petabytes. The lesson for builders is the same as above in a stronger form: a sharded relational engine plus a consensus layer for replication can grow into a distributed SQL-style database, but only a platform team operating at this scale should build one; most teams should buy a managed distributed database. The primary posts date from 2021 and 2022, so check for newer Uber engineering writing.
 
 ## Common mistakes when borrowing this idea
 
