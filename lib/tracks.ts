@@ -37,13 +37,15 @@ const AI_SYSTEMS_CATEGORIES: Category[] = [
 ];
 
 const AI_SYSTEM_DESIGN_CATEGORIES: Category[] = [
-  { number: 1, slug: "knowledge-and-search-products", name: "Knowledge and search products" },
-  { number: 2, slug: "assistants-and-agents", name: "Assistants and agents" },
-  { number: 3, slug: "llm-platforms-and-infrastructure", name: "LLM platforms and infrastructure" },
-  { number: 4, slug: "data-feedback-and-training-loops", name: "Data, feedback and training loops" },
-  { number: 5, slug: "enterprise-and-multi-tenant-ai", name: "Enterprise and multi-tenant AI" },
-  { number: 6, slug: "media-and-content-ai", name: "Media and content AI" },
-  { number: 7, slug: "reliability-cost-and-scale", name: "Reliability, cost and scale" },
+  { number: 1, slug: "foundations-and-methodology", name: "Foundations and methodology" },
+  { number: 2, slug: "knowledge-and-search-products", name: "Knowledge and search products" },
+  { number: 3, slug: "assistants-and-agents", name: "Assistants and agents" },
+  { number: 4, slug: "llm-platforms-and-infrastructure", name: "LLM platforms and infrastructure" },
+  { number: 5, slug: "data-feedback-and-training-loops", name: "Data, feedback and training loops" },
+  { number: 6, slug: "enterprise-and-multi-tenant-ai", name: "Enterprise, security and compliance" },
+  { number: 7, slug: "media-and-content-ai", name: "Media and content AI" },
+  { number: 8, slug: "reliability-cost-and-scale", name: "Reliability, cost and scale" },
+  { number: 9, slug: "industry-solutions", name: "Industry solutions" },
 ];
 
 export const TRACKS: Track[] = [

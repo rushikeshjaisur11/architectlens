@@ -1,0 +1,92 @@
+---
+title: "Designing a Clinical Documentation Assistant"
+short_title: "Clinical Documentation Assistant"
+tags: ["healthcare", "clinical-notes", "ambient-scribe", "hipaa", "safety", "design"]
+sources:
+  - "HHS, HIPAA Privacy and Security Rules overview"
+  - "HL7 FHIR specification (Fast Healthcare Interoperability Resources)"
+  - "Public clinical informatics literature on ambient documentation and note quality evaluation"
+---
+
+*Engineering patterns only; clinical and legal requirements vary by jurisdiction and must be confirmed with clinical safety, privacy and legal teams.*
+
+## The problem
+
+Clinicians spend a large part of the day documenting. An **ambient clinical documentation assistant** listens to a consultation (with consent), transcribes it, and drafts a structured note for the clinician to review, edit and sign, possibly pre-populating orders and codes. The value is time returned to patient care. The risks are specific and serious: a hallucinated symptom, medication or dose in a medical record can harm a patient, and the data is among the most sensitive there is.
+
+## Step 1: Requirements
+
+- **Output:** a structured note (for example SOAP: subjective, objective, assessment, plan) in the clinic's template and style, with problem list, medications and follow-ups.
+- **Safety:** every statement in the draft traceable to something said or recorded; no invented findings, doses or diagnoses.
+- **Workflow:** clinician reviews and signs; the assistant never files unsigned content as final.
+- **Integration:** read context from and write drafts to the electronic health record (EHR) via standard interfaces.
+- **Privacy and compliance:** consent, minimum necessary data, encryption, audit, residency, business associate agreements with vendors.
+- **Latency:** draft available within a minute or two after the visit.
+- **Scale (example):** 3,000 clinicians, 12,000 visits a day.
+
+## Step 2: Pipeline
+
+1. **Consent and capture:** record patient and clinician consent in the workflow; capture audio from the device with clear indicators.
+2. **Speech recognition** tuned for medical vocabulary, accents and noisy rooms, with speaker separation (clinician, patient, others).
+3. **Context assembly:** pull relevant history from the EHR (problem list, medications, allergies, recent results) through FHIR APIs, scoped to the patient and the encounter.
+4. **Structured extraction:** identify clinically relevant facts: symptoms, history, exam findings, assessments, plans, medications with doses.
+5. **Note generation:** draft sections in the clinic's template, with each statement linked to transcript evidence.
+6. **Verification:** automated checks (below), then the clinician reviews.
+7. **Sign and file:** the clinician edits and signs; the note and audit trail are stored in the EHR.
+8. **Retention:** audio and transcripts deleted or retained according to policy.
+
+## Step 3: Grounding and faithfulness
+
+Medical notes must reflect what actually happened. Techniques:
+
+- **Evidence linking:** each sentence or fact in the draft references the transcript spans (and EHR items) that support it; the UI highlights them on click.
+- **Constrained generation:** extract facts first into a typed structure, then render the note from those facts, so the generator cannot add unsupported content.
+- **Attribution of source:** distinguish patient-reported ("patient reports chest pain for 2 days") from clinician observation and from the EHR history.
+- **Uncertainty handling:** ambiguous or inaudible content is flagged for the clinician rather than guessed; omit rather than invent.
+- **No new clinical reasoning by default:** the assistant records, it does not diagnose; any suggestions are clearly labelled as such and optional.
+
+## Step 4: Automated safety checks
+
+- **Unsupported-claim detection:** an independent verifier checks each claim against the transcript and flags those without support.
+- **Medication safety:** validate drug names against a formulary, check doses and units for plausibility, compare with the active medication list and known allergies, and highlight discrepancies.
+- **Negation and temporality:** "denies chest pain" must not become "chest pain"; "history of" must not become current.
+- **Laterality and numbers:** left versus right, measurements and dates verified against the transcript.
+- **Completeness checks:** required template sections present; follow-ups mentioned in conversation captured.
+- **Contradiction checks** against the existing record.
+
+Items failing checks appear as highlighted warnings in the review UI.
+
+## Step 5: The clinician review experience
+
+Design for speed and safety. Show the draft beside the transcript with evidence highlighting, mark low-confidence and flagged items, make edits trivial, and require an explicit signature. Track what clinicians change: edit rates by section reveal quality problems. Avoid **automation bias**: do not make accepting a flagged item easier than reading it; occasionally present known-error test drafts to measure reviewer attentiveness in evaluation environments.
+
+## Step 6: Privacy and security
+
+- **Consent and transparency** for recording; per-site policy and local law (including all-party consent rules).
+- **Minimum necessary:** retrieve only the EHR data needed for the encounter; redact identifiers where models do not need them.
+- **Vendors and models:** run in a compliant environment with a business associate agreement, no retention or training on patient data, regional processing; consider private deployment.
+- **Access control** by role and relationship to the patient, break-glass auditing, full audit logs.
+- **Encryption** of audio, transcripts and notes in transit and at rest; short retention of raw audio.
+- **Patient rights:** access, correction and deletion handling consistent with regulation and medical record retention rules.
+
+## Step 7: Evaluation and governance
+
+Evaluate with clinicians: note quality rubrics (accuracy, completeness, concision, usefulness), error taxonomy with severity (omissions, hallucinations, wrong attributions, harmful errors), comparison against clinician-written notes, and time saved. Run pilots with close monitoring, track edit distance and the rate of serious errors caught in review, and define a rollback trigger. Clinical safety governance reviews changes (models, prompts, templates), includes a clinical safety officer, keeps a hazard log and monitors incidents. Test across specialties, languages, accents, and patient groups for equity of performance.
+
+## A worked example
+
+**Scenario:** a primary care visit about persistent cough, with the patient mentioning a new medication.
+
+1. After consent, the assistant transcribes the conversation with clinician and patient separated and pulls the active medications and allergies from the EHR.
+2. Extraction finds: cough for three weeks, no fever ("denies fever"), a recent start of an ACE inhibitor (patient-reported), exam findings dictated by the clinician, and a plan to switch the medication and review in two weeks.
+3. The note is rendered in the clinic's SOAP template. Each statement links to transcript evidence; "denies fever" is correctly negated.
+4. The verifier flags that the patient said "ten milligrams" but the transcript audio around the drug name is unclear; the draft shows "[drug: unclear, dose 10 mg: please confirm]" instead of guessing.
+5. The clinician confirms the drug from the EHR, edits one sentence and signs. The edit and the flag resolution are logged; audio is deleted after 24 hours per policy.
+
+## Common mistakes
+
+- **Free-form generation** with no evidence linking or verification.
+- **Guessing unclear audio** instead of flagging it.
+- **Dropping negation and temporality** in extraction.
+- **No clinician sign-off step**, or one designed so flags are easy to ignore.
+- **Treating privacy as a vendor checkbox** rather than designing data minimisation and retention.

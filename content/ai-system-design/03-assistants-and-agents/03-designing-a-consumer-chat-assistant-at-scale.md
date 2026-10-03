@@ -1,0 +1,83 @@
+---
+title: "Designing a Consumer Chat Assistant at Scale"
+short_title: "Consumer Chat Assistant at Scale"
+tags: ["chat", "conversation", "streaming", "memory", "scale", "design"]
+sources:
+  - "Public engineering write-ups on large-scale chat assistant infrastructure"
+  - "Server-Sent Events and WebSocket specifications for streaming transports"
+  - "Public provider documentation on conversation context management and rate limiting"
+---
+
+## The problem
+
+Design a ChatGPT-style product used by millions: users hold multi-turn conversations, see answers stream in, use tools and files, and expect history across devices. The product combines classic web scale (sessions, storage, fan-out) with expensive, slow, GPU-bound generation, so the design centres on **streaming, conversation state, fairness under load and cost control**.
+
+## Step 1: Requirements
+
+- **Functional:** chat with streaming replies, conversation history and search, file and image uploads, tools (web search, code execution), regenerate and edit, sharing, settings and personalisation, memory.
+- **Non-functional:** time to first token under about 1 second, high availability, graceful degradation under overload, strong privacy, abuse resistance.
+- **Scale (example):** 50 million weekly users, 1 million concurrent conversations at peak, average 6 turns of 400 output tokens.
+- **Cost:** model inference dominates; free and paid tiers need different limits.
+
+## Step 2: High-level architecture
+
+- **Edge and API gateway:** TLS, authentication, rate limiting and abuse detection, routing to regions.
+- **Chat service:** stateless handlers that load conversation context, build the prompt, call the inference layer and stream tokens back.
+- **Conversation store:** durable storage of messages, metadata, attachments, per-user partitioned.
+- **Inference layer:** routing to model pools (small, medium, large) with queueing, priorities and capacity management.
+- **Tool services:** web search, code sandbox, file processing, image handling.
+- **Memory service:** long-term user memories retrievable per conversation.
+- **Safety services:** input and output moderation, abuse detection.
+- **Async pipelines:** title generation, summarisation, indexing for search, analytics, feedback.
+
+## Step 3: Streaming
+
+Replies arrive token by token. Use **Server-Sent Events** (simple, one-way, works through proxies) or WebSockets for richer interaction. Each connection is long-lived, so the edge and chat tiers are **connection-bound**: scale on concurrent streams, use event-driven servers, keep per-connection memory low, and set sensible idle and maximum durations. Handle client disconnects by cancelling generation to save GPU time, and support **resume**: store partial output server-side so a reconnect continues rather than restarts. Backpressure from slow clients must not block the inference stream.
+
+## Step 4: Conversation state and context
+
+Store every message durably, keyed by user and conversation, in a partitioned store with the latest messages cached for fast access. For each turn the chat service builds the prompt from the system prompt, memories, retrieved or attached content, and the **conversation history**. Long conversations exceed the context window or budget, so apply: sliding windows, summarisation of older turns, selective inclusion of relevant earlier messages, and truncation of large tool outputs. Keep message ordering and idempotency: a retried request with the same id must not duplicate a turn. Branching (edit, regenerate) is modelled as a tree of messages.
+
+## Step 5: Inference scheduling and fairness
+
+Demand exceeds capacity at peaks, so design the queueing policy deliberately:
+
+- **Priority classes:** paid users, free users, API and batch, with separate queues and capacity reservations.
+- **Admission control:** estimate cost (prompt length, model tier) and reject or queue with a clear message when overloaded; show position or estimated wait.
+- **Model routing:** simple queries to smaller models, with automatic escalation; fall back to a smaller model when large pools are saturated.
+- **Per-user limits:** messages per hour by tier, concurrent generations per user, and token caps, with abuse detection for scripted use.
+- **Continuous batching** and prefix caching in the serving layer; route conversations with shared prefixes to the same replicas.
+
+## Step 6: Tools and files
+
+Tools run in isolated services. Web search returns snippets to the model with citations; code execution runs in sandboxed containers with CPU, memory, time and network limits and no secrets; file uploads are scanned, parsed (OCR, text extraction), chunked and retrieved per conversation, with per-user storage quotas and lifecycle. Tool latency is part of the user experience, so stream status updates ("searching…") and parallelise independent calls.
+
+## Step 7: Memory and personalisation
+
+Long-term memory stores facts and preferences the user chose to share, extracted by a background process and stored as small items with embeddings. Retrieve a few relevant memories per conversation. Give users **visibility and control**: view, edit, delete, disable; keep memory separate from model training by default and honour data-use settings. Apply privacy rules for sensitive categories.
+
+## Step 8: Safety, abuse and trust
+
+Moderate inputs and outputs (including streaming outputs), rate limit and detect abuse (spam, jailbreak farming, credential stuffing), protect minors per policy, and provide reporting and appeals. Prompt-injection controls apply to tools and uploaded documents. Monitor safety metrics and add rapid-response blocklists and classifier updates.
+
+## Step 9: Reliability and operations
+
+Multi-region deployment with users routed to the nearest healthy region; conversation data replicated according to residency policy; graceful degradation modes (disable heavy tools, shorter outputs, smaller models) defined in advance. Observability: TTFT, tokens per second, queue depth, error and refusal rates, cost per conversation, and quality sampling. Plan capacity from user growth and tokens per conversation, with launch-day surge procedures.
+
+## A worked example
+
+**Scenario:** a surge hits when a new feature launches.
+
+1. Traffic doubles in ten minutes. The gateway's per-tier limits start rejecting scripted traffic; abuse detection flags a bot network.
+2. Large-model queues grow; admission control shows free users an estimated wait of 20 seconds, while paid users keep priority with a reserved pool.
+3. The router temporarily sends simple queries from free users to the medium model, and disables the code-execution tool for free tier to protect sandbox capacity.
+4. One user closes the tab mid-answer: the chat service detects the disconnect, cancels generation and stores the partial message; on reconnect the client resumes from the saved state.
+5. Autoscaling adds replicas from a warm pool within a minute; as queues drain, degradations are lifted in reverse order, and a postmortem adds launch-surge capacity reservations to the plan.
+
+## Common mistakes
+
+- **Treating the chat service as stateless HTTP** and ignoring long-lived streams.
+- **No cancellation** when users disconnect, burning GPU on unseen output.
+- **Unbounded history** in every prompt, inflating cost and latency.
+- **One queue for all traffic**, with no priority or admission control.
+- **Memory without user control**, creating privacy and trust problems.
