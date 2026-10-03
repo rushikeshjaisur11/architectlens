@@ -168,3 +168,17 @@
     scroll-behavior: smooth;
   }
 }
+
+/* Per-section colour: set --h (a hue) on a wrapper and use these. */
+.hue-text {
+  color: hsl(var(--h) 62% 40%);
+}
+.hue-bg {
+  background-color: hsl(var(--h) 75% 55% / 0.12);
+}
+.hue-dot {
+  background-color: hsl(var(--h) 70% 52%);
+}
+:root[data-theme="dark"] .hue-text {
+  color: hsl(var(--h) 85% 75%);
+}

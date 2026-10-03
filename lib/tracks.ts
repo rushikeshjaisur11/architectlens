@@ -60,6 +60,13 @@ export function trackSlugFromPath(pathname: string): string {
   return TRACKS.some((t) => t.slug === slug) ? slug : "system-design";
 }
 
+// True on track pages and lesson pages; false on the landing page, frameworks and other site pages.
+export function hasTrackContext(pathname: string): boolean {
+  const [first, second] = pathname.split("/").filter(Boolean);
+  const slug = first === "lessons" ? second : first;
+  return TRACKS.some((t) => t.slug === slug);
+}
+
 export function trackFromSlug(slug: string): Track {
   const track = TRACKS.find((t) => t.slug === slug);
   if (!track) throw new Error(`Unknown track: "${slug}"`);

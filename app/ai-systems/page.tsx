@@ -1,7 +1,7 @@
 import { lessons } from "#velite";
 import { trackFromSlug } from "@/lib/tracks";
 import { CurriculumGrid } from "@/components/CurriculumGrid";
-import { TrackHub } from "@/components/TrackHub";
+import { TrackHeader } from "@/components/TrackHeader";
 
 export default function AiSystemsPage() {
   const track = trackFromSlug("ai-systems");
@@ -9,17 +9,14 @@ export default function AiSystemsPage() {
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-16">
-      <TrackHub active="ai-systems" />
-      <h1 className="text-4xl font-semibold leading-tight text-paper">
-        Learn AI systems
-        <br />
-        <span className="text-accent">from the ground up.</span>
-      </h1>
-      <p className="mt-4 max-w-xl text-paper-muted">
-        A self-paced curriculum on building production AI systems — prompting, retrieval,
-        serving, agents, evals, and everything that breaks in between —
-        organized as {track.categories.length} focused modules.
-      </p>
+      <TrackHeader
+        section="ai-systems"
+        title="Learn AI systems"
+        accent="from the ground up."
+        intro="The building blocks of production AI: prompting, retrieval, serving, agents, evals, safety and everything that breaks in between."
+        lessons={trackLessons.length}
+        modules={track.categories.length}
+      />
 
       <CurriculumGrid
         track={track}

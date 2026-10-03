@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { buildNavTree } from "@/lib/nav-tree";
-import { trackFromSlug, trackSlugFromPath } from "@/lib/tracks";
+import { hasTrackContext, trackFromSlug, trackSlugFromPath } from "@/lib/tracks";
 import type { ContentIndexItem } from "@/lib/search-index";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { SearchOverlay } from "./SearchOverlay";
+import { Footer } from "./Footer";
 
 type LessonLike = {
   slug: string;
@@ -33,10 +34,13 @@ export function NavShell({
   const [desktopCollapsed, setDesktopCollapsed] = useState(true);
 
   const track = trackFromSlug(trackSlugFromPath(pathname));
-  const tree = buildNavTree(
-    lessons.filter((l) => l.track.slug === track.slug),
-    track
-  );
+  const inTrack = hasTrackContext(pathname);
+  const tree = inTrack
+    ? buildNavTree(
+        lessons.filter((l) => l.track.slug === track.slug),
+        track
+      )
+    : [];
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -67,7 +71,8 @@ export function NavShell({
       <Sidebar
         groups={tree}
         mobileOpen={mobileOpen}
-        desktopCollapsed={desktopCollapsed}
+        desktopCollapsed={desktopCollapsed || !inTrack}
+        title={inTrack ? track.name : "Sections"}
         onCloseMobile={() => setMobileOpen(false)}
       />
       {mobileOpen && (
@@ -80,10 +85,14 @@ export function NavShell({
         <TopBar
           onSearchClick={() => setSearchOpen(true)}
           onMenuClick={() => setMobileOpen(true)}
-          onToggleSidebar={() => setDesktopCollapsed((prev) => !prev)}
-          sidebarCollapsed={desktopCollapsed}
+          onToggleContents={() => setDesktopCollapsed((prev) => !prev)}
+          contentsOpen={!desktopCollapsed}
+          showContents={inTrack}
         />
-        <div className="flex-1 overflow-y-auto">{children}</div>
+        <div className="flex-1 overflow-y-auto">
+          {children}
+          <Footer />
+        </div>
       </div>
       <SearchOverlay items={searchItems} open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>

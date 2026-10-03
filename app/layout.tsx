@@ -34,6 +34,7 @@ const THEME_INIT_SCRIPT = `
 `;
 
 export const metadata = {
+  metadataBase: new URL("https://rushikeshjaisur11.github.io/"),
   title: { default: "architectlens: system design and AI systems", template: "%s | architectlens" },
   description:
     "A structured curriculum on system design and production AI systems, from first principles to enterprise practice, with interactive diagrams and current, sourced guidance.",

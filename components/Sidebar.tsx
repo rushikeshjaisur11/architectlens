@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavGroup } from "@/lib/nav-tree";
-import { TrackSwitcher } from "./TrackSwitcher";
+import { SectionLinks } from "./SectionLinks";
 
 function splitHeading(heading: string): [string, string] {
   const spaceIndex = heading.indexOf(" ");
@@ -15,11 +15,13 @@ export function Sidebar({
   groups,
   mobileOpen,
   desktopCollapsed,
+  title,
   onCloseMobile,
 }: {
   groups: NavGroup[];
   mobileOpen: boolean;
   desktopCollapsed: boolean;
+  title: string;
   onCloseMobile: () => void;
 }) {
   const pathname = usePathname();
@@ -36,15 +38,16 @@ export function Sidebar({
       } lg:flex ${desktopCollapsed ? "lg:w-0 lg:border-0 lg:p-0 lg:overflow-hidden" : "lg:w-72"}`}
     >
       <div className="mb-4 flex items-center justify-between gap-2">
-        <TrackSwitcher />
+        <span className="text-xs font-medium uppercase tracking-wide text-paper-muted">{title}</span>
         <button
           type="button"
           onClick={onCloseMobile}
-          className="rounded px-2 py-1 font-mono text-xs text-paper-muted hover:text-paper lg:hidden"
+          className="rounded px-2 py-1 text-xs text-paper-muted hover:text-paper lg:hidden"
         >
           Close ✕
         </button>
       </div>
+      <SectionLinks className="mb-5 border-b border-line-soft pb-5 lg:hidden" />
       {groups.map((group) => {
         const [number, name] = splitHeading(group.heading);
         const hasItems = group.items.length > 0;

@@ -3,17 +3,17 @@ import { trackFromSlug } from "@/lib/tracks";
 import { CurriculumGrid } from "@/components/CurriculumGrid";
 import { TrackHeader } from "@/components/TrackHeader";
 
-export default function AiSystemDesignPage() {
-  const track = trackFromSlug("ai-system-design");
+export default function HomePage() {
+  const track = trackFromSlug("system-design");
   const trackLessons = lessons.filter((l) => l.track.slug === track.slug);
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-16">
       <TrackHeader
-        section="ai-system-design"
-        title="Design AI products"
-        accent="end to end."
-        intro="Complete designs for AI products and platforms: assistants, search, agent platforms, enterprise controls and industry solutions."
+        section="system-design"
+        title="Learn system design"
+        accent="from first principles."
+        intro="The concepts, cases and complete designs that come up in real systems work, from data and caching to reliability and incidents."
         lessons={trackLessons.length}
         modules={track.categories.length}
       />

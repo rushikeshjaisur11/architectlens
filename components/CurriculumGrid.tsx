@@ -8,6 +8,7 @@ import { Check, ChevronDown, ChevronsDownUp, ChevronsUpDown } from "lucide-react
 import { TileBanner } from "./TileBanner";
 import { readSet } from "@/lib/progress";
 import type { BannerSpec } from "@/lib/banner-kinds";
+import { sectionByKey } from "@/lib/track-meta";
 
 export type LessonTile = {
   slug: string;
@@ -179,7 +180,7 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
           const items = sortByOrder(visible.filter((l) => l.category.number === category.number));
           if (items.length === 0) return null;
           const number = String(category.number).padStart(2, "0");
-          const hue = 215 + ((category.number * 23) % 65);
+          const hue = sectionByKey(track.slug).hue + ((category.number * 11) % 40) - 20;
           const isDone = (l: LessonTile) => done.has(`${track.slug}/${category.slug}/${l.slug}`);
           const finished = items.filter(isDone).length;
           const minutesLeft = items.filter((l) => !isDone(l)).reduce((sum, l) => sum + l.minutes, 0);

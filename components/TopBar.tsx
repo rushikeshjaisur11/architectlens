@@ -1,81 +1,77 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { Menu, PanelLeft, Search } from "lucide-react";
+import { SECTIONS, activeSection } from "@/lib/track-meta";
 import { ThemeToggle } from "./ThemeToggle";
-import { TrackSwitcher } from "./TrackSwitcher";
-import { FrameworksMenu } from "./FrameworksMenu";
-
-function categoryLabel(pathname: string): string | null {
-  const match = /^\/lessons\/[^/]+\/([^/]+)\//.exec(pathname);
-  if (!match) return null;
-  return match[1]
-    .split("-")
-    .map((word) => word[0].toUpperCase() + word.slice(1))
-    .join(" ");
-}
+import { Logo } from "./Logo";
 
 export function TopBar({
   onSearchClick,
   onMenuClick,
-  onToggleSidebar,
-  sidebarCollapsed,
+  onToggleContents,
+  contentsOpen,
+  showContents,
 }: {
   onSearchClick: () => void;
   onMenuClick: () => void;
-  onToggleSidebar: () => void;
-  sidebarCollapsed: boolean;
+  onToggleContents: () => void;
+  contentsOpen: boolean;
+  showContents: boolean;
 }) {
-  const pathname = usePathname();
-  const label = categoryLabel(pathname);
+  const active = activeSection(usePathname());
+  const quiet =
+    "items-center gap-2 rounded-full border border-line px-3 py-1.5 text-sm text-paper-muted transition-colors hover:border-accent-dim hover:text-paper";
 
   return (
-    <div className="flex h-12 items-center justify-between gap-2 border-b border-line px-3 sm:px-6">
-      <div className="flex min-w-0 flex-1 items-center gap-2 overflow-visible">
-        <button
-          type="button"
-          onClick={onMenuClick}
-          aria-label="Open navigation"
-          className="shrink-0 rounded border border-line px-2 py-1 font-mono text-xs text-paper-muted hover:border-accent-dim hover:text-paper lg:hidden"
-        >
-          <Menu size={14} />
-        </button>
-        <button
-          type="button"
-          onClick={onToggleSidebar}
-          aria-label={sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
-          className="hidden shrink-0 rounded border border-line px-2 py-1 font-mono text-xs text-paper-muted hover:border-accent-dim hover:text-paper lg:inline-flex"
-        >
-          {sidebarCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
-        </button>
-        <nav className="flex min-w-0 items-center gap-2 sm:gap-3 font-mono text-xs text-paper-muted">
-          <Link href="/" className="hidden shrink-0 hover:text-paper sm:inline">
-            architectlens
+    <header className="flex h-14 shrink-0 items-center gap-3 border-b border-line bg-ink/85 px-3 backdrop-blur sm:px-5">
+      <button type="button" onClick={onMenuClick} aria-label="Open menu" className={`${quiet} inline-flex px-2.5 lg:hidden`}>
+        <Menu size={16} />
+      </button>
+
+      <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="architectlens home">
+        <Logo size={26} />
+        <span className="text-[15px] font-semibold tracking-tight text-paper">architectlens</span>
+      </Link>
+
+      <nav aria-label="Sections" className="ml-4 hidden items-center gap-1 lg:flex">
+        {SECTIONS.map((s) => (
+          <Link
+            key={s.key}
+            href={s.href}
+            aria-current={s.key === active ? "page" : undefined}
+            style={{ "--h": s.hue } as React.CSSProperties}
+            className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-sm transition-colors ${
+              s.key === active ? "bg-ink-elevated font-medium text-paper shadow-sm ring-1 ring-line" : "text-paper-muted hover:text-paper"
+            }`}
+          >
+            <span className="hue-dot h-1.5 w-1.5 rounded-full" />
+            {s.name}
           </Link>
-          <TrackSwitcher className="shrink-0" />
-          <FrameworksMenu className="shrink-0" />
-          {label && (
-            <>
-              <span className="hidden sm:inline">/</span>
-              <span className="hidden shrink-0 text-paper sm:inline">{label}</span>
-            </>
-          )}
-        </nav>
-      </div>
-      <div className="flex shrink-0 items-center gap-2">
-        <button
-          type="button"
-          onClick={onSearchClick}
-          aria-label="Search"
-          className="inline-flex items-center gap-2 rounded-full border border-line px-2.5 py-1 font-mono text-xs text-paper-muted transition-colors hover:border-accent-dim hover:text-paper sm:w-52"
-        >
-          <Search size={14} />
-          <span className="hidden flex-1 text-left sm:inline">Search notes</span>
-          <kbd className="hidden rounded border border-line-soft px-1 text-[11px] sm:inline">/</kbd>
+        ))}
+      </nav>
+
+      <div className="ml-auto flex shrink-0 items-center gap-2">
+        {showContents && (
+          <button
+            type="button"
+            onClick={onToggleContents}
+            aria-pressed={contentsOpen}
+            aria-label="Toggle contents"
+            className={`${quiet} hidden lg:inline-flex ${contentsOpen ? "border-accent-dim text-paper" : ""}`}
+          >
+            <PanelLeft size={15} />
+            <span className="hidden xl:inline">Contents</span>
+          </button>
+        )}
+        <button type="button" onClick={onSearchClick} aria-label="Search" className={`${quiet} inline-flex xl:w-56`}>
+          <Search size={15} />
+          <span className="hidden flex-1 text-left xl:inline">Search notes</span>
+          <kbd className="hidden rounded border border-line-soft px-1 text-[11px] xl:inline">/</kbd>
         </button>
         <ThemeToggle />
       </div>
-    </div>
+    </header>
   );
 }
