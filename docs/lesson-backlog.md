@@ -146,43 +146,43 @@ Existing: Fanout Strategies, WebSockets/Long Polling/SSE, Ranking Feeds
 
 ### 12-geo-matching-and-recs
 Existing: Geospatial Indexing, Recommendation Systems, Two-Sided Marketplace Matching
-- [ ] Real-time bidding and auction systems
-- [ ] ETA prediction and routing estimation
+- [x] Real-time bidding and auction systems (04-real-time-bidding-and-auction-systems.md)
+- [x] ETA prediction and routing estimation (05-eta-prediction-and-routing-estimation.md)
 
 ### 13-media-files-and-cdn
 Existing: CDNs & Content Delivery, Object Storage & Large Files, Image Optimization
-- [ ] Video streaming protocols (HLS/DASH, adaptive bitrate)
-- [ ] Chunked/resumable upload for large files
+- [x] Video streaming protocols (HLS/DASH, adaptive bitrate) (04-video-streaming-protocols-hls-dash-and-adaptive-bitrate.md)
+- [x] Chunked/resumable upload for large files (05-chunked-and-resumable-upload-for-large-files.md)
 
 ### 14-reliability-and-operations
 Existing: Load Balancing & Health Checks, Graceful Degradation & Circuit Breakers, Chaos Engineering & DR
-- [ ] SLIs, SLOs, and error budgets
-- [ ] Observability stack: metrics, logs, traces (three pillars)
-- [ ] Deployment strategies: blue-green, rolling, feature flags
+- [x] SLIs, SLOs, and error budgets (04-slis-slos-and-error-budgets.md)
+- [x] Observability stack: metrics, logs, traces (three pillars) (05-observability-metrics-logs-and-traces.md)
+- [x] Deployment strategies: blue-green, rolling, feature flags (06-deployment-strategies-blue-green-rolling-and-feature-flags.md)
 
 ### 15-service-and-data-designs
 Existing: Rate Limiter Design, Distributed Key-Value Store, Microservices vs Monolith
-- [ ] Designing a distributed task scheduler
-- [ ] Designing a payment/billing system
-- [ ] Designing a distributed lock service
+- [x] Designing a distributed task scheduler (04-designing-a-distributed-task-scheduler.md)
+- [x] Designing a payment/billing system (05-designing-a-payment-and-billing-system.md)
+- [x] Designing a distributed lock service (06-designing-a-distributed-lock-service.md)
 
 ### 16-product-designs
 Existing: URL Shortener, Chat System, Web Crawler
-- [ ] Designing a ride-sharing system
-- [ ] Designing an e-commerce inventory/checkout system
-- [ ] Designing a ticket-booking system (seat inventory, overselling prevention)
+- [x] Designing a ride-sharing system (04-designing-a-ride-sharing-system.md)
+- [x] Designing an e-commerce inventory/checkout system (05-designing-an-e-commerce-inventory-and-checkout-system.md)
+- [x] Designing a ticket-booking system (seat inventory, overselling prevention) (06-designing-a-ticket-booking-system.md)
 
 ### 17-media-and-operations-designs
 Existing: Video Upload/Transcoding Pipeline, Notification System, Distributed Logging/Monitoring
-- [ ] Designing a live-streaming platform
-- [ ] Designing a search autocomplete service
-- [ ] Designing a distributed cron/job scheduler
+- [x] Designing a live-streaming platform (04-designing-a-live-streaming-platform.md)
+- [x] Designing a search autocomplete service (05-designing-a-search-autocomplete-service.md)
+- [x] Designing a distributed cron/job scheduler (06-designing-a-distributed-cron-and-job-scheduler.md)
 
 ### 18-engineering-case-studies
 Existing: Amazon Dynamo, Facebook TAO, Google Spanner
-- [ ] Case study: Netflix chaos engineering and microservices resilience
-- [ ] Case study: Uber's Schemaless/DOSA data platform
-- [ ] Case study: Kafka at LinkedIn (origin and design decisions)
+- [x] Case study: Netflix chaos engineering and microservices resilience (04-case-study-netflix-chaos-engineering-and-resilience.md)
+- [x] Case study: Uber's Schemaless/DOSA data platform (05-case-study-uber-schemaless-and-dosa.md)
+- [x] Case study: Kafka at LinkedIn (origin and design decisions) (06-case-study-kafka-at-linkedin.md)
 
 ---
 
