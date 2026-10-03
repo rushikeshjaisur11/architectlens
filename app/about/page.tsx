@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CONTACT_EMAIL, GITHUB_URL, OWNER_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
@@ -36,6 +37,19 @@ export default function AboutPage() {
           </li>
           <li>Notes move from the basic idea to the trade-offs you meet at enterprise scale.</li>
         </ul>
+
+        <h2>About the author</h2>
+        <p>
+          architectlens is written and maintained by <strong>{OWNER_NAME}</strong>, a senior data engineer and AI
+          engineer based in Pune, India, with more than six years of experience building data platforms and, more
+          recently, production AI and agentic systems. Education: M.Tech in Data Science and Engineering, BITS Pilani.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          Questions, corrections and suggestions are welcome: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+          You can also find the author on <a href={GITHUB_URL}>GitHub</a>.
+        </p>
 
         <h2>A note on use</h2>
         <p>

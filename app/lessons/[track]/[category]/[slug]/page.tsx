@@ -4,6 +4,7 @@ import { lessons } from "#velite";
 import { findBySlug } from "@/lib/content";
 import { MetaPanel } from "@/components/MetaPanel";
 import { LessonAnimations } from "@/components/anim/LessonAnimations";
+import { ArticleEnd } from "@/components/ArticleEnd";
 import { LessonBanner, LessonPager, LessonTopNav, OnThisPage, ReadingProgress, SectionControls } from "@/components/LessonChrome";
 import { trackFromSlug } from "@/lib/tracks";
 
@@ -56,7 +57,7 @@ export default async function LessonPage({
         nextHref={next && href(next)}
       />
       <LessonBanner title={lesson.title} tags={lesson.tags.join(" ")} spec={lesson.banner} />
-      <h1 className="mt-6 text-paper">{lesson.title}</h1>
+      <h1 className="mt-6 text-[clamp(2.1rem,1.6rem+2vw,2.9rem)] text-paper">{lesson.title}</h1>
       <p className="mt-2 font-mono text-xs text-paper-muted">
         {lesson.category.name} &middot; {lesson.minutes} min read
       </p>
@@ -71,6 +72,7 @@ export default async function LessonPage({
         dangerouslySetInnerHTML={{ __html: lesson.html }}
       />
       <LessonAnimations key={`${track}/${category}/${slug}`} lessonKey={`${track}/${category}/${slug}`} />
+      <ArticleEnd lessonKey={`${track}/${category}/${slug}`} />
       {lesson.sources.length > 0 && (
         <details className="group mt-10 rounded-xl border border-line-soft bg-ink-elevated/40 px-4 py-3">
           <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-paper-muted marker:hidden hover:text-paper">

@@ -30,7 +30,10 @@ export function TrackHeader({
       <h1 className="mt-5 text-paper">
         {title}
         <br />
-        <span className="hue-text">{accent}</span>
+        <span className="hue-text italic">
+          {accent}
+          <span className="caret" aria-hidden />
+        </span>
       </h1>
       <p className="mt-4 max-w-xl text-paper-muted">{intro}</p>
     </header>

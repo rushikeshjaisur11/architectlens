@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { SECTIONS } from "@/lib/track-meta";
 import { readSet } from "@/lib/progress";
 import { SectionIcon } from "./SectionIcon";
+import { Reveal } from "./Reveal";
 
 export type PathStats = Record<string, { lessons: number; hours: number; modules: number }>;
 export type PathOrder = Record<string, { key: string; title: string }[]>;
@@ -22,15 +23,15 @@ export function PathCards({ stats, order }: { stats: PathStats; order: PathOrder
 
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      {SECTIONS.map((s) => {
+      {SECTIONS.map((s, i) => {
         const st = stats[s.key];
         const done = st ? [...read].filter((k) => k.startsWith(`${s.key}/`)).length : 0;
         const next = (order[s.key] ?? []).find((l) => !read.has(l.key));
         return (
+          <Reveal key={s.key} delay={i * 100} className="h-full">
           <div
-            key={s.key}
             style={{ "--h": s.hue } as React.CSSProperties}
-            className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-ink-elevated p-6 transition duration-200 hover:-translate-y-0.5 hover:border-accent-dim hover:shadow-xl hover:shadow-black/10"
+            className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink-elevated p-6 transition duration-200 hover:-translate-y-0.5 hover:border-accent-dim hover:shadow-xl hover:shadow-black/10"
           >
             <span
               aria-hidden
@@ -75,6 +76,7 @@ export function PathCards({ stats, order }: { stats: PathStats; order: PathOrder
               )}
             </div>
           </div>
+          </Reveal>
         );
       })}
     </div>

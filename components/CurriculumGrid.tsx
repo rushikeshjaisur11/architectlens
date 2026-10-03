@@ -205,7 +205,7 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
                 className="group flex w-full items-center gap-3 rounded-xl border border-line bg-ink-elevated/60 px-4 py-3.5 text-left transition-colors hover:border-accent-dim"
               >
                 <span className="flex h-7 min-w-7 items-center justify-center rounded-md bg-accent/10 px-1.5 text-xs font-semibold text-accent">{number}</span>
-                <h2 className="text-base font-semibold text-paper group-hover:text-accent sm:text-lg">{category.name}</h2>
+                <h2 className="font-sans text-base font-semibold text-paper group-hover:text-accent sm:text-lg">{category.name}</h2>
                 <span className="ml-auto hidden font-mono text-xs text-paper-muted sm:inline">
                   {items.length} lessons &middot; {finished === items.length ? "completed" : `${minutesLeft} min left`}
                 </span>

@@ -3,6 +3,8 @@ import { ArrowRight } from "lucide-react";
 import { lessons } from "#velite";
 import { TRACKS } from "@/lib/tracks";
 import { PathCards, type PathOrder, type PathStats } from "@/components/PathCards";
+import { Reveal } from "@/components/Reveal";
+import { TypedWords } from "@/components/TypedWords";
 
 const STEPS = [
   { n: "1", title: "System Design", text: "Learn the foundations: data, scaling, consistency and failure." },
@@ -53,8 +55,13 @@ export default function LandingPage() {
             <span className="h-1.5 w-1.5 rounded-full bg-hook" />
             Architecture education, grounded in current practice
           </p>
-          <h1 className="display mt-6 max-w-3xl text-paper">
-            Learn how modern systems are <span className="text-accent">designed and built.</span>
+          <h1 className="display mt-6 max-w-4xl text-paper">
+            <span className="sr-only">Learn how modern systems are designed, scaled, secured and operated.</span>
+            <span aria-hidden>
+              Learn how modern systems are
+              <br />
+              <TypedWords words={["designed", "scaled", "secured", "operated"]} className="italic text-accent" />
+            </span>
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-paper-muted">
             A structured library on system design and production AI systems. Start from first principles, move
@@ -104,12 +111,12 @@ export default function LandingPage() {
         <div className="mx-auto max-w-5xl px-6 py-16">
           <h2 className="text-paper">How the paths fit together</h2>
           <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((s) => (
-              <li key={s.n} className="rounded-xl border border-line bg-ink-elevated p-5">
+            {STEPS.map((s, i) => (
+              <Reveal as="li" key={s.n} delay={i * 100} className="rounded-xl border border-line bg-ink-elevated p-5">
                 <span className="text-xs font-medium text-accent">Step {s.n}</span>
                 <p className="mt-2 font-medium text-paper">{s.title}</p>
                 <p className="mt-1.5 text-sm leading-relaxed text-paper-muted">{s.text}</p>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </div>
@@ -118,11 +125,11 @@ export default function LandingPage() {
       <section className="mx-auto max-w-5xl px-6 py-16">
         <h2 className="text-paper">Made for focused learning</h2>
         <div className="mt-8 grid gap-6 sm:grid-cols-3">
-          {PILLARS.map((p) => (
-            <div key={p.title}>
+          {PILLARS.map((p, i) => (
+            <Reveal key={p.title} delay={i * 100}>
               <p className="font-medium text-paper">{p.title}</p>
               <p className="mt-2 text-sm leading-relaxed text-paper-muted">{p.text}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>

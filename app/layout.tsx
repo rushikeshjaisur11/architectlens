@@ -1,5 +1,5 @@
 import "./globals.css";
-import { Atkinson_Hyperlegible_Next, Atkinson_Hyperlegible_Mono, Literata } from "next/font/google";
+import { Atkinson_Hyperlegible_Next, Atkinson_Hyperlegible_Mono, Instrument_Serif, Literata } from "next/font/google";
 import { lessons } from "#velite";
 import { buildContentIndex } from "@/lib/search-index";
 import { NavShell } from "@/components/NavShell";
@@ -14,6 +14,13 @@ const mono = Atkinson_Hyperlegible_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-mono-body",
+});
+
+const display = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-display-serif",
 });
 
 const reading = Literata({
@@ -49,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const searchItems = buildContentIndex();
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${sans.variable} ${mono.variable} ${reading.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${sans.variable} ${mono.variable} ${reading.variable} ${display.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>

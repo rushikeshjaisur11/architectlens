@@ -13,7 +13,7 @@ export default function FrameworksIndexPage() {
       </p>
       {frameworksByLanguage().map(([language, items]) => (
         <section key={language} className="mt-8">
-          <h2 className="font-mono uppercase tracking-wide text-paper-muted">{language}</h2>
+          <h2 className="eyebrow !font-sans !text-xs">{language}</h2>
           <div className="mt-3">
             <TileGrid
               tiles={items.map((f) => ({

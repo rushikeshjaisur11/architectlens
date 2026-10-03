@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SECTIONS } from "@/lib/track-meta";
+import { CONTACT_EMAIL, GITHUB_URL, OWNER_NAME } from "@/lib/site";
 import { Logo } from "./Logo";
 
 export function Footer() {
@@ -51,6 +52,16 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-paper-muted transition-colors hover:text-paper">
+                Contact
+              </a>
+            </li>
+            <li>
+              <a href={GITHUB_URL} className="text-paper-muted transition-colors hover:text-paper">
+                GitHub
+              </a>
+            </li>
+            <li>
               <Link href="/about#method" className="text-paper-muted transition-colors hover:text-paper">
                 How the notes are made
               </Link>
@@ -60,7 +71,7 @@ export function Footer() {
       </div>
       <div className="border-t border-line-soft">
         <p className="mx-auto max-w-5xl px-6 py-5 text-xs leading-relaxed text-paper-muted">
-          &copy; {new Date().getFullYear()} architectlens. Educational content: check official documentation before relying on it in production.
+          &copy; {new Date().getFullYear()} {OWNER_NAME}. Educational content: check official documentation before relying on it in production.
         </p>
       </div>
     </footer>

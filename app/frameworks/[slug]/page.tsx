@@ -21,7 +21,7 @@ export default async function FrameworkPage({ params }: { params: Promise<{ slug
       </p>
       <h1 className="mt-2 text-paper">{framework.name}</h1>
       <p className="mt-3 max-w-2xl text-paper-muted">{framework.blurb}</p>
-      <h2 className="mt-10 mb-4 font-mono uppercase tracking-wide text-paper-muted">Sections</h2>
+      <h2 className="eyebrow mt-10 mb-4 !font-sans !text-xs">Sections</h2>
       <TileGrid
         tiles={FRAMEWORK_SECTIONS.map((s) => ({
           href: `/frameworks/${framework.slug}/${s.slug}`,

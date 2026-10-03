@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CONTACT_EMAIL, SITE_NAME } from "@/lib/site";
+import { CONTACT_EMAIL, OWNER_NAME, SITE_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms of use",
@@ -29,7 +29,7 @@ export default function TermsPage() {
 
         <h2>Ownership and use</h2>
         <p>
-          The notes, diagrams and design of the site belong to {SITE_NAME}. You may read them, link to them and quote
+          The notes, diagrams and design of the site belong to {OWNER_NAME} ({SITE_NAME}). You may read them, link to them and quote
           short excerpts with attribution. Please do not copy, republish or resell them in bulk without permission.
           Product and company names mentioned are trademarks of their owners and are used only to identify them. Open
           source components used by the site are listed on the <Link href="/licenses">licences page</Link>.
