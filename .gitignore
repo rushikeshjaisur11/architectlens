@@ -5,3 +5,6 @@ out/
 *.tsbuildinfo
 
 .scene-previews/
+
+.env
+.env*.local

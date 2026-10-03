@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export type PredictOption = { label: string; correct?: boolean };
 
-export function Predict({ question, options, why }: { question: string; options: PredictOption[]; why: string }) {
+export function Predict({ question, options, why, onAnswer }: { question: string; options: PredictOption[]; why: string; onAnswer?: (right: boolean) => void }) {
   const [picked, setPicked] = useState<number | null>(null);
   const done = picked !== null;
   return (
@@ -19,7 +19,10 @@ export function Predict({ question, options, why }: { question: string; options:
             key={o.label}
             type="button"
             disabled={done}
-            onClick={() => setPicked(i)}
+            onClick={() => {
+              setPicked(i);
+              onAnswer?.(!!o.correct);
+            }}
             className={`rounded border px-2.5 py-1 font-mono text-xs transition-colors disabled:cursor-default ${
               !done
                 ? "border-line text-paper-muted hover:border-accent-dim hover:text-paper"

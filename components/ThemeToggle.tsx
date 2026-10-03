@@ -1,23 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BookOpen, Moon, Sun, type LucideIcon } from "lucide-react";
+import { announcePrefs } from "@/lib/prefs-events";
+import { BookOpen, Moon, MoonStar, Sun, type LucideIcon } from "lucide-react";
 
-type Theme = "light" | "dark" | "sepia";
+type Theme = "light" | "dark" | "black" | "sepia";
 
 const ORDER: { id: Theme; label: string; Icon: LucideIcon }[] = [
   { id: "dark", label: "Dark", Icon: Moon },
+  { id: "black", label: "OLED black", Icon: MoonStar },
   { id: "light", label: "Light", Icon: Sun },
   { id: "sepia", label: "Reading mode", Icon: BookOpen },
 ];
 
-// One button that cycles dark, light and reading mode.
+// One button that cycles dark, OLED black, light and reading mode.
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    const current = document.documentElement.dataset.theme;
-    setTheme(current === "light" || current === "sepia" ? current : "dark");
+    const read = () => {
+      const current = document.documentElement.dataset.theme;
+      setTheme(current === "dark" || current === "black" || current === "sepia" ? current : "light");
+    };
+    read();
+    window.addEventListener("prefs:applied", read);
+    return () => window.removeEventListener("prefs:applied", read);
   }, []);
 
   const at = ORDER.findIndex((o) => o.id === theme);
@@ -32,6 +39,7 @@ export function ThemeToggle() {
     } catch {
       // storage unavailable: theme applies for this page view only
     }
+    announcePrefs({ theme: next.id });
   }
 
   return (

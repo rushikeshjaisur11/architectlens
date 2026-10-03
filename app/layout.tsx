@@ -2,6 +2,7 @@ import "./globals.css";
 import { Atkinson_Hyperlegible_Next, Atkinson_Hyperlegible_Mono, Instrument_Serif, Literata } from "next/font/google";
 import { lessons } from "#velite";
 import { buildContentIndex } from "@/lib/search-index";
+import { Providers } from "@/components/Providers";
 import { NavShell } from "@/components/NavShell";
 import { SITE_ORIGIN } from "@/lib/site";
 
@@ -38,8 +39,10 @@ const THEME_INIT_SCRIPT = `
 (function () {
   try {
     var stored = localStorage.getItem("theme-v2");
-    var theme = stored === "light" || stored === "sepia" ? stored : "dark";
+    var theme = stored === "dark" || stored === "black" || stored === "sepia" ? stored : "light";
     document.documentElement.dataset.theme = theme;
+    var m = location.pathname.match(/(?:^|\\/)(ai-systems|ai-system-design|frameworks)(?:\\/|$)/);
+    if (m) document.documentElement.dataset.section = m[1];
     var fs = localStorage.getItem("text-size-v1");
     if (fs === "sm" || fs === "lg") document.documentElement.dataset.fs = fs;
     if (JSON.parse(localStorage.getItem("read-lessons-v1") || "[]").length) document.documentElement.dataset.returning = "1";
@@ -69,9 +72,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {ANALYTICS_DOMAIN && <script defer data-domain={ANALYTICS_DOMAIN} src="https://plausible.io/js/script.js" />}
       </head>
       <body className="min-h-screen bg-ink font-sans text-paper" suppressHydrationWarning>
-        <NavShell lessons={lessons} searchItems={searchItems}>
-          {children}
-        </NavShell>
+        <Providers>
+          <NavShell lessons={lessons} searchItems={searchItems}>
+            {children}
+          </NavShell>
+        </Providers>
       </body>
     </html>
   );

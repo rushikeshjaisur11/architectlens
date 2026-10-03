@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, ChevronsDownUp, ChevronsUpDown, Home } from "lucide-react";
 import { TileBanner } from "./TileBanner";
 import { markRead } from "@/lib/progress";
+import { announcePrefs } from "@/lib/prefs-events";
 import type { BannerSpec } from "@/lib/banner-kinds";
 import { onGlowMove } from "@/lib/glow";
 
@@ -148,7 +149,12 @@ export function SectionControls() {
 // Reading text size (small / default / large), remembered per browser.
 function TextSize() {
   const [fs, setFs] = useState("md");
-  useEffect(() => setFs(document.documentElement.dataset.fs ?? "md"), []);
+  useEffect(() => {
+    const read = () => setFs(document.documentElement.dataset.fs ?? "md");
+    read();
+    window.addEventListener("prefs:applied", read);
+    return () => window.removeEventListener("prefs:applied", read);
+  }, []);
   function pick(next: string) {
     setFs(next);
     if (next === "md") delete document.documentElement.dataset.fs;
@@ -158,6 +164,7 @@ function TextSize() {
     } catch {
       // storage unavailable: size applies for this page view only
     }
+    announcePrefs({ textSize: next });
   }
   return (
     <div className="inline-flex overflow-hidden rounded border border-line font-mono text-xs" role="group" aria-label="Text size">

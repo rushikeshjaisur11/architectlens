@@ -1,12 +1,35 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Predict } from "./Predict";
+
+function useRecordAnswer(kind: "predict" | "check") {
+  const { status } = useSession();
+  const lessonKey = usePathname().match(/^\/lessons\/([^/]+\/[^/]+\/[^/]+)/)?.[1];
+  return (questionIndex: number, correct: boolean) => {
+    if (status !== "authenticated" || !lessonKey) return;
+    fetch("/api/quiz/", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ lessonKey, kind, questionIndex, correct }),
+    }).catch(() => {});
+  };
+}
 
 type Q = { q: string; options: string[]; answer: number; why: string };
 
 export function LessonPredict({ question, options, answer, why }: { question: string; options: string[]; answer: number; why: string }) {
-  return <Predict question={question} options={options.map((label, i) => ({ label, correct: i === answer }))} why={why} />;
+  const record = useRecordAnswer("predict");
+  return (
+    <Predict
+      question={question}
+      options={options.map((label, i) => ({ label, correct: i === answer }))}
+      why={why}
+      onAnswer={(ok) => record(0, ok)}
+    />
+  );
 }
 
 function Question({ q, options, answer, why, onAnswer }: Q & { onAnswer: (right: boolean) => void }) {
@@ -52,14 +75,16 @@ function Question({ q, options, answer, why, onAnswer }: Q & { onAnswer: (right:
 export function LessonCheck({ questions }: { questions: Q[] }) {
   const [right, setRight] = useState(0);
   const [answered, setAnswered] = useState(0);
+  const record = useRecordAnswer("check");
   return (
     <section className="not-prose mt-12 space-y-3">
       <h2 className="font-mono text-xs text-accent">Check yourself</h2>
-      {questions.map((q) => (
+      {questions.map((q, i) => (
         <Question
           key={q.q}
           {...q}
           onAnswer={(ok) => {
+            record(i, ok);
             setAnswered((a) => a + 1);
             if (ok) setRight((r) => r + 1);
           }}

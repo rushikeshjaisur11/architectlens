@@ -8,18 +8,25 @@
     "prebuild": "velite build --strict",
     "build": "next build",
     "start": "next start",
-    "test": "vitest run"
+    "test": "vitest run",
+    "db:generate": "node --env-file-if-exists=.env.local node_modules/drizzle-kit/bin.cjs generate",
+    "db:migrate": "node --env-file-if-exists=.env.local node_modules/drizzle-kit/bin.cjs migrate",
+    "db:studio": "node --env-file-if-exists=.env.local node_modules/drizzle-kit/bin.cjs studio"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^1.11.3",
+    "@neondatabase/serverless": "^1.2.0",
     "@types/node": "^26.6.2",
     "@types/react": "^19.3.0",
     "border-beam": "^1.4.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.45.3",
     "fuse.js": "^7.5.0",
     "lucide-react": "^1.50.0",
     "motion": "^14.0.0",
     "next": "^15.5.26",
+    "next-auth": "^5.0.0-beta.32",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "tailwind-merge": "^3.7.0",
@@ -32,8 +39,10 @@
     "@tailwindcss/typography": "^0.5.20",
     "@types/react-dom": "^19.3.0",
     "autoprefixer": "^10.6.1",
+    "drizzle-kit": "^0.31.11",
     "postcss": "^8.5.28",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^6.0.3",
     "vitest": "^5.0.1"
   }

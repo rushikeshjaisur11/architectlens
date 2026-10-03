@@ -6,6 +6,7 @@ import { Menu, PanelLeft, Search } from "lucide-react";
 import { SECTIONS, activeSection } from "@/lib/track-meta";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
+import { AccountMenu } from "./AccountMenu";
 
 export function TopBar({
   onSearchClick,
@@ -76,6 +77,7 @@ export function TopBar({
           <kbd className="hidden rounded border border-line-soft px-1 text-xs xl:inline">/</kbd>
         </button>
         <ThemeToggle />
+        <AccountMenu />
       </div>
     </header>
   );

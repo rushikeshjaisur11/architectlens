@@ -9,6 +9,10 @@ export function readSet(): Set<string> {
   }
 }
 
+export function writeSet(set: Set<string>): void {
+  localStorage.setItem(KEY, JSON.stringify([...set]));
+}
+
 export function markRead(lessonKey: string): void {
   const set = readSet();
   if (set.has(lessonKey)) return;
