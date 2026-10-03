@@ -5,6 +5,13 @@ tags: ["inference", "serving", "parallelism", "gpu"]
 sources:
   - "NVIDIA documentation on tensor parallelism and TensorRT-LLM multi-GPU serving"
   - "Shoeybi et al., 'Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism' (2019)"
+banner:
+  layout: fan
+  nodes:
+    - [model, "sharded model"]
+    - [gpu, "GPU 0"]
+    - [gpu, "GPU 1"]
+    - [gpu, "GPU 2"]
 ---
 
 ## Why a single GPU eventually stops being enough

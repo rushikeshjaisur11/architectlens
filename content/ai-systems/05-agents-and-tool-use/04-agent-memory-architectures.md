@@ -6,6 +6,13 @@ sources:
   - "LangChain documentation on memory types for agents"
   - "MemGPT paper: Packer et al., 'MemGPT: Towards LLMs as Operating Systems' (2023)"
   - "Anthropic Engineering, 'Effective context engineering for AI agents', anthropic.com/engineering (fetched October 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [model, "agent"]
+    - [doc, "working"]
+    - [db, "episodic"]
+    - [db, "semantic"]
 ---
 
 ## Why "memory" for an agent is a real design problem, not just context history

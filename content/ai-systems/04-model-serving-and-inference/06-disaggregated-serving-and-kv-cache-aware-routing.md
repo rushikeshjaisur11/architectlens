@@ -6,6 +6,13 @@ sources:
   - "vLLM documentation, 'Disaggregated Prefilling' (docs.vllm.ai; labelled experimental; fetched October 2026)"
   - "llm-d project blog, 'KV-Cache Wins You Can See' (llm-d.ai; fetched October 2026)"
   - "Zhong et al., 'DistServe: Disaggregating Prefill and Decoding for Goodput-optimized LLM Serving' (OSDI 2024)"
+banner:
+  layout: line
+  nodes:
+    - [queue, "requests"]
+    - [gpu, "prefill"]
+    - [cache, "KV cache"]
+    - [gpu, "decode"]
 ---
 
 ## Two phases with different bottlenecks

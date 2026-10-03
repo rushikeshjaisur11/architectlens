@@ -4,6 +4,13 @@ short_title: "Estimation"
 tags: ["capacity-planning", "foundations", "interview-skills"]
 sources:
   - "Jeff Dean, 'Numbers Everyone Should Know' (Google, various talks)"
+banner:
+  layout: line
+  nodes:
+    - [user, "users"]
+    - [doc, "QPS"]
+    - [db, "storage"]
+    - [server, "servers"]
 ---
 
 ## Why estimate at all

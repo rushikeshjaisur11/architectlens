@@ -6,6 +6,13 @@ sources:
   - "Public engineering articles on seat holds and flash-sale queues for event ticketing"
   - "PostgreSQL documentation on row-level locking and SELECT ... FOR UPDATE SKIP LOCKED"
   - "Kleppmann, Designing Data-Intensive Applications (2017), chapters on transactions and write skew"
+banner:
+  layout: line
+  nodes:
+    - [user, "buyer"]
+    - [lock, "seat hold"]
+    - [server, "checkout"]
+    - [db, "orders"]
 ---
 
 ## What makes booking hard

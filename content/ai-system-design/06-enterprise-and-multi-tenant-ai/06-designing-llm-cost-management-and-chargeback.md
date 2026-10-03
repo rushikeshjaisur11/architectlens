@@ -9,6 +9,13 @@ sources:
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched Oct 2026)"
   - "Google Gemini API pricing, ai.google.dev/gemini-api/docs/pricing (fetched Oct 2026)"
   - "Third-party OpenAI price trackers (OpenAI's pricing page returned 403; figures unverified at source)"
+banner:
+  layout: line
+  nodes:
+    - [client, "teams"]
+    - [server, "metering"]
+    - [db, "ledger"]
+    - [doc, "chargeback"]
 ---
 
 ## The problem

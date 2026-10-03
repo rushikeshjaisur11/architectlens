@@ -8,6 +8,13 @@ sources:
   - "Martin Fowler, CircuitBreaker pattern (martinfowler.com)"
   - "Amazon Bedrock cross-Region inference documentation (aws.amazon.com), via search results (October 2026)"
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [model, "primary"]
+    - [model, "secondary"]
+    - [cache, "cache"]
+    - [doc, "static"]
 ---
 
 ## Why single-provider dependency is a production risk

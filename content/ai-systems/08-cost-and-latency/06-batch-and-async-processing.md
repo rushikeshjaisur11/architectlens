@@ -7,6 +7,13 @@ sources:
   - "OpenAI Batch API documentation (platform.openai.com/docs)"
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
   - "Anthropic documentation, extended thinking (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [queue, "jobs"]
+    - [server, "batcher"]
+    - [model, "LLM"]
+    - [db, "results"]
 ---
 
 ## The core tradeoff

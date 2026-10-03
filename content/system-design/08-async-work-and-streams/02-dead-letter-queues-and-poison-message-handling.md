@@ -6,6 +6,13 @@ sources:
   - "AWS SQS documentation on dead-letter queues"
   - "Kafka documentation on error handling and DLQ patterns"
   - "Azure Service Bus documentation on dead-lettering"
+banner:
+  layout: line
+  nodes:
+    - [queue, "queue"]
+    - [server, "consumer"]
+    - [shield, "retries"]
+    - [queue, "DLQ"]
 ---
 
 ## The poison message problem

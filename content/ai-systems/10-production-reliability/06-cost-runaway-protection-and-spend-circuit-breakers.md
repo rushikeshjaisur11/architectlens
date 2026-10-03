@@ -8,6 +8,13 @@ sources:
   - "AWS Cost Anomaly Detection documentation (aws.amazon.com)"
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
   - "OWASP Top 10 for LLM Applications 2025, LLM10 Unbounded Consumption (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [server, "spend meter"]
+    - [shield, "breaker"]
+    - [model, "LLM"]
+    - [user, "alert"]
 ---
 
 ## Why LLM spend runs away differently than typical cloud spend

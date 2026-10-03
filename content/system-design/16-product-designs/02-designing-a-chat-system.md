@@ -4,6 +4,13 @@ short_title: "Designing a Chat System"
 tags: ["product-design", "case-study", "chat", "interview-practice"]
 sources:
   - "System design interview practice materials (general pattern, synthesized from multiple public writeups)"
+banner:
+  layout: line
+  nodes:
+    - [phone, "sender"]
+    - [lb, "chat gateway"]
+    - [queue, "fanout"]
+    - [phone, "receiver"]
 ---
 
 ## Why a chat system pulls together a different set of concepts than the URL shortener

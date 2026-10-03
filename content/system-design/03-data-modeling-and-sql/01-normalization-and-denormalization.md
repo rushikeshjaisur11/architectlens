@@ -5,6 +5,13 @@ tags: ["data-modeling", "sql", "databases", "foundations"]
 sources:
   - "Edgar F. Codd, 'A Relational Model of Data for Large Shared Data Banks' (1970)"
   - "PostgreSQL documentation, chapter on data definition and normalization"
+banner:
+  layout: line
+  nodes:
+    - [db, "3NF tables"]
+    - [server, "joins"]
+    - [doc, "denormalized"]
+    - [client, "fast read"]
 ---
 
 ## What normalization actually buys you

@@ -7,6 +7,13 @@ sources:
   - "Sculley et al., 'Hidden Technical Debt in Machine Learning Systems' (NIPS 2015), on training-serving skew"
   - "Public documentation on vector databases and embedding versioning"
   - "pgvector documentation (dimension limits, iterative scans) and embedding model roundups, 2026 (secondary)"
+banner:
+  layout: line
+  nodes:
+    - [db, "offline store"]
+    - [server, "pipeline"]
+    - [cache, "online store"]
+    - [model, "model"]
 ---
 
 ## The problem

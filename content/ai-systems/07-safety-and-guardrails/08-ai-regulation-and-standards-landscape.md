@@ -7,6 +7,13 @@ sources:
   - "NIST AI 600-1, Artificial Intelligence Risk Management Framework: Generative AI Profile (July 2024)"
   - "ISO/IEC 42001:2023, Artificial intelligence management system"
   - "Federal Reserve SR 26-2 (17 April 2026), federalreserve.gov (summary page fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [server, "AI system"]
+    - [doc, "risk tier"]
+    - [shield, "obligations"]
+    - [user, "regulator"]
 ---
 
 *This is an engineering overview, not legal advice. Dates and scope change; confirm with counsel.*

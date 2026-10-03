@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, ChevronsDownUp, ChevronsUpDown, Home } from "lucide-react";
 import { TileBanner } from "./TileBanner";
 import { markRead } from "@/lib/progress";
+import type { BannerSpec } from "@/lib/banner-kinds";
 
 const btn =
   "inline-flex items-center gap-1.5 rounded border border-line px-2.5 py-1 font-mono text-xs text-paper-muted transition-colors hover:border-accent-dim hover:text-paper";
@@ -47,14 +48,14 @@ export function LessonTopNav({
   );
 }
 
-export function LessonBanner({ title, tags, label, minutes }: { title: string; tags: string; label: string; minutes: number }) {
+export function LessonBanner({ title, tags, label, minutes, spec }: { title: string; tags: string; label: string; minutes: number; spec?: BannerSpec }) {
   const [live, setLive] = useState(true);
   useEffect(() => {
     setLive(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
   return (
     <div className="banner-bg relative mt-5 h-40 overflow-hidden rounded-lg border border-line sm:h-44">
-      <TileBanner title={title} tags={tags} hover={live} />
+      <TileBanner title={title} tags={tags} hover={live} spec={spec} />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-ink/80 to-transparent px-4 pb-2 pt-8 font-mono text-[11px] text-paper-muted">
         <span>{label}</span>
         <span>{minutes} min read</span>

@@ -6,6 +6,13 @@ sources:
   - "AWS DynamoDB documentation, 'Best practices for designing and using partition keys'"
   - "AWS DynamoDB documentation, 'Adaptive capacity'"
   - "DeCandia et al., 'Dynamo: Amazon's Highly Available Key-value Store' (SOSP 2007)"
+banner:
+  layout: line
+  nodes:
+    - [user, "skewed keys"]
+    - [db, "hot shard"]
+    - [server, "split"]
+    - [db, "rebalanced"]
 ---
 
 ## What a hot partition actually is

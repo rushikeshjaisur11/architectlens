@@ -7,6 +7,13 @@ sources:
   - "Pinecone and Weaviate documentation on index migration and re-embedding"
   - "Muennighoff et al., 'MTEB: Massive Text Embedding Benchmark' (2023)"
   - "Embedding model roundups, 2026 (secondary); pgvector documentation"
+banner:
+  layout: line
+  nodes:
+    - [model, "model v1"]
+    - [model, "model v2"]
+    - [server, "re-embed"]
+    - [db, "new index"]
 ---
 
 ## Why embeddings aren't a fire-and-forget asset

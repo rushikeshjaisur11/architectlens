@@ -5,6 +5,13 @@ tags: ["search", "relevance", "autocomplete", "ranking"]
 sources:
   - "Elasticsearch documentation on relevance tuning and completion suggesters"
   - "Algolia engineering blog, posts on search-as-you-type architecture"
+banner:
+  layout: line
+  nodes:
+    - [user, "keystrokes"]
+    - [server, "prefix"]
+    - [doc, "BM25 + signals"]
+    - [doc, "ranked"]
 ---
 
 ## Why "search works" and "search is good" are different bars

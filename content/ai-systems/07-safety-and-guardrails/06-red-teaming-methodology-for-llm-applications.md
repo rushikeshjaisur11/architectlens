@@ -6,6 +6,13 @@ sources:
   - "NIST AI Risk Management Framework (AI RMF 1.0) — GenAI Profile"
   - "Anthropic Red Teaming (research and methodology publications)"
   - "Microsoft PyRIT (Python Risk Identification Tool for generative AI)"
+banner:
+  layout: line
+  nodes:
+    - [user, "red team"]
+    - [model, "app"]
+    - [doc, "findings"]
+    - [shield, "fixes"]
 ---
 
 ## Red-teaming vs. standard evaluation

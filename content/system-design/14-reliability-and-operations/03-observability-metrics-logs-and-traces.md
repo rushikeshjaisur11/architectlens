@@ -6,6 +6,13 @@ sources:
   - "Google SRE Book, chapter 'Monitoring Distributed Systems' (four golden signals)"
   - "OpenTelemetry specification and documentation"
   - "Sigelman et al., 'Dapper, a Large-Scale Distributed Systems Tracing Infrastructure' (Google, 2010)"
+banner:
+  layout: line
+  nodes:
+    - [server, "service"]
+    - [queue, "telemetry"]
+    - [db, "store"]
+    - [client, "alerts"]
 ---
 
 ## Monitoring versus observability

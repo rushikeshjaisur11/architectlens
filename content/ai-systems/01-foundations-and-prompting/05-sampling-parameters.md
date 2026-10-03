@@ -6,6 +6,13 @@ sources:
   - "OpenAI API reference (temperature, top_p documentation)"
   - "Holtzman et al., 'The Curious Case of Neural Text Degeneration' (nucleus sampling / top-p paper)"
   - "Anthropic documentation, 'Extended thinking' and adaptive thinking migration guide (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [model, "logits"]
+    - [server, "temperature"]
+    - [server, "top-p"]
+    - [doc, "next token"]
 ---
 
 ## From logits to a chosen token

@@ -7,6 +7,13 @@ sources:
   - "Wei, Haghtalab & Steinhardt, 'Jailbroken: How Does LLM Safety Training Fail?' (2023)"
   - "OWASP Top 10 for LLM Applications 2025, genai.owasp.org/llm-top-10 (fetched October 2026)"
   - "NVIDIA NeMo Guardrails and Llama Guard 4 documentation, via secondary summaries (October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [user, "attacker"]
+    - [shield, "defenses"]
+    - [model, "LLM"]
+    - [doc, "safe reply"]
 ---
 
 ## How jailbreaks differ from prompt injection

@@ -10,6 +10,13 @@ sources:
   - "llm-d project blog, TTFT results (fetched Oct 2026)"
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched Oct 2026)"
   - "LLM-as-judge calibration guidance, 2026 (secondary: futureagi.com)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "quality SLO"]
+    - [server, "latency SLO"]
+    - [db, "cost SLO"]
+    - [shield, "error budget"]
 ---
 
 ## The problem

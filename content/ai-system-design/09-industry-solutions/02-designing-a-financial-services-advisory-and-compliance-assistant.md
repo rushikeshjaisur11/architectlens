@@ -7,6 +7,13 @@ sources:
   - "Public regulator guidance on communications record-keeping and suitability obligations (for example FINRA and MiFID II overviews)"
   - "Regulation (EU) 2024/1689 (EU AI Act) overview of high-risk categories such as creditworthiness"
   - "FINRA, 2026 Annual Regulatory Oversight Report (9 December 2025), via law-firm summaries (Debevoise, Baker Donelson), October 2026"
+banner:
+  layout: line
+  nodes:
+    - [user, "client"]
+    - [model, "assistant"]
+    - [shield, "compliance"]
+    - [db, "audit log"]
 ---
 
 *Engineering patterns only; regulatory obligations vary by jurisdiction and product and must be confirmed with compliance and legal.*

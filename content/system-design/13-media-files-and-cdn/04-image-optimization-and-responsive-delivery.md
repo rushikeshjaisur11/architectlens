@@ -5,6 +5,13 @@ tags: ["media", "images", "cdn", "performance"]
 sources:
   - "web.dev documentation on responsive images and image optimization"
   - "Cloudinary and imgix documentation on on-the-fly image transformation"
+banner:
+  layout: line
+  nodes:
+    - [db, "original"]
+    - [server, "resize"]
+    - [cdn, "CDN"]
+    - [client, "srcset"]
 ---
 
 ## Why serving one fixed image file to every device is wasteful

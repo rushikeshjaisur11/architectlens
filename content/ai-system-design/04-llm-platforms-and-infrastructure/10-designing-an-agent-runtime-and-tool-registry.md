@@ -9,6 +9,14 @@ sources:
   - "MCP specification 2026-07-28 release notes (fetched Oct 2026)"
   - "A2A Protocol documentation v1.0 (fetched Oct 2026)"
   - "Anthropic pricing documentation, Managed Agents section (fetched Oct 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [model, "runtime"]
+    - [db, "tool registry"]
+    - [shield, "permissions"]
+    - [db, "memory"]
+    - [server, "sandbox"]
 ---
 
 ## The problem

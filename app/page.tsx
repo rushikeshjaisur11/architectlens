@@ -26,8 +26,8 @@ export default function HomePage() {
 
       <CurriculumGrid
         track={track}
-        lessons={trackLessons.map(({ slug, title, shortTitle, summary, minutes, tags, order, category }) => ({
-          slug, title, shortTitle, summary, minutes, tags, order, category,
+        lessons={trackLessons.map(({ slug, title, shortTitle, summary, minutes, tags, banner, order, category }) => ({
+          slug, title, shortTitle, summary, minutes, tags, banner, order, category,
         }))}
       />
     </main>

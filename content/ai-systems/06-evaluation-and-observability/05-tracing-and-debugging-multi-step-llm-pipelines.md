@@ -6,6 +6,13 @@ sources:
   - "OpenTelemetry documentation on distributed tracing concepts"
   - "LangSmith and Langfuse documentation on LLM application tracing"
   - "OpenTelemetry GenAI semantic conventions (moved to open-telemetry/semantic-conventions-genai; fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [user, "request"]
+    - [queue, "spans"]
+    - [doc, "trace tree"]
+    - [client, "debug"]
 ---
 
 ## Why multi-step LLM systems need tracing, not just logging

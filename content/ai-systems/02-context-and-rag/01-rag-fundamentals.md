@@ -5,6 +5,13 @@ tags: ["rag", "retrieval", "llm", "context-engineering"]
 sources:
   - "Lewis et al., 'Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks' (2020)"
   - "OpenAI and Anthropic documentation on retrieval and context injection"
+banner:
+  layout: line
+  nodes:
+    - [user, "question"]
+    - [db, "retrieve"]
+    - [doc, "context"]
+    - [model, "answer"]
 ---
 
 ## The problem RAG solves

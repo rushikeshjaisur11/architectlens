@@ -2,10 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import { basePalette, makeG } from "./anim/scene/toolkit";
+import type { BannerSpec } from "@/lib/banner-kinds";
 import { BANNER_H, BANNER_W, drawBanner, motifFor } from "./anim/scenes/banner";
 
 // Concept banner for a tile: a small labelled diagram of the topic. Static until hovered.
-export function TileBanner({ title, tags = "", hover }: { title: string; tags?: string; hover: boolean }) {
+export function TileBanner({ title, tags = "", hover, spec }: { title: string; tags?: string; hover: boolean; spec?: BannerSpec }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const hoverRef = useRef(hover);
   hoverRef.current = hover;
@@ -15,7 +16,7 @@ export function TileBanner({ title, tags = "", hover }: { title: string; tags?: 
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const motif = motifFor(title, tags);
+    const motif = motifFor(title, tags, spec);
     const g = makeG(ctx, BANNER_H);
     g.w = BANNER_W;
     g.t = 2.1;
@@ -72,7 +73,7 @@ export function TileBanner({ title, tags = "", hover }: { title: string; tags?: 
       mo.disconnect();
       window.removeEventListener("resize", draw);
     };
-  }, [title, tags]);
+  }, [title, tags, spec]);
 
   return <canvas ref={ref} aria-hidden className="h-full w-full" />;
 }

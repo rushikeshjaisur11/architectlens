@@ -6,6 +6,13 @@ sources:
   - "Garcia-Molina and Salem, 'Sagas' (ACM SIGMOD 1987)"
   - "Public engineering articles on inventory reservation and flash-sale design"
   - "Kleppmann, Designing Data-Intensive Applications (2017), chapters on transactions and distributed consistency"
+banner:
+  layout: line
+  nodes:
+    - [user, "shopper"]
+    - [db, "inventory"]
+    - [lock, "reserve"]
+    - [server, "checkout"]
 ---
 
 ## The core tension

@@ -10,6 +10,14 @@ sources:
   - "A2A Protocol documentation v1.0, a2a-protocol.org (fetched Oct 2026)"
   - "OpenTelemetry GenAI semantic conventions (moved to open-telemetry/semantic-conventions-genai, fetched Oct 2026)"
   - "llm-d project blog (fetched Oct 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [lb, "gateway"]
+    - [model, "models"]
+    - [db, "retrieval"]
+    - [shield, "guardrails"]
+    - [server, "agents"]
 ---
 
 ## The problem

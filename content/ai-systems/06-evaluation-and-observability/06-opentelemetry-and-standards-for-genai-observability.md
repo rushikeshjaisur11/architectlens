@@ -5,6 +5,13 @@ tags: ["observability", "opentelemetry", "tracing", "semantic-conventions", "mcp
 sources:
   - "OpenTelemetry GenAI semantic conventions (moved to open-telemetry/semantic-conventions-genai; fetched October 2026)"
   - "Community analyses of OpenTelemetry GenAI convention stability, July 2026 (for example john-hodge.com)"
+banner:
+  layout: line
+  nodes:
+    - [server, "app"]
+    - [doc, "GenAI spans"]
+    - [queue, "collector"]
+    - [client, "backend"]
 ---
 
 ## Why a standard helps

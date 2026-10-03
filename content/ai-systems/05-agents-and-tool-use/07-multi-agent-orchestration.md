@@ -7,6 +7,13 @@ sources:
   - "Anthropic documentation on multi-agent research systems"
   - "Anthropic Engineering, 'Effective context engineering for AI agents', anthropic.com/engineering (fetched October 2026)"
   - "Durable-execution comparisons, 2026 (secondary: hackernoon.com, cordum.io)"
+banner:
+  layout: fan
+  nodes:
+    - [model, "orchestrator"]
+    - [model, "planner"]
+    - [model, "coder"]
+    - [model, "reviewer"]
 ---
 
 ## Why split one task across multiple agents at all

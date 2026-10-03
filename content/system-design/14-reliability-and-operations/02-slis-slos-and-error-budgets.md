@@ -6,6 +6,13 @@ sources:
   - "Google SRE Book, chapter 'Service Level Objectives'"
   - "Google SRE Workbook, chapters on implementing SLOs and alerting on SLOs"
   - "Beyer et al., Site Reliability Engineering (O'Reilly, 2016)"
+banner:
+  layout: line
+  nodes:
+    - [server, "SLI"]
+    - [shield, "SLO"]
+    - [doc, "error budget"]
+    - [user, "release gate"]
 ---
 
 ## Three terms that are easy to confuse

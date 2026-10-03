@@ -6,6 +6,13 @@ sources:
   - "Anthropic and OpenAI documentation on evaluation methodology"
   - "Hamel Husain, writing on LLM evaluation practices for production systems"
   - "SWE-bench and agent benchmark summaries, 2026 (secondary); LLM-as-judge calibration guidance, 2026 (secondary: futureagi.com)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "test cases"]
+    - [model, "app"]
+    - [shield, "metrics"]
+    - [doc, "report"]
 ---
 
 ## Why LLM applications need a different testing approach

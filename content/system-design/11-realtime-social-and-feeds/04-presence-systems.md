@@ -6,6 +6,13 @@ sources:
   - "Slack Engineering — \"How Slack Built Shared Channels\" and presence-related blog posts (slack.engineering)"
   - "Discord Engineering — \"How Discord Stores Trillions of Messages\" and presence scaling posts (discord.com/blog)"
   - "Figma Engineering blog on multiplayer presence (figma.com/blog)"
+banner:
+  layout: line
+  nodes:
+    - [phone, "heartbeat"]
+    - [server, "presence"]
+    - [cache, "TTL store"]
+    - [user, "friends"]
 ---
 
 ## What presence actually means

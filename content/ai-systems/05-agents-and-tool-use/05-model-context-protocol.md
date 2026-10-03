@@ -6,6 +6,13 @@ sources:
   - "Model Context Protocol specification, architecture overview (modelcontextprotocol.io)"
   - "Anthropic announcement of the Model Context Protocol (November 2024)"
   - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [client, "host"]
+    - [server, "MCP client"]
+    - [server, "MCP server"]
+    - [db, "tools"]
 ---
 
 ## The integration problem MCP exists to solve

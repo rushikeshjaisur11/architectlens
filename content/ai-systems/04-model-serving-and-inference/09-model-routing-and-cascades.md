@@ -9,6 +9,13 @@ sources:
   - "RouteLLM: Learning to Route LLMs with Preference Data (Ong et al., 2024)"
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
   - "Google Gemini API pricing (fetched October 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [lb, "router"]
+    - [user, "request"]
+    - [model, "small"]
+    - [model, "large"]
 ---
 
 ## Two different problems called "routing"

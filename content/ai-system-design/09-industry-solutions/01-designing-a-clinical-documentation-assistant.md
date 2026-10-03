@@ -9,6 +9,13 @@ sources:
   - "Doximity, 2026 State of AI in Medicine (physician adoption of voice documentation tools), via secondary summaries"
   - "FDA Clinical Decision Support Software guidance (final, January 2026), docket FDA-2017-D-6569, via secondary summaries"
   - "HHS, HIPAA Privacy and Security Rules (business associate requirements)"
+banner:
+  layout: line
+  nodes:
+    - [phone, "visit audio"]
+    - [model, "STT + LLM"]
+    - [doc, "draft note"]
+    - [user, "clinician"]
 ---
 
 *Engineering patterns only; clinical and legal requirements vary by jurisdiction and must be confirmed with clinical safety, privacy and legal teams.*

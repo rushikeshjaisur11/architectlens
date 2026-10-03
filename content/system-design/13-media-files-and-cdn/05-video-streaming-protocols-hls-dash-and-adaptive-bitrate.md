@@ -6,6 +6,13 @@ sources:
   - "RFC 8216, HTTP Live Streaming (HLS)"
   - "ISO/IEC 23009-1, MPEG-DASH"
   - "Public documentation from major video platforms on adaptive bitrate ladders and segment durations"
+banner:
+  layout: line
+  nodes:
+    - [doc, "segments"]
+    - [doc, "HLS/DASH"]
+    - [cdn, "CDN"]
+    - [client, "ABR player"]
 ---
 
 ## Streaming over plain HTTP

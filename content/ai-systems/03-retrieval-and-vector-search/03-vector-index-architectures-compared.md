@@ -8,6 +8,13 @@ sources:
   - "Guo et al., 'Accelerating Large-Scale Inference with Anisotropic Vector Quantization' (ScaNN, ICML 2020)"
   - "Faiss documentation (github.com/facebookresearch/faiss/wiki)"
   - "pgvector documentation (0.8.0 iterative scans; HNSW dimension limits), github.com/pgvector/pgvector, via secondary summaries (October 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [db, "ANN index"]
+    - [server, "HNSW"]
+    - [server, "IVF"]
+    - [server, "flat"]
 ---
 
 ## Why the index choice is an architecture decision, not a config flag

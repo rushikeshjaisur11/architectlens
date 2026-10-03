@@ -8,6 +8,13 @@ sources:
   - "Public documentation of vector databases on collections, partitions, replication and filtering"
   - "pgvector 0.8.0 release notes and documentation (iterative index scans, HNSW dimension limits), via secondary summaries, 2026"
   - "Vector database comparisons and cost write-ups, 2026 (secondary: firecrawl.dev, dev.to, leanopstech.com)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "vectors"]
+    - [server, "shards"]
+    - [db, "HNSW index"]
+    - [user, "top-k"]
 ---
 
 ## The problem

@@ -5,6 +5,13 @@ tags: ["rate-limiting", "service-design", "reliability"]
 sources:
   - "Stripe engineering blog, posts on API rate limiting"
   - "Cloudflare Learning Center documentation on rate limiting algorithms"
+banner:
+  layout: line
+  nodes:
+    - [client, "client"]
+    - [server, "token bucket"]
+    - [db, "counters"]
+    - [server, "API"]
 ---
 
 ## Why systems need rate limiting

@@ -5,6 +5,13 @@ tags: ["sql", "schema-migration", "online-migration", "dual-writes", "postgres",
 sources:
   - "gh-ost Documentation (github.com/github/gh-ost)"
   - "Percona Toolkit: pt-online-schema-change Documentation (percona.com)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "add column"]
+    - [server, "backfill"]
+    - [server, "dual-write"]
+    - [doc, "drop old"]
 ---
 
 ## Why naive migrations don't scale

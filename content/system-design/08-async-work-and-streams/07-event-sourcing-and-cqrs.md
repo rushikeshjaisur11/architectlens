@@ -5,6 +5,13 @@ tags: ["event-sourcing", "cqrs", "architecture"]
 sources:
   - "Martin Fowler, 'Event Sourcing' (martinfowler.com)"
   - "Greg Young, talks and writing introducing CQRS"
+banner:
+  layout: line
+  nodes:
+    - [doc, "commands"]
+    - [db, "event log"]
+    - [server, "projector"]
+    - [db, "read model"]
 ---
 
 ## The core idea behind event sourcing: store what happened, not just the current state

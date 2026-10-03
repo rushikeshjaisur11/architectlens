@@ -6,6 +6,13 @@ sources:
   - "Elasticsearch Reference: Scalability and resilience (elastic.co)"
   - "Apache Solr Reference Guide: SolrCloud"
   - "Elasticsearch Reference: Index modules (shard settings)"
+banner:
+  layout: fan
+  nodes:
+    - [lb, "coordinator"]
+    - [db, "shard 1"]
+    - [db, "shard 2"]
+    - [db, "shard 3"]
 ---
 
 ## Why a single inverted index doesn't scale

@@ -5,6 +5,13 @@ tags: ["evaluation", "rlhf", "human-feedback", "llm"]
 sources:
   - "Ouyang et al., 'Training language models to follow instructions with human feedback' (2022, the InstructGPT/RLHF paper)"
   - "Rafailov et al., 'Direct Preference Optimization: Your Language Model is Secretly a Reward Model' (2023, DPO paper)"
+banner:
+  layout: line
+  nodes:
+    - [user, "ratings"]
+    - [db, "preferences"]
+    - [gpu, "reward model"]
+    - [model, "policy"]
 ---
 
 ## Why human feedback is a distinct signal from the evaluation methods covered so far

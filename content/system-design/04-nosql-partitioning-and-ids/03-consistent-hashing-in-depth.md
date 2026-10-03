@@ -6,6 +6,13 @@ sources:
   - "Karger et al., 'Consistent Hashing and Random Trees' (1997)"
   - "DeCandia et al., 'Dynamo: Amazon's Highly Available Key-value Store' (SOSP 2007)"
   - "Cassandra documentation on virtual nodes (vnodes)"
+banner:
+  layout: fan
+  nodes:
+    - [server, "hash ring"]
+    - [server, "node A"]
+    - [server, "node B"]
+    - [server, "node C"]
 ---
 
 ## The problem plain hashing creates

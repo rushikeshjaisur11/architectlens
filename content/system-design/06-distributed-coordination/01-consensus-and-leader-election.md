@@ -6,6 +6,13 @@ sources:
   - "Diego Ongaro & John Ousterhout, 'In Search of an Understandable Consensus Algorithm' (2014, the Raft paper)"
   - "Leslie Lamport, 'The Part-Time Parliament' (1998, the original Paxos paper)"
   - "Apache Kafka 4.0 release announcement (March 2025), kafka.apache.org (via search results, October 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [server, "leader"]
+    - [server, "follower"]
+    - [server, "follower"]
+    - [server, "follower"]
 ---
 
 ## Why distributed nodes need to agree on anything

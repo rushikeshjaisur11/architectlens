@@ -6,6 +6,13 @@ sources:
   - "Amazon Builders' Library, 'Workload isolation using shuffle-sharding' and AWS Well-Architected guidance on cell-based architecture"
   - "Summary of the Amazon DynamoDB Service Disruption in the Northern Virginia (US-EAST-1) Region, aws.amazon.com/message/101925 (fetched October 2026)"
   - "CrowdStrike, Channel File 291 Incident Root Cause Analysis (August 2024), crowdstrike.com"
+banner:
+  layout: fan
+  nodes:
+    - [lb, "router"]
+    - [server, "cell 1"]
+    - [server, "cell 2"]
+    - [server, "cell 3"]
 ---
 
 ## The problem with one big shared system

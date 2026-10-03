@@ -5,6 +5,13 @@ tags: ["agents", "durable-execution", "checkpointing", "workflows", "reliability
 sources:
   - "Temporal, 'LangGraph in production: Temporal's LangGraph Plugin adds Durable Execution' (July 2026) and durable-execution comparisons (hackernoon.com, cordum.io), via search results, October 2026"
   - "MCP specification 2026-07-28, Tasks extension, blog.modelcontextprotocol.io (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [server, "workflow"]
+    - [db, "event log"]
+    - [server, "worker"]
+    - [queue, "resume"]
 ---
 
 ## The problem: agents that outlive a process

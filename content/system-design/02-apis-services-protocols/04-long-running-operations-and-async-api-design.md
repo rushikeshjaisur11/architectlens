@@ -6,6 +6,13 @@ sources:
   - "Stripe API documentation — webhooks and async endpoints"
   - "Google AIP-151 — Long-running operations (google.aip.dev)"
   - "AWS API Gateway documentation — async invocation patterns"
+banner:
+  layout: line
+  nodes:
+    - [client, "POST"]
+    - [server, "202 + id"]
+    - [queue, "worker"]
+    - [doc, "poll result"]
 ---
 
 ## Why synchronous request/response breaks down

@@ -7,6 +7,13 @@ sources:
   - "Cohere documentation on rerank models"
   - "Anthropic, 'Introducing Contextual Retrieval' (fetched October 2026)"
   - "Enterprise RAG adoption reporting, VentureBeat (2026; survey-based, secondary)"
+banner:
+  layout: line
+  nodes:
+    - [user, "query"]
+    - [db, "hybrid search"]
+    - [server, "reranker"]
+    - [model, "LLM"]
 ---
 
 ## Why pure vector search alone often isn't enough

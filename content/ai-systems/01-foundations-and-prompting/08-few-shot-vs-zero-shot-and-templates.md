@@ -6,6 +6,13 @@ sources:
   - "OpenAI Prompt Engineering Guide (platform docs)"
   - "Anthropic Prompt Engineering documentation (docs.anthropic.com)"
   - "Brown et al., 'Language Models are Few-Shot Learners' (GPT-3 paper)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "task"]
+    - [doc, "examples"]
+    - [model, "LLM"]
+    - [doc, "answer"]
 ---
 
 ## Zero-shot: instructions alone

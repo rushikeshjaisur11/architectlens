@@ -8,6 +8,13 @@ sources:
   - "Qdrant payload filtering and collection design documentation"
   - "Milvus partition key and multi-tenancy documentation"
   - "pgvector 0.8.0 iterative scans and PostgreSQL row-level security documentation; multi-tenant RAG isolation guides, 2026 (secondary: truto.one, render.com)"
+banner:
+  layout: line
+  nodes:
+    - [user, "query"]
+    - [shield, "filter"]
+    - [db, "vector index"]
+    - [doc, "results"]
 ---
 
 ## Why filtering breaks the ANN assumption

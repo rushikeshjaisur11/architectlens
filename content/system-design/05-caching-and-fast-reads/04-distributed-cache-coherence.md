@@ -7,6 +7,13 @@ sources:
   - "Memcached wiki: ConfiguringClient / consistent hashing documentation"
   - "Karger et al., Consistent Hashing and Random Trees (STOC 1997)"
   - "Redis and Valkey licensing and adoption summaries, 2025 to 2026 (secondary)"
+banner:
+  layout: line
+  nodes:
+    - [server, "node A"]
+    - [cache, "local cache"]
+    - [queue, "invalidations"]
+    - [server, "node B"]
 ---
 
 ## Why a single cache node isn't enough

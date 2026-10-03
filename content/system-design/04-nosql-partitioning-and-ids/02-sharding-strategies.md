@@ -5,6 +5,13 @@ tags: ["nosql", "partitioning", "sharding", "distributed-systems"]
 sources:
   - "Martin Kleppmann, 'Designing Data-Intensive Applications' (2017), chapter on partitioning"
   - "DynamoDB and Cassandra documentation on partition key design"
+banner:
+  layout: fan
+  nodes:
+    - [lb, "router"]
+    - [db, "shard 1"]
+    - [db, "shard 2"]
+    - [db, "shard 3"]
 ---
 
 ## Why shard at all

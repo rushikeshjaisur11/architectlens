@@ -6,6 +6,13 @@ sources:
   - "Jeff Dean, 'Numbers Everyone Should Know' (Google, various talks/slides)"
   - "Peter Norvig, 'Teach Yourself Programming in Ten Years' (latency table appendix)"
   - "Colin Scott, 'Latency Numbers Every Programmer Should Know' (interactive visualization, colin-scott.github.io)"
+banner:
+  layout: line
+  nodes:
+    - [cache, "L1 ~1ns"]
+    - [db, "RAM ~100ns"]
+    - [server, "SSD ~100us"]
+    - [cloud, "WAN ~150ms"]
 ---
 
 ## Why this matters

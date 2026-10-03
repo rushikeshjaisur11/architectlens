@@ -6,6 +6,13 @@ sources:
   - "RFC 8216 (HLS) and ISO/IEC 23009-1 (MPEG-DASH), including low-latency extensions"
   - "Public engineering articles on live ingest, transcoding and low-latency delivery at large streaming platforms"
   - "RTMP, SRT and WebRTC protocol documentation"
+banner:
+  layout: line
+  nodes:
+    - [phone, "camera"]
+    - [server, "ingest"]
+    - [server, "transcode"]
+    - [cdn, "CDN"]
 ---
 
 ## How live differs from video on demand

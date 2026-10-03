@@ -6,6 +6,13 @@ sources:
   - "Rafailov et al., 'Direct Preference Optimization' (2023)"
   - "Hugging Face TRL (Transformer Reinforcement Learning) library documentation"
   - "DeepSeek-AI, 'DeepSeek-R1' (arXiv 2501.12948; Nature 2025); GRPO practitioner summaries, 2026 (secondary)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "pref. pairs"]
+    - [gpu, "DPO"]
+    - [model, "policy"]
+    - [shield, "eval"]
 ---
 
 ## Connecting preference-based training to the fine-tuning decision process

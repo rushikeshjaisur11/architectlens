@@ -6,6 +6,13 @@ sources:
   - "Cloudflare Learning Center documentation on CDN architecture"
   - "Netflix Technology Blog, posts on Open Connect CDN architecture"
   - "HTTP/3 and QUIC adoption statistics, 2026 (secondary: W3Techs, Cloudflare Radar via technologychecker.io and wmtips.com)"
+banner:
+  layout: line
+  nodes:
+    - [db, "origin"]
+    - [cdn, "edge"]
+    - [cache, "edge cache"]
+    - [user, "viewer"]
 ---
 
 ## Why serving media directly from your origin server doesn't scale

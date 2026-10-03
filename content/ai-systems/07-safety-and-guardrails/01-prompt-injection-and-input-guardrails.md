@@ -8,6 +8,13 @@ sources:
   - "OWASP Top 10 for LLM Applications 2025, genai.owasp.org/llm-top-10 (fetched October 2026)"
   - "OWASP Top 10 for Agentic Applications 2026 (December 2025), via secondary summaries"
   - "Anthropic documentation on browser-use prompt-injection risk, as quoted in secondary summaries (2026)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "untrusted text"]
+    - [shield, "detector"]
+    - [model, "LLM"]
+    - [lock, "limited tools"]
 ---
 
 ## What prompt injection actually is

@@ -5,6 +5,13 @@ tags: ["service-design", "key-value-store", "case-study"]
 sources:
   - "DeCandia et al., 'Dynamo: Amazon's Highly Available Key-value Store' (SOSP 2007)"
   - "Cassandra documentation on architecture and consistency tuning"
+banner:
+  layout: line
+  nodes:
+    - [client, "client"]
+    - [lb, "coordinator"]
+    - [db, "partitions"]
+    - [doc, "replicas"]
 ---
 
 ## Why this is a strong synthesis exercise

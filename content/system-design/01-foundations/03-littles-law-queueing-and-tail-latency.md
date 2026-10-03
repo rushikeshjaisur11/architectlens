@@ -6,6 +6,13 @@ sources:
   - "Little, 'A Proof for the Queuing Formula: L = lambda W' (Operations Research, 1961)"
   - "Dean and Barroso, 'The Tail at Scale' (Communications of the ACM, 2013)"
   - "Kleinrock, Queueing Systems, Volume 1: Theory (1975)"
+banner:
+  layout: line
+  nodes:
+    - [queue, "arrivals"]
+    - [server, "queue L"]
+    - [server, "service W"]
+    - [doc, "L = lambda W"]
 ---
 
 ## Why systems fall off a cliff

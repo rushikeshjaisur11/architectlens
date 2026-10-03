@@ -6,6 +6,13 @@ sources:
   - "PostgreSQL documentation on index types (B-Tree, GIN, GiST, BRIN)"
   - "Use The Index, Luke! (Markus Winand's indexing reference)"
   - "PostgreSQL 18 release notes (September 2025), postgresql.org (via secondary summaries, October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [user, "query"]
+    - [db, "B-tree index"]
+    - [doc, "row pointer"]
+    - [db, "table"]
 ---
 
 ## Why a primary key index alone isn't enough

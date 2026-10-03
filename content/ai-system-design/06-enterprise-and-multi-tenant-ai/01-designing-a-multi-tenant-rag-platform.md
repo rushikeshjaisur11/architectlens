@@ -8,6 +8,13 @@ sources:
   - "OWASP guidance on broken access control"
   - "Multi-tenant RAG isolation guides, 2026 (secondary: truto.one, render.com, thenile.dev); pgvector and Postgres row-level security documentation"
   - "OWASP Top 10 for LLM Applications 2025, LLM08 Vector and Embedding Weaknesses"
+banner:
+  layout: fan
+  nodes:
+    - [shield, "isolation"]
+    - [user, "tenant A"]
+    - [user, "tenant B"]
+    - [db, "shared index"]
 ---
 
 ## The problem

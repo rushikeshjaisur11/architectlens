@@ -6,6 +6,13 @@ sources:
   - "Catastrophic Interference in Connectionist Networks (McCloskey & Cohen, 1989)"
   - "Overcoming catastrophic forgetting in neural networks (Kirkpatrick et al., 2017, EWC paper, arXiv:1612.00796)"
   - "An Empirical Study of Catastrophic Forgetting in Large Language Models During Continual Fine-tuning (Luo et al., 2023, arXiv:2308.08747)"
+banner:
+  layout: line
+  nodes:
+    - [model, "model"]
+    - [db, "new data"]
+    - [shield, "old tasks"]
+    - [doc, "replay"]
 ---
 
 ## The problem

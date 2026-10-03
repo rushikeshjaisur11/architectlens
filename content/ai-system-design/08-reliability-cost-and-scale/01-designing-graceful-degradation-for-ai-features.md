@@ -7,6 +7,13 @@ sources:
   - "Google SRE Book, chapter 'Addressing Cascading Failures'"
   - "Public provider status and incident postmortems on LLM API outages"
   - "Amazon Bedrock documentation: Guardrails streaming behaviour and prompt caching (docs.aws.amazon.com), via search results, October 2026"
+banner:
+  layout: line
+  nodes:
+    - [user, "request"]
+    - [model, "primary"]
+    - [cache, "cheaper model"]
+    - [doc, "static reply"]
 ---
 
 ## The problem

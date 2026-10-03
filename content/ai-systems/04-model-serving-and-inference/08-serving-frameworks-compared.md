@@ -9,6 +9,13 @@ sources:
   - "SGLang documentation and RadixAttention paper (Zheng et al., 2024)"
   - "vLLM documentation and blog, docs.vllm.ai and vllm.ai/blog (fetched October 2026)"
   - "Serving framework comparisons, 2026 (secondary: premai.io, deploybase.ai, yottalabs.ai, tensormesh.ai)"
+banner:
+  layout: fan
+  nodes:
+    - [server, "engine"]
+    - [gpu, "vLLM"]
+    - [gpu, "TGI"]
+    - [gpu, "TensorRT"]
 ---
 
 ## Why the choice of server matters

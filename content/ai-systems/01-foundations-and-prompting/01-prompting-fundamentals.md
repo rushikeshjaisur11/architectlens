@@ -5,6 +5,13 @@ tags: ["prompting", "llm", "foundations"]
 sources:
   - "OpenAI Prompt Engineering Guide (platform docs)"
   - "Anthropic Prompt Engineering documentation (docs.anthropic.com)"
+banner:
+  layout: line
+  nodes:
+    - [user, "instruction"]
+    - [doc, "context"]
+    - [model, "LLM"]
+    - [doc, "output"]
 ---
 
 ## The core mental model

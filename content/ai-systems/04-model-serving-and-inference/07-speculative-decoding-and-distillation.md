@@ -5,6 +5,13 @@ tags: ["inference", "serving", "distillation", "optimization"]
 sources:
   - "Leviathan et al., 'Fast Inference from Transformers via Speculative Decoding' (2023)"
   - "Hinton, Vinyals & Dean, 'Distilling the Knowledge in a Neural Network' (2015)"
+banner:
+  layout: line
+  nodes:
+    - [model, "draft model"]
+    - [model, "target model"]
+    - [shield, "verify"]
+    - [doc, "tokens"]
 ---
 
 ## Two different problems, two different techniques

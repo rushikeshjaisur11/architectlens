@@ -5,6 +5,13 @@ tags: ["recommendations", "matching", "collaborative-filtering"]
 sources:
   - "Netflix Technology Blog, posts on recommendation system architecture"
   - "Koren, Bell & Volinsky, 'Matrix Factorization Techniques for Recommender Systems' (2009)"
+banner:
+  layout: line
+  nodes:
+    - [user, "interactions"]
+    - [model, "CF model"]
+    - [db, "candidates"]
+    - [doc, "top-N"]
 ---
 
 ## The core problem: predicting what a user hasn't told you they'd like

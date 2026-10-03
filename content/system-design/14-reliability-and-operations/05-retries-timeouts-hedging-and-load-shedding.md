@@ -7,6 +7,13 @@ sources:
   - "Amazon Builders' Library, 'Using load shedding to avoid overload'"
   - "Dean and Barroso, 'The Tail at Scale' (Communications of the ACM, 2013)"
   - "Google SRE Book, chapter 'Addressing Cascading Failures'"
+banner:
+  layout: line
+  nodes:
+    - [client, "client"]
+    - [doc, "timeout"]
+    - [server, "retry + jitter"]
+    - [shield, "load shed"]
 ---
 
 ## Failure handling can cause failure

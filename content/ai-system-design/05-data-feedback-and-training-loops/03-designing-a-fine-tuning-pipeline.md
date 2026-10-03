@@ -7,6 +7,13 @@ sources:
   - "Dettmers et al., 'QLoRA: Efficient Finetuning of Quantized LLMs' (2023)"
   - "Public documentation on experiment tracking, model registries and training infrastructure"
   - "Practitioner guides on LoRA, QLoRA, DPO and GRPO, 2026 (secondary: futureagi.com, bigdataboutique.com, gauraw.com)"
+banner:
+  layout: line
+  nodes:
+    - [db, "data"]
+    - [gpu, "train"]
+    - [shield, "eval"]
+    - [server, "registry"]
 ---
 
 ## The problem

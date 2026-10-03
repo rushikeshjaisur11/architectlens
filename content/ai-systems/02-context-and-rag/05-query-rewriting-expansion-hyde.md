@@ -7,6 +7,13 @@ sources:
   - "\"Query Rewriting for Retrieval-Augmented Large Language Models\" (Ma et al., 2023)"
   - "LangChain MultiQueryRetriever documentation"
   - "Microsoft/Bing classic query expansion literature (pseudo-relevance feedback background)"
+banner:
+  layout: line
+  nodes:
+    - [user, "question"]
+    - [model, "rewrite"]
+    - [db, "retrieve"]
+    - [doc, "answer"]
 ---
 
 ## Why the raw user query is often the wrong retrieval input

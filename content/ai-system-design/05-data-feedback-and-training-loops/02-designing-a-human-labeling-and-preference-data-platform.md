@@ -7,6 +7,13 @@ sources:
   - "Public documentation of data annotation tools and workforce platforms"
   - "Krippendorff, Content Analysis: An Introduction to Its Methodology, on inter-annotator agreement"
   - "Annotation platform and RLHF data cost roundups, 2026 (secondary: taskmonk.ai, secondtalent.com, herohunt.ai); vendor-sourced figures"
+banner:
+  layout: line
+  nodes:
+    - [user, "annotators"]
+    - [doc, "tasks"]
+    - [shield, "QA"]
+    - [db, "dataset"]
 ---
 
 ## The problem

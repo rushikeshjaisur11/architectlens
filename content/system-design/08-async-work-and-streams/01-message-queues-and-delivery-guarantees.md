@@ -6,6 +6,13 @@ sources:
   - "Kafka documentation on delivery semantics"
   - "AWS SQS documentation on at-least-once delivery and idempotency"
   - "Apache Kafka KIP-932 'Queues for Kafka' and Kafka 4.1 release notes (via search results, October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [server, "producer"]
+    - [queue, "broker"]
+    - [server, "consumer"]
+    - [shield, "ack"]
 ---
 
 ## Why decouple with a queue at all

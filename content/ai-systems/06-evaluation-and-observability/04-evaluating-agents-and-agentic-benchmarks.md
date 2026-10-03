@@ -5,6 +5,13 @@ tags: ["evaluation", "agents", "benchmarks", "reliability", "trajectories"]
 sources:
   - "Agent benchmark overviews, 2026: Terminal-Bench 2.0, GAIA, tau-bench, OSWorld, SWE-bench Pro; Holistic Agent Leaderboard (secondary summaries and arXiv 2602.16666, 'Towards a Science of AI Agent Reliability')"
   - "SWE-bench Pro (Scale AI) and SWE-bench Verified leaderboard summaries, October 2026 (secondary)"
+banner:
+  layout: line
+  nodes:
+    - [model, "agent"]
+    - [server, "environment"]
+    - [shield, "task success"]
+    - [doc, "trajectory"]
 ---
 
 ## Why agents need their own evaluation

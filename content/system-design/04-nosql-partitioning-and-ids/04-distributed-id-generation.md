@@ -7,6 +7,13 @@ sources:
   - "RFC 4122 (UUID) and the UUIDv7 draft (RFC 9562)"
   - "Segment Engineering, 'A brief history of the UUID' (KSUID design notes)"
   - "RFC 9562, Universally Unique IDentifiers (UUIDs) (2024); PostgreSQL 18 release notes (September 2025), postgresql.org (via secondary summaries, October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [server, "worker"]
+    - [doc, "timestamp"]
+    - [doc, "worker bits"]
+    - [doc, "sequence"]
 ---
 
 ## Why auto-increment doesn't survive sharding

@@ -8,6 +8,13 @@ sources:
   - "NIST SP 800-53 security and privacy controls (overview)"
   - "Open-weight model landscape and licence summaries, 2026 (secondary: digitalapplied.com, lushbinary.com, hidekazu-konishi.com)"
   - "NVIDIA NIM for LLMs documentation, air-gap deployment, docs.nvidia.com/nim (via search results, October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "data"]
+    - [server, "VPC"]
+    - [gpu, "local GPUs"]
+    - [shield, "no egress"]
 ---
 
 ## The problem

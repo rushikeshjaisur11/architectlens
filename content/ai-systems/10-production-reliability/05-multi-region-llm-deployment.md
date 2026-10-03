@@ -7,6 +7,13 @@ sources:
   - "OpenAI and Anthropic documentation on regional API availability"
   - "Amazon Bedrock cross-Region inference documentation (aws.amazon.com), via search results (October 2026)"
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [lb, "router"]
+    - [cloud, "region A"]
+    - [cloud, "region B"]
+    - [gpu, "GPU capacity"]
 ---
 
 ## Why multi-region matters more, not less, for LLM-dependent applications

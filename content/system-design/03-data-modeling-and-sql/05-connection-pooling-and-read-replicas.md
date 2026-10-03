@@ -5,6 +5,13 @@ tags: ["sql", "connection-pooling", "read-replicas", "scalability", "postgres"]
 sources:
   - "PgBouncer Documentation (pgbouncer.org)"
   - "PostgreSQL Documentation: High Availability, Load Balancing, and Replication (postgresql.org/docs)"
+banner:
+  layout: line
+  nodes:
+    - [server, "app"]
+    - [lb, "pooler"]
+    - [db, "primary"]
+    - [db, "replica"]
 ---
 
 ## Why connections are expensive

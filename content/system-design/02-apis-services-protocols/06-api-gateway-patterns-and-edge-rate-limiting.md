@@ -8,6 +8,13 @@ sources:
   - "NGINX rate limiting docs (nginx.org)"
   - "Stripe API rate limits documentation"
   - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io (fetched October 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [lb, "gateway"]
+    - [client, "client"]
+    - [shield, "auth + limits"]
+    - [server, "services"]
 ---
 
 ## Why a gateway sits in front of everything

@@ -9,6 +9,13 @@ sources:
   - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched Oct 2026)"
   - "A2A Protocol documentation, a2a-protocol.org (v1.0, fetched Oct 2026)"
   - "OWASP Top 10 for Agentic Applications 2026 (ASI01 to ASI10), via secondary summaries"
+banner:
+  layout: line
+  nodes:
+    - [model, "agent"]
+    - [lock, "token"]
+    - [shield, "policy"]
+    - [server, "tool"]
 ---
 
 ## The problem

@@ -5,6 +5,13 @@ tags: ["caching", "cdn", "performance"]
 sources:
   - "Cloudflare Learning Center documentation on tiered caching"
   - "Varnish and Fastly documentation on multi-layer cache architecture"
+banner:
+  layout: line
+  nodes:
+    - [client, "browser"]
+    - [cdn, "CDN"]
+    - [cache, "Redis"]
+    - [db, "origin"]
 ---
 
 ## Why a single cache layer isn't always the full picture

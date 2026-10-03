@@ -7,6 +7,13 @@ sources:
   - "Hugging Face documentation on LoRA and parameter-efficient fine-tuning"
   - "Practitioner guides on fine-tuning versus RAG, 2026 (secondary: bigdataboutique.com, gauraw.com)"
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "need"]
+    - [doc, "prompt"]
+    - [gpu, "fine-tune"]
+    - [shield, "eval"]
 ---
 
 ## Three different tools for three different problems

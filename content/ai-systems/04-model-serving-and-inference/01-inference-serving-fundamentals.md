@@ -7,6 +7,13 @@ sources:
   - "NVIDIA and Hugging Face documentation on LLM inference optimization"
   - "vLLM documentation and blog, docs.vllm.ai and vllm.ai/blog (fetched October 2026)"
   - "llm-d project blog, llm-d.ai/blog/kvcache-wins-you-can-see (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [queue, "requests"]
+    - [server, "batcher"]
+    - [gpu, "GPU"]
+    - [client, "tokens"]
 ---
 
 ## Why serving an LLM is a different problem than training one

@@ -8,6 +8,13 @@ sources:
   - "OWASP Top 10 for LLM Applications (owasp.org)"
   - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched October 2026)"
   - "OWASP Top 10 for Agentic Applications 2026 (December 2025), via secondary summaries"
+banner:
+  layout: line
+  nodes:
+    - [model, "agent"]
+    - [shield, "approval gate"]
+    - [user, "human"]
+    - [server, "action"]
 ---
 
 ## Why autonomy needs a throttle, not an on/off switch

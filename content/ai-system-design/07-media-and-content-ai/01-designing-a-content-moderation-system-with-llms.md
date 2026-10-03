@@ -7,6 +7,13 @@ sources:
   - "Inan et al., 'Llama Guard: LLM-based Input-Output Safeguard for Human-AI Conversations' (2023)"
   - "Regulation (EU) 2022/2065 (Digital Services Act) overview of notice-and-action and transparency duties"
   - "EU Digital Services Act (Regulation (EU) 2022/2065): statements of reasons and transparency reporting, European Commission DSA pages (via search results, October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "content"]
+    - [model, "LLM"]
+    - [shield, "policy"]
+    - [user, "human review"]
 ---
 
 ## The problem

@@ -8,6 +8,13 @@ sources:
   - "Ralph Kimball & Margy Ross, 'The Data Warehouse Toolkit' (star schema and dimensional modeling)"
   - "Google BigQuery documentation — Materialized views"
   - "Apache Iceberg v3 specification and lakehouse comparisons, 2026 (secondary: bigdataboutique.com, databricks.com blog)"
+banner:
+  layout: line
+  nodes:
+    - [db, "OLTP"]
+    - [queue, "ETL"]
+    - [db, "column store"]
+    - [client, "BI"]
 ---
 
 ## OLTP and OLAP are optimized for opposite access patterns

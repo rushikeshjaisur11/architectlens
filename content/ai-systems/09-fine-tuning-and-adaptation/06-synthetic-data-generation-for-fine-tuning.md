@@ -8,6 +8,13 @@ sources:
   - "Orca: Progressive Learning from Complex Explanation Traces of GPT-4 (Mukherjee et al., 2023, arXiv:2306.02707)"
   - "Shumailov et al., 'AI models collapse when trained on recursively generated data', Nature (2024); 2026 mitigation literature (secondary summaries)"
   - "NVIDIA, Nemotron-4 340B synthetic data pipeline (blogs.nvidia.com), via search results"
+banner:
+  layout: line
+  nodes:
+    - [model, "teacher"]
+    - [doc, "synthetic"]
+    - [shield, "filter"]
+    - [gpu, "train"]
 ---
 
 ## Why synthetic data

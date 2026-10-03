@@ -5,6 +5,13 @@ tags: ["nosql", "databases", "data-modeling"]
 sources:
   - "MongoDB, Cassandra, and Neo4j documentation on data modeling patterns"
   - "Martin Kleppmann, 'Designing Data-Intensive Applications' (2017), chapter on data models"
+banner:
+  layout: fan
+  nodes:
+    - [db, "NoSQL"]
+    - [doc, "document"]
+    - [db, "columnar"]
+    - [db, "graph"]
 ---
 
 ## NoSQL isn't one thing — it's several different tradeoffs

@@ -6,6 +6,13 @@ sources:
   - "Phil Karlton (attributed), on cache invalidation being one of the two hard problems in computer science"
   - "Redis and Memcached documentation on caching patterns"
   - "Redis and Valkey licensing and adoption summaries, 2025 to 2026 (secondary: dsa-research.org, buildmvpfast.com, flowverify.co)"
+banner:
+  layout: line
+  nodes:
+    - [server, "app"]
+    - [cache, "cache"]
+    - [db, "database"]
+    - [shield, "TTL + purge"]
 ---
 
 ## Why caching works

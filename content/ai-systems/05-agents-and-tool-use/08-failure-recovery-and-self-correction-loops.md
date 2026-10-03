@@ -6,6 +6,12 @@ sources:
   - "Reflexion: Language Agents with Verbal Reinforcement Learning (Shinn et al., 2023, arXiv:2303.11366)"
   - "Self-Refine: Iterative Refinement with Self-Feedback (Madaan et al., 2023, arXiv:2303.17651)"
   - "AWS Well-Architected: retry and backoff patterns (docs.aws.amazon.com)"
+banner:
+  layout: loop
+  nodes:
+    - [model, "attempt"]
+    - [shield, "verify"]
+    - [doc, "fix"]
 ---
 
 ## Failures compound differently in agent loops than in normal software

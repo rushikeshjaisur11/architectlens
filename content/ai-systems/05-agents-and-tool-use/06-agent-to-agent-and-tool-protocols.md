@@ -9,6 +9,13 @@ sources:
   - "A2A Protocol documentation, a2a-protocol.org (v1.0, fetched October 2026)"
   - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched October 2026)"
   - "Agentic commerce protocol comparisons, 2026 (secondary: digitalapplied.com, crossmint.com)"
+banner:
+  layout: line
+  nodes:
+    - [model, "agent A"]
+    - [lb, "A2A"]
+    - [model, "agent B"]
+    - [server, "tool"]
 ---
 
 ## Why standardized protocols exist at all

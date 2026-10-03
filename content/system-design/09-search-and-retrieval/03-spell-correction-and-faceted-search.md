@@ -5,6 +5,13 @@ tags: ["search", "spell-correction", "faceted-search"]
 sources:
   - "Peter Norvig, 'How to Write a Spelling Corrector' (norvig.com)"
   - "Elasticsearch documentation on aggregations and faceted navigation"
+banner:
+  layout: line
+  nodes:
+    - [user, "query"]
+    - [server, "spell fix"]
+    - [db, "facet counts"]
+    - [doc, "filtered"]
 ---
 
 ## Why "did you mean" is a genuinely different problem than fuzzy matching

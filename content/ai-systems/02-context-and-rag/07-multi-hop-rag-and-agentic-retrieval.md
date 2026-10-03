@@ -5,6 +5,12 @@ tags: ["rag", "multi-hop", "agentic-retrieval", "retrieval"]
 sources:
   - "Trivedi et al., 'Interleaving Retrieval with Chain-of-Thought Reasoning for Knowledge-Intensive Multi-Step Questions' (2023, IRCoT)"
   - "LangChain and LlamaIndex documentation on agentic and multi-step retrieval patterns"
+banner:
+  layout: loop
+  nodes:
+    - [model, "plan"]
+    - [db, "retrieve"]
+    - [doc, "evidence"]
 ---
 
 ## Why single-shot retrieval fails on genuinely multi-step questions

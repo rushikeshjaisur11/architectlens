@@ -8,6 +8,13 @@ sources:
   - "Public provider documentation on conversation context management and rate limiting"
   - "California SB 243, Companion Chatbots (signed 13 October 2025, effective 1 January 2026), via law-firm summaries (Jones Walker, Future of Privacy Forum), October 2026"
   - "Provider privacy and data-retention policies for consumer versus API data, 2026 (secondary summaries)"
+banner:
+  layout: line
+  nodes:
+    - [user, "users"]
+    - [lb, "gateway"]
+    - [model, "LLM pool"]
+    - [db, "memory"]
 ---
 
 ## The problem

@@ -1,5 +1,6 @@
 import type { G } from "../scene/types";
 import { node, type Kind } from "./shapes";
+import type { BannerSpec } from "../../../lib/banner-kinds";
 
 type N = [Kind, string];
 type Layout = "line" | "loop" | "fan";
@@ -74,8 +75,9 @@ export const MOTIFS: Motif[] = [
 
 const DEFAULT: Motif = { id: "default", re: /./, layout: "line", nodes: [["client", "client"], ["server", "service"], ["db", "data"]] };
 
-// Title decides first; tags only break ties for titles that match nothing.
-export function motifFor(title: string, tags = ""): Motif {
+// A lesson's own banner frontmatter wins; otherwise the title decides first and tags only break ties.
+export function motifFor(title: string, tags = "", override?: BannerSpec): Motif {
+  if (override) return { id: "custom", re: /./, layout: override.layout, nodes: override.nodes };
   const t = title.toLowerCase();
   const all = `${t} ${tags.toLowerCase()}`;
   return MOTIFS.find((m) => m.re.test(t)) ?? MOTIFS.find((m) => m.re.test(all)) ?? DEFAULT;
@@ -150,6 +152,9 @@ export function drawBanner(g: G, m: Motif): void {
     g.line(sx, sy, ex, ey, g.pal.line, 1, 1.2);
     g.packet(sx, sy, ex, ey, g.loop(1.6, idx * 0.35), g.pal.accent, 2.4);
   });
+
+  const focus = fan ? 0 : Math.max(0, m.nodes.findIndex(([k]) => k === "model"));
+  g.glow(pos[focus][0], pos[focus][1], 34, g.pal.accent, 0.14);
 
   m.nodes.forEach(([k, label], i) => {
     const [x, y] = pos[i];

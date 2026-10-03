@@ -5,6 +5,13 @@ tags: ["availability", "reliability", "foundations", "slo"]
 sources:
   - "Google SRE Book, chapter on service level objectives"
   - "AWS documentation on availability design goals"
+banner:
+  layout: line
+  nodes:
+    - [doc, "99.9%"]
+    - [doc, "99.99%"]
+    - [doc, "99.999%"]
+    - [shield, "error budget"]
 ---
 
 ## What "three nines" actually means

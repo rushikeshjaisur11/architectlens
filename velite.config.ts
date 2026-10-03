@@ -5,6 +5,7 @@ import { trackFromSlug } from "./lib/tracks";
 import { resolveShortTitle } from "./lib/short-title";
 import { order } from "./lib/order";
 import { slugFromFilename } from "./lib/slug";
+import { BANNER_KINDS } from "./lib/banner-kinds";
 import { readingMinutes, summarize } from "./lib/summary";
 
 const seenLessonKeys = new Set<string>();
@@ -21,6 +22,12 @@ export default defineConfig({
           short_title: s.string().optional(),
           tags: s.array(s.string()).default([]),
           sources: s.array(s.string()).default([]),
+          banner: s
+            .object({
+              layout: s.enum(["line", "loop", "fan"]),
+              nodes: s.array(s.tuple([s.enum(BANNER_KINDS), s.string().max(18)])).min(2).max(5),
+            })
+            .optional(),
           html: s.markdown(),
           raw: s.raw(),
           path: s.path(),

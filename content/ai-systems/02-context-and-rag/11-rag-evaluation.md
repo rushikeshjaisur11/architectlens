@@ -7,6 +7,13 @@ sources:
   - "LlamaIndex Evaluation documentation (Faithfulness, Relevancy, Correctness evaluators)"
   - "\"Retrieval-Augmented Generation for Large Language Models: A Survey\" (Gao et al., 2023) — evaluation section"
   - "TruLens RAG Triad documentation"
+banner:
+  layout: line
+  nodes:
+    - [doc, "test questions"]
+    - [db, "retrieval"]
+    - [model, "generation"]
+    - [shield, "judge"]
 ---
 
 ## Why RAG evaluation needs its own metrics

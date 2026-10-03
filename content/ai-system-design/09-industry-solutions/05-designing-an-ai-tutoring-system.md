@@ -9,6 +9,13 @@ sources:
   - "Kestin et al., 'AI tutoring outperforms in-class active learning', Scientific Reports (June 2025), nature.com/articles/s41598-025-97652-6"
   - "Khanmigo two-year school experiment working paper (2026), edworkingpapers.com ai26-1551, via search results"
   - "FTC, Children's Online Privacy Protection Rule amendments (final April 2025, effective 23 June 2025), federalregister.gov"
+banner:
+  layout: line
+  nodes:
+    - [user, "student"]
+    - [model, "tutor"]
+    - [db, "progress"]
+    - [doc, "next hint"]
 ---
 
 *Engineering patterns only; child privacy and education regulations vary and must be confirmed with legal and privacy teams.*

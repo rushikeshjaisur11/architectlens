@@ -9,6 +9,13 @@ sources:
   - "EU AI Omnibus (Reg. (EU) 2026/1744) summary, Gibson Dunn, gibsondunn.com (fetched Oct 2026)"
   - "NIST AI 600-1, Generative AI Profile (July 2024)"
   - "ISO/IEC 42001:2023, AI management systems"
+banner:
+  layout: line
+  nodes:
+    - [server, "AI system"]
+    - [doc, "registry"]
+    - [shield, "review"]
+    - [db, "audit trail"]
 ---
 
 *This lesson describes engineering patterns for governance, not legal advice. Regulations differ by jurisdiction and change; check requirements with your legal and compliance teams.*

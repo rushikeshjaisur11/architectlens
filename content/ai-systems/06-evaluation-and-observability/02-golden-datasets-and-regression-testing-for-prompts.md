@@ -6,6 +6,13 @@ sources:
   - "OpenAI Evals framework documentation (github.com/openai/evals)"
   - "promptfoo documentation (promptfoo.dev)"
   - "Anthropic Prompt Engineering: evaluating outputs (docs.anthropic.com)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "golden set"]
+    - [model, "prompt v2"]
+    - [shield, "regression"]
+    - [server, "CI gate"]
 ---
 
 ## Why prompts need regression tests

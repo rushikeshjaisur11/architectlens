@@ -2,8 +2,8 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-sans: var(--font-sans-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-body), ui-monospace, monospace;
 
   --color-ink: #eef1f6;
   --color-ink-elevated: #ffffff;
@@ -45,7 +45,7 @@
 }
 
 :root[data-theme="sepia"] .prose {
-  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  font-family: var(--font-reading), Georgia, serif;
   font-size: 1.0625rem;
   line-height: 1.85;
 }

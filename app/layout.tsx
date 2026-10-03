@@ -1,19 +1,25 @@
 import "./globals.css";
-import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Atkinson_Hyperlegible_Next, Atkinson_Hyperlegible_Mono, Literata } from "next/font/google";
 import { lessons } from "#velite";
 import { buildContentIndex } from "@/lib/search-index";
 import { NavShell } from "@/components/NavShell";
+import { CursorGlow } from "@/components/CursorGlow";
 
-const plexSans = IBM_Plex_Sans({
+const sans = Atkinson_Hyperlegible_Next({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-plex-sans",
+  variable: "--font-sans-body",
 });
 
-const plexMono = IBM_Plex_Mono({
+const mono = Atkinson_Hyperlegible_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
-  variable: "--font-plex-mono",
+  variable: "--font-mono-body",
+});
+
+const reading = Literata({
+  subsets: ["latin"],
+  variable: "--font-reading",
 });
 
 const THEME_INIT_SCRIPT = `
@@ -37,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const searchItems = buildContentIndex();
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${plexSans.variable} ${plexMono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${sans.variable} ${mono.variable} ${reading.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
@@ -45,6 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <NavShell lessons={lessons} searchItems={searchItems}>
           {children}
         </NavShell>
+        <CursorGlow />
       </body>
     </html>
   );

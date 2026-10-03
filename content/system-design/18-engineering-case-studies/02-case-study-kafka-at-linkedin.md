@@ -6,6 +6,13 @@ sources:
   - "Kreps, Narkhede and Rao, 'Kafka: a Distributed Messaging System for Log Processing' (NetDB 2011)"
   - "Jay Kreps, 'The Log: What every software engineer should know about real-time data's unifying abstraction' (LinkedIn Engineering, 2013)"
   - "Apache Kafka documentation, design section"
+banner:
+  layout: line
+  nodes:
+    - [server, "producers"]
+    - [queue, "Kafka log"]
+    - [server, "consumers"]
+    - [db, "sinks"]
 ---
 
 *Provenance note: this lesson summarizes the published Kafka paper and LinkedIn's engineering writing from memory. Verify exact figures and release history in the primary sources.*

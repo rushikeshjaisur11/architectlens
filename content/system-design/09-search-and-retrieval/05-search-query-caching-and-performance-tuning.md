@@ -6,6 +6,13 @@ sources:
   - "Elasticsearch Reference: Shard request cache, Node query cache, Field data"
   - "Apache Solr Reference Guide: Query Settings in SolrConfig (caches)"
   - "Lucene FAQ and IndexSearcher documentation (Apache Lucene)"
+banner:
+  layout: line
+  nodes:
+    - [user, "query"]
+    - [cache, "result cache"]
+    - [db, "index"]
+    - [doc, "top-k"]
 ---
 
 ## Where caching happens in a search stack

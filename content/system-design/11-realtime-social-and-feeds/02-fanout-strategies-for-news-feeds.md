@@ -5,6 +5,13 @@ tags: ["feeds", "realtime", "fanout", "social"]
 sources:
   - "Twitter/X engineering blog, posts on timeline architecture and fanout"
   - "Facebook engineering blog, posts on News Feed backend architecture"
+banner:
+  layout: line
+  nodes:
+    - [user, "author"]
+    - [queue, "fanout"]
+    - [cache, "feed cache"]
+    - [user, "followers"]
 ---
 
 ## The core problem a social feed has to solve

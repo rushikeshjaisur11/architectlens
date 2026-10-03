@@ -5,6 +5,13 @@ tags: ["slm", "on-device", "edge", "quantization", "privacy", "inference"]
 sources:
   - "Small language model and edge inference roundups, 2026 (secondary: derekmolloy.ie, meta-intelligence.tech, iotdigitaltwinplm.com)"
   - "llama.cpp, ExecuTorch and ONNX Runtime project documentation"
+banner:
+  layout: line
+  nodes:
+    - [client, "device"]
+    - [model, "small LM"]
+    - [cloud, "fallback"]
+    - [doc, "answer"]
 ---
 
 ## Why run a small model at all

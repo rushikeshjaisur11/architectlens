@@ -10,6 +10,13 @@ sources:
   - "Google Gemini API pricing (fetched Oct 2026)"
   - "Open-weight model and licence summaries, 2026 (secondary: digitalapplied.com, lushbinary.com)"
   - "AWS, Amazon Bedrock cross-Region inference documentation, via search results (October 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [doc, "decision"]
+    - [cloud, "buy API"]
+    - [gpu, "self-host"]
+    - [shield, "risk"]
 ---
 
 ## The problem

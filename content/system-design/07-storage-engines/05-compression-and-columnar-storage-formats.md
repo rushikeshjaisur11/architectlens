@@ -7,6 +7,13 @@ sources:
   - "Abadi, Madden & Hachem, 'Column-Stores vs. Row-Stores: How Different Are They Really?' (2008)"
   - "Apache Iceberg v3 specification and lakehouse comparisons, 2026 (secondary)"
   - "Pelkonen et al., 'Gorilla' (VLDB 2015)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "rows"]
+    - [server, "encode"]
+    - [db, "column chunks"]
+    - [doc, "zstd"]
 ---
 
 ## Row-oriented vs. column-oriented storage: matching layout to access pattern

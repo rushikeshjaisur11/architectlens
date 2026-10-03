@@ -5,6 +5,13 @@ tags: ["reliability", "resilience", "circuit-breakers"]
 sources:
   - "Michael Nygard, 'Release It!' (2007), chapter introducing the circuit breaker pattern"
   - "Netflix Hystrix documentation (archived) on circuit breaker implementation"
+banner:
+  layout: line
+  nodes:
+    - [client, "caller"]
+    - [shield, "breaker"]
+    - [server, "dependency"]
+    - [cache, "fallback"]
 ---
 
 ## Why failures need to be contained, not just detected

@@ -5,6 +5,13 @@ tags: ["replication", "distributed-systems", "storage-engines"]
 sources:
   - "Martin Kleppmann, 'Designing Data-Intensive Applications' (2017), chapter on replication"
   - "PostgreSQL documentation on streaming replication"
+banner:
+  layout: line
+  nodes:
+    - [db, "leader"]
+    - [queue, "repl log"]
+    - [db, "follower"]
+    - [db, "follower"]
 ---
 
 ## Why replicate data at all

@@ -5,6 +5,13 @@ tags: ["geospatial", "indexing", "geohashing", "matching"]
 sources:
   - "Uber Engineering blog, posts on H3 hexagonal hierarchical spatial index"
   - "Google S2 Geometry Library documentation"
+banner:
+  layout: line
+  nodes:
+    - [phone, "location"]
+    - [doc, "geohash/S2"]
+    - [db, "cell index"]
+    - [user, "nearby"]
 ---
 
 ## Why "find nearby" is a harder query than it looks

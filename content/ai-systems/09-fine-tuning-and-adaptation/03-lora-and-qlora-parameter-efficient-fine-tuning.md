@@ -8,6 +8,13 @@ sources:
   - "Hugging Face PEFT documentation"
   - "Practitioner guides on LoRA and QLoRA, 2026 (secondary: futureagi.com, codersera.com)"
   - "Hu et al., 'LoRA' (2021); Dettmers et al., 'QLoRA' (2023)"
+banner:
+  layout: line
+  nodes:
+    - [model, "frozen base"]
+    - [gpu, "adapters"]
+    - [doc, "small delta"]
+    - [model, "tuned"]
 ---
 
 ## The core idea

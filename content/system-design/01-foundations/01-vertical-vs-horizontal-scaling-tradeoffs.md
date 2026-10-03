@@ -6,6 +6,13 @@ sources:
   - "Martin L. Abbott & Michael T. Fisher, 'The Art of Scalability' (AKF Scale Cube)"
   - "Google SRE Book, Chapter 'Managing Load' (sre.google/sre-book)"
   - "AWS Well-Architected Framework, Performance Efficiency Pillar"
+banner:
+  layout: line
+  nodes:
+    - [client, "load"]
+    - [server, "bigger server"]
+    - [lb, "more servers"]
+    - [db, "shared state"]
 ---
 
 ## Two axes of growth

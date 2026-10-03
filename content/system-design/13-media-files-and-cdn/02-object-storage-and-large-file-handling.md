@@ -5,6 +5,13 @@ tags: ["object-storage", "media", "files"]
 sources:
   - "AWS S3 documentation on storage classes and multipart upload"
   - "MinIO documentation on object storage architecture"
+banner:
+  layout: line
+  nodes:
+    - [client, "client"]
+    - [server, "API"]
+    - [db, "object store"]
+    - [doc, "blobs"]
 ---
 
 ## Why object storage, not a filesystem, is the default for large-scale file storage

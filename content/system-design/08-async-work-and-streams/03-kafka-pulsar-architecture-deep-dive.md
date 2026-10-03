@@ -6,6 +6,13 @@ sources:
   - "Apache Kafka documentation (kafka.apache.org) — design and implementation"
   - "Apache Pulsar documentation (pulsar.apache.org) — architecture overview"
   - "Apache Kafka 4.0 release announcement (March 2025) and Kafka 4.1 upgrade notes, kafka.apache.org (via search results, October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [server, "producer"]
+    - [queue, "partitions"]
+    - [server, "consumer group"]
+    - [db, "log segments"]
 ---
 
 ## The log as the core abstraction

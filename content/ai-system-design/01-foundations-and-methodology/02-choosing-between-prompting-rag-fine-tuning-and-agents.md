@@ -9,6 +9,14 @@ sources:
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched Oct 2026)"
   - "Practitioner guides on fine-tuning versus RAG, 2026 (secondary: bigdataboutique.com, gauraw.com)"
   - "Anthropic, Contextual Retrieval (fetched Oct 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [model, "need"]
+    - [doc, "prompt"]
+    - [db, "RAG"]
+    - [gpu, "fine-tune"]
+    - [server, "agent"]
 ---
 
 ## The decision that shapes everything

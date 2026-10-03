@@ -8,6 +8,13 @@ sources:
   - "Public documentation on instruction-tuning data generation and filtering practices"
   - "Shumailov et al., 'AI models collapse when trained on recursively generated data', Nature (2024); 2026 follow-up literature on mitigation (secondary summaries)"
   - "NVIDIA, Nemotron-4 340B synthetic data generation pipeline (blogs.nvidia.com), via search results"
+banner:
+  layout: line
+  nodes:
+    - [model, "teacher"]
+    - [doc, "synthetic"]
+    - [shield, "filter"]
+    - [db, "dataset"]
 ---
 
 ## The problem

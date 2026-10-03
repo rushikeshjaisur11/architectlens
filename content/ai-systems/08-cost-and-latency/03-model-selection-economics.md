@@ -8,6 +8,13 @@ sources:
   - "Artificial Analysis LLM benchmark and cost leaderboard (artificialanalysis.ai)"
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
   - "Google Gemini API pricing, ai.google.dev/gemini-api/docs/pricing (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "task"]
+    - [model, "small"]
+    - [model, "large"]
+    - [db, "cost per task"]
 ---
 
 ## The core mental model

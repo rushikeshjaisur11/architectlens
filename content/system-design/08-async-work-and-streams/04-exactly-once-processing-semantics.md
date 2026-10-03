@@ -6,6 +6,13 @@ sources:
   - "Kafka documentation on exactly-once semantics (transactions, idempotent producer)"
   - "Kleppmann, 'Designing Data-Intensive Applications' — exactly-once processing chapter"
   - "Google Cloud Dataflow documentation on exactly-once processing"
+banner:
+  layout: line
+  nodes:
+    - [server, "producer"]
+    - [queue, "broker"]
+    - [shield, "idempotent"]
+    - [server, "consumer"]
 ---
 
 ## Why "exactly-once delivery" is the wrong target

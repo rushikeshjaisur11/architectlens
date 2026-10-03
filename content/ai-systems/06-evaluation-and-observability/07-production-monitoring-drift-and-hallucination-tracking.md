@@ -6,6 +6,13 @@ sources:
   - "Evidently AI documentation on data and model drift"
   - "Galileo / Arize AI blog on LLM hallucination detection in production"
   - "Anthropic and OpenAI usage/monitoring API documentation"
+banner:
+  layout: line
+  nodes:
+    - [server, "traffic"]
+    - [shield, "detectors"]
+    - [db, "metrics"]
+    - [client, "alerts"]
 ---
 
 ## Why offline evals aren't enough

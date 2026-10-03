@@ -4,6 +4,13 @@ short_title: "Case Study: Facebook TAO"
 tags: ["case-study", "tao", "graph", "caching", "distributed-systems"]
 sources:
   - "Bronson et al., 'TAO: Facebook's Distributed Data Store for the Social Graph' (USENIX ATC 2013)"
+banner:
+  layout: fan
+  nodes:
+    - [cache, "TAO"]
+    - [db, "MySQL"]
+    - [doc, "objects"]
+    - [doc, "associations"]
 ---
 
 ## The problem: a read pattern that didn't fit existing tools well

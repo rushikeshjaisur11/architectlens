@@ -4,6 +4,13 @@ short_title: "Designing a Notification System"
 tags: ["notifications", "operations", "case-study"]
 sources:
   - "System design interview practice materials (general pattern, synthesized from multiple public writeups)"
+banner:
+  layout: line
+  nodes:
+    - [server, "event"]
+    - [queue, "queue"]
+    - [server, "channels"]
+    - [phone, "devices"]
 ---
 
 ## Why notification systems are a genuinely distinct design problem

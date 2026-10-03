@@ -8,6 +8,13 @@ sources:
   - "Google SRE Book, Chapter 21: Handling Overload (sre.google)"
   - "Anthropic and provider documentation on rate limits and tiers (platform.claude.com/docs/en/api/rate-limits)"
   - "Amazon Builders' Library, 'Timeouts, retries and backoff with jitter'"
+banner:
+  layout: line
+  nodes:
+    - [client, "callers"]
+    - [server, "token bucket"]
+    - [queue, "queue"]
+    - [model, "LLM"]
 ---
 
 ## Why LLM rate limits are different from typical API limits

@@ -10,6 +10,13 @@ sources:
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
   - "llm-d project blog, llm-d.ai/blog/kvcache-wins-you-can-see (fetched October 2026)"
   - "Google Gemini API documentation on implicit and explicit context caching (ai.google.dev, fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [user, "request"]
+    - [cache, "prefix cache"]
+    - [gpu, "GPU"]
+    - [doc, "reused KV"]
 ---
 
 ## What's actually being cached

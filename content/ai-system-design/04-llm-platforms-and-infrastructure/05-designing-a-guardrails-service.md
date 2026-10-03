@@ -9,6 +9,13 @@ sources:
   - "NVIDIA NeMo Guardrails documentation and NVIDIA developer blog on guardrail latency (via secondary summaries, October 2026)"
   - "Meta Llama Guard 4 model card (12B multimodal safety classifier), via secondary summaries"
   - "OWASP Top 10 for LLM Applications 2025 (LLM01, LLM05, LLM06)"
+banner:
+  layout: line
+  nodes:
+    - [shield, "detectors"]
+    - [server, "policy engine"]
+    - [doc, "allow/block"]
+    - [db, "audit log"]
 ---
 
 ## The problem

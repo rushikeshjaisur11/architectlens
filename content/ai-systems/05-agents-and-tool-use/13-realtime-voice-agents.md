@@ -4,6 +4,13 @@ short_title: "Realtime Voice Agents"
 tags: ["voice", "speech", "realtime", "latency", "agents", "telephony"]
 sources:
   - "Provider documentation and independent benchmark reports on OpenAI Realtime and Gemini Live APIs, September 2026 (secondary: inworld.ai, softcery.com, foundrysoft.co)"
+banner:
+  layout: line
+  nodes:
+    - [phone, "mic"]
+    - [model, "STT"]
+    - [model, "LLM"]
+    - [phone, "TTS"]
 ---
 
 ## Why voice is a different engineering problem

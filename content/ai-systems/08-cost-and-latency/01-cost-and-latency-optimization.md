@@ -7,6 +7,13 @@ sources:
   - "vLLM and TensorRT-LLM documentation on serving-level cost/latency tradeoffs"
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
   - "Google Gemini API pricing, ai.google.dev/gemini-api/docs/pricing (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [user, "request"]
+    - [cache, "cache"]
+    - [model, "right-size"]
+    - [client, "fast reply"]
 ---
 
 ## Why LLM cost and latency need explicit design attention

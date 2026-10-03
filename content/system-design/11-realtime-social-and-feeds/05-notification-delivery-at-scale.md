@@ -6,6 +6,13 @@ sources:
   - "Firebase Cloud Messaging (FCM) official documentation (firebase.google.com/docs/cloud-messaging)"
   - "Apple Push Notification service (APNs) documentation (developer.apple.com/documentation/usernotifications)"
   - "Uber Engineering — \"Scaling Notifications\" blog posts (uber.com/blog/engineering)"
+banner:
+  layout: line
+  nodes:
+    - [server, "event"]
+    - [queue, "queue"]
+    - [server, "provider"]
+    - [phone, "device"]
 ---
 
 ## The multi-channel fanout problem

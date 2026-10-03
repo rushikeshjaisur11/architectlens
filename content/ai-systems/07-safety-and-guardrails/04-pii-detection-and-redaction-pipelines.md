@@ -7,6 +7,13 @@ sources:
   - "NIST SP 800-122: Guide to Protecting the Confidentiality of PII"
   - "Google Cloud Data Loss Prevention (DLP) API documentation"
   - "EDPB Opinion 28/2024 on AI models and personal data (via law-firm summaries); OWASP LLM02 Sensitive Information Disclosure"
+banner:
+  layout: line
+  nodes:
+    - [doc, "text"]
+    - [shield, "detector"]
+    - [server, "mask"]
+    - [db, "vault"]
 ---
 
 ## Why LLM pipelines need their own PII layer

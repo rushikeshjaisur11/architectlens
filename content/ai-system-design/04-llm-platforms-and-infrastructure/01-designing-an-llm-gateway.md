@@ -8,6 +8,14 @@ sources:
   - "Provider API documentation on rate limits, retries and streaming"
   - "Gateway comparisons and benchmarks, 2026 (secondary: dev.to, spheron.network, deepinspect.ai, requesty.ai)"
   - "MCP specification 2026-07-28 (header-based routing), blog.modelcontextprotocol.io (fetched Oct 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [lb, "gateway"]
+    - [client, "apps"]
+    - [model, "model A"]
+    - [model, "model B"]
+    - [shield, "policy"]
 ---
 
 ## The problem

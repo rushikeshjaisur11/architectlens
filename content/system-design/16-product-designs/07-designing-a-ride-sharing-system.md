@@ -6,6 +6,13 @@ sources:
   - "Public engineering blogs from ride-hailing companies on dispatch, geospatial indexing and supply positioning"
   - "Google S2 geometry library and Uber H3 hexagonal grid documentation"
   - "Kleppmann, Designing Data-Intensive Applications (2017), chapters on stream processing"
+banner:
+  layout: line
+  nodes:
+    - [phone, "rider"]
+    - [server, "dispatch"]
+    - [db, "geo index"]
+    - [phone, "driver"]
 ---
 
 ## Requirements

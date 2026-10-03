@@ -7,6 +7,13 @@ sources:
   - "Public product documentation on AI customer-service assistants and human handoff"
   - "Yao et al., 'ReAct: Synergizing Reasoning and Acting in Language Models' (2022)"
   - "Customer-service AI benchmark roundups, 2026 (secondary: aissist.io, fin.ai, digitalapplied.com); vendor-reported figures"
+banner:
+  layout: line
+  nodes:
+    - [user, "ticket"]
+    - [model, "agent"]
+    - [server, "CRM tools"]
+    - [shield, "handoff"]
 ---
 
 ## The problem

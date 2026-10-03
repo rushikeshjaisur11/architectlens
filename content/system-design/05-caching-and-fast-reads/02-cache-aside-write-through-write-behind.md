@@ -6,6 +6,13 @@ sources:
   - "AWS Whitepaper: Database Caching Strategies Using Redis"
   - "Redis documentation: Caching patterns"
   - "Facebook/Meta engineering: Scaling Memcache at Facebook (NSDI 2013)"
+banner:
+  layout: line
+  nodes:
+    - [server, "app"]
+    - [cache, "cache"]
+    - [db, "DB"]
+    - [doc, "write policy"]
 ---
 
 ## The three strategies

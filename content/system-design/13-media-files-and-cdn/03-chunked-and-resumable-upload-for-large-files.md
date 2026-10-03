@@ -6,6 +6,13 @@ sources:
   - "Amazon S3 documentation on multipart upload"
   - "tus.io open protocol for resumable file uploads"
   - "Google Cloud Storage documentation on resumable uploads"
+banner:
+  layout: line
+  nodes:
+    - [client, "chunks"]
+    - [server, "upload API"]
+    - [db, "chunk store"]
+    - [doc, "assemble"]
 ---
 
 ## Why one big request fails

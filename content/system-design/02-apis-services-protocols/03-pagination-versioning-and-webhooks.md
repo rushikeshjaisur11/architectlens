@@ -5,6 +5,13 @@ tags: ["apis", "pagination", "versioning", "webhooks"]
 sources:
   - "Stripe API documentation on pagination and versioning practices"
   - "GitHub API documentation on cursor-based pagination"
+banner:
+  layout: line
+  nodes:
+    - [client, "client"]
+    - [doc, "cursor"]
+    - [server, "API v2"]
+    - [server, "webhook"]
 ---
 
 ## Pagination: why "just return everything" breaks down

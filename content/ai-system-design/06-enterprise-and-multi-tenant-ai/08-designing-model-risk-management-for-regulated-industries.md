@@ -8,6 +8,13 @@ sources:
   - "ISO/IEC 42001 AI management system standard (overview)"
   - "Federal Reserve SR 26-2 (17 April 2026), federalreserve.gov/supervisionreg/srletters/SR2602.htm (fetched Oct 2026)"
   - "Secondary analyses of SR 26-2 scope and generative AI (for example CRA, Elevate Consulting, 2026)"
+banner:
+  layout: line
+  nodes:
+    - [model, "model"]
+    - [shield, "validation"]
+    - [doc, "docs"]
+    - [user, "risk board"]
 ---
 
 *This lesson describes engineering and process patterns, not legal advice. Requirements vary by jurisdiction and sector; confirm with compliance and legal teams.*

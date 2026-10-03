@@ -6,6 +6,12 @@ sources:
   - "Anthropic documentation on tool use / function calling"
   - "OpenAI documentation on function calling and the assistants API"
   - "ReAct: Yao et al., 'ReAct: Synergizing Reasoning and Acting in Language Models' (2022)"
+banner:
+  layout: loop
+  nodes:
+    - [model, "think"]
+    - [server, "tool"]
+    - [doc, "observe"]
 ---
 
 ## What makes something an "agent" rather than a chatbot

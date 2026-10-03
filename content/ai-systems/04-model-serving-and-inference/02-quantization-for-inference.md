@@ -8,6 +8,13 @@ sources:
   - "llama.cpp / GGUF format documentation (ggerganov/llama.cpp)"
   - "bitsandbytes LLM.int8() documentation (Hugging Face)"
   - "Quantization guides, 2026 (secondary: gmicloud.ai, vrlatech.com, packet.ai, spheron.network); NVIDIA benchmarks as reported"
+banner:
+  layout: line
+  nodes:
+    - [doc, "fp16"]
+    - [server, "quantize"]
+    - [gpu, "int4"]
+    - [shield, "quality"]
 ---
 
 ## Why quantize at all

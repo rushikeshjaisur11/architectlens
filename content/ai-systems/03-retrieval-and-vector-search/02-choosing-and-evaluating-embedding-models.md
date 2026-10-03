@@ -6,6 +6,13 @@ sources:
   - "MTEB (Massive Text Embedding Benchmark) leaderboard and documentation"
   - "OpenAI and Cohere documentation on embedding model selection"
   - "Embedding model roundups and papers, 2026 (secondary: premai.io, mixpeek.com; arXiv 2605.27295 Gemini Embedding 2; arXiv 2601.04720 Qwen3-VL-Embedding)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "corpus"]
+    - [model, "embed A"]
+    - [model, "embed B"]
+    - [shield, "recall@k"]
 ---
 
 ## Why the embedding model choice is a foundational, hard-to-change decision

@@ -5,6 +5,13 @@ tags: ["fine-tuning", "training-data", "llm"]
 sources:
   - "OpenAI documentation on fine-tuning dataset preparation"
   - "Hugging Face documentation on dataset curation for supervised fine-tuning"
+banner:
+  layout: line
+  nodes:
+    - [doc, "raw data"]
+    - [server, "clean"]
+    - [shield, "dedupe"]
+    - [db, "training set"]
 ---
 
 ## Why data quality dominates fine-tuning outcomes more than most other choices

@@ -6,6 +6,13 @@ sources:
   - "Dijkstra (1959) and A* search (Hart, Nilsson, Raphael, 1968), shortest-path foundations"
   - "Geisberger et al., 'Contraction Hierarchies: Faster and Simpler Hierarchical Routing in Road Networks' (2008)"
   - "Public engineering posts from ride-hailing and mapping companies on ETA models as corrections over routing estimates"
+banner:
+  layout: line
+  nodes:
+    - [phone, "position"]
+    - [db, "road graph"]
+    - [model, "ETA model"]
+    - [doc, "estimate"]
 ---
 
 ## Two different questions

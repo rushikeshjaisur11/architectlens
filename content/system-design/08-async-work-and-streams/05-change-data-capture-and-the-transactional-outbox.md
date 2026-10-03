@@ -6,6 +6,13 @@ sources:
   - "Debezium documentation, 'Outbox Event Router' and change data capture architecture, debezium.io"
   - "Richardson, Microservices Patterns: 'Transactional outbox' and 'Transaction log tailing' (Manning, 2018)"
   - "Apache Kafka 4.0 release notes (March 2025), kafka.apache.org (KRaft-only; via search results October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [db, "database"]
+    - [queue, "outbox/WAL"]
+    - [server, "CDC"]
+    - [queue, "topic"]
 ---
 
 ## The dual-write problem

@@ -6,6 +6,13 @@ sources:
   - "Sam Newman, 'Building Microservices' (2015)"
   - "Martin Fowler, 'MonolithFirst' (martinfowler.com)"
   - "Istio documentation, ambient mode (GA in Istio 1.24, November 2024), istio.io; service mesh comparisons, 2026 (secondary)"
+banner:
+  layout: fan
+  nodes:
+    - [doc, "boundaries"]
+    - [server, "service A"]
+    - [server, "service B"]
+    - [server, "service C"]
 ---
 
 ## Why this is a genuine tradeoff, not a settled "microservices are modern" default

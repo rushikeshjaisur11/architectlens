@@ -5,6 +5,13 @@ tags: ["distributed-systems", "consistency", "availability", "foundations"]
 sources:
   - "Eric Brewer, PODC 2000 keynote (Brewer's conjecture)"
   - "Seth Gilbert & Nancy Lynch, 'Brewer's Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services' (2002)"
+banner:
+  layout: line
+  nodes:
+    - [db, "node A"]
+    - [cloud, "partition"]
+    - [db, "node B"]
+    - [shield, "C or A"]
 ---
 
 ## The three properties

@@ -5,6 +5,13 @@ tags: ["feeds", "ranking", "realtime", "recommendations"]
 sources:
   - "Facebook engineering blog, posts on News Feed ranking architecture"
   - "Twitter/X engineering blog, posts on timeline ranking (Heavy Ranker)"
+banner:
+  layout: line
+  nodes:
+    - [db, "candidates"]
+    - [model, "ranker"]
+    - [doc, "scores"]
+    - [user, "feed"]
 ---
 
 ## Why chronological order stops being the right default at scale

@@ -6,6 +6,13 @@ sources:
   - "Diego Ongaro & John Ousterhout, 'In Search of an Understandable Consensus Algorithm' (Raft paper, 2014)"
   - "Leslie Lamport, 'Paxos Made Simple' (2001)"
   - "Leslie Lamport, 'The Part-Time Parliament' (original Paxos paper, 1998)"
+banner:
+  layout: line
+  nodes:
+    - [server, "candidate"]
+    - [doc, "term vote"]
+    - [server, "leader"]
+    - [doc, "log entries"]
 ---
 
 ## Why two algorithms for the same problem

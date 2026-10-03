@@ -7,6 +7,12 @@ sources:
   - "Tree of Thoughts: Deliberate Problem Solving with Large Language Models (Yao et al., 2023, arXiv:2305.10601)"
   - "Plan-and-Solve Prompting (Wang et al., 2023, arXiv:2305.04091)"
   - "Anthropic documentation, extended and adaptive thinking (fetched October 2026)"
+banner:
+  layout: loop
+  nodes:
+    - [model, "plan"]
+    - [server, "act"]
+    - [doc, "observe"]
 ---
 
 ## Why planning strategy is a separate design choice

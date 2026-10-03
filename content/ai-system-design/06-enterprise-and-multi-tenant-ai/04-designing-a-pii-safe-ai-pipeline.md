@@ -8,6 +8,13 @@ sources:
   - "Public documentation on named-entity recognition based PII detection and tokenization services"
   - "EDPB Opinion 28/2024 on personal data in AI models (17 December 2024), via law-firm summaries (Gibson Dunn, Hunton, A&O Shearman)"
   - "OWASP Top 10 for LLM Applications 2025, LLM02 Sensitive Information Disclosure"
+banner:
+  layout: line
+  nodes:
+    - [doc, "text"]
+    - [shield, "detect"]
+    - [server, "redact"]
+    - [model, "LLM"]
 ---
 
 *This lesson covers engineering patterns, not legal advice; check obligations with your privacy and legal teams.*

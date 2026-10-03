@@ -5,6 +5,13 @@ tags: ["prompting", "system-prompt", "foundations"]
 sources:
   - "OpenAI Model Spec / instruction hierarchy documentation"
   - "Anthropic Prompt Engineering documentation (docs.anthropic.com)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "system prompt"]
+    - [user, "user turn"]
+    - [model, "LLM"]
+    - [shield, "role"]
 ---
 
 ## Three layers, not one

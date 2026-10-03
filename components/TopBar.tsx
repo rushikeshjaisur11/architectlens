@@ -68,12 +68,11 @@ export function TopBar({
           type="button"
           onClick={onSearchClick}
           aria-label="Search"
-          className="rounded border border-line px-2 py-1 font-mono text-xs text-paper-muted hover:border-accent-dim hover:text-paper"
+          className="inline-flex items-center gap-2 rounded-full border border-line px-2.5 py-1 font-mono text-xs text-paper-muted transition-colors hover:border-accent-dim hover:text-paper sm:w-52"
         >
-          <span className="hidden sm:inline">
-            Search <span className="text-paper-muted">Ctrl+K</span>
-          </span>
-          <Search size={14} className="sm:hidden" />
+          <Search size={14} />
+          <span className="hidden flex-1 text-left sm:inline">Search notes</span>
+          <kbd className="hidden rounded border border-line-soft px-1 text-[11px] sm:inline">/</kbd>
         </button>
         <ThemeToggle />
       </div>

@@ -9,6 +9,13 @@ sources:
   - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched October 2026)"
   - "OWASP Top 10 for Agentic Applications 2026 (December 2025), via secondary summaries"
   - "A2A Protocol documentation, a2a-protocol.org (v1.0, fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [model, "agent"]
+    - [shield, "boundary"]
+    - [lock, "scoped token"]
+    - [server, "tool"]
 ---
 
 ## Why multi-agent systems widen the attack surface

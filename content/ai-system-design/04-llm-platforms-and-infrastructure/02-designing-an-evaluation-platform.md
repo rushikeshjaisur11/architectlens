@@ -7,6 +7,13 @@ sources:
   - "Public documentation of open-source LLM evaluation frameworks and experiment trackers"
   - "Kohavi, Tang and Xu, Trustworthy Online Controlled Experiments (2020)"
   - "Secondary 2026 guides on LLM-as-judge calibration and bias (futureagi.com, dataaspirant.com) and arXiv studies on judge reliability (2026)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "datasets"]
+    - [model, "run"]
+    - [shield, "judge"]
+    - [server, "dashboard"]
 ---
 
 ## The problem

@@ -6,6 +6,13 @@ sources:
   - "Corbett et al., 'Spanner: Google's Globally-Distributed Database' (OSDI 2012)"
   - "Google Cloud, 'Introducing Spanner Omni' (announced 23 April 2026, preview), cloud.google.com/blog/products/databases/introducing-spanner-omni (fetched October 2026)"
   - "Google Cloud Spanner product page, cloud.google.com/spanner (via search results, October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [client, "client"]
+    - [doc, "TrueTime"]
+    - [db, "Paxos group"]
+    - [db, "replica"]
 ---
 
 ## The problem: wanting both global distribution and strong consistency

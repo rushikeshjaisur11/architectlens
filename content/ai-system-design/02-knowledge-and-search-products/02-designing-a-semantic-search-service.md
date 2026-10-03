@@ -7,6 +7,13 @@ sources:
   - "Public documentation of vector databases and search engines on hybrid retrieval and filtering"
   - "Cormack, Clarke and Buettcher, 'Reciprocal Rank Fusion outperforms Condorcet and individual rank learning methods' (SIGIR 2009)"
   - "Embedding model comparison roundups and benchmarks, 2026 (secondary: premai.io, mixpeek.com); Anthropic, Contextual Retrieval (fetched Oct 2026); pgvector documentation"
+banner:
+  layout: line
+  nodes:
+    - [doc, "content"]
+    - [model, "embed"]
+    - [db, "ANN index"]
+    - [user, "results"]
 ---
 
 ## The problem

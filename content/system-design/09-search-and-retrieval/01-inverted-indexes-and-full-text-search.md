@@ -5,6 +5,13 @@ tags: ["search", "indexing", "full-text-search"]
 sources:
   - "Elasticsearch / Lucene documentation on inverted index internals"
   - "Manning, Raghavan & Schütze, 'Introduction to Information Retrieval' (2008), chapter on index construction"
+banner:
+  layout: line
+  nodes:
+    - [doc, "documents"]
+    - [server, "tokenize"]
+    - [db, "postings"]
+    - [user, "query"]
 ---
 
 ## Why a database index doesn't solve full-text search

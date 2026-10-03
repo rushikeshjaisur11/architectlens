@@ -7,6 +7,13 @@ sources:
   - "Delta Lake protocol documentation, delta.io"
   - "Lakehouse table format comparisons, 2026 (secondary: bigdataboutique.com, amdatalakehouse.substack.com, databricks.com blog on Iceberg v3)"
   - "Armbrust et al., 'Lakehouse: A New Generation of Open Platforms that Unify Data Warehousing and Advanced Analytics' (CIDR 2021)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "files"]
+    - [db, "table format"]
+    - [server, "catalog"]
+    - [client, "engines"]
 ---
 
 ## Three generations of analytics storage

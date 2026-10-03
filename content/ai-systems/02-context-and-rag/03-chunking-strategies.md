@@ -9,6 +9,13 @@ sources:
   - "Pinecone Chunking Strategies guide"
   - "Anthropic, 'Introducing Contextual Retrieval' (fetched October 2026)"
   - "Jina AI, 'Late Chunking in Long-Context Embedding Models' (2024)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "document"]
+    - [server, "splitter"]
+    - [doc, "chunks"]
+    - [db, "index"]
 ---
 
 ## Why chunking determines retrieval quality before anything else runs

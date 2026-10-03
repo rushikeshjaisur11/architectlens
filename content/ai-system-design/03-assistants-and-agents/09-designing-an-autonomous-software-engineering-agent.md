@@ -8,6 +8,12 @@ sources:
   - "Public documentation of container sandboxes and CI systems"
   - "SWE-bench Pro (Scale AI) and SWE-bench Verified leaderboard summaries, October 2026 (secondary: benchlm.ai, morphllm.com)"
   - "Sandboxing and agent security guidance: OWASP Top 10 for Agentic Applications 2026, ASI05 Unexpected Code Execution"
+banner:
+  layout: loop
+  nodes:
+    - [doc, "issue"]
+    - [model, "agent"]
+    - [shield, "tests"]
 ---
 
 ## The problem

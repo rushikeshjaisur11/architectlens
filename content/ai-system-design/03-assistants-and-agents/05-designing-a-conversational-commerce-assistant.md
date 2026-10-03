@@ -7,6 +7,13 @@ sources:
   - "Public documentation on product search, catalog enrichment and structured product data standards"
   - "Garcia-Molina and Salem, 'Sagas' (SIGMOD 1987) for multi-step order flows"
   - "Agentic commerce protocol comparisons, 2026 (secondary: digitalapplied.com, crossmint.com, mintmcp.com, wetheflywheel.com)"
+banner:
+  layout: line
+  nodes:
+    - [user, "shopper"]
+    - [model, "assistant"]
+    - [db, "catalog"]
+    - [lock, "checkout"]
 ---
 
 ## The problem

@@ -9,6 +9,12 @@ describe("motifFor", () => {
     expect(motifFor("Designing a Semantic Caching Service").id).toBe("semantic-cache");
   });
 
+  it("uses a lesson's own banner over the title match", () => {
+    const m = motifFor("Designing an LLM Gateway", "", { layout: "loop", nodes: [["db", "a"], ["db", "b"]] });
+    expect(m.id).toBe("custom");
+    expect(m.layout).toBe("loop");
+  });
+
   it("covers almost every lesson with a specific diagram", () => {
     const generic = (lessons as { title: string; tags: string[] }[]).filter(
       (l) => motifFor(l.title, l.tags.join(" ")).id === "default",

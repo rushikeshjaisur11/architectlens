@@ -5,6 +5,13 @@ tags: ["media", "video", "operations", "case-study"]
 sources:
   - "Netflix Technology Blog, posts on video encoding and pipeline architecture"
   - "YouTube engineering talks on video processing infrastructure (public conference presentations)"
+banner:
+  layout: line
+  nodes:
+    - [client, "upload"]
+    - [queue, "queue"]
+    - [server, "transcode"]
+    - [cdn, "CDN"]
 ---
 
 ## Why video upload isn't just a file-upload problem

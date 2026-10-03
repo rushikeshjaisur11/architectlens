@@ -8,6 +8,13 @@ sources:
   - "Public API documentation of common enterprise systems on change feeds and access control"
   - "RAG chunking and ingestion guides, 2026 (secondary: firecrawl.dev, atlan.com, digitalapplied.com); Jina AI, late chunking (2024)"
   - "Anthropic, Contextual Retrieval (fetched Oct 2026)"
+banner:
+  layout: line
+  nodes:
+    - [cloud, "sources"]
+    - [server, "connector"]
+    - [server, "chunk+embed"]
+    - [db, "index"]
 ---
 
 ## The problem

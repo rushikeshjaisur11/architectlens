@@ -8,6 +8,13 @@ sources:
   - "Google SRE Workbook, chapters on capacity and demand forecasting"
   - "GPU rental price trackers, September to October 2026 (secondary: getdeploying.com, spheron.network, dev.to/fastgpu)"
   - "llm-d project blog (KV-cache hit rate and throughput, fetched Oct 2026)"
+banner:
+  layout: line
+  nodes:
+    - [client, "demand"]
+    - [doc, "forecast"]
+    - [gpu, "GPUs"]
+    - [queue, "headroom"]
 ---
 
 ## The problem

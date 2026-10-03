@@ -9,6 +9,13 @@ sources:
   - "Hugging Face Text Generation Inference (TGI) deployment docs"
   - "GPU rental price trackers, September to October 2026 (secondary: getdeploying.com, spheron.network)"
   - "llm-d project blog, llm-d.ai/blog/kvcache-wins-you-can-see (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [queue, "queue depth"]
+    - [server, "autoscaler"]
+    - [gpu, "GPU pool"]
+    - [client, "SLO"]
 ---
 
 ## Why GPU autoscaling is harder than CPU autoscaling

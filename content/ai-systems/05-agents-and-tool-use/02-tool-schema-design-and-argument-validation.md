@@ -8,6 +8,13 @@ sources:
   - "JSON Schema specification (json-schema.org)"
   - "Anthropic pricing documentation, tool use overhead (fetched October 2026)"
   - "Anthropic Engineering, 'Effective context engineering for AI agents', anthropic.com/engineering (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "JSON schema"]
+    - [shield, "validate"]
+    - [server, "tool"]
+    - [doc, "result"]
 ---
 
 ## The tool definition is a prompt, not just an API contract

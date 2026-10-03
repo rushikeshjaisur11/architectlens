@@ -5,6 +5,13 @@ tags: ["caching", "eviction", "performance", "reliability"]
 sources:
   - "Redis documentation on eviction policies"
   - "Facebook engineering blog, posts on cache stampede mitigation (memcache scaling papers)"
+banner:
+  layout: line
+  nodes:
+    - [cache, "LRU cache"]
+    - [doc, "expiry"]
+    - [client, "herd"]
+    - [shield, "single flight"]
 ---
 
 ## Why a cache needs an eviction policy at all

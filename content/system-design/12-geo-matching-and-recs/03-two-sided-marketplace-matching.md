@@ -5,6 +5,13 @@ tags: ["matching", "marketplace", "geo", "algorithms"]
 sources:
   - "Uber Engineering blog, posts on rider-driver matching architecture"
   - "Gale & Shapley, 'College Admissions and the Stability of Marriage' (1962, foundational stable-matching theory)"
+banner:
+  layout: line
+  nodes:
+    - [user, "rider"]
+    - [server, "matcher"]
+    - [user, "driver"]
+    - [doc, "match"]
 ---
 
 ## What makes two-sided matching a distinct problem from simple retrieval

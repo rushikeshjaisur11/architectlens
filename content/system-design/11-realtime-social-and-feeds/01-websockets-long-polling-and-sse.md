@@ -5,6 +5,13 @@ tags: ["realtime", "websockets", "protocols"]
 sources:
   - "MDN Web Docs on WebSockets and Server-Sent Events"
   - "RFC 6455 (The WebSocket Protocol)"
+banner:
+  layout: line
+  nodes:
+    - [client, "client"]
+    - [lb, "gateway"]
+    - [server, "conn server"]
+    - [doc, "push"]
 ---
 
 ## The core problem: HTTP wasn't built for the server to speak first

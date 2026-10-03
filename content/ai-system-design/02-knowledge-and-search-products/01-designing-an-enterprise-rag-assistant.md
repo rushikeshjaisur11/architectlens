@@ -9,6 +9,13 @@ sources:
   - "Anthropic, 'Introducing Contextual Retrieval', anthropic.com/news/contextual-retrieval (fetched Oct 2026)"
   - "VentureBeat, 'Enterprise RAG rebuild: hybrid retrieval adoption tripled in Q1 2026' (survey-based, secondary)"
   - "OWASP Top 10 for LLM Applications 2025, LLM08 Vector and Embedding Weaknesses"
+banner:
+  layout: line
+  nodes:
+    - [user, "question"]
+    - [shield, "ACL filter"]
+    - [db, "retrieve"]
+    - [model, "cited answer"]
 ---
 
 ## The problem

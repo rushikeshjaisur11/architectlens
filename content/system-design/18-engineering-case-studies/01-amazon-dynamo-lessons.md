@@ -4,6 +4,13 @@ short_title: "Case Study: Amazon Dynamo"
 tags: ["case-study", "dynamo", "availability", "distributed-systems"]
 sources:
   - "DeCandia et al., 'Dynamo: Amazon's Highly Available Key-value Store' (SOSP 2007)"
+banner:
+  layout: fan
+  nodes:
+    - [db, "Dynamo"]
+    - [server, "vector clocks"]
+    - [server, "quorum"]
+    - [server, "hinted handoff"]
 ---
 
 ## The business problem behind the technical one

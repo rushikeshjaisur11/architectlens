@@ -7,6 +7,13 @@ sources:
   - "Anthropic documentation on usage policies and safety classifiers"
   - "EU Digital Services Act (Regulation (EU) 2022/2065) and Commission transparency-reporting pages (via search results, October 2026)"
   - "EU AI Omnibus summary, Gibson Dunn (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [model, "LLM"]
+    - [shield, "classifier"]
+    - [doc, "allow/block"]
+    - [user, "appeals"]
 ---
 
 ## Why output safety is a separate concern from prompt injection

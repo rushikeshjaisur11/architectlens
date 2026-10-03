@@ -6,6 +6,13 @@ sources:
   - "Stripe API documentation on idempotent requests"
   - "RFC 7231, section 4.2.2 (HTTP method idempotency definitions)"
   - "IETF HTTPAPI working group, 'The Idempotency-Key HTTP Header Field', draft-ietf-httpapi-idempotency-key-header (draft 07, October 2025), datatracker.ietf.org (via search results, October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [client, "request + key"]
+    - [server, "API"]
+    - [db, "seen keys"]
+    - [doc, "same reply"]
 ---
 
 ## What idempotency actually means

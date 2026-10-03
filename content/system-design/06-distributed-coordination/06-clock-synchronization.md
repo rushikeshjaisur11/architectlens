@@ -8,6 +8,13 @@ sources:
   - "Colin Fidge / Friedemann Mattern, independent papers introducing vector clocks (1988)"
   - "Corbett et al., 'Spanner: Google's Globally-Distributed Database' (OSDI, 2012, TrueTime)"
   - "Sandeep Kulkarni et al., 'Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases' (HLC paper, 2014)"
+banner:
+  layout: line
+  nodes:
+    - [server, "node A"]
+    - [doc, "timestamps"]
+    - [cloud, "time source"]
+    - [server, "node B"]
 ---
 
 ## Why clocks are a distributed systems problem

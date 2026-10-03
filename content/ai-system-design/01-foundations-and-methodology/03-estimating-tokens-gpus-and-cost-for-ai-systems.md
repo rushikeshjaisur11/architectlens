@@ -9,6 +9,13 @@ sources:
   - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched Oct 2026)"
   - "Google Gemini API pricing, ai.google.dev/gemini-api/docs/pricing (fetched Oct 2026)"
   - "GPU rental price trackers, September to October 2026 (secondary: getdeploying.com, spheron.network)"
+banner:
+  layout: line
+  nodes:
+    - [client, "traffic"]
+    - [doc, "tokens"]
+    - [gpu, "GPUs"]
+    - [doc, "monthly cost"]
 ---
 
 ## Why estimate

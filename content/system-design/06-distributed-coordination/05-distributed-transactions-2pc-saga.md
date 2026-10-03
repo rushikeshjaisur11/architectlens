@@ -6,6 +6,13 @@ sources:
   - "Jim Gray, 'Notes on Data Base Operating Systems' (1978, origin of two-phase commit)"
   - "Hector Garcia-Molina & Kenneth Salem, 'Sagas' (SIGMOD, 1987)"
   - "Pat Helland, 'Life Beyond Distributed Transactions: An Apostate's Opinion' (CIDR, 2007)"
+banner:
+  layout: line
+  nodes:
+    - [server, "coordinator"]
+    - [lock, "prepare"]
+    - [db, "participants"]
+    - [shield, "commit/abort"]
 ---
 
 ## The problem: atomicity across nodes

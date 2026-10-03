@@ -7,6 +7,7 @@ import type { Track } from "@/lib/tracks";
 import { Check } from "lucide-react";
 import { TileBanner } from "./TileBanner";
 import { readSet } from "@/lib/progress";
+import type { BannerSpec } from "@/lib/banner-kinds";
 
 export type LessonTile = {
   slug: string;
@@ -15,6 +16,7 @@ export type LessonTile = {
   summary: string;
   minutes: number;
   tags: string[];
+  banner?: BannerSpec;
   order: number;
   category: { number: number; slug: string; name: string };
 };
@@ -31,7 +33,7 @@ function Tile({ lesson: l, href, label, read }: { lesson: LessonTile; href: stri
       className="group flex flex-col overflow-hidden rounded-lg border border-line transition-colors hover:border-accent-dim hover:bg-ink-elevated"
     >
       <div className="banner-bg relative h-24 border-b border-line-soft">
-        <TileBanner title={l.title} tags={l.tags.join(" ")} hover={hover} />
+        <TileBanner title={l.title} tags={l.tags.join(" ")} hover={hover} spec={l.banner} />
         {read && (
           <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full border border-accent-dim bg-ink px-2 py-0.5 font-mono text-[10px] text-accent">
             <Check size={10} /> read

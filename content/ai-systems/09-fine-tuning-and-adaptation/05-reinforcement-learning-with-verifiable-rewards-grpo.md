@@ -6,6 +6,12 @@ sources:
   - "DeepSeek-AI, 'DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning' (arXiv 2501.12948; Nature 645, 2025)"
   - "Shao et al., 'DeepSeekMath' (2024), introducing Group Relative Policy Optimization"
   - "Practitioner summaries of RLVR and GRPO, 2026 (secondary: snorkel.ai, futureagi.com, Sebastian Raschka's magazine)"
+banner:
+  layout: loop
+  nodes:
+    - [model, "sample"]
+    - [shield, "verify"]
+    - [gpu, "update"]
 ---
 
 ## The problem with learning from human preferences

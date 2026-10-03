@@ -8,6 +8,13 @@ sources:
   - "FinOps Foundation guidance on unit economics"
   - "Anthropic pricing documentation (fetched Oct 2026)"
   - "Google Gemini API pricing (fetched Oct 2026)"
+banner:
+  layout: line
+  nodes:
+    - [user, "traffic"]
+    - [server, "router"]
+    - [model, "small model"]
+    - [gpu, "large model"]
 ---
 
 ## The problem

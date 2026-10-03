@@ -8,6 +8,13 @@ sources:
   - "Language Server Protocol specification"
   - "METR, randomised trial of AI tools and experienced open-source developers (2025) and METR design update (24 February 2026), metr.org"
   - "Peng et al. and Cui et al., enterprise randomised trials of AI coding assistants (Microsoft, Accenture and others), as summarised on arXiv 2410.12944"
+banner:
+  layout: line
+  nodes:
+    - [client, "editor"]
+    - [db, "repo index"]
+    - [model, "LLM"]
+    - [doc, "suggestion"]
 ---
 
 ## The problem

@@ -7,6 +7,13 @@ sources:
   - "Cormack, Clarke & Buettcher, 'Reciprocal Rank Fusion Outperforms Condorcet and Individual Rank Learning Methods' (SIGIR 2009)"
   - "Elasticsearch / OpenSearch hybrid search documentation"
   - "Weaviate and Qdrant hybrid search documentation"
+banner:
+  layout: line
+  nodes:
+    - [user, "query"]
+    - [db, "BM25"]
+    - [db, "vectors"]
+    - [server, "fuse"]
 ---
 
 ## Why dense embeddings alone aren't enough

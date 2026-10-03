@@ -8,6 +8,13 @@ sources:
   - "Hybrid retrieval and reranking literature (see the semantic search lesson)"
   - "Glean documentation on connectors and permission-aware retrieval, docs.glean.com (via search results, October 2026); vendor material"
   - "Enterprise search and RAG platform buyer guides, 2026 (secondary: onyx.app, atolio.com, atlan.com)"
+banner:
+  layout: line
+  nodes:
+    - [user, "query"]
+    - [lb, "federate"]
+    - [db, "connectors"]
+    - [model, "copilot"]
 ---
 
 ## The problem

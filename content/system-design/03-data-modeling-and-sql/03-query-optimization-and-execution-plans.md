@@ -5,6 +5,13 @@ tags: ["sql", "query-optimization", "postgres", "performance"]
 sources:
   - "PostgreSQL Documentation: Using EXPLAIN (postgresql.org/docs)"
   - "Use The Index, Luke! (use-the-index-luke.com)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "SQL"]
+    - [server, "planner"]
+    - [db, "index scan"]
+    - [doc, "EXPLAIN"]
 ---
 
 ## The core mental model

@@ -5,6 +5,13 @@ tags: ["vector-search", "embeddings", "retrieval", "ann"]
 sources:
   - "Malkov & Yashunin, 'Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs' (2018, HNSW paper)"
   - "Pinecone, Weaviate, and pgvector documentation on index types"
+banner:
+  layout: line
+  nodes:
+    - [doc, "items"]
+    - [model, "embed"]
+    - [db, "ANN index"]
+    - [user, "nearest"]
 ---
 
 ## What a vector search index is actually doing

@@ -7,6 +7,13 @@ sources:
   - "OpenAI Evals documentation (github.com/openai/evals)"
   - "Anthropic Prompt Engineering: evaluating outputs (docs.anthropic.com)"
   - "LLM-as-judge studies and guides, 2026 (arXiv 2606.19544 'Reliability without Validity'; arXiv 2608.25869 on anchoring; secondary: futureagi.com)"
+banner:
+  layout: line
+  nodes:
+    - [model, "answer"]
+    - [model, "judge"]
+    - [shield, "calibrate"]
+    - [user, "human labels"]
 ---
 
 ## Why use a model as the judge

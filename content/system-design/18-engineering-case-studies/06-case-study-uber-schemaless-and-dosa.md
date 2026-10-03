@@ -8,6 +8,13 @@ sources:
   - "Chang et al., 'Bigtable: A Distributed Storage System for Structured Data' (Google, OSDI 2006), for the data model Schemaless resembles"
   - "Uber Engineering, 'Evolving Schemaless into a Distributed SQL Database' (Docstore, 23 February 2021), uber.com/us/en/blog/schemaless-sql-database (fetched October 2026)"
   - "Uber Engineering, 'MySQL to MyRocks Migration in Uber's Distributed Datastores' (2022), uber.com (via search results, October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [client, "service"]
+    - [server, "Schemaless"]
+    - [db, "MySQL cells"]
+    - [db, "append-only"]
 ---
 
 *Provenance note (October 2026): the cell model (row key, column name, ref key, JSON body), append-only immutability, the 2014 move off a single PostgreSQL instance, triggers and secondary indexes were checked against Uber's Schemaless post, and Docstore against Uber's 2021 post. Hash-based shard placement, the fixed shard count and the DOSA and Cassandra details come from recall and were not re-fetched.*

@@ -7,6 +7,13 @@ sources:
   - "Google SRE Book, chapters on graceful degradation and reliability patterns (applicable to LLM-dependent systems)"
   - "Amazon Builders' Library, 'Using load shedding to avoid overload' and 'Timeouts, retries and backoff with jitter'"
   - "Amazon Bedrock documentation on Guardrails streaming (docs.aws.amazon.com)"
+banner:
+  layout: line
+  nodes:
+    - [user, "request"]
+    - [server, "retry"]
+    - [cache, "fallback"]
+    - [doc, "safe reply"]
 ---
 
 ## Why LLM calls fail differently than typical API calls

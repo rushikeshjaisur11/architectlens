@@ -5,6 +5,13 @@ tags: ["acid", "transactions", "sql", "databases"]
 sources:
   - "PostgreSQL documentation on transaction isolation"
   - "Jim Gray, 'The Transaction Concept: Virtues and Limitations' (1981)"
+banner:
+  layout: line
+  nodes:
+    - [client, "txn"]
+    - [lock, "isolation"]
+    - [db, "WAL"]
+    - [shield, "commit"]
 ---
 
 ## What ACID actually guarantees

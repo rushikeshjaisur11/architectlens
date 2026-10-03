@@ -6,6 +6,13 @@ sources:
   - "gRPC official documentation (grpc.io)"
   - "GraphQL specification (spec.graphql.org)"
   - "Roy Fielding, 'Architectural Styles and the Design of Network-based Software Architectures' (2000 dissertation, REST chapter)"
+banner:
+  layout: fan
+  nodes:
+    - [lb, "API"]
+    - [doc, "REST"]
+    - [doc, "gRPC"]
+    - [doc, "GraphQL"]
 ---
 
 ## Three answers to the same question

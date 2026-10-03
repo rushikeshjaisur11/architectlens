@@ -5,6 +5,13 @@ tags: ["multimodal", "vision", "audio", "foundations"]
 sources:
   - "OpenAI Vision guide (platform docs)"
   - "Anthropic Vision documentation (docs.anthropic.com)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "image"]
+    - [doc, "text"]
+    - [model, "LLM"]
+    - [doc, "answer"]
 ---
 
 ## Multimodal input is still a token sequence

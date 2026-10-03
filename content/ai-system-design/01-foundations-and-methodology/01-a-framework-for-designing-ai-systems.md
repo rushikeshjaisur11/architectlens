@@ -9,6 +9,13 @@ sources:
   - "EU AI Omnibus (Reg. (EU) 2026/1744) summary, Gibson Dunn (fetched Oct 2026)"
   - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched Oct 2026)"
   - "OWASP Top 10 for LLM Applications 2025 (genai.owasp.org, fetched Oct 2026)"
+banner:
+  layout: line
+  nodes:
+    - [user, "use case"]
+    - [doc, "requirements"]
+    - [model, "design"]
+    - [shield, "evaluate"]
 ---
 
 ## Why AI systems need their own method

@@ -6,6 +6,13 @@ sources:
   - "Stripe API documentation on idempotent requests"
   - "Public engineering articles on double-entry ledgers and payment reconciliation"
   - "Kleppmann, Designing Data-Intensive Applications (2017), chapters on transactions and exactly-once semantics"
+banner:
+  layout: line
+  nodes:
+    - [user, "buyer"]
+    - [lock, "PSP"]
+    - [db, "ledger"]
+    - [doc, "reconcile"]
 ---
 
 ## What makes payments different

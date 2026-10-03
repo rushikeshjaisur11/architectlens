@@ -8,6 +8,13 @@ sources:
   - "AWS and Google Cloud multi-region architecture guidance"
   - "AWS, 'Amazon Bedrock now supports global cross-Region inference' and cross-Region inference documentation (aws.amazon.com), via search results October 2026"
   - "Anthropic pricing documentation, data residency and regional endpoint premiums (fetched Oct 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [lb, "global router"]
+    - [cloud, "region A"]
+    - [cloud, "region B"]
+    - [cloud, "region C"]
 ---
 
 ## The problem

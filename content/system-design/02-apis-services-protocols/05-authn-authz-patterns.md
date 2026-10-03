@@ -8,6 +8,13 @@ sources:
   - "RFC 6750 — OAuth 2.0 Bearer Token Usage"
   - "OWASP Authentication Cheat Sheet"
   - "OAuth 2.1 Internet-Draft (draft-ietf-oauth-v2-1), datatracker.ietf.org; RFC 9700 (OAuth 2.0 Security Best Current Practice); FIDO Alliance State of Passkeys 2026 and HID/FIDO State of Authentication survey, via secondary summaries (October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [user, "user"]
+    - [lock, "token"]
+    - [shield, "policy"]
+    - [server, "resource"]
 ---
 
 ## Authentication vs. authorization

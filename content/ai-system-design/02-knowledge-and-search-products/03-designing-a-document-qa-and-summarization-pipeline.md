@@ -8,6 +8,13 @@ sources:
   - "Public documentation of document-parsing and OCR services"
   - "Long-context versus RAG evaluations, 2026 (secondary: rdp.in, bigdataboutique.com); Liu et al., 'Lost in the Middle' (2023); U-NIAH (arXiv 2503.00353)"
   - "Anthropic pricing documentation (1M-token context at standard price, fetched Oct 2026)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "PDFs"]
+    - [server, "parse+chunk"]
+    - [db, "index"]
+    - [model, "answer"]
 ---
 
 ## The problem

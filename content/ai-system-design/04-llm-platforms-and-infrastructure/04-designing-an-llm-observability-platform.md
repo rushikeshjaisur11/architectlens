@@ -8,6 +8,13 @@ sources:
   - "Public documentation of LLM tracing and evaluation tools"
   - "OpenTelemetry GenAI semantic conventions (moved to open-telemetry/semantic-conventions-genai, fetched Oct 2026)"
   - "Community analyses of OpenTelemetry GenAI convention stability (July 2026), for example john-hodge.com"
+banner:
+  layout: line
+  nodes:
+    - [server, "app"]
+    - [queue, "traces"]
+    - [db, "store"]
+    - [client, "dashboards"]
 ---
 
 ## The problem

@@ -7,6 +7,13 @@ sources:
   - "Public documentation of multimodal embedding models and vector databases"
   - "Johnson, Douze and Jégou, 'Billion-scale similarity search with GPUs' (2017)"
   - "Gemini Embedding 2 technical report (arXiv 2605.27295) and Qwen3-VL-Embedding (arXiv 2601.04720); embedding model comparison roundups, 2026 (secondary)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "images+text"]
+    - [model, "encoder"]
+    - [db, "joint index"]
+    - [user, "query"]
 ---
 
 ## The problem

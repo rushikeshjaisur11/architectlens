@@ -9,6 +9,13 @@ sources:
   - "llm-d project blog, 'KV-Cache Wins You Can See', llm-d.ai/blog/kvcache-wins-you-can-see (fetched Oct 2026)"
   - "vLLM blog, vllm.ai/blog (September 2026 posts on disaggregated serving, fetched Oct 2026)"
   - "vLLM documentation, Disaggregated Prefilling (docs.vllm.ai, fetched Oct 2026)"
+banner:
+  layout: line
+  nodes:
+    - [queue, "request queue"]
+    - [lb, "scheduler"]
+    - [gpu, "GPU pool"]
+    - [client, "stream"]
 ---
 
 ## The problem

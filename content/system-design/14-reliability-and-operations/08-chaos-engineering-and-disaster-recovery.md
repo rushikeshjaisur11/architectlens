@@ -7,6 +7,13 @@ sources:
   - "AWS Well-Architected Framework documentation on disaster recovery strategies"
   - "Amazon Web Services, 'Summary of the Amazon DynamoDB Service Disruption in the Northern Virginia (US-EAST-1) Region' (October 2025), aws.amazon.com/message/101925 (fetched October 2026)"
   - "CrowdStrike, 'External Technical Root Cause Analysis: Channel File 291' (August 2024) (fetched October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [server, "steady state"]
+    - [shield, "inject fault"]
+    - [doc, "observe"]
+    - [server, "fix"]
 ---
 
 ## Why untested resilience mechanisms often aren't actually resilient

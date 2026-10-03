@@ -5,6 +5,13 @@ tags: ["monitoring", "logging", "operations", "case-study"]
 sources:
   - "Google SRE Book, chapters on monitoring distributed systems"
   - "OpenTelemetry documentation on the three pillars of observability (logs, metrics, traces)"
+banner:
+  layout: line
+  nodes:
+    - [server, "agents"]
+    - [queue, "Kafka"]
+    - [db, "index store"]
+    - [client, "dashboards"]
 ---
 
 ## Why this system is worth designing deliberately, not treating as an afterthought

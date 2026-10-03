@@ -8,6 +8,14 @@ sources:
   - "Anthropic, 'Building effective agents' (workflows versus agents)"
   - "Temporal, 'LangGraph in production: Temporal's LangGraph Plugin' (July 2026) and durable-execution comparisons (hackernoon.com, cordum.io), via search results, October 2026"
   - "MCP specification 2026-07-28, Tasks extension (fetched Oct 2026)"
+banner:
+  layout: fan
+  nodes:
+    - [server, "orchestrator"]
+    - [model, "agent"]
+    - [server, "connectors"]
+    - [db, "run state"]
+    - [queue, "triggers"]
 ---
 
 ## The problem

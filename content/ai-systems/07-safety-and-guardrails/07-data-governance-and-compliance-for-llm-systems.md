@@ -8,6 +8,13 @@ sources:
   - "ISO/IEC 42001:2023 — AI management system standard"
   - "EU AI Omnibus (Reg. (EU) 2026/1744) summary, Gibson Dunn (fetched October 2026)"
   - "NIST AI 600-1 (July 2024); ISO/IEC 42001:2023"
+banner:
+  layout: line
+  nodes:
+    - [db, "data"]
+    - [shield, "policy"]
+    - [doc, "lineage"]
+    - [user, "auditor"]
 ---
 
 ## Why LLM systems need governance beyond standard app logging

@@ -6,6 +6,13 @@ sources:
   - "Manning, Raghavan and Schütze, Introduction to Information Retrieval (2008), on prefix and wildcard queries"
   - "Public engineering articles on typeahead and query suggestion systems"
   - "Fredkin (1960) on trie data structures"
+banner:
+  layout: line
+  nodes:
+    - [user, "keystroke"]
+    - [cache, "prefix cache"]
+    - [db, "trie"]
+    - [doc, "suggestions"]
 ---
 
 ## What autocomplete has to do

@@ -8,6 +8,13 @@ sources:
   - "Public research on using large language models for recommendation, explanation and cold start"
   - "Rajput et al., 'Recommender Systems with Generative Retrieval' (TIGER), NeurIPS 2023, arXiv 2305.05065; 2026 follow-up papers on industrial semantic-ID deployments (secondary summaries)"
   - "EU Digital Services Act, recommender system transparency provisions (European Commission pages)"
+banner:
+  layout: line
+  nodes:
+    - [user, "user"]
+    - [db, "candidates"]
+    - [model, "LLM re-rank"]
+    - [doc, "feed"]
 ---
 
 ## The problem

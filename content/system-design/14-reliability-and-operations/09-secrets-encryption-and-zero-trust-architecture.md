@@ -6,6 +6,13 @@ sources:
   - "NIST SP 800-207, Zero Trust Architecture (2020)"
   - "NIST SP 800-57 Part 1, Recommendation for Key Management"
   - "OWASP Application Security Verification Standard and Secrets Management Cheat Sheet, owasp.org"
+banner:
+  layout: line
+  nodes:
+    - [server, "service"]
+    - [lock, "vault"]
+    - [shield, "mTLS"]
+    - [db, "encrypted data"]
 ---
 
 ## Perimeter security stopped working

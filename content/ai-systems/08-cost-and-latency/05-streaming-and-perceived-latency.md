@@ -6,6 +6,13 @@ sources:
   - "OpenAI and Anthropic API documentation on streaming responses"
   - "Nielsen Norman Group research on response-time perception thresholds"
   - "Amazon Bedrock documentation, Guardrails streaming behaviour (docs.aws.amazon.com), via search results (October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [model, "LLM"]
+    - [queue, "token stream"]
+    - [client, "UI"]
+    - [user, "first token"]
 ---
 
 ## Why perceived latency and actual latency are different metrics

@@ -4,6 +4,13 @@ short_title: "Designing a Web Crawler"
 tags: ["product-design", "case-study", "crawler", "interview-practice"]
 sources:
   - "System design interview practice materials (general pattern, synthesized from multiple public writeups)"
+banner:
+  layout: line
+  nodes:
+    - [queue, "URL frontier"]
+    - [server, "fetcher"]
+    - [server, "parser"]
+    - [db, "index"]
 ---
 
 ## Why a web crawler exercises a different set of concepts than the earlier product designs

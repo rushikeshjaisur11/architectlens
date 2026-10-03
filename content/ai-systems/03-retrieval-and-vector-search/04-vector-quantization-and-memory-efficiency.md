@@ -6,6 +6,13 @@ sources:
   - "Jégou, Douze & Schmid, 'Product Quantization for Nearest Neighbor Search' (2011)"
   - "Faiss documentation on quantization and index compression"
   - "pgvector documentation (halfvec and bit types) and Aurora pgvector binary quantization guidance, AWS Database Blog (via search results, October 2026)"
+banner:
+  layout: line
+  nodes:
+    - [doc, "float32"]
+    - [server, "quantize"]
+    - [db, "compact index"]
+    - [shield, "recall"]
 ---
 
 ## Why memory becomes the real bottleneck at large scale

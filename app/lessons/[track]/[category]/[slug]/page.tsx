@@ -40,6 +40,7 @@ export default async function LessonPage({
         tags={lesson.tags.join(" ")}
         label={`${String(lesson.category.number).padStart(2, "0")} ${lesson.category.name}`}
         minutes={lesson.minutes}
+        spec={lesson.banner}
       />
       <h1 className="mt-6 text-2xl font-semibold text-paper sm:text-3xl">{lesson.title}</h1>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
