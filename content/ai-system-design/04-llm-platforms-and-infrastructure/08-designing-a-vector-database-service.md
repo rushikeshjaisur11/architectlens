@@ -6,6 +6,8 @@ sources:
   - "Malkov and Yashunin, 'Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs' (2018)"
   - "Subramanya et al., 'DiskANN: Fast Accurate Billion-point Nearest Neighbor Search on a Single Node' (2019)"
   - "Public documentation of vector databases on collections, partitions, replication and filtering"
+  - "pgvector 0.8.0 release notes and documentation (iterative index scans, HNSW dimension limits), via secondary summaries, 2026"
+  - "Vector database comparisons and cost write-ups, 2026 (secondary: firecrawl.dev, dev.to, leanopstech.com)"
 ---
 
 ## The problem
@@ -68,6 +70,18 @@ Monitor recall (via periodic exact-search sampling), latency by percentile, segm
 3. Shards return their local top 10 with scores; the coordinator merges the lists and returns the global top 10 in 22 ms.
 4. In the background the sealed segment is indexed and later compacted with older ones, dropping tombstoned vectors.
 5. A sampled exact search compares results with the ANN output: recall of 96 percent is logged, with an alert if it falls below the target.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Store embeddings with metadata, build an ANN index (HNSW or IVF), filter, return top-k, scale by sharding and replication (steps above).
+
+**Facts to design with (October 2026, secondary sources).**
+
+- **Filtered search is the enterprise failure mode.** Before pgvector 0.8.0, filters were applied *after* the ANN scan, so selective filters returned fewer results than requested. **pgvector 0.8.0 adds iterative index scans** (`hnsw.iterative_scan = relaxed_order | strict_order`), continuing the scan until enough filtered rows are found or `hnsw.max_scan_tuples` (default 20,000) is reached. Test recall under your real tenant and ACL filters, not on unfiltered benchmarks.
+- **Limits.** HNSW in pgvector indexes up to about **2,000 dimensions** for `vector`, 4,000 for `halfvec`, 64,000 for `bit`; pick the embedding dimension and quantisation with this in mind. **pgvectorscale** (a separate Timescale extension) adds a disk-based StreamingDiskANN index to extend beyond RAM.
+- **Cost shape.** Practitioner write-ups put pgvector as the cheapest option up to a few million vectors on an existing Postgres, managed Qdrant in the low hundreds of dollars per month at about 10M vectors of 1,536 dimensions, and serverless Pinecone-style pricing higher at that size. Numbers vary with query volume and are vendor-sensitive: model yours.
+
+**Enterprise pattern.** Start in Postgres if you already run it and have under a few million vectors, with a clear exit criterion (recall, p99, index build time, memory). Move to a purpose-built store when you need very large indexes, high write throughput or advanced filtering. In every case: version indexes with the embedding model, isolate tenants (separate collections or enforced filters), plan re-embedding as a migration, and benchmark recall at the filter selectivity you actually have.
 
 ## Common mistakes
 

@@ -21,7 +21,12 @@ export function SearchOverlay({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-ink/80 pt-24">
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center bg-ink/80 px-4 pt-24"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="w-full max-w-lg rounded border border-line bg-ink-elevated p-4 shadow-xl">
         <input
           autoFocus

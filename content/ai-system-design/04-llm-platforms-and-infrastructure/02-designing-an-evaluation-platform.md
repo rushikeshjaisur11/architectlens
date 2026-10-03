@@ -6,6 +6,7 @@ sources:
   - "Zheng et al., 'Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena' (2023)"
   - "Public documentation of open-source LLM evaluation frameworks and experiment trackers"
   - "Kohavi, Tang and Xu, Trustworthy Online Controlled Experiments (2020)"
+  - "Secondary 2026 guides on LLM-as-judge calibration and bias (futureagi.com, dataaspirant.com) and arXiv studies on judge reliability (2026)"
 ---
 
 ## The problem
@@ -79,6 +80,19 @@ Track evaluator reliability: judge-human agreement, score drift over time, and r
 3. The comparison shows quality within noise overall, cost down 62 percent, but a drop on the "numeric tables" slice.
 4. Drill-down lists 31 regressed cases; reviewers confirm the cheaper model misreads tables.
 5. The team keeps the expensive model for table-heavy documents and routes the rest to the cheaper one, then adds the 31 cases as a permanent "tables" slice in CI.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Datasets, runs, scorers and a comparison view; code-based checks plus model judges plus human review (steps above).
+
+**What the 2026 evaluation literature and practitioner guides converge on.**
+
+- **Calibrate every judge against humans.** Label a calibration set, measure agreement (Cohen's kappa; guidance commonly cites **above 0.6 as workable and above 0.8 as strong**), and recalibrate on a schedule because judges drift. A large 2026 study titled "Reliability without Validity" argues high self-consistency does not prove a judge measures the right thing.
+- **Control known biases:** position (run pairwise comparisons in both orders), verbosity, self-preference (a model family favouring its own outputs; use a cross-family judge), format and anchoring (showing prior scores changes verdicts).
+- **Use rubrics and ensembles for open-ended work**, and deterministic checks (schema, citations resolve, SQL executes, tests pass) wherever possible; they are cheaper and unbiased.
+- **Report uncertainty.** Publish confidence intervals, not single scores, and a minimum sample size per slice.
+
+**Enterprise pattern.** Gate releases on a versioned golden set with slice metrics (language, tenant, difficulty), run a smaller smoke set on every prompt change and the full set nightly, keep a held-out set that never enters prompts, mine production failures into new cases weekly, and store judge prompt, judge model and rubric version with every score so results are reproducible and auditable.
 
 ## Common mistakes
 

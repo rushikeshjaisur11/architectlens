@@ -6,6 +6,7 @@ sources:
   - "Federal Reserve and OCC, SR 11-7 Guidance on Model Risk Management (2011)"
   - "Public regulator guidance on communications record-keeping and suitability obligations (for example FINRA and MiFID II overviews)"
   - "Regulation (EU) 2024/1689 (EU AI Act) overview of high-risk categories such as creditworthiness"
+  - "FINRA, 2026 Annual Regulatory Oversight Report (9 December 2025), via law-firm summaries (Debevoise, Baker Donelson), October 2026"
 ---
 
 *Engineering patterns only; regulatory obligations vary by jurisdiction and product and must be confirmed with compliance and legal.*
@@ -83,6 +84,21 @@ Build golden sets from real queries with verified answers (numbers, policies, pr
 3. The advisor asks for talking points on a concentrated technology position. The copilot retrieves approved research and firm policy on concentration, and lists considerations with citations; it does not recommend a trade.
 4. The suitability engine separately flags that the portfolio exceeds the client's stated risk limit in one asset class; the advisor sees this as a rules-based finding with the policy reference.
 5. After the meeting, the copilot drafts the note and follow-up email using approved language and required disclosures; the advisor edits and approves, and everything is archived for supervision.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Ground answers in approved content, supervise communications, keep records, and keep a human accountable for advice (steps above).
+
+**What US regulators now say explicitly (secondary summaries of FINRA's 2026 report; read the report itself).** FINRA published its **2026 Annual Regulatory Oversight Report on 9 December 2025** with a generative-AI section and, for the first time, emerging **agent-based** risks. Its position is that **existing rules still apply** to GenAI use: supervision, communications with the public, recordkeeping and fair dealing. Reported expectations: written governance and supervision for each AI use, testing and monitoring, vendor oversight, and **prompt and output logs treated as records** when used in supervision, recommendations or customer interactions. The report separates tools that *generate content* from tools that *take action*; once an agent can act (place an order, change an account), supervisory and recordkeeping duties increase materially.
+
+**Design consequences.**
+
+- **Retention by design.** Store prompt, retrieved sources, model and version, output and the human decision as an immutable record under your books-and-records schedule; do not rely on observability logs with short retention.
+- **Communications review.** Treat customer-facing generated text as a communication subject to pre-approval or sampling review, with content-type rules (no performance promises, required disclosures).
+- **Separate "inform" from "act".** Advice drafting and research summarisation can run with sampling supervision; any tool that moves money or changes records needs explicit human approval and a distinct risk tier.
+- **Model risk.** For bank-affiliated firms see the model-risk note: US interagency guidance changed in April 2026 and does not yet address generative AI directly.
+
+*Not legal advice; rules differ by entity type (broker-dealer, RIA, bank) and jurisdiction.*
 
 ## Common mistakes
 

@@ -6,6 +6,9 @@ sources:
   - "Hendrycks et al., 'CUAD: An Expert-Annotated NLP Dataset for Legal Contract Review' (2021)"
   - "Public documentation of contract lifecycle management and e-discovery platforms"
   - "Public bar association guidance on lawyers' duties when using generative AI tools"
+  - "ABA Formal Opinion 512, Generative Artificial Intelligence Tools (July 2024)"
+  - "Court sanction trackers and press reports on AI-hallucinated filings, 2026 (secondary: Newsweek, legal AI trackers)"
+  - "Stanford HAI / RegLab study of hallucination in legal AI research tools (2024), as cited in secondary 2026 summaries"
 ---
 
 *Engineering patterns only; this is not legal advice, and professional responsibility rules apply to legal work.*
@@ -86,6 +89,21 @@ Capture lawyer accept, edit and reject decisions as feedback: they refine playbo
 3. The system flags **non-compliant**, quotes both passages, explains the gap, and proposes the company's fallback language with a super-cap, marked as a draft.
 4. For termination, it states "no termination for convenience clause found" and lists the sections searched, including schedules; the reviewing lawyer confirms the absence.
 5. The lawyer accepts the liability redline, edits another suggestion and rejects one; decisions are logged. The extracted terms (cap, renewal date, governing law) enter the contract repository for portfolio queries and renewal alerts.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Extract clauses, compare against a playbook, flag deviations, cite the exact text, keep lawyers in review (steps above).
+
+**Why verification is non-negotiable (published and reported evidence).**
+
+- **ABA Formal Opinion 512 (July 2024)** says lawyers using generative AI keep their duties of **competence, confidentiality, supervision and candour to the tribunal**; the duty to verify stays with the lawyer. Client information entered into a tool raises confidentiality questions that may require informed consent depending on the tool's terms.
+- **Courts are sanctioning fabricated citations at increasing severity.** Reports for 2026 include a federal appellate panel in March 2026 imposing fines, fee reimbursement and a disciplinary referral over briefs with more than two dozen fabricated citations, and a reported suspension of a lawyer from practice over AI-generated filings. Treat these as press-reported; check the dockets for citations you rely on.
+- **Hallucination rates vary by tool class.** The Stanford study reported far lower error rates for retrieval-based legal tools than for general chatbots, but still material rates (reported ranges of roughly 17 to 33% for purpose-built legal tools versus much higher for raw models). Newer models have improved; measure on your documents.
+- **Policy lags usage.** A 2026 survey reported by secondary sources found most legal professionals using general-purpose AI while few firms had a written, enforced policy.
+
+**Enterprise pattern.** Contract review is extraction and comparison, so make every finding **span-grounded**: the UI shows the clause text, page and the playbook rule it triggered, and the model cannot report a finding without a verifiable span. Never let the system cite authorities it did not retrieve from a trusted database, and run a citation-existence check before anything leaves the building. Keep matter-level isolation (ethical walls), no training on client data, retention aligned to the engagement terms, and a reviewer sign-off recorded per document.
+
+*Not legal advice.*
 
 ## Common mistakes
 

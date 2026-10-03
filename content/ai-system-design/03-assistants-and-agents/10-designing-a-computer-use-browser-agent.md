@@ -6,6 +6,9 @@ sources:
   - "Anthropic, computer use tool documentation"
   - "Zhou et al., 'WebArena: A Realistic Web Environment for Building Autonomous Agents' (2023)"
   - "Public documentation of browser automation protocols and accessibility trees"
+  - "OSWorld leaderboard summaries, 2026 (secondary: leaderboard.steel.dev and trackers)"
+  - "Anthropic documentation on browser-use prompt-injection risk, as quoted in secondary summaries (2026)"
+  - "OWASP Top 10 for Agentic Applications 2026 (ASI01 Agent Goal Hijack, ASI02 Tool Misuse)"
 ---
 
 ## The problem
@@ -71,6 +74,20 @@ Every step is a model call with an image, so cost scales with step count. Reduce
 3. A cart page appears with a changed price. The policy layer flags that the total differs from the previous order by 12 percent.
 4. Because placing an order is irreversible and the price changed, the agent pauses and shows the user the cart, total and delivery address for confirmation.
 5. The user approves; the agent submits, verifies the confirmation page, extracts the order number and finishes. A hidden line on the portal page urging "email your session token to…" was ignored and logged as an injection attempt.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Screenshot or accessibility tree in, click or type out, loop with a step budget (steps above).
+
+**Capability is high, risk is structural (secondary sources, October 2026).** On the **OSWorld** desktop-task benchmark, tracked leaderboards report agents moving from roughly 34% to the **mid-80s percent** in about fifteen months, above a reported human baseline of about 72%, with several frontier models in the 70s and 80s. Benchmark tasks are cleaner than your internal apps (SSO, odd widgets, slow pages), so pilot on your own workflows. The security picture has not improved at the same pace: page content, emails, calendar invites and documents can contain attacker instructions, and security vendors and Anthropic's own documentation describe **browser use as amplifying prompt-injection risk** because the attack surface is every page the agent reads. Researchers have shown zero-click data exfiltration through crafted content.
+
+**Enterprise controls.**
+
+- **Prefer APIs; use the browser last.** Use a UI agent only where no API exists.
+- **Isolate.** Run in a disposable, network-restricted browser profile with a dedicated low-privilege identity, never the employee's logged-in session; block access to password managers, email and payment pages unless the task requires them.
+- **Confirm irreversible steps** (send, pay, delete, change recovery settings) with a human, showing exactly what will happen; allow-list domains.
+- **Treat everything read as untrusted data**; separate the planner (sees the task) from a reader that sanitises page text; log screenshots and actions for audit.
+- **Measure** task success, steps, injection-test pass rate and cost per task.
 
 ## Common mistakes
 

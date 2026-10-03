@@ -6,6 +6,8 @@ sources:
   - "Public documentation and open-source projects on semantic caching for LLM applications"
   - "Karger et al., consistent hashing papers (distributed cache partitioning background)"
   - "Provider documentation on prompt caching versus response caching"
+  - "Secondary reports on semantic cache hit rates and AWS-published chatbot research, 2026 (futureagi.com, spheron.network, getmaxim.ai)"
+  - "Anthropic pricing documentation, prompt caching (fetched Oct 2026)"
 ---
 
 ## The problem
@@ -76,6 +78,16 @@ Report **hit rate**, **cost saved** (tokens avoided times price), **latency save
 3. A third user asks "what is the daily transfer limit for business accounts?" Similarity is 0.88, below threshold, and the scope differs anyway, so the model is called.
 4. The policy team updates the limit; the policy change event evicts all entries tagged with that document, so nobody is served the old number.
 5. A nightly shadow job recomputes 500 sampled hits with the model and finds 1 disagreement, reporting a false-hit rate of 0.2 percent.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Embed the query, look up a near neighbour above a similarity threshold, return the stored answer (steps above).
+
+**Do not confuse three different caches.** (1) **Provider prompt caching** reuses a long prompt prefix inside the model service; on Anthropic a cache read costs 0.1x input and lasts 5 minutes or 1 hour. (2) **KV-prefix caching** in your own serving stack (vLLM, llm-d). (3) **Semantic caching** returns a previous *answer* for a similar question and skips the model call entirely. Only the third can return a wrong answer.
+
+**Reported hit rates (secondary; widely varying).** Practitioner guides say a tuned semantic cache typically hits **25 to 45%**, with customer-service and FAQ workloads at **30 to 60%**; academic work reports 60 to 70% on curated query sets, and AWS-published research on real chatbot queries reports much higher rates and cost and latency reductions of about **86% and 88%** on cached responses. Cached hits return in roughly **5 to 20 ms** versus about 1 to 3 seconds for a model call. Treat the high numbers as best-case, FAQ-style traffic.
+
+**Enterprise safeguards.** Key the cache by **tenant, permissions, model, prompt version and retrieval snapshot**, otherwise one user receives another's answer. Do not cache personalised or time-sensitive answers; set short TTLs on volatile facts; use a high similarity threshold plus an optional cheap verifier for risky categories; and track *wrong-hit* rate through sampled review, not just hit rate. Recent research proposes asynchronous verification of cached answers by a stronger model; consider it for high-stakes domains.
 
 ## Common mistakes
 

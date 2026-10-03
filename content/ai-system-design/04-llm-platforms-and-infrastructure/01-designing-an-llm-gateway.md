@@ -6,6 +6,8 @@ sources:
   - "Public documentation of open-source and commercial LLM gateway and proxy projects"
   - "Google SRE Book, chapters on handling overload and load balancing"
   - "Provider API documentation on rate limits, retries and streaming"
+  - "Gateway comparisons and benchmarks, 2026 (secondary: dev.to, spheron.network, deepinspect.ai, requesty.ai)"
+  - "MCP specification 2026-07-28 (header-based routing), blog.modelcontextprotocol.io (fetched Oct 2026)"
 ---
 
 ## The problem
@@ -66,6 +68,20 @@ Streams must pass through unbuffered; measure time to first token. If an upstrea
 3. Routing picks the primary provider, but its circuit breaker is open after error spikes, so the request goes to the secondary provider's equivalent model.
 4. Tokens stream back with a time to first token of 420 ms. The log records the fallback and cost.
 5. Dashboards show a spike in fallback rate; the on-call engineer sees the primary's status and decides to keep traffic on the secondary until it recovers, while a quality monitor confirms the secondary's answers still pass the evaluation set.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** One OpenAI-compatible endpoint in front of providers: auth, routing, retries, fallbacks, rate limits, budgets, logging (steps above).
+
+**Landscape (secondary sources, October 2026).** **LiteLLM** (self-hosted, 100+ providers, virtual keys, per-team budgets, fallbacks) is the common open-source baseline; **Portkey** (250+ models, guardrails, prompt versioning, semantic caching; reported as now part of Palo Alto Networks); **Kong AI Gateway** and **Envoy AI Gateway** suit teams that already run those proxies on Kubernetes. Managed options come from the clouds.
+
+**Numbers to treat carefully.** Reported added latency is roughly **4 to 20 ms** at p50 for the popular gateways, but one benchmark write-up warns that mock-upstream tests flatter results and another reports a single-worker Python proxy degrading badly at about 500 requests per second (p99 in the tens of seconds). LiteLLM's own June 2026 post reports about **7.5 ms** per request for the Python proxy and a Rust rewrite targeting far less. Lesson: load-test with realistic streaming responses, many concurrent connections and your real routing rules, and size gateway replicas separately from model capacity.
+
+**Enterprise patterns.**
+
+- **The gateway is the policy point.** Authenticate workloads, attach tenant and cost-centre tags, enforce budgets and rate limits, run guardrails, and log every call; agents' MCP traffic can use the same control plane since the 2026-07-28 MCP spec adds `Mcp-Method` and `Mcp-Name` headers for routing and metering without parsing bodies.
+- **Fallback with care.** A provider fallback changes model behaviour; keep per-route prompts, run evaluation on the fallback model, and cap fallback spend.
+- **Do not make the gateway a single point of failure:** stateless replicas, config as code, a bypass runbook, and streaming-safe timeouts.
 
 ## Common mistakes
 
