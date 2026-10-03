@@ -38,6 +38,7 @@ const THEME_INIT_SCRIPT = `
     document.documentElement.dataset.theme = theme;
     var fs = localStorage.getItem("text-size-v1");
     if (fs === "sm" || fs === "lg") document.documentElement.dataset.fs = fs;
+    if (JSON.parse(localStorage.getItem("read-lessons-v1") || "[]").length) document.documentElement.dataset.returning = "1";
   } catch (e) {}
 })();
 `;

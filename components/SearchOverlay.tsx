@@ -7,6 +7,7 @@ import { BorderBeam } from "border-beam";
 import { ThinkingOrb } from "thinking-orbs";
 import type { ContentIndexItem } from "@/lib/search-index";
 import { readSet } from "@/lib/progress";
+import { SECTIONS } from "@/lib/track-meta";
 
 const SUGGESTED_TAGS = ["rag", "caching", "consensus", "agents", "kafka", "eval"];
 
@@ -136,6 +137,25 @@ export function SearchOverlay({
             />
             <kbd className="rounded border border-line px-1.5 py-0.5 font-mono text-xs text-paper-muted">Esc</kbd>
           </div>
+
+          {!q && (
+            <div className="flex flex-wrap items-center gap-1.5 border-b border-line-soft px-4 py-2.5 text-xs text-paper-muted">
+              <span>Go to</span>
+              {SECTIONS.map((s) => (
+                <button
+                  key={s.key}
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    router.push(s.href);
+                  }}
+                  className="rounded-full border border-line px-2.5 py-0.5 transition-colors hover:border-accent-dim hover:text-paper"
+                >
+                  {s.name}
+                </button>
+              ))}
+            </div>
+          )}
 
           <ul id="search-results" ref={listRef} role="listbox" className="max-h-[50vh] overflow-y-auto p-2">
             {rows.map(({ item, result }, i) => {

@@ -537,3 +537,6 @@ p {
   .search-in { animation: none; }
   .glow::after { transition: none; }
 }
+
+/* Returning readers (any lesson read) skip the introduction; data-returning is set before first paint. */
+:root[data-returning] .first-visit { display: none; }

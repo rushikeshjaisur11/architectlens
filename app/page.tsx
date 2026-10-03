@@ -8,6 +8,7 @@ import { DotPattern } from "@/components/ui/dot-pattern";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { TextEffect } from "@/components/ui/text-effect";
 import { TypedWords } from "@/components/TypedWords";
+import { WelcomeBack } from "@/components/WelcomeBack";
 import { TileBanner } from "@/components/TileBanner";
 
 const STEPS = [
@@ -46,7 +47,8 @@ export default function LandingPage() {
 
   return (
     <main>
-      <section className="relative overflow-hidden border-b border-line-soft">
+      <WelcomeBack order={order} />
+      <section className="first-visit relative overflow-hidden border-b border-line-soft">
         <div aria-hidden className="pointer-events-none absolute inset-0">
           <DotPattern
             width={22}
@@ -148,7 +150,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="border-y border-line-soft bg-ink-elevated/40">
+      <section className="first-visit border-y border-line-soft bg-ink-elevated/40">
         <div className="mx-auto max-w-5xl px-6 py-16">
           <h2 className="text-paper">How the paths fit together</h2>
           <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -165,7 +167,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-6 py-16">
+      <section className="first-visit mx-auto max-w-5xl px-6 py-16">
         <h2 className="text-paper">Made for focused learning</h2>
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           {PILLARS.map((p, i) => (

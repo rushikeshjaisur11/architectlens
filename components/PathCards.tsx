@@ -32,7 +32,7 @@ export function PathCards({ stats, order }: { stats: PathStats; order: PathOrder
         const done = st ? [...read].filter((k) => k.startsWith(`${s.key}/`)).length : 0;
         const next = (order[s.key] ?? []).find((l) => !read.has(l.key));
         return (
-          <BlurFade inView key={s.key} delay={i * 0.1} className={`h-full ${SPANS[i % SPANS.length]}`}>
+          <BlurFade key={s.key} delay={i * 0.1} className={`h-full ${SPANS[i % SPANS.length]}`}>
           <div
             onPointerMove={onGlowMove}
             style={{ "--h": s.hue } as React.CSSProperties}

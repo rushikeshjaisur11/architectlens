@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { sortByOrder } from "@/lib/content";
 import type { Track } from "@/lib/tracks";
@@ -104,6 +104,15 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
   const nextUnread = sortByOrder(lessons)
     .sort((a, b) => a.category.number - b.category.number)
     .find((l) => !done.has(`${track.slug}/${l.category.slug}/${l.slug}`));
+
+  // A reader with progress gets the module holding their next lesson open; everyone else sees every module folded.
+  const autoOpened = useRef(false);
+  const nextModule = nextUnread?.category.slug;
+  useEffect(() => {
+    if (autoOpened.current || done.size === 0 || !nextModule) return;
+    autoOpened.current = true;
+    setExpanded((prev) => (prev.size ? prev : new Set([nextModule])));
+  }, [done, nextModule]);
 
   const topTags = useMemo(() => {
     const counts = new Map<string, number>();
