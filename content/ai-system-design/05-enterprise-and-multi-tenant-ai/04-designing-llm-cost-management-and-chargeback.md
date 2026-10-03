@@ -1,0 +1,73 @@
+---
+title: "Designing LLM Cost Management and Chargeback"
+short_title: "Cost Management and Chargeback"
+tags: ["cost", "finops", "chargeback", "budgets", "attribution", "design"]
+sources:
+  - "FinOps Foundation framework and capabilities documentation"
+  - "Provider pricing documentation for input, output and cached tokens"
+  - "Public cloud cost allocation and tagging guidance"
+---
+
+## The problem
+
+LLM spend grows quickly and unpredictably: a loop, a long context or a new feature can multiply the bill in a day. Finance asks who spent what; teams want to know what their features cost; leadership wants forecasts. **Cost management** attributes every token to a team and feature, enforces budgets, and gives engineers the visibility to make economical choices, while **chargeback** or **showback** turns that data into accountability.
+
+## Step 1: Requirements
+
+- **Attribution:** cost per team, product, feature, environment and, where useful, per customer.
+- **Accuracy:** tokens priced correctly, including cached, input and output rates and provider-specific rules.
+- **Control:** budgets and quotas with alerts and automatic limits.
+- **Visibility:** dashboards, anomaly detection, forecasts, unit economics.
+- **Fairness:** shared platform costs allocated understandably.
+- **Scale (example):** 80 teams, 3 providers plus self-hosted models, $2M a month.
+
+## Step 2: Capturing usage
+
+Route all model calls through the **LLM gateway** so every call is metered at one point. Each request records: caller identity (service, team, project), feature or route tag, model and provider, input, output and cached token counts, latency, status, request id and timestamp. Require tags at the gateway: a call without a team and feature tag is rejected or assigned to a "unattributed" bucket that is itself reported as a problem. For self-hosted models record GPU-seconds or tokens per replica.
+
+## Step 3: Pricing the tokens
+
+Maintain a **price catalogue**: per model and provider, with effective dates for changes, rates for input, output, cached input and batch discounts, and committed-use discounts. Compute cost per request from tokens times the effective price at that time. Reconcile daily against the provider's invoices and usage exports; large differences reveal missing instrumentation or price errors. For self-hosted models, allocate GPU cost by usage: the node's hourly cost divided across tenants by their share of tokens or GPU-seconds, with unused capacity shown separately so it is not hidden inside team costs.
+
+## Step 4: Allocation models
+
+- **Showback:** teams see their costs but are not billed; creates awareness with no internal billing machinery.
+- **Chargeback:** costs are transferred to team budgets; creates stronger incentives but needs trusted data and a process for disputes.
+- **Shared costs** (platform, evaluation, gateway) are allocated by usage proportion, by headcount, or held centrally; document the rule so it is predictable.
+- **Customer-level attribution:** for products sold to customers, tag requests with the customer id (hashed if sensitive) to compute margin per customer and spot unprofitable accounts.
+
+## Step 5: Budgets and enforcement
+
+Soft limits warn; hard limits stop. A layered approach:
+
+- **Alerts** at 50, 80 and 100 percent of the monthly budget, with the top cost drivers.
+- **Per-key and per-team quotas** enforced in the gateway (tokens per minute, per day, per month).
+- **Circuit breakers** for runaway spend: if hourly spend exceeds a multiple of the baseline, throttle or pause the offender and page the owner.
+- **Graceful degradation** when a limit is reached: switch to a cheaper model, shorten outputs, serve cached answers, or queue batch work, before rejecting outright.
+- **Approval for exceptions:** teams can request temporary increases with an owner's sign-off.
+
+## Step 6: Making cost visible and actionable
+
+Dashboards by team, feature and model; cost per request and per user action (unit economics); top prompts by tokens; cache hit rates and their savings; share of spend on frontier versus smaller models; trend and forecast against budget. **Anomaly detection** on hourly spend per team catches loops and misconfigurations within hours. Attach cost to traces so engineers can see which step of a chain dominates. Suggest optimisations automatically: long system prompts, uncached repeated prefixes, over-qualified models for simple routes.
+
+## Step 7: Governance and culture
+
+Review model choices with cost and quality evidence, set targets for cost per resolved task rather than raw spend (a larger bill may be justified by value), and include cost in the definition of done for new AI features. Forecast with usage drivers (users, requests per user, tokens per request) and scenario analysis for price changes and new launches.
+
+## A worked example
+
+**Scenario:** the monthly report shows spend up 60 percent, mostly in the "support-assistant" project.
+
+1. The gateway data breaks the increase down by route: the "summarise ticket" route's tokens tripled after a prompt change that added the entire ticket history.
+2. The price catalogue calculation shows the change cost $41,000 extra for the month, versus an expected $4,000.
+3. An anomaly alert had fired two days after the deploy, but the team's budget alert threshold was set too high to page anyone; the platform lowers default thresholds and requires an owner contact.
+4. The team trims the history to the last five messages and caches the shared instructions; the route's cost per call falls by 70 percent with no change in quality scores in the evaluation platform.
+5. Chargeback for the month reflects actual use; the saved amount is reported in the savings dashboard as evidence for the optimisation.
+
+## Common mistakes
+
+- **Calls bypassing the gateway**, leaving spend unattributed.
+- **Ignoring cached and output token pricing**, misstating cost.
+- **Only monthly review**, finding the runaway after the money is gone.
+- **Hiding idle GPU cost** inside team numbers.
+- **Optimising spend without quality evidence**, trading savings for regressions.
