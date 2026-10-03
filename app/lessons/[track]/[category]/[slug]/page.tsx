@@ -3,7 +3,7 @@ import { lessons } from "#velite";
 import { findBySlug } from "@/lib/content";
 import { MetaPanel } from "@/components/MetaPanel";
 import { LessonAnimations } from "@/components/anim/LessonAnimations";
-import { LessonBanner, LessonPager, LessonTopNav, ReadingProgress, SectionControls } from "@/components/LessonChrome";
+import { LessonBanner, LessonPager, LessonTopNav, OnThisPage, ReadingProgress, SectionControls } from "@/components/LessonChrome";
 import { trackFromSlug } from "@/lib/tracks";
 
 export function generateStaticParams() {
@@ -46,6 +46,7 @@ export default async function LessonPage({
         <MetaPanel tags={lesson.tags} />
         <SectionControls />
       </div>
+      <OnThisPage />
       <article
         data-lesson-body
         className="prose mt-8 max-w-[72ch]"

@@ -44,6 +44,11 @@ export function NavShell({
         event.preventDefault();
         setSearchOpen((prev) => !prev);
       }
+      const typing = /^(INPUT|TEXTAREA|SELECT)$/.test((event.target as HTMLElement).tagName);
+      if (event.key === "/" && !typing && !event.metaKey && !event.ctrlKey) {
+        event.preventDefault();
+        setSearchOpen(true);
+      }
       if (event.key === "Escape") {
         setSearchOpen(false);
         setMobileOpen(false);

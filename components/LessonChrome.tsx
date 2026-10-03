@@ -126,9 +126,55 @@ export function SectionControls() {
   );
 }
 
+// Jump links to each h2; jumping also unfolds a collapsed section.
+export function OnThisPage() {
+  const [items, setItems] = useState<{ id: string; text: string }[]>([]);
+  useEffect(() => {
+    const heads = Array.from(document.querySelectorAll<HTMLElement>("[data-lesson-body] h2"));
+    setItems(
+      heads.map((h, i) => {
+        if (!h.id) h.id = `sec-${i}`;
+        return { id: h.id, text: h.textContent ?? "" };
+      })
+    );
+  }, []);
+  if (items.length < 3) return null;
+  function go(id: string) {
+    const h = document.getElementById(id);
+    if (!h) return;
+    if (h.getAttribute("aria-expanded") === "false") h.click();
+    h.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  return (
+    <nav aria-label="On this page" className="mt-5 rounded-lg border border-line bg-ink-elevated p-3">
+      <p className="font-mono text-[11px] text-paper-muted">On this page</p>
+      <ul className="mt-2 flex flex-wrap gap-1.5">
+        {items.map((it) => (
+          <li key={it.id}>
+            <button type="button" onClick={() => go(it.id)} className={btn}>
+              {it.text}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
 type PagerLink = { href: string; title: string };
 
 export function LessonPager({ prev, next }: { prev?: PagerLink; next?: PagerLink }) {
+  const router = useRouter();
+  // [ and ] step to the previous and next lesson.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test((e.target as HTMLElement).tagName)) return;
+      const to = e.key === "[" ? prev : e.key === "]" ? next : undefined;
+      if (to) router.push(to.href);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [prev, next, router]);
   const card =
     "group flex min-w-0 flex-1 flex-col rounded-lg border border-line p-4 transition-colors hover:border-accent-dim hover:bg-ink-elevated";
   return (
