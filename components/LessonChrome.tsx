@@ -64,7 +64,7 @@ export function LessonTopNav({
   );
 }
 
-export function LessonBanner({ title, tags, label, minutes, spec }: { title: string; tags: string; label: string; minutes: number; spec?: BannerSpec }) {
+export function LessonBanner({ title, tags, spec }: { title: string; tags: string; spec?: BannerSpec }) {
   const [live, setLive] = useState(true);
   useEffect(() => {
     setLive(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -72,10 +72,6 @@ export function LessonBanner({ title, tags, label, minutes, spec }: { title: str
   return (
     <div className="banner-bg relative mt-5 h-40 overflow-hidden rounded-lg border border-line sm:h-44">
       <TileBanner title={title} tags={tags} hover={live} spec={spec} />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-ink/80 to-transparent px-4 pb-2 pt-8 font-mono text-[11px] text-paper-muted">
-        <span>{label}</span>
-        <span>{minutes} min read</span>
-      </div>
     </div>
   );
 }
@@ -130,15 +126,20 @@ export function SectionControls() {
     };
   }, []);
 
+  const [folded, setFolded] = useState(false);
   const fire = (collapsed: boolean) => window.dispatchEvent(new CustomEvent("lesson:collapse-all", { detail: collapsed }));
   return (
     <div className="flex flex-wrap items-center gap-2">
       <TextSize />
-      <button type="button" onClick={() => fire(true)} className={btn}>
-        <ChevronsDownUp size={13} /> Collapse all
-      </button>
-      <button type="button" onClick={() => fire(false)} className={btn}>
-        <ChevronsUpDown size={13} /> Expand all
+      <button
+        type="button"
+        onClick={() => {
+          fire(!folded);
+          setFolded(!folded);
+        }}
+        className={btn}
+      >
+        {folded ? <ChevronsUpDown size={13} /> : <ChevronsDownUp size={13} />} {folded ? "Expand all" : "Collapse all"}
       </button>
     </div>
   );
@@ -196,9 +197,9 @@ export function OnThisPage() {
     h.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   return (
-    <nav aria-label="On this page" className="mt-5 rounded-lg border border-line bg-ink-elevated p-3">
-      <p className="font-mono text-[11px] text-paper-muted">On this page</p>
-      <ul className="mt-2 flex flex-wrap gap-1.5">
+    <details className="mt-4 rounded-lg border border-line bg-ink-elevated p-3">
+      <summary className="cursor-pointer font-mono text-xs text-paper-muted">On this page ({items.length})</summary>
+      <ul className="mt-3 flex flex-wrap gap-1.5">
         {items.map((it) => (
           <li key={it.id}>
             <button type="button" onClick={() => go(it.id)} className={btn}>
@@ -207,11 +208,11 @@ export function OnThisPage() {
           </li>
         ))}
       </ul>
-    </nav>
+    </details>
   );
 }
 
-type PagerLink = { href: string; title: string };
+type PagerLink = { href: string; title: string; summary?: string };
 
 export function LessonPager({ prev, next }: { prev?: PagerLink; next?: PagerLink }) {
   const router = useRouter();
@@ -245,6 +246,7 @@ export function LessonPager({ prev, next }: { prev?: PagerLink; next?: PagerLink
             Next <ArrowRight size={12} />
           </span>
           <span className="mt-1 max-w-full truncate text-sm text-paper group-hover:text-accent">{next.title}</span>
+          {next.summary && <span className="mt-1 line-clamp-2 text-xs leading-relaxed text-paper-muted">{next.summary}</span>}
         </Link>
       ) : (
         <span className="hidden flex-1 sm:block" />
@@ -274,7 +276,7 @@ export function ReadingProgress({ lessonKey }: { lessonKey: string }) {
   }, [lessonKey]);
   return (
     <div className="pointer-events-none fixed inset-x-0 top-0 z-40 h-0.5 bg-transparent" aria-hidden>
-      <div className="h-full origin-left bg-accent transition-[width] duration-100" style={{ width: `${pct * 100}%` }} />
+      <div className="h-full origin-left bg-hook transition-[width] duration-100" style={{ width: `${pct * 100}%` }} />
     </div>
   );
 }

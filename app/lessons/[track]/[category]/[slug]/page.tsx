@@ -39,14 +39,11 @@ export default async function LessonPage({
         prevHref={prev && href(prev)}
         nextHref={next && href(next)}
       />
-      <LessonBanner
-        title={lesson.title}
-        tags={lesson.tags.join(" ")}
-        label={`${String(lesson.category.number).padStart(2, "0")} ${lesson.category.name}`}
-        minutes={lesson.minutes}
-        spec={lesson.banner}
-      />
+      <LessonBanner title={lesson.title} tags={lesson.tags.join(" ")} spec={lesson.banner} />
       <h1 className="mt-6 text-2xl font-semibold text-paper sm:text-3xl">{lesson.title}</h1>
+      <p className="mt-2 font-mono text-xs text-paper-muted">
+        {lesson.category.name} &middot; {lesson.minutes} min read
+      </p>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <MetaPanel tags={lesson.tags} />
         <SectionControls />
@@ -59,18 +56,21 @@ export default async function LessonPage({
       />
       <LessonAnimations key={`${track}/${category}/${slug}`} lessonKey={`${track}/${category}/${slug}`} />
       {lesson.sources.length > 0 && (
-        <div className="mt-8 border-t border-line pt-4">
-          <h3 className="font-mono text-xs text-paper-muted">Sources</h3>
-          <ul className="mt-2 space-y-1 text-sm text-paper-muted">
+        <details className="group mt-10 rounded-xl border border-line-soft bg-ink-elevated/40 px-4 py-3">
+          <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-paper-muted marker:hidden hover:text-paper">
+            <span>Sources and references ({lesson.sources.length})</span>
+            <span aria-hidden className="text-xs transition-transform group-open:rotate-180">&#9662;</span>
+          </summary>
+          <ol className="mt-3 list-decimal space-y-2 pl-5 text-xs leading-relaxed text-paper-muted marker:text-paper-muted/60">
             {lesson.sources.map((source) => (
               <li key={source}>{source}</li>
             ))}
-          </ul>
-        </div>
+          </ol>
+        </details>
       )}
       <LessonPager
         prev={prev && { href: href(prev), title: prev.shortTitle }}
-        next={next && { href: href(next), title: next.shortTitle }}
+        next={next && { href: href(next), title: next.shortTitle, summary: next.summary }}
       />
     </main>
   );

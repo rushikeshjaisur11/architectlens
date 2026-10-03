@@ -3,16 +3,18 @@
 
 @theme {
   --font-sans: var(--font-sans-body), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono-body), ui-monospace, monospace;
+  --font-mono: var(--font-sans-body), ui-sans-serif, system-ui, sans-serif;
+  --font-code: var(--font-mono-body), ui-monospace, monospace;
 
-  --color-ink: #eef1f6;
+  --color-ink: #f7f8fb;
   --color-ink-elevated: #ffffff;
-  --color-line: #c7d0e0;
-  --color-line-soft: #dbe1ec;
-  --color-paper: #0b0f1c;
-  --color-paper-muted: #3c4560;
-  --color-accent: #a6650c;
-  --color-accent-dim: #8f5a0c;
+  --color-line: #d5dbe8;
+  --color-line-soft: #e6e9f2;
+  --color-paper: #12172b;
+  --color-paper-muted: #465068;
+  --color-accent: #4338ca;
+  --color-accent-dim: #3730a3;
+  --color-hook: #b45309;
 }
 
 :root {
@@ -21,14 +23,15 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-ink: #0a0a0b;
-  --color-ink-elevated: #141415;
-  --color-line: #2e2e33;
-  --color-line-soft: #202024;
-  --color-paper: #f2f2f3;
-  --color-paper-muted: #a9a9b2;
-  --color-accent: #e8a33d;
-  --color-accent-dim: #b8801f;
+  --color-ink: #0f1218;
+  --color-ink-elevated: #171b24;
+  --color-line: #2a3140;
+  --color-line-soft: #1f2531;
+  --color-paper: #e6eaf2;
+  --color-paper-muted: #a3adc2;
+  --color-accent: #8f9dff;
+  --color-accent-dim: #6d7df0;
+  --color-hook: #f0b04a;
 }
 
 /* Reading mode: warm paper, soft brown ink, serif body text, like an e-reader. */
@@ -42,6 +45,7 @@
   --color-paper-muted: #6a5a42;
   --color-accent: #9a5a12;
   --color-accent-dim: #85500f;
+  --color-hook: #9a5a12;
 }
 
 :root[data-theme="sepia"] .prose {
@@ -144,3 +148,23 @@
 
 :root[data-fs="sm"] .prose { font-size: 0.9375rem; }
 :root[data-fs="lg"] .prose { font-size: 1.25rem; }
+
+.prose :where(code, pre, kbd, samp):not(:where([class~="not-prose"] *)) {
+  font-family: var(--font-code);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 28%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

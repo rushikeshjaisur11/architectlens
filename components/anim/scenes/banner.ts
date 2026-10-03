@@ -83,6 +83,18 @@ export function motifFor(title: string, tags = "", override?: BannerSpec): Motif
   return MOTIFS.find((m) => m.re.test(t)) ?? MOTIFS.find((m) => m.re.test(all)) ?? DEFAULT;
 }
 
+// Split a label into at most two short lines on word boundaries; anything longer is cut with an ellipsis.
+function wrap(text: string, max: number): string[] {
+  const lines: string[] = [];
+  for (const word of text.split(" ")) {
+    const last = lines[lines.length - 1];
+    if (last !== undefined && `${last} ${word}`.length <= max) lines[lines.length - 1] = `${last} ${word}`;
+    else lines.push(word);
+  }
+  const cut = (t: string) => (t.length > max ? `${t.slice(0, max - 1)}\u2026` : t);
+  return lines.length <= 2 ? lines.map(cut) : [cut(lines[0]), cut(lines.slice(1).join(" "))];
+}
+
 function tone(g: G, k: Kind): string {
   switch (k) {
     case "model":
@@ -112,13 +124,13 @@ export const BANNER_H = 92;
 export function drawBanner(g: G, m: Motif): void {
   const n = m.nodes.length;
   const size = n >= 4 ? 36 : 40;
-  const spoke = 26;
+  const spoke = n >= 5 ? 22 : 26;
   const pos: [number, number][] = [];
   const fan = m.layout === "fan";
   if (fan) {
     pos.push([66, 40]);
     const rest = n - 1;
-    for (let i = 0; i < rest; i++) pos.push([170, rest === 1 ? 40 : 16 + (i * 48) / (rest - 1)]);
+    for (let i = 0; i < rest; i++) pos.push([170, rest === 1 ? 40 : 14 + (i * 52) / (rest - 1)]);
   } else {
     const x0 = 42;
     const x1 = BANNER_W - 42;
@@ -156,19 +168,18 @@ export function drawBanner(g: G, m: Motif): void {
   const focus = fan ? 0 : Math.max(0, m.nodes.findIndex(([k]) => k === "model"));
   g.glow(pos[focus][0], pos[focus][1], 34, g.pal.accent, 0.14);
 
-  const max = n >= 5 ? 8 : 11;
-  const fit = (t: string) => (t.length > max ? `${t.slice(0, max - 1)}…` : t);
-  m.nodes.forEach(([k, label0], i) => {
-    const label = fit(label0);
+  m.nodes.forEach(([k, label], i) => {
     const [x, y] = pos[i];
     if (fan && i > 0) {
       node(g, k, x, y, { size: spoke, color: tone(g, k), active: k === "model", state: "working" });
       if (k === "model") g.ring(x, y, spoke * 0.5, g.pal.accent, 0.85, 1.2);
-      g.text(label, x + spoke * 0.5 + 6, y + 3, { size: 9.5, color: g.pal.muted, align: "left" });
+      g.text(wrap(label, 14)[0], x + spoke * 0.5 + 6, y + 3, { size: 9.5, color: g.pal.muted, align: "left" });
       return;
     }
     node(g, k, x, y, { size, color: tone(g, k), active: k === "model", state: "working" });
     if (k === "model") g.ring(x, y, size * 0.5, g.pal.accent, 0.85, 1.4);
-    g.text(label, x, y + size * 0.5 + 11, { size: 9.5, color: g.pal.muted, align: "center" });
+    wrap(label, n >= 5 ? 8 : 10).forEach((line, li) =>
+      g.text(line, x, y + size * 0.5 + 10 + li * 10, { size: 9.5, color: g.pal.muted, align: "center" }),
+    );
   });
 }

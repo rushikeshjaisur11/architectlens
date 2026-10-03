@@ -13,15 +13,11 @@ export default function HomePage() {
       <h1 className="text-4xl font-semibold leading-tight text-paper">
         Learn system design
         <br />
-        <span className="font-mono text-accent">from first principles.</span>
+        <span className="text-accent">from first principles.</span>
       </h1>
       <p className="mt-4 max-w-xl text-paper-muted">
         A self-paced curriculum covering the concepts, cases, and builds that come up in real
         systems work — organized as {track.categories.length} focused modules.
-      </p>
-      <p className="mt-6 font-mono text-xs text-paper-muted">
-        {trackLessons.length} lesson{trackLessons.length === 1 ? "" : "s"} across{" "}
-        {track.categories.length} modules
       </p>
 
       <CurriculumGrid

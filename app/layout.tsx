@@ -3,7 +3,6 @@ import { Atkinson_Hyperlegible_Next, Atkinson_Hyperlegible_Mono, Literata } from
 import { lessons } from "#velite";
 import { buildContentIndex } from "@/lib/search-index";
 import { NavShell } from "@/components/NavShell";
-import { CursorGlow } from "@/components/CursorGlow";
 
 const sans = Atkinson_Hyperlegible_Next({
   subsets: ["latin"],
@@ -35,8 +34,14 @@ const THEME_INIT_SCRIPT = `
 `;
 
 export const metadata = {
-  title: "architectlens",
-  description: "System design, learned from first principles.",
+  title: { default: "architectlens: system design and AI systems", template: "%s | architectlens" },
+  description:
+    "A structured curriculum on system design and production AI systems, from first principles to enterprise practice, with interactive diagrams and current, sourced guidance.",
+  openGraph: {
+    title: "architectlens",
+    description: "System design and AI systems, from first principles to enterprise practice.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -51,7 +56,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <NavShell lessons={lessons} searchItems={searchItems}>
           {children}
         </NavShell>
-        <CursorGlow />
       </body>
     </html>
   );

@@ -15,7 +15,7 @@ function Tile({ t }: { t: SectionTile }) {
       onMouseLeave={() => setHover(false)}
       onFocus={() => setHover(true)}
       onBlur={() => setHover(false)}
-      className="group flex flex-col overflow-hidden rounded-lg border border-line transition-colors hover:border-accent-dim hover:bg-ink-elevated"
+      className="group flex flex-col overflow-hidden rounded-xl border border-line bg-ink-elevated/40 transition duration-200 hover:-translate-y-0.5 hover:border-accent-dim hover:bg-ink-elevated hover:shadow-lg hover:shadow-black/10"
     >
       <div className="banner-bg relative h-28 border-b border-line-soft">
         <TileBanner title={t.hint} hover={hover} />

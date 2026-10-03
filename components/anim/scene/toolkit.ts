@@ -3,8 +3,8 @@ import type { G, Pal, TextOpts } from "./types";
 
 export const LW = 480;
 
-const DARK: Pal = { ink: "#0a0a0b", panel: "#141415", line: "#34343a", paper: "#ededee", muted: "#909099", accent: "#e8a33d", ok: "#7bd88f", bad: "#ff6b6b", blue: "#4cc9f0", violet: "#c792ea", teal: "#5eead4" };
-const LIGHT: Pal = { ink: "#eef1f6", panel: "#ffffff", line: "#c7d0e0", paper: "#101526", muted: "#56607a", accent: "#b8730f", ok: "#2f9e57", bad: "#d6453d", blue: "#1783b4", violet: "#8a55c9", teal: "#0f9488" };
+const DARK: Pal = { ink: "#0f1218", panel: "#171b24", line: "#34405a", paper: "#e6eaf2", muted: "#a3adc2", accent: "#f0b04a", ok: "#7bd88f", bad: "#ff6b6b", blue: "#4cc9f0", violet: "#c792ea", teal: "#5eead4" };
+const LIGHT: Pal = { ink: "#f7f8fb", panel: "#ffffff", line: "#c3cbdd", paper: "#12172b", muted: "#465068", accent: "#b45309", ok: "#2f9e57", bad: "#d6453d", blue: "#1783b4", violet: "#8a55c9", teal: "#0f9488" };
 
 export function basePalette(dark: boolean): Pal {
   return { ...(dark ? DARK : LIGHT) };
