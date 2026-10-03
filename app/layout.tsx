@@ -3,6 +3,7 @@ import { Atkinson_Hyperlegible_Next, Atkinson_Hyperlegible_Mono, Instrument_Seri
 import { lessons } from "#velite";
 import { buildContentIndex } from "@/lib/search-index";
 import { NavShell } from "@/components/NavShell";
+import { SITE_ORIGIN } from "@/lib/site";
 
 const sans = Atkinson_Hyperlegible_Next({
   subsets: ["latin"],
@@ -44,7 +45,7 @@ const THEME_INIT_SCRIPT = `
 `;
 
 export const metadata = {
-  metadataBase: new URL("https://rushikeshjaisur11.github.io/"),
+  metadataBase: new URL(SITE_ORIGIN),
   title: { default: "architectlens: system design and AI systems", template: "%s | architectlens" },
   description:
     "A structured curriculum on system design and production AI systems, from first principles to enterprise practice, with interactive diagrams and current, sourced guidance.",

@@ -11,13 +11,15 @@ export function TrackHeader({
   intro,
   lessons,
   modules,
+  meta,
 }: {
   section: SectionKey;
   title: string;
   accent: string;
   intro: string;
-  lessons: number;
-  modules: number;
+  lessons?: number;
+  modules?: number;
+  meta?: string;
 }) {
   const s = sectionByKey(section);
   return (
@@ -30,7 +32,7 @@ export function TrackHeader({
         <SectionIcon name={s.icon} size={14} className="hue-text" />
         <span className="hue-text">{s.name}</span>
         <span className="text-paper-muted">
-          {lessons} lessons &middot; {modules} modules
+          {meta ?? `${lessons} lessons · ${modules} modules`}
         </span>
       </p>
       <h1 className="relative mt-5 text-paper">

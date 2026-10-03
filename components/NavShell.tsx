@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { MotionConfig } from "motion/react";
 import { buildNavTree } from "@/lib/nav-tree";
 import { hasTrackContext, trackFromSlug, trackSlugFromPath } from "@/lib/tracks";
 import type { ContentIndexItem } from "@/lib/search-index";
@@ -81,6 +82,7 @@ export function NavShell({
   }
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="flex h-screen">
       <Sidebar
         groups={tree}
@@ -111,5 +113,6 @@ export function NavShell({
       </div>
       <SearchOverlay items={searchItems} open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
+    </MotionConfig>
   );
 }
