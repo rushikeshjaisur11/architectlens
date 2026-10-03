@@ -16,11 +16,15 @@ export function LessonTopNav({
   trackHref,
   moduleName,
   moduleHref,
+  prevHref,
+  nextHref,
 }: {
   trackName: string;
   trackHref: string;
   moduleName: string;
   moduleHref: string;
+  prevHref?: string;
+  nextHref?: string;
 }) {
   const router = useRouter();
   function back() {
@@ -28,14 +32,14 @@ export function LessonTopNav({
     else router.push(moduleHref);
   }
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="sticky top-0 z-30 -mx-4 flex items-center gap-2 border-b border-line-soft bg-ink/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6">
       <button type="button" onClick={back} className={btn} aria-label="Go back">
         <ArrowLeft size={13} /> Back
       </button>
       <Link href="/" className={btn} aria-label="Home">
         <Home size={13} /> Home
       </Link>
-      <nav className="ml-1 flex min-w-0 items-center gap-1.5 font-mono text-xs text-paper-muted" aria-label="Breadcrumb">
+      <nav className="ml-1 hidden min-w-0 items-center gap-1.5 font-mono text-xs text-paper-muted sm:flex" aria-label="Breadcrumb">
         <Link href={trackHref} className="truncate hover:text-paper">
           {trackName}
         </Link>
@@ -44,6 +48,18 @@ export function LessonTopNav({
           {moduleName}
         </Link>
       </nav>
+      <div className="ml-auto flex shrink-0 gap-2">
+        {prevHref && (
+          <Link href={prevHref} className={btn} aria-label="Previous lesson" title="Previous lesson ([)">
+            <ArrowLeft size={13} />
+          </Link>
+        )}
+        {nextHref && (
+          <Link href={nextHref} className={btn} aria-label="Next lesson" title="Next lesson (])">
+            <ArrowRight size={13} />
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

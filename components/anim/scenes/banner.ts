@@ -105,23 +105,23 @@ function tone(g: G, k: Kind): string {
   }
 }
 
-export const BANNER_W = 320;
+export const BANNER_W = 280;
 export const BANNER_H = 92;
 
 // Draw a concept diagram: shaped nodes, labelled, with packets flowing along the edges.
 export function drawBanner(g: G, m: Motif): void {
   const n = m.nodes.length;
-  const size = n >= 4 ? 34 : 38;
+  const size = n >= 4 ? 36 : 40;
   const spoke = 26;
   const pos: [number, number][] = [];
   const fan = m.layout === "fan";
   if (fan) {
-    pos.push([84, 40]);
+    pos.push([66, 40]);
     const rest = n - 1;
-    for (let i = 0; i < rest; i++) pos.push([212, rest === 1 ? 40 : 16 + (i * 48) / (rest - 1)]);
+    for (let i = 0; i < rest; i++) pos.push([170, rest === 1 ? 40 : 16 + (i * 48) / (rest - 1)]);
   } else {
-    const x0 = 40;
-    const x1 = BANNER_W - 40;
+    const x0 = 42;
+    const x1 = BANNER_W - 42;
     for (let i = 0; i < n; i++) pos.push([x0 + ((x1 - x0) * i) / Math.max(1, n - 1), m.layout === "loop" ? 34 : 38]);
   }
 
@@ -156,16 +156,19 @@ export function drawBanner(g: G, m: Motif): void {
   const focus = fan ? 0 : Math.max(0, m.nodes.findIndex(([k]) => k === "model"));
   g.glow(pos[focus][0], pos[focus][1], 34, g.pal.accent, 0.14);
 
-  m.nodes.forEach(([k, label], i) => {
+  const max = n >= 5 ? 8 : 11;
+  const fit = (t: string) => (t.length > max ? `${t.slice(0, max - 1)}…` : t);
+  m.nodes.forEach(([k, label0], i) => {
+    const label = fit(label0);
     const [x, y] = pos[i];
     if (fan && i > 0) {
       node(g, k, x, y, { size: spoke, color: tone(g, k), active: k === "model", state: "working" });
       if (k === "model") g.ring(x, y, spoke * 0.5, g.pal.accent, 0.85, 1.2);
-      g.text(label, x + spoke * 0.5 + 6, y + 3, { size: 8.5, color: g.pal.muted, align: "left" });
+      g.text(label, x + spoke * 0.5 + 6, y + 3, { size: 9.5, color: g.pal.muted, align: "left" });
       return;
     }
     node(g, k, x, y, { size, color: tone(g, k), active: k === "model", state: "working" });
     if (k === "model") g.ring(x, y, size * 0.5, g.pal.accent, 0.85, 1.4);
-    g.text(label, x, y + size * 0.5 + 9, { size: 8.5, color: g.pal.muted, align: "center" });
+    g.text(label, x, y + size * 0.5 + 11, { size: 9.5, color: g.pal.muted, align: "center" });
   });
 }
