@@ -6,6 +6,10 @@ sources:
   - "Google Cloud, AWS and Microsoft Azure reference architectures for generative AI platforms"
   - "NIST AI Risk Management Framework (AI RMF 1.0, 2023)"
   - "Team Topologies (Skelton and Pais, 2019) on platform teams and paved roads"
+  - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched Oct 2026)"
+  - "A2A Protocol documentation v1.0, a2a-protocol.org (fetched Oct 2026)"
+  - "OpenTelemetry GenAI semantic conventions (moved to open-telemetry/semantic-conventions-genai, fetched Oct 2026)"
+  - "llm-d project blog (fetched Oct 2026)"
 ---
 
 ## The problem
@@ -76,6 +80,20 @@ Few organisations build everything. Typical split: **buy or adopt** commodity pi
 3. Phase 2: a reference RAG template includes permission-aware retrieval, guardrails, an evaluation harness and tracing. Two pilot teams migrate and cut time to production from five months to six weeks.
 4. Phase 3: a risk-tiering process classifies use cases; high-risk ones require approval and human oversight; the audit store captures prompts, versions and decisions.
 5. Within a year, 24 of 30 teams run on the paved road; unattributed spend falls to 2 percent and a quarterly review retires two duplicate vector stores.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Shared layers: gateway, retrieval, guardrails, evaluation, observability, agent runtime, governance (steps above).
+
+**Standards and components current in 2026 (live-checked).**
+
+- **Gateway and tool plane:** an LLM gateway for models and an MCP gateway for tools; MCP's 2026-07-28 revision is stateless with `Mcp-Method` and `Mcp-Name` headers for routing and metering, and Enterprise Managed Authorization lets the corporate identity provider govern which agents reach which tools.
+- **Agent interop:** A2A v1.0 (Linux Foundation, March 2026) with signed Agent Cards for cross-team or cross-vendor agents.
+- **Serving:** vLLM or similar engines behind an inference gateway; llm-d adds KV-cache-aware routing, which in its benchmark roughly doubled throughput and cut p90 first-token latency from tens of seconds to about half a second on a shared-prefix workload.
+- **Observability:** OpenTelemetry GenAI conventions (inference, agent, tool and MCP spans), still marked Development in mid-2026, so isolate attribute names behind one adapter.
+- **Governance:** a registry of use cases, models, prompts and tools mapped to one control library (ISO/IEC 42001, NIST AI RMF with the Generative AI Profile, EU AI Act tiers).
+
+**Enterprise pattern.** Build the platform as products with owners and SLOs (gateway, retrieval service, evaluation service, guardrails), paved paths for common patterns (RAG app, agent, batch pipeline) and a self-service onboarding flow, so product teams inherit security, cost control and audit instead of rebuilding them.
 
 ## Common mistakes
 

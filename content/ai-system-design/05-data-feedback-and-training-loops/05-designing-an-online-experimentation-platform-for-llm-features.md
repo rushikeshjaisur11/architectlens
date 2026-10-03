@@ -6,6 +6,7 @@ sources:
   - "Kohavi, Tang and Xu, Trustworthy Online Controlled Experiments (Cambridge University Press, 2020)"
   - "Johari et al., 'Peeking at A/B Tests: Why it matters, and what to do about it' (KDD 2017)"
   - "Public documentation of experimentation and feature-flag platforms"
+  - "Experimentation platform guidance and variance-reduction literature (CUPED), 2026 (secondary: Statsig, Datadog LLM Observability docs, Optimizely, arXiv 2606.18750)"
 ---
 
 ## The problem
@@ -69,6 +70,20 @@ A configuration service delivers experiment definitions to applications with loc
 3. After the planned two weeks, the variant shows +1.4 points on resolution (confidence interval 0.6 to 2.2), cost 9 percent lower thanks to shorter outputs, and no change in safety flags.
 4. Sample ratio is 50.1/49.9, healthy. A segment view shows no gain for Spanish-speaking users, flagged as a hypothesis for a follow-up.
 5. The team ships to everyone, keeps a 5 percent holdback for a month to confirm long-term effects, and records the result and the Spanish follow-up in the experiment registry.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Randomise users, assign a variant, log outcomes, compute lift and significance (steps above).
+
+**What is different for LLM features (practitioner guidance, 2026).**
+
+- **Noise stacks.** Judge variance and model non-determinism add to user variance, so the same effect needs more traffic. Use **CUPED** (adjust by pre-experiment behaviour; vendors report reaching significance up to about 2x faster) and paired designs.
+- **Interleaving for ranking and retrieval.** Blend two systems' candidates in one result set and see which contributions users choose; reported sensitivity is often an order of magnitude better than a split test.
+- **Guardrail metrics can stop an experiment on their own:** p95 latency, cost per resolved task, tool-error rate and safety violations. A variant that improves quality but doubles token spend is a decision, not a win.
+- **Tag everything.** Put the experiment and variant id (prompt version, model, retrieval config) in every trace, otherwise results cannot be tied to a change.
+- **Offline first.** Replay recorded traffic through both variants and judge before exposing users; launch with a guarded rollout that pauses on guardrail regression.
+
+**Enterprise pattern.** Pre-register the primary metric and sample size, avoid peeking (or use sequential tests), run A/A tests to validate the platform, watch for novelty effects, and keep a holdout group to measure cumulative long-term impact of many small prompt and model changes.
 
 ## Common mistakes
 

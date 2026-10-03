@@ -6,6 +6,7 @@ sources:
   - "Public documentation on streaming speech recognition and speaker diarization"
   - "Public documentation on calendar and conferencing platform APIs and consent requirements"
   - "Liu et al., 'Lost in the Middle: How Language Models Use Long Contexts' (2023)"
+  - "In re Otter.AI Privacy Litigation, N.D. Cal. No. 5:25-cv-06911, as reported by Mondaq, NPR and legal press (2025 to 2026)"
 ---
 
 ## The problem
@@ -68,6 +69,19 @@ Measure **word error rate** and **diarization error** on labelled meetings acros
 3. The extractor finds "Priya will update the pricing page by next Wednesday". The owner resolves to Priya Nair from the attendee list, the date resolves against the meeting date. A second item, "someone should check legal", has no owner and is marked as unassigned.
 4. A summary is posted to the team channel with timestamps linking to the transcript; Priya's task is created after she confirms it.
 5. Two weeks later a teammate asks "what was the final pricing decision?" and gets an answer citing the meeting minute where it was made.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Capture audio, transcribe with speaker labels, summarise, extract action items, share (steps above).
+
+**The legal lesson of 2025 to 2026.** A consolidated class action, *In re Otter.AI Privacy Litigation* (N.D. Cal., consolidated 22 October 2025, motion to dismiss argued 20 May 2026 with a ruling reported pending in mid-June 2026), alleges that an AI notetaker joined meetings, recorded and transcribed non-account-holder participants **without their consent**, created voiceprints and used the data to improve its models, violating federal and California wiretap laws. These are allegations, not findings. The design takeaway is independent of the outcome: consent and data use are product requirements.
+
+**Design requirements.**
+
+- **Announce and obtain consent from every participant**, not only the account holder: a visible bot name, a spoken or chat notice on join, and a way to remove it; follow the strictest rule among participants' jurisdictions (all-party-consent states and many countries).
+- **Separate recording from training.** Do not use customer meeting content to train or tune models by default; make any opt-in explicit and revocable. Treat voiceprints and speaker identification as biometric data with its own consent.
+- **Retention and sharing controls:** short default retention, deletion on request, no automatic broad sharing of summaries to people who were not in the meeting.
+- **Accuracy in the note:** attribute action items to a named speaker only with confidence, mark uncertain items, and link every summary line to a transcript timestamp.
 
 ## Common mistakes
 

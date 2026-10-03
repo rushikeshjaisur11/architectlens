@@ -6,6 +6,7 @@ sources:
   - "Radford et al., 'Learning Transferable Visual Models From Natural Language Supervision' (CLIP, 2021)"
   - "Public documentation of multimodal embedding models and vector databases"
   - "Johnson, Douze and Jégou, 'Billion-scale similarity search with GPUs' (2017)"
+  - "Gemini Embedding 2 technical report (arXiv 2605.27295) and Qwen3-VL-Embedding (arXiv 2601.04720); embedding model comparison roundups, 2026 (secondary)"
 ---
 
 ## The problem
@@ -69,6 +70,19 @@ Monitor embedding queue lag, GPU utilisation, index size per shard, query latenc
 3. The user clicks an item, which sends its stored embedding as the next query: nearest neighbours return visually similar shoes, deduplicated by perceptual hash.
 4. The user adds "but in green"; the system blends the image embedding with the text embedding for "green" and returns green variants.
 5. Newly uploaded products from a supplier appear in results within five minutes thanks to the asynchronous embedding queue.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Embed text and images (or transcripts) into vectors, search by similarity, rerank (steps above).
+
+**Embedding options now (2026, secondary sources and papers).** **Natively multimodal embedding models** map text, images and in some cases video and audio into one space: Google's **Gemini Embedding 2** (reported released 10 March 2026, including audio without transcription), Cohere Embed v4 (text, images and mixed PDFs with charts and tables), Voyage multimodal-3.5 (visually rich documents, short video), and open models such as **Qwen3-VL-Embedding**, which reported 77.8 on the MMEB-V2 multimodal benchmark in January 2026. Text-only leaderboards (MTEB multilingual) show the top scores in the high 60s, with differences among leaders small, so model choice matters less than dimension, cost, multilingual coverage, licence and latency.
+
+**Design decisions that matter more than the model.**
+
+- **Page-as-image retrieval** (embedding rendered document pages) avoids lossy OCR for charts and layouts but costs more storage and compute; use it for visually rich corpora and keep text retrieval for the rest.
+- **Hybrid first-stage plus multimodal reranker**, with filters on metadata and permissions.
+- **Index lifecycle:** every embedding model change means re-embedding the corpus; store the model id and version with each vector and run old and new indexes side by side during migration.
+- **Evaluate with your own queries**: build a labelled set of image-and-text queries and measure recall at k per modality; public benchmarks rarely resemble your content.
 
 ## Common mistakes
 

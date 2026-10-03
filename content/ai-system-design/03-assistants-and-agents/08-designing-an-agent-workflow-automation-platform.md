@@ -6,6 +6,8 @@ sources:
   - "Public documentation of durable workflow engines and event-driven orchestration systems"
   - "Garcia-Molina and Salem, 'Sagas' (ACM SIGMOD 1987)"
   - "Anthropic, 'Building effective agents' (workflows versus agents)"
+  - "Temporal, 'LangGraph in production: Temporal's LangGraph Plugin' (July 2026) and durable-execution comparisons (hackernoon.com, cordum.io), via search results, October 2026"
+  - "MCP specification 2026-07-28, Tasks extension (fetched Oct 2026)"
 ---
 
 ## The problem
@@ -71,6 +73,20 @@ Each run has a **timeline** of steps with inputs, outputs, durations, retries an
 3. A branch: confidence above 0.9 goes straight on; below goes to a **human approval** step that shows the extracted fields next to the PDF.
 4. An ERP connector step creates the payable using an idempotency key built from the email id.
 5. The worker running step 4 dies mid-call. On restart the engine retries the same attempt id; the ERP returns the existing record, so no duplicate is created. The run timeline shows the retry.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Triggers, a graph of steps (LLM calls, tools, conditions, approvals), a state store and retries (steps above).
+
+**Durable execution is now the standard answer for long-running agents (secondary sources, 2026).** Checkpointing is not the same as durability: a LangGraph checkpointer (for example a Postgres saver) snapshots state at each step, but *something* must still detect failure, decide where to re-enter and restart the run. Dedicated engines (**Temporal**, Restate, DBOS, Inngest) provide that, and Temporal reports integrations for the OpenAI Agents SDK and Google ADK plus a **LangGraph plugin in public preview (July 2026)** giving automatic recovery and human-in-the-loop waits that can last days at no compute cost. The commonly recommended pattern is *LangGraph or another framework for reasoning, a durable engine for orchestration and side effects*. MCP's 2026-07-28 revision also moved long-running tool calls into a standard **Tasks** extension with poll-based status.
+
+**Enterprise requirements.**
+
+- **Idempotency:** every side-effecting step carries an idempotency key so a retry cannot send two emails or two refunds; record the intended action before executing it.
+- **Human approval as a first-class node**, with the exact proposed action, timeout and escalation path, and an audit record of who approved.
+- **Versioning:** a running workflow must keep executing against the definition it started with; migrate in-flight runs deliberately.
+- **Limits and observability:** per-run and per-tenant budgets for tokens and steps, loop detection, dead-letter queues, replay of a failed run from its history, and a trace per run.
+- **Credential handling:** per-workflow scoped identities, not shared admin tokens.
 
 ## Common mistakes
 

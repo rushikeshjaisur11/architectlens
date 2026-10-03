@@ -6,6 +6,7 @@ sources:
   - "Anthropic, 'How we built our multi-agent research system' (engineering write-up)"
   - "Yao et al., 'Tree of Thoughts: Deliberate Problem Solving with Large Language Models' (2023)"
   - "Public documentation of long-running agent and workflow execution engines"
+  - "DeepResearch Bench (Du et al., 2025) and DeepResearch Bench II (arXiv 2601.08536), plus 2026 leaderboard summaries (secondary)"
 ---
 
 ## The problem
@@ -78,6 +79,14 @@ Evaluating open-ended reports is hard. Combine:
 3. The lead notices that benchmark numbers conflict between two sources and launches a short follow-up worker to find the test configurations.
 4. The writer drafts a comparison table and recommendations; the verifier removes one claim whose cited page did not actually support it.
 5. The report arrives in eight minutes with 24 sources, a "what we could not verify" section, and a record of tokens and searches used.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Plan sub-questions, search in parallel, read sources, synthesise a cited report, verify (steps above).
+
+**How quality is measured now.** **DeepResearch Bench** uses 100 expert-written research tasks across 22 fields and scores reports on comprehensiveness, insight, instruction-following, readability and **citation accuracy**; a second version (DeepResearch Bench II, early 2026) diagnoses agents more finely, and **DRBench** targets enterprise-style research over internal and web sources. Secondary 2026 leaderboard summaries report top overall scores in the low 70s for frontier models, with insight scores tightly clustered and **citation accuracy the most volatile metric (reported from about 33% to 83%)**. BrowseComp measures hard multi-step web retrieval. The practical takeaway: the report may read well while a third of its citations do not support the claim.
+
+**Enterprise pattern.** Make verification a pipeline stage, not a hope: after drafting, a verifier checks that each cited passage entails the claim and drops or flags unsupported sentences; store source snapshots (URL, retrieval time, hash) so a report can be audited later. Restrict sources by policy (licensed, internal, allow-listed domains), include internal knowledge only through permission-aware retrieval, cap cost per run with a budget the planner can see, run long jobs asynchronously with progress and resumability, and present confidence and unresolved questions honestly.
 
 ## Common mistakes
 

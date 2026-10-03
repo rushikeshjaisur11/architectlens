@@ -6,6 +6,9 @@ sources:
   - "Provider pricing documentation for input, output and cached tokens"
   - "Pope et al., 'Efficiently Scaling Transformer Inference' (2022)"
   - "Public GPU specification sheets (memory capacity and bandwidth)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched Oct 2026)"
+  - "Google Gemini API pricing, ai.google.dev/gemini-api/docs/pricing (fetched Oct 2026)"
+  - "GPU rental price trackers, September to October 2026 (secondary: getdeploying.com, spheron.network)"
 ---
 
 ## Why estimate
@@ -66,6 +69,19 @@ Add up the stages for a typical request: network, gateway, retrieval (tens of mi
 4. **Self-host check:** 5 requests per second at 300 output tokens is only 1,500 output tokens per second, within a single node's capacity, so self-hosting would be dominated by fixed GPU cost, not volume, and an API is likely cheaper at this scale.
 5. **Latency:** retrieval 80 ms, rerank 100 ms, prefill 400 ms, first token about 0.7 s, then 300 tokens at 40 tokens per second is 7.5 s total, streamed; acceptable.
 6. **Storage:** 800 documents with 40 chunks each is 32,000 chunks, trivial for any index.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Tokens per request x requests x price, plus GPU sizing for self-hosting (steps above). Work the numbers before building.
+
+**Worked inputs from live prices (October 2026; reprice before use).**
+
+- **API cost example.** A support assistant uses 3,000 input tokens (of which 2,500 are a stable cached prefix) and 400 output tokens per turn on Claude Sonnet 5.5 ($2 in / $10 out per million; cache read 0.1x). Per turn: uncached input 500 x $2/M = $0.001; cached 2,500 x $0.20/M = $0.0005; output 400 x $10/M = $0.004; total about **$0.0055**, so 1M turns cost about $5,500. Without caching, input alone would be $0.006 and the total $0.010, about 80% more. Output dominates: it costs 5x input per token.
+- **Tokenizer drift.** Anthropic notes Claude 4.7 and later models generate about 30% more tokens for the same text, so count tokens with the target model's tokenizer.
+- **Tool and runtime overhead.** Tool definitions add hundreds of input tokens per request (computer-use toolsets thousands); web search is $10 per 1,000 searches; managed agent sessions add $0.08 per running hour.
+- **Self-hosting anchors.** H100 on-demand rentals cluster near $3 per GPU-hour (about $1.5 to $7), B200 about $4 to $6.4 (secondary trackers). Self-hosting breaks even only at sustained high utilisation: compute tokens per second per GPU for your model, divide GPU-hour cost by tokens per hour, and compare with the API price including cache discounts.
+
+**Enterprise pattern.** Keep a cost model as code (rate card as versioned data, scenarios for low, expected and peak load), include non-token costs (vector store, observability, evaluation, human review), and reconcile it against billing monthly.
 
 ## Common mistakes
 

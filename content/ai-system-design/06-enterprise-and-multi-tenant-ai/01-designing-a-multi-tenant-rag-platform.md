@@ -6,6 +6,8 @@ sources:
   - "Public documentation of vector databases on namespaces, partitions and multi-tenancy"
   - "Microsoft Azure Architecture Center, multi-tenant SaaS guidance"
   - "OWASP guidance on broken access control"
+  - "Multi-tenant RAG isolation guides, 2026 (secondary: truto.one, render.com, thenile.dev); pgvector and Postgres row-level security documentation"
+  - "OWASP Top 10 for LLM Applications 2025, LLM08 Vector and Embedding Weaknesses"
 ---
 
 ## The problem
@@ -72,6 +74,18 @@ Store settings (chunk size, embedding model, allowed models, retention period, g
 3. A starts a heavy evaluation run; per-tenant concurrency limits cap its reranker usage so B's p95 stays within target.
 4. A requests deletion of a project folder: the pipeline removes its chunks, vectors and cache entries, and logs a verification report.
 5. A canary document planted in A's tenant is regularly searched from B's identity; it must never appear, and an alert fires if it does.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Tag every chunk with a tenant id and filter every query by it (steps above).
+
+**Isolation levels used in practice (secondary guides, 2026).**
+
+- **Enforce at the data layer, never in the prompt.** Take the tenant id from a signed token claim, not from user input, and apply it as an absolute filter in the vector store or database. **Postgres row-level security** can force a tenant predicate on every query so a forgotten `WHERE` clause cannot leak rows. Never rely on the model or system prompt to hold back other tenants' data (OWASP lists vector and embedding weaknesses as LLM08).
+- **Shared index versus index per tenant.** One shared index with metadata filters is cheapest, but approximate indexes (HNSW, IVF) traverse a graph built over *all* rows and apply the filter afterwards, so one tenant's data affects recall and latency for others and filtered queries can under-return (see the vector database note on iterative scans). **List-partition by tenant** or use a namespace or dedicated index per tenant for strict isolation and for high-compliance customers.
+- **Tiered model.** Pool small tenants in shared partitions, give large or regulated tenants dedicated indexes (and sometimes dedicated keys and regions); make the tier a property of the tenant record so it can change without code changes.
+
+**Also isolate the surrounding state:** caches (semantic cache keys must include tenant and permissions), conversation memory, evaluation sets, fine-tuned adapters, logs and traces, and cost metering. **Test the boundary** with automated cross-tenant probes in CI: seed two tenants with unique canary strings and assert tenant A can never retrieve tenant B's canary, including through rerankers, caches and tool calls. Per-tenant encryption keys give a crypto-erase path for offboarding.
 
 ## Common mistakes
 

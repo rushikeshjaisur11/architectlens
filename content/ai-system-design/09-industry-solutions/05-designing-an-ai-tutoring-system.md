@@ -6,6 +6,9 @@ sources:
   - "Bloom, 'The 2 Sigma Problem: The Search for Methods of Group Instruction as Effective as One-to-One Tutoring' (1984)"
   - "Corbett and Anderson, 'Knowledge tracing: Modeling the acquisition of procedural knowledge' (1995)"
   - "Public guidance on student data privacy (for example FERPA and COPPA overviews)"
+  - "Kestin et al., 'AI tutoring outperforms in-class active learning', Scientific Reports (June 2025), nature.com/articles/s41598-025-97652-6"
+  - "Khanmigo two-year school experiment working paper (2026), edworkingpapers.com ai26-1551, via search results"
+  - "FTC, Children's Online Privacy Protection Rule amendments (final April 2025, effective 23 June 2025), federalregister.gov"
 ---
 
 *Engineering patterns only; child privacy and education regulations vary and must be confirmed with legal and privacy teams.*
@@ -83,6 +86,19 @@ Judge by learning, not chat quality. Run **randomised studies** or quasi-experim
 3. The student answers that they are different. The tutor suggests drawing both fractions as pieces of the same bar and asks how many equal pieces would work for both.
 4. After the student reaches 6 as a common size, the tutor lets them finish the calculation; a symbolic tool verifies 5/6 and the tutor confirms with an explanation of why the first method failed.
 5. The mastery estimate rises modestly, the tutor schedules a similar problem for later review, and the teacher dashboard shows this misconception trending among 8 students in the class.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Student model, hint ladder, verified maths, safety and teacher visibility (steps above).
+
+**Evidence (published, October 2026).**
+
+- **Harvard physics RCT (Scientific Reports, 2025).** In a randomised crossover with 194 students, a purpose-built AI tutor used at home produced **median learning gains more than double** those of the same lesson taught with in-class active learning, in less time (49 versus 60 minutes). The tutor was designed around pedagogy (structured, step-by-step, grounded in instructor-written solutions), not a general chatbot.
+- **Khanmigo, two-year cluster-randomised trial in 18 Tennessee middle schools (2026 working paper).** Where Khan Academy's AI tutor was configured to coach rather than give answers during remedial maths sessions, reported effects were modest: about **1.3 national percentile ranks per term**, roughly **0.06 to 0.08 standard deviations per school year** (about 0.14 for full active participation). Real-world effects are smaller than lab-style trials; usage and fidelity matter.
+
+**Regulation (US).** The FTC's **amended COPPA Rule** (effective 23 June 2025; compliance dates run later) moves several uses to **opt-in consent**, requires specific permission before using children's data for advertising or sharing with third parties, and expressly includes **biometric identifiers such as voiceprints** in personal information. The FTC declined to add ed-tech provisions, deferring to expected FERPA updates, so school-contract terms (school as the consenting authority, data-use limits) still carry weight. EU and UK rules differ; confirm with counsel.
+
+**Enterprise pattern.** Pre-register the evaluation: define the outcome (assessment scores), run an A/B or staggered rollout across classes, and publish effect sizes with intervals. Log tutor behaviour (hint level, answer withholding rate) as a safety metric.
 
 ## Common mistakes
 

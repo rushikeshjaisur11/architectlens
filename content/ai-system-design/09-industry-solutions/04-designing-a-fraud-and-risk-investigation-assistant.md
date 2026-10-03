@@ -6,6 +6,8 @@ sources:
   - "Public guidance on anti-money-laundering investigation workflows and suspicious activity reporting"
   - "Public documentation of graph-based fraud detection approaches"
   - "Regulation and supervisory guidance on explainability of automated decisions in financial services (overview)"
+  - "FinCEN, FIN-2024-Alert004 on deepfake media in fraud schemes (13 November 2024), fincen.gov"
+  - "Secondary 2026 summaries on AI in AML, SAR volumes and explainability gaps (fintech.global, arXiv 2605.04076)"
 ---
 
 *Engineering patterns only; legal and regulatory duties differ by jurisdiction.*
@@ -72,6 +74,14 @@ Pre-compute common enrichments for high-risk alerts, cache stable data, and para
 3. The assistant produces a summary: "Four transfers totalling $38,400 between 9 and 10 May, each under $10,000, to four new beneficiaries; two beneficiaries are linked by a shared device to accounts previously reported (case 8841); activity is inconsistent with the customer's profile and history" with links to each record.
 4. It recommends escalation and drafts the narrative section of the regulatory report; the analyst checks the evidence, edits the language, and decides to escalate.
 5. The final decision, the edits and the evidence references are stored; the fairness dashboard includes the case in monthly disposition analysis by segment.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Assemble the case, explain the signals, draft the narrative, keep the analyst accountable (steps above).
+
+**Context to design with (secondary, 2026).** US institutions filed about **4.7 million SARs in fiscal year 2024** (roughly 12,900 a day), so analyst time is the bottleneck this assistant targets. Graph methods (including graph neural networks) are widely used to surface mule accounts, rings and shell structures from links among accounts, devices and addresses. A regulatory-governance paper (arXiv 2605.04076) notes that **FinCEN gives no guidance on how to incorporate AI model outputs, such as feature attributions, into SAR narratives**, and proposes standardised reason codes mapped to SAR categories; treat that as an open area where your compliance team sets the rule. FinCEN's November 2024 alert on **deepfake media in fraud schemes** is a reminder that investigators now meet synthetic identity documents and voices, so verification steps should not trust a single visual or audio check.
+
+**Enterprise pattern.** Keep detection decisions with the existing models and rules; the assistant explains and drafts. Record the evidence references behind every sentence of a draft narrative, forbid speculation on intent, keep SAR confidentiality (no customer-facing text, no tipping-off), measure analyst time per case and the rate of edited or rejected drafts, and review a sample of summaries marked "benign" for missed risk. For US banks, apply your model-risk programme to the assistant even though SR 26-2 does not directly cover generative AI.
 
 ## Common mistakes
 

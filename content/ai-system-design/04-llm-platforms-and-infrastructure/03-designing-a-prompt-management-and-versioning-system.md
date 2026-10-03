@@ -6,6 +6,7 @@ sources:
   - "Public documentation of prompt registry and experiment-tracking tools"
   - "Humble and Farley, Continuous Delivery (2010), on separating deployment from release"
   - "Martin Fowler, articles on feature toggles"
+  - "Prompt management tool comparisons, 2026 (secondary: arize.com, pydantic.dev, mlflow.org, promptlayer.com); Langfuse, LangSmith and MLflow documentation"
 ---
 
 ## The problem
@@ -73,6 +74,19 @@ Prompts can contain proprietary logic and sometimes secrets by mistake; scan for
 3. The `staging` label moves to v14; integration tests pass.
 4. In production, a 10 percent split sends v14 to a slice of users. Traces include `refund-reply@14`. After a day, satisfaction is higher and refusal rate is unchanged.
 5. The label moves to 100 percent. Two days later a rare formatting bug appears; moving the label back to v13 restores behaviour in seconds, and the bug becomes a new test case.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Store prompts outside code, version them, test before release, and roll back (steps above).
+
+**What the mainstream tools converge on (secondary comparisons, 2026).** **Langfuse** (open-source core, MIT) offers immutable numbered versions, diffs, release **labels** (production, staging), protected labels so only admins promote to production, runtime fetching by SDK with caching, and rollback by moving the label. **LangSmith** has prompt commits, tags, staging and production environments, owners and permissions. **MLflow** added a **Prompt Registry** with versions, aliases and lineage to runs and evaluations (Apache-2.0). The recurring distinction is the *delivery* half: how a saved version reaches running processes, and what happens between saving and every user seeing it.
+
+**Enterprise pattern.**
+
+- **Prompts are release artefacts.** Immutable versions, review and approval for production labels, linked to evaluation results, with a CI gate that runs the regression set when a prompt changes.
+- **Resolve at runtime with a cache and a fallback:** fetch by label, cache with a short TTL, and keep the last-known-good version in the service so a registry outage does not take the feature down.
+- **Trace the version:** every call records prompt id, version and model so any output can be tied to the exact text that produced it (and to an experiment arm).
+- **Treat prompts as potentially sensitive:** system prompts can leak (OWASP LLM07), so keep secrets and authorisation rules out of them and restrict who can read production prompts.
 
 ## Common mistakes
 

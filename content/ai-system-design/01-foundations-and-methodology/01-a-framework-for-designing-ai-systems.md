@@ -6,6 +6,9 @@ sources:
   - "Huyen, Designing Machine Learning Systems (O'Reilly, 2022)"
   - "Sculley et al., 'Hidden Technical Debt in Machine Learning Systems' (NIPS 2015)"
   - "Google Cloud and AWS Well-Architected guidance for machine learning and generative AI workloads"
+  - "EU AI Omnibus (Reg. (EU) 2026/1744) summary, Gibson Dunn (fetched Oct 2026)"
+  - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched Oct 2026)"
+  - "OWASP Top 10 for LLM Applications 2025 (genai.owasp.org, fetched Oct 2026)"
 ---
 
 ## Why AI systems need their own method
@@ -87,6 +90,20 @@ Decide which paths are **synchronous** (interactive) and which **asynchronous** 
 4. **Architecture:** ingestion with change feeds, hybrid index with country and role metadata, retrieval with the employee's attributes as filters, a mid-size model with citations, a gateway for quotas and logging.
 5. **Evaluation:** 300 real questions with expected sources; gate on retrieval hit rate and faithfulness; sample live answers weekly with HR reviewers.
 6. **Safety and operations:** no personal data in prompts beyond the employee's own record, abstain when retrieval is weak, canary rollout by department, spend alerts, a feedback button feeding the regression set.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Walk the framework in order: requirements, data, model approach, architecture, evaluation, safety, cost, operations (steps above). Do it for a small feature first.
+
+**What an enterprise adds to every step (live-checked, October 2026).**
+
+- **Requirements include regulatory ones.** The EU AI Act timeline moved in 2026: Annex III high-risk duties now apply from **2 December 2027**, embedded-product duties from **2 August 2028**, while Article 50 transparency duties started **2 August 2026**. Record the risk tier of the feature at requirements time.
+- **Architecture includes the standards your tools will speak.** MCP's 2026-07-28 revision made the protocol stateless with header-based routing, so agent-tool traffic can pass through ordinary gateways and load balancers; A2A v1.0 covers agent-to-agent calls.
+- **Threat model uses the current lists:** the OWASP LLM Top 10 (2025) and the Agentic Applications Top 10 (December 2025).
+- **Evaluation is a gate, not a report:** a golden set, slice metrics and a regression suite that runs on every prompt, model or retrieval change.
+- **Operations covers vendor change:** models are deprecated and repriced on the provider's schedule, so keep an exit path (gateway abstraction, per-model prompts and evaluations).
+
+**Enterprise pattern.** Capture the outputs as a one-page design record per feature: risk tier, data classes, model and fallback, evaluation gate, SLOs, cost envelope, owner and review date. Review it again when the model, prompt or tools change.
 
 ## Common mistakes
 

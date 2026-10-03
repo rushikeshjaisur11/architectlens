@@ -6,6 +6,8 @@ sources:
   - "Ouyang et al., 'Training language models to follow instructions with human feedback' (2022), on preference data"
   - "Public engineering articles on collecting implicit feedback in recommender and assistant products"
   - "Sculley et al., 'Hidden Technical Debt in Machine Learning Systems' (NIPS 2015)"
+  - "Provider data-use and retention policy summaries for API, enterprise and consumer tiers, 2026 (secondary: protecto.ai, anonyome.com, anarlog.so)"
+  - "EDPB Opinion 28/2024 on AI models and personal data (via law-firm summaries)"
 ---
 
 ## The problem
@@ -76,6 +78,19 @@ An event stream carries interactions and feedback into a store keyed by trace id
 3. The team re-indexes the updated pricing content and adds a freshness boost; the 40 labelled cases become a regression slice.
 4. The next release is evaluated on that slice, passes, and rolls out gradually. The negative rate for the topic drops within a week.
 5. The cluster dashboard records time from detection to fix: three days, and no manual hunting through chat logs.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Collect signals, filter, label, retrain or re-rank, evaluate, ship (steps above).
+
+**What you may and may not feed back (policy landscape, 2026; secondary summaries).** Major providers state that **API and enterprise inputs are not used to train their models by default**, with standard API retention windows (for example 30 days with automatic deletion at one provider) and zero-data-retention arrangements for eligible customers; consumer chat products have different, opt-out-based policies that have changed during 2025 and 2026. The flywheel is *your* data loop: customer conversations, edits and ratings become training or evaluation data only if your contracts, privacy notices and lawful basis allow it. Under GDPR, the EDPB's 2024 opinion treats models that can emit personal data as non-anonymous and stresses documentation and a lawful basis, so keep consent flags and purpose on every record.
+
+**Enterprise pattern.**
+
+- **Capture structured signals** (accept, edit, regenerate, escalate, task success), not only thumbs; link each to the trace, prompt version and retrieved sources.
+- **Filter before use:** remove PII, drop low-confidence or adversarial examples, deduplicate, and check for feedback bias (users who rate are not representative).
+- **Close the loop in cheap places first:** retrieval fixes, prompt changes and routing rules before fine-tuning; track which loop changed which metric.
+- **Prevent self-reinforcement:** keep a held-out evaluation set of real outcomes never used for training, and watch for drift toward the model's own style when synthetic or model-edited data enters the loop.
 
 ## Common mistakes
 

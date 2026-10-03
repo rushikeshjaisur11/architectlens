@@ -6,6 +6,8 @@ sources:
   - "Public documentation of OCR, layout analysis and document understanding services"
   - "Xu et al., 'LayoutLM: Pre-training of Text and Layout for Document Image Understanding' (2020)"
   - "Public guidance on straight-through processing and confidence-based human review"
+  - "Document parsing and OCR benchmark summaries, 2026 (secondary: reducto.ai, aimultiple.com, intuitionlabs.ai); vendor-run benchmarks"
+  - "RealDocBench and PureDocBench (arXiv 2606.07401, 2605.07492)"
 ---
 
 ## The problem
@@ -80,6 +82,18 @@ Documents contain personal and financial data: encrypt, restrict access by role,
 3. Validation: line items sum to 4,230.00 but the extracted total reads 4,280.00. The mismatch lowers confidence, and a character-level re-read of the total finds 4,230.00 (OCR had confused 3 and 8).
 4. Vendor master lookup matches the supplier; the purchase order is open with remaining value above the invoice. Confidence is high; the invoice posts automatically.
 5. A second invoice with a new bank account for a known vendor is flagged as an anomaly and routed to review, where a person confirms it with the vendor; the correction and decision are recorded for audit.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Ingest, classify, extract fields, validate, route exceptions to humans (steps above).
+
+**The extraction landscape in 2026 (benchmarks mostly run by vendors; verify on your documents).**
+
+- **Vision-language models now compete with classic OCR.** Aggregators report frontier models (GPT-5.x, Claude, Gemini 3) matching or beating legacy OCR on handwriting (reported figures in the low to mid 90s percent for several models) and leading some invoice benchmarks (one 2026 comparison reported Gemini 3 Pro about 94.8% versus Azure Document Intelligence about 90.5%).
+- **Tables are the hard part.** One vendor's open table benchmark (RD-TableBench, 1,000 complex tables) reported about 90% for its own parser versus roughly 83% Azure Document Intelligence, 81% AWS Textract and 65% Google Document AI, so ranking depends heavily on the benchmark owner and document type.
+- **Research benchmarks now stress real regulated documents** (RealDocBench: field-level question answering and layout on real-world regulated documents; PureDocBench: clean, degraded and real-world settings), and papers ask whether separate OCR is still needed when multimodal models read pages directly.
+
+**Enterprise pattern.** Choose the extractor by a bake-off on 200 of *your* worst documents (scans, stamps, multilingual, tables), scoring field-level accuracy. Use confidence and cross-checks: totals that must sum, dates that must parse, IDs checked against master data; send low-confidence fields to human review and feed corrections back as evaluation data. Keep the original page image and the extracted value side by side for audit, store model and version per extraction, and budget cost per page (a vision model on every page can be dearer than layout OCR plus a model only on hard pages).
 
 ## Common mistakes
 

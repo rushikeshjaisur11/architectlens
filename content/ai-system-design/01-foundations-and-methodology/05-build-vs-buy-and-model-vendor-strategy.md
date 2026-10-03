@@ -6,6 +6,10 @@ sources:
   - "Public pricing and licensing documentation of major model providers and open-weight model licences"
   - "Gartner-style guidance on generative AI sourcing options (publicly summarised)"
   - "Fowler, articles on evolutionary architecture and avoiding lock-in"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched Oct 2026)"
+  - "Google Gemini API pricing (fetched Oct 2026)"
+  - "Open-weight model and licence summaries, 2026 (secondary: digitalapplied.com, lushbinary.com)"
+  - "AWS, Amazon Bedrock cross-Region inference documentation, via search results (October 2026)"
 ---
 
 ## The problem
@@ -65,6 +69,19 @@ Review: data usage and retention terms (no training on your data, zero retention
 3. Cost: at 200,000 notes a month, API cost is about $9,000; self-hosting a fine-tuned mid-size model would cost about $14,000 in GPUs plus two engineers, so APIs win for now.
 4. Strategy: an internal gateway abstracts the vendors; the evaluation suite compares three models quarterly; a fine-tuned open model is kept warm on a small cluster for a hospital customer that demands on-premises.
 5. When volume reaches 3 million notes a month the analysis flips: they move the bulk workload to self-hosted inference, keeping a hosted frontier model for hard cases and as a fallback.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Compare build, buy and assemble on capability, cost, control, risk and time (steps above).
+
+**Market facts for the decision (live-checked, October 2026).**
+
+- **Prices moved and tiers multiplied.** Anthropic lists models from Haiku 4.5 at $1/$5 per million tokens through Sonnet 5.5 at $2/$10 and Opus 5.5 at $4/$20 to a top tier at $10/$50; Gemini lists a Flash model at $0.75/$3.75 (introductory through 31 December 2026, then double) and a Flash-Lite at $0.30/$2.50. Several providers discount batch work by 50% and cached input by about 90%, so list price alone misleads.
+- **Distribution is multi-cloud.** The same model families are available through the vendor API and through Bedrock, Vertex AI and Azure marketplaces; Bedrock now routes across regions with geographic and global profiles, and Anthropic's own API offers US-only inference at a 1.1x multiplier. Regional endpoints on clouds carry about a 10% premium.
+- **Open weights are credible** (Gemma 4, Qwen 3.x, Mistral Small 4 and Large 3, GLM-5, gpt-oss, DeepSeek V4, Llama 4), under licences from Apache 2.0 to custom community terms, which makes on-premises and sovereign deployments feasible.
+- **Retirement is routine.** Older models are retired on a published schedule (some remain only on cloud marketplaces), so plan migrations.
+
+**Enterprise pattern.** Keep a gateway abstraction and per-model evaluation so a swap is a configuration change; negotiate commitments only after measuring usage; weigh data-residency terms and indemnities; build what differentiates you (data, evaluation, workflow integration) and buy commodity layers (inference, vector store, observability), and revisit the split yearly.
 
 ## Common mistakes
 

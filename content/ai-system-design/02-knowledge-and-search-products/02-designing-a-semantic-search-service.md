@@ -6,6 +6,7 @@ sources:
   - "Karpukhin et al., 'Dense Passage Retrieval for Open-Domain Question Answering' (2020)"
   - "Public documentation of vector databases and search engines on hybrid retrieval and filtering"
   - "Cormack, Clarke and Buettcher, 'Reciprocal Rank Fusion outperforms Condorcet and individual rank learning methods' (SIGIR 2009)"
+  - "Embedding model comparison roundups and benchmarks, 2026 (secondary: premai.io, mixpeek.com); Anthropic, Contextual Retrieval (fetched Oct 2026); pgvector documentation"
 ---
 
 ## The problem
@@ -62,6 +63,16 @@ Dense vectors catch paraphrases but blur exact tokens. Keyword scoring (BM25) ca
 3. Fusion ranks the BIOS article first because it ranks high in the vector list and appears lower in the keyword list; the charging indicator article ranks second.
 4. The reranker confirms the BIOS article answers the question, and the first result shows a snippet highlighting the relevant sentence.
 5. The user clicks it and does not reformulate: a success signal logged for evaluation.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Embed documents and queries, index with ANN, return nearest neighbours, rerank (steps above).
+
+**Choosing and operating the embedding layer (2026).** Leading embedding families include Google's Gemini Embedding (top of the MTEB multilingual leaderboard at its March 2025 release with a task mean of about 68), Voyage, Cohere Embed v4 (multimodal) and open models such as Qwen3 embedding variants; the differences among leaders on public leaderboards are small, so decide on **domain accuracy, dimension, price per million tokens, latency, multilingual coverage and licence**. Dimension matters operationally: pgvector's HNSW index supports up to about 2,000 dimensions for full-precision vectors, and many models offer shortened (Matryoshka-style) or quantised vectors that cut memory with modest quality loss.
+
+**Quality levers in order of payoff.** (1) Hybrid retrieval (BM25 plus vectors) with reciprocal-rank fusion, (2) a cross-encoder reranker, (3) contextual chunk enrichment (Anthropic reported failure-rate reductions from 5.7% to 1.9% with embeddings, BM25 and reranking combined on its test sets), (4) query rewriting and expansion, (5) domain fine-tuning of the embedder.
+
+**Enterprise pattern.** Build a labelled relevance set from real queries and clicks; track recall at k, nDCG and zero-result rate by language and segment; store the embedding model version with every vector; plan model changes as a dual-index migration (index new, compare, cut over, retire); and add query-time filters and ACLs without hurting recall (test with filtered queries specifically).
 
 ## Common mistakes
 

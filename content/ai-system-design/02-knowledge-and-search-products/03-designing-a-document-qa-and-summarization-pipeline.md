@@ -6,6 +6,8 @@ sources:
   - "Liu et al., 'Lost in the Middle: How Language Models Use Long Contexts' (2023)"
   - "LangChain and LlamaIndex documentation on map-reduce and refine summarization patterns"
   - "Public documentation of document-parsing and OCR services"
+  - "Long-context versus RAG evaluations, 2026 (secondary: rdp.in, bigdataboutique.com); Liu et al., 'Lost in the Middle' (2023); U-NIAH (arXiv 2503.00353)"
+  - "Anthropic pricing documentation (1M-token context at standard price, fetched Oct 2026)"
 ---
 
 ## The problem
@@ -69,6 +71,14 @@ Cost is dominated by tokens, so cache per document version, skip re-summarizing 
 3. The model answers: "90 days written notice (p. 87). Early termination fee is 25% of remaining fees (p. 212 table, row 3)."
 4. The number check confirms "90" and "25%" appear verbatim in the cited passages; both citations link to highlighted regions.
 5. A separate "executive summary" job, run in the background by map-reduce, appears later without blocking the question.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Parse, chunk, retrieve or summarise in stages (map-reduce), answer with citations (steps above).
+
+**Long context changed the economics, not the physics.** Several frontier models now offer **1M-token contexts**, and Anthropic's documentation states its 4.6 and later models bill the full window at the **standard per-token rate** (no long-context surcharge). Even so, evaluation work and practitioner roundups report that filling a window costs far more per query than retrieving a small relevant slice, and that **recall degrades before the advertised limit**, with facts buried mid-prompt recovered less reliably (the "lost in the middle" effect; multi-fact recall around 60% in some reports). Benchmarks such as U-NIAH compare retrieval with long-context needle-in-a-haystack tests and generally find retrieval helps smaller models most. The 2026 consensus pattern is a **router**: stuff the whole document when it is short and the question is global (summarise, compare), retrieve when the corpus is large or questions are narrow, and use hierarchical summaries for very long single documents.
+
+**Enterprise pattern.** Decide per task by measuring accuracy, latency and cost on your documents. Keep citations as page and paragraph references that the UI can open, extract structured fields with schema validation, handle scanned pages with a layout-aware parser, apply the same access control as the source, and for long summaries check coverage (did the summary include the key clauses) and faithfulness (no claims absent from the source) with automated checks plus sampled human review.
 
 ## Common mistakes
 

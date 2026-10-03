@@ -6,6 +6,8 @@ sources:
   - "Public engineering write-ups on code completion latency, fill-in-the-middle training and repository indexing"
   - "Bavarian et al., 'Efficient Training of Language Models to Fill in the Middle' (2022)"
   - "Language Server Protocol specification"
+  - "METR, randomised trial of AI tools and experienced open-source developers (2025) and METR design update (24 February 2026), metr.org"
+  - "Peng et al. and Cui et al., enterprise randomised trials of AI coding assistants (Microsoft, Accenture and others), as summarised on arXiv 2410.12944"
 ---
 
 ## The problem
@@ -81,6 +83,17 @@ Measure **acceptance rate** and **characters kept** for completions, pass rates 
 3. The small completion model returns the next 40 tokens in 180 ms; the first token shows at 90 ms.
 4. The developer keeps typing, which cancels an in-flight request for a stale prefix; a new request fires.
 5. The suggestion is accepted; acceptance and latency are logged for the model comparison dashboard.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Index the repository, retrieve relevant code, complete or edit, run tests, show diffs (steps above).
+
+**What the productivity evidence actually says.**
+
+- **METR's 2025 randomised trial** (16 experienced open-source developers, 246 tasks in repositories they knew well, tools from early to mid 2025) found developers took **19% longer** with AI tools while believing they were about 20% faster. In February 2026 METR said a follow-up showed some evidence of speedup but that selection effects made the central estimate unreliable, and changed its design. Lesson: self-reported speedups are unreliable, and results depend on task type and developer familiarity.
+- **Enterprise field trials** (randomised at Microsoft, Accenture and another large company, about 4,900 developers in total per the arXiv paper) reported roughly **26% more completed tasks** with an assistant, with larger gains for less experienced developers.
+
+**Enterprise pattern.** Measure outcomes you can audit: pull-request cycle time, review rework, defect and revert rates, and change-failure rate, not suggestion acceptance. Roll out with a control group where possible. Control the *context*: respect repository permissions, exclude secrets and customer data, and keep code and prompts out of vendor training with contractual terms. Add security gates the assistant cannot bypass (secret scanning, dependency and licence checks, static analysis, required review), and keep agent permissions scoped to a branch.
 
 ## Common mistakes
 

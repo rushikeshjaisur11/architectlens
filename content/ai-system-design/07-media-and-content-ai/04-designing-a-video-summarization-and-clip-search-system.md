@@ -6,6 +6,8 @@ sources:
   - "Public documentation of video understanding models and scene detection tools"
   - "Radford et al., 'Robust Speech Recognition via Large-Scale Weak Supervision' (Whisper, 2022)"
   - "Public documentation of multimodal embedding models and vector search"
+  - "Google Gemini API documentation on video understanding, ai.google.dev/gemini-api/docs/video-understanding, and reports on September 2026 agentic video understanding (secondary)"
+  - "TwelveLabs pricing calculator, twelvelabs.io (via search results)"
 ---
 
 ## The problem
@@ -76,6 +78,14 @@ Respect permissions and consent: meeting recordings and personal videos are sens
 3. Fusion and reranking put the slide-plus-speech segment at 38:10 to 39:25 first, with a thumbnail of the slide.
 4. The assistant answers with a two-sentence summary and a link that opens the video at 38:10, with a second citation at 52:40 where an example is given.
 5. The archive pipeline had processed this video overnight: scenes detected at slide changes, 41 key frames captioned instead of 100,000 frames, keeping cost to a few cents per hour of video.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Split into shots, transcribe, caption frames, embed, index, summarise by segment (steps above).
+
+**Cost and capability numbers (documentation and secondary reports, October 2026).** Gemini tokenises video at roughly **300 tokens per second** of footage at default resolution (about 1.08 million tokens for an hour), and low-resolution mode uses about 100 tokens per second. One secondary estimate put an hour of video on a mid-2025 Gemini model at about $1.37 at default resolution and about $0.11 at low resolution; recompute with current prices. In September 2026 Google announced **agentic video understanding**, where the model navigates the timeline and fetches only needed segments; reported results were up to an 88% token reduction, up to 66% lower cost and up to 7% better accuracy. A specialised provider (TwelveLabs) lists indexing at about $0.042 per minute, analysis at about $0.029 per minute plus output tokens, $4 per 1,000 queries and a small monthly per-indexed-minute fee.
+
+**Design consequences.** Do not feed whole videos to a model for every question. **Index once** (shots, transcript, per-segment captions and embeddings), then answer by retrieving segments and reading only those, with timestamps as citations so users jump to the moment. Use a cheap pass (scene detection, ASR) to decide which segments deserve an expensive visual pass, cache per-video artefacts, and meter cost per hour of video. Handle rights and privacy (faces, voices, music licensing), apply the same provenance and labelling rules as other generated media, and evaluate retrieval on real clip-finding queries by recall at k and by time-to-find for users.
 
 ## Common mistakes
 

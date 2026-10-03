@@ -6,6 +6,8 @@ sources:
   - "Public documentation of enterprise search and workplace copilot products on connectors and permission models"
   - "Microsoft Graph and Google Workspace API documentation on access control lists and change notifications"
   - "Hybrid retrieval and reranking literature (see the semantic search lesson)"
+  - "Glean documentation on connectors and permission-aware retrieval, docs.glean.com (via search results, October 2026); vendor material"
+  - "Enterprise search and RAG platform buyer guides, 2026 (secondary: onyx.app, atolio.com, atlan.com)"
 ---
 
 ## The problem
@@ -74,6 +76,19 @@ Monitor sync lag, connector errors, index size, query latency, zero-result rate,
 3. The CRM record (official stage: "negotiation"), a recent thread about pricing and a meeting note are ranked highest; the people graph identifies the account owner and two solution engineers from CRM roles and recent activity.
 4. The copilot answers: "Renewal is in negotiation, with a decision expected by the 28th (CRM, updated yesterday; email thread with the customer). Account team: …" with citations to each source and a note that the CRM and a chat message disagree on the discount.
 5. A nightly permission audit uses a synthetic user without access and confirms none of the account's restricted documents appear in any result.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Connect sources, index content, retrieve, answer with citations (steps above).
+
+**What distinguishes enterprise search from a demo (vendor documentation and buyer guides, 2026).**
+
+- **Permission-aware connectors.** Federated search can only see content that is broadly public; permission-aware connectors ingest each source's **ACLs, group memberships and org hierarchy** alongside the content and sync changes by delta, then check the *signed-in user's* access on every query. Vendor documentation (Glean) describes evaluating source-system ACLs for the user on each search, chat and retrieval call. Whatever you build or buy, test two cases explicitly: a document whose access was just revoked, and a nested-group permission.
+- **Many connectors, one identity layer.** Authenticate every query through the corporate IdP. External AI hosts increasingly reach enterprise knowledge through **MCP servers**; treat the MCP endpoint as another client of the same permission layer, not a bypass.
+- **Governed context beats raw retrieval.** Buyer guides emphasise a knowledge graph or semantic layer (entities, owners, freshness, canonical source) on top of vector search, so the answer can prefer the authoritative policy over a stale copy.
+- **Retrieval optimisation was reported as the top enterprise AI investment priority in Q1 2026** by one industry survey; treat that as market sentiment, not evidence for your design.
+
+**Enterprise pattern.** Index per-source with a security trimming filter applied before ranking, store the ACL snapshot version with each chunk, monitor ACL-sync lag as an SLI (minutes, not days), audit "answers that cited content the asker could not open" as a severity-one defect, and keep a documented process for sensitive repositories (legal holds, HR, M&A) that are excluded or separately gated.
 
 ## Common mistakes
 

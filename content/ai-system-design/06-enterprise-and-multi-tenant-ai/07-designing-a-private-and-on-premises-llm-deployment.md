@@ -6,6 +6,8 @@ sources:
   - "Public documentation of open-weight model licences and self-hosted serving frameworks"
   - "NVIDIA and cloud-provider documentation on GPU cluster design and confidential computing"
   - "NIST SP 800-53 security and privacy controls (overview)"
+  - "Open-weight model landscape and licence summaries, 2026 (secondary: digitalapplied.com, lushbinary.com, hidekazu-konishi.com)"
+  - "NVIDIA NIM for LLMs documentation, air-gap deployment, docs.nvidia.com/nim (via search results, October 2026)"
 ---
 
 ## The problem
@@ -70,6 +72,16 @@ Account for hardware or reserved capacity, facility, networking, staff, software
 3. Hardware: two 8-GPU nodes for the large model (tensor parallel within a node, one active plus one for redundancy), one smaller node for the small models and retrieval; local NVMe holds weights for fast restarts.
 4. Platform: Kubernetes with an inference engine, an internal gateway with SSO and quotas, an on-prem vector database, and ingestion from the document system with permission preservation; no internet egress, with an internal registry and mirrors.
 5. Updates: a quarterly process imports new model versions through a scanned staging zone, runs the evaluation suite, then canaries to 5 percent of users before promotion.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Choose a model, size GPUs, serve with an inference engine, put a gateway and access control in front, and plan updates (steps above).
+
+**Model and licence landscape (secondary summaries, 2026; read each licence).** Open-weight options now include Google Gemma 4, Alibaba Qwen 3.x, Mistral Small 4 and Large 3, Zhipu GLM-5, DeepSeek V4, OpenAI's gpt-oss and Meta Llama 4. Reported licences: Apache 2.0 or MIT for Gemma 4, gpt-oss, GLM-5, Qwen and Mistral Small 4; **Llama 4 uses Meta's community licence with a 700 million monthly-active-user threshold** and acceptable-use terms, so legal review matters. "Open weights" is not "open source": check redistribution, fine-tuning and field-of-use clauses, and EU restrictions on some multimodal models.
+
+**Serving and air-gap.** vLLM (no licence cost) and NVIDIA NIM (a supported container) both expose an OpenAI-compatible API. NVIDIA's documentation describes **air-gapped deployment**: pre-stage model assets into an offline cache while connected, transfer them by archive or media, and run the container with no outbound network or API keys.
+
+**Enterprise pattern.** Decide on evidence, not principle: run your evaluation set on the best open model and on the hosted model, and compare quality, latency and total cost including GPUs, staff and refresh cycles. Treat the model as a supply-chain artefact (verify hashes, pin versions, scan weights and containers), plan a quarterly model-refresh process with regression evaluation, keep the same gateway, guardrail and logging layers as in the cloud design, and design for patching and capacity without internet access.
 
 ## Common mistakes
 

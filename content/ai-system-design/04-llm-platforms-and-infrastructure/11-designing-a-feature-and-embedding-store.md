@@ -6,6 +6,7 @@ sources:
   - "Public documentation of open-source and managed feature store systems"
   - "Sculley et al., 'Hidden Technical Debt in Machine Learning Systems' (NIPS 2015), on training-serving skew"
   - "Public documentation on vector databases and embedding versioning"
+  - "pgvector documentation (dimension limits, iterative scans) and embedding model roundups, 2026 (secondary)"
 ---
 
 ## The problem
@@ -75,6 +76,19 @@ Managed and open-source feature stores exist; choose based on your batch and str
 3. Online, the ranking service fetches the three feature views for the user and 50 candidate listings in one batched call in 6 ms, with defaults for new users.
 4. Listing embeddings are produced by an embedding model v2 whenever a listing changes, stored with the model version, and indexed in a vector collection; the "similar listings" service searches only version-2 vectors.
 5. A weekly consistency check samples 10,000 entities and compares online values to recomputed offline ones; it detects a 3 percent mismatch in one feature caused by a timezone bug in the streaming job, which is fixed before it degrades the model.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Compute features and embeddings once, store them with versions, serve at low latency, and keep training and serving consistent (steps above).
+
+**Facts that shape the design (2026, secondary sources).** Embedding models now differ by dimension, multimodality and licence, and providers retire or replace models, so **a vector is only meaningful with its model id and version**. Index limits are real: pgvector HNSW handles up to about 2,000 dimensions for full vectors (4,000 for half-precision), and approximate indexes need filter-aware scans (iterative scans from pgvector 0.8). LLM-derived features (summaries, tags, intent labels) are cheap to regenerate but drift when the generator changes.
+
+**Enterprise pattern.**
+
+- **Version everything:** feature definition, embedding model, prompt that generated an LLM feature, and the source data snapshot; make the version part of the key.
+- **Point-in-time correctness:** training sets join features as they were at event time, never as of today, otherwise offline metrics leak the future.
+- **Dual-write migration for embedding changes:** build the new index in parallel, shadow-query both, compare recall and business metrics, then switch and retire; budget the re-embedding cost (tokens times corpus size) up front.
+- **Freshness and TTL SLOs** per feature, backfill and replay tooling, access control and lineage so a deleted or revoked source disappears from derived features, and monitoring for null rates and distribution drift.
 
 ## Common mistakes
 

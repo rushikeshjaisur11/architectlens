@@ -6,6 +6,8 @@ sources:
   - "Nakano et al., 'WebGPT: Browser-assisted question-answering with human feedback' (2021)"
   - "Public product documentation of search-grounded generative answer products"
   - "Robots Exclusion Protocol (RFC 9309) and public crawler etiquette guidance"
+  - "Tow Center for Digital Journalism (Columbia), study of citation accuracy in AI search engines (March 2025), as reported by Nieman Lab"
+  - "Reports on publisher licensing and citation attribution in AI search, 2026 (secondary)"
 ---
 
 ## The problem
@@ -62,6 +64,19 @@ Judge the three parts separately: **retrieval** (was the evidence found), **grou
 3. Passages are ranked: the primary source first, then reputable reports; near-duplicate wire copy is collapsed.
 4. The model answers: "The bank held rates at 4.25 percent [1][2]. The statement cites sticky services inflation [1]." Each citation links to its source card with the timestamp.
 5. The check confirms "4.25" appears in sources 1 and 2. A low-quality blog claiming a cut was demoted and not used.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Rewrite the query, retrieve from the web or an index, read sources, answer with inline citations (steps above).
+
+**Evidence on citation reliability.** The Tow Center study (March 2025) tested eight AI search engines on 1,600 queries about known news articles and found they **failed to identify or cite the correct source more than 60% of the time**; the best performer was wrong 37% of the time and the worst 94%, and engines often presented wrong answers confidently, sometimes linking syndicated or fabricated URLs. 2026 reports describe continuing attribution problems even for publishers with licensing deals (answers linking syndicated copies instead of originals), low overlap among engines' cited sources (one study reported about 80% of sources appearing on a single engine only), and ongoing publisher lawsuits. These are secondary summaries; the lesson is that *a citation is a claim to verify, not proof*.
+
+**Enterprise and product pattern.**
+
+- **Entailment-checked citations:** after generation, verify that each cited passage supports its sentence; drop or soften unsupported claims; link to the *original* URL and show the quoted span.
+- **Source policy:** honour robots.txt and licences, prefer licensed and authoritative sources, record retrieval time and snapshot, and give publishers a path for attribution and takedown.
+- **Calibrated answers:** abstain or show competing sources when evidence conflicts; mark freshness; avoid single-source answers for health, legal and financial queries.
+- **Measure** citation precision and recall, unsupported-claim rate and abstention quality on a rotating evaluation set of current-events and long-tail queries.
 
 ## Common mistakes
 

@@ -6,6 +6,8 @@ sources:
   - "Public documentation of document parsing, chunking and embedding pipelines for retrieval systems"
   - "Kleppmann, Designing Data-Intensive Applications (2017), on change data capture and stream processing"
   - "Public API documentation of common enterprise systems on change feeds and access control"
+  - "RAG chunking and ingestion guides, 2026 (secondary: firecrawl.dev, atlan.com, digitalapplied.com); Jina AI, late chunking (2024)"
+  - "Anthropic, Contextual Retrieval (fetched Oct 2026)"
 ---
 
 ## The problem
@@ -68,6 +70,20 @@ Track per-source: sync lag, documents processed, failure rates by stage, parse f
 3. Only the 3 chunks whose text changed are re-embedded (chunk-level hashes match for the rest); the index replaces the old chunks atomically.
 4. Separately, the drive connector reports a permission-only change: a new group gained access. The ACL metadata for the document's chunks is updated in the index in seconds, with no re-embedding.
 5. A canary document with a unique phrase is edited every hour; a monitor searches for the phrase and alerts if the update takes longer than five minutes to appear.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Connect, fetch, parse, chunk, embed, upsert, and keep in sync (steps above).
+
+**Current chunking and parsing guidance (secondary, 2026).** Common strategies are fixed-size, recursive, sentence, semantic, document-structure-aware, **parent-child** (retrieve small, return the larger parent) and **late chunking** (embed the whole document first so each chunk's vector carries long-range context; Jina reported nDCG@10 gains such as 64.2 to 66.1 on SciFact, growing with document length). **Contextual retrieval** (prepend model-written context to each chunk) is the other high-value upgrade; Anthropic reported a 35 to 67% reduction in top-20 retrieval failures depending on combination with BM25 and reranking. Parsers in common use include Docling, Unstructured, LlamaParse and cloud document services; layout-aware parsing for tables and headings usually beats raw text extraction.
+
+**Platform requirements that bite in production.**
+
+- **Incremental sync:** hash content at ingestion and re-index only changed documents; use source change feeds or webhooks where available, with a periodic full reconciliation.
+- **Deletion and access revocation must propagate** to the index and caches within a stated SLA; this is a compliance requirement (erasure requests, revoked access), not an optimisation.
+- **Lineage:** store source id, version, parser version, chunker version, embedding model and ACL snapshot per chunk so you can re-run or roll back a stage.
+- **Backpressure and quotas:** respect source API rate limits, queue with retries and dead-letter handling, and expose per-connector freshness and failure dashboards.
+- **Evaluate ingestion changes** by replaying a retrieval test set against old and new indexes before cutover.
 
 ## Common mistakes
 

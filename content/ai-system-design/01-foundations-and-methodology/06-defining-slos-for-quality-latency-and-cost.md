@@ -6,6 +6,10 @@ sources:
   - "Google SRE Book and Workbook, chapters on service level objectives and alerting on SLOs"
   - "Ragas and similar open-source evaluation documentation for retrieval and generation metrics"
   - "Public provider documentation on time-to-first-token and throughput metrics"
+  - "NVIDIA NeMo Guardrails latency figures via secondary summaries (October 2026)"
+  - "llm-d project blog, TTFT results (fetched Oct 2026)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched Oct 2026)"
+  - "LLM-as-judge calibration guidance, 2026 (secondary: futureagi.com)"
 ---
 
 ## The problem
@@ -72,6 +76,19 @@ Set SLOs with product, engineering, risk and finance together; they encode what 
 3. After a prompt change, faithfulness compliance drops to 94 percent within 36 hours; the burn-rate alert fires and links to the prompt version; a rollback restores 97 percent.
 4. In the same month the team proposes a cheaper model: evaluation shows quality within noise and cost down 40 percent, using the remaining quality budget deliberately; the canary confirms.
 5. Monthly review notes that Spanish conversations run at 91 percent compliance, below target; a language-specific objective and improvement work are added.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Pick a few indicators per dimension, set targets, measure them, and alert on error-budget burn (steps above).
+
+**Reference points to calibrate targets (secondary and project benchmarks, October 2026).**
+
+- **Latency SLIs:** time-to-first-token and inter-token latency for streaming, end-to-end p95 for non-streaming. Inference routing matters: llm-d's published benchmark saw p90 time-to-first-token of about 0.54 s with prefix-aware routing versus 31 to 95 s with weaker routing on the same hardware, so latency SLOs depend on scheduling, not just model size. Guardrails add roughly tens of milliseconds per classifier rail, more if chained; budget for them.
+- **Quality SLIs** need a measurement method: LLM-judge scores should be calibrated against human labels (guidance commonly cites Cohen's kappa above 0.6 as workable) and re-calibrated on a schedule because judges drift. Pair automatic scores with sampled human review and deterministic checks (citations resolve, schema valid, SQL executes).
+- **Cost SLIs:** cost per successful task and cache hit rate, with a budget burn alert; remember output tokens cost about 5x input on current rate cards and a model change can shift token counts (about 30% more tokens on newer Claude tokenizers).
+- **Safety SLIs:** guardrail miss rate on an attack suite and unsafe-output rate in production samples.
+
+**Enterprise pattern.** Define SLOs per feature tier (customer-facing versus internal), set error budgets, let a budget breach pause releases or trigger degradation, and report quality, latency and cost together so no dimension is optimised at the expense of another.
 
 ## Common mistakes
 

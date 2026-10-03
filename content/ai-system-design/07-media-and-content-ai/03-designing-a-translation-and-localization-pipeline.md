@@ -6,6 +6,7 @@ sources:
   - "Public documentation on machine translation quality estimation and evaluation metrics"
   - "Unicode Consortium, CLDR (Common Locale Data Repository) documentation"
   - "ICU MessageFormat specification for plural and gender-aware message formatting"
+  - "Findings of the WMT25 General Machine Translation Shared Task (ACL Anthology, 2025) and WMT25 Metrics and Quality Estimation findings, via search results"
 ---
 
 ## The problem
@@ -82,6 +83,19 @@ Evaluate with human-rated samples per language and domain, automatic metrics as 
 3. The Japanese version passes structure checks but its quality estimate is lower on the long help article; the article is routed to a linguist, while the toast ships after automatic checks.
 4. The linguist changes three sentences for tone (the product uses a polite but friendly register); those edits are added to the translation memory and style examples.
 5. A weekly report shows Polish edit rate at 6 percent and Japanese at 14 percent, so the team adds Japanese-specific examples to the prompt.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Segment, translate with glossary and context, check quality, route to review, publish (steps above).
+
+**What the 2025 shared tasks show (WMT25, summarised by secondary sources).** Top systems in the general translation task increasingly rely on **LLM-based or hybrid** approaches; specification-guided LLM translations were reported outperforming official human translations in some human evaluations. The test set was deliberately harder (difficulty sampling), and the findings warn that **automatic scores can rank systems differently from human evaluation**: large LLM-as-judge raters did well at the system level, while reference-based metrics beat them at the segment level. The metrics task now covers segment scoring, **span-level error annotation** and quality-informed correction.
+
+**Enterprise pattern.**
+
+- **Route by risk.** Marketing and legal copy get human post-editing; support articles get automatic quality estimation and spot checks; UI strings get terminology checks.
+- **Terminology and style as data:** glossaries, translation memory, brand style guides passed as context, with automated checks that glossary terms were used.
+- **Evaluate with MQM-style span errors** on a sample per language pair, not just one overall score; track by language, since quality varies sharply for lower-resource languages.
+- **Protect content:** redact personal data before sending to a provider, keep regional processing where required, and version outputs so a corrected term can be re-applied across the corpus.
 
 ## Common mistakes
 

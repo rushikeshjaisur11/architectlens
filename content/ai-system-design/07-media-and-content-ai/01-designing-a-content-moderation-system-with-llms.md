@@ -6,6 +6,7 @@ sources:
   - "Public trust and safety transparency reports and moderation policy documentation"
   - "Inan et al., 'Llama Guard: LLM-based Input-Output Safeguard for Human-AI Conversations' (2023)"
   - "Regulation (EU) 2022/2065 (Digital Services Act) overview of notice-and-action and transparency duties"
+  - "EU Digital Services Act (Regulation (EU) 2022/2065): statements of reasons and transparency reporting, European Commission DSA pages (via search results, October 2026)"
 ---
 
 ## The problem
@@ -63,6 +64,14 @@ Bad actors evade with misspellings, symbols, code words, images of text and coor
 3. Policy says ambiguous low-severity items get a **warning and reduced reach**, not removal; the comment is down-ranked and the author is shown a policy reminder.
 4. The author appeals; a human reviewer, seeing the full thread, restores full visibility. That case is added to the golden set as a boundary example, and the judge prompt gains a clarifying example.
 5. The weekly metrics show the appeal overturn rate for this rule dropping from 18 to 11 percent after the update.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Policy taxonomy, fast classifiers for volume, LLM review for nuance, human queues for appeals and edge cases (steps above).
+
+**Regulation shapes the design (EU example).** Under the **Digital Services Act**, hosting services must tell users when they remove or restrict content and give a **statement of reasons** that names the ground and the legal or terms-of-service basis, and online platforms submit those statements to the Commission's **DSA Transparency Database**. Terms must explain automated moderation and the role of human review, and the Commission harmonised transparency-report templates, with the first harmonised reports published in February 2026. Recommender-system transparency and researcher data access are further obligations. Other regions have their own duties (for example child-safety and takedown laws).
+
+**Design consequences.** Every decision needs a **structured record**: policy id, evidence span, model or human decision-maker, automation level, and a user-facing reason that is generated from the policy text, not freeform. Build an **appeals path** with human review and track overturn rates per policy and per language. Use tiering: cheap classifiers for clear cases, LLM judgement for borderline ones, humans for severe or novel ones; protect moderators with exposure limits and wellbeing tooling. Measure precision and recall per policy and per language and group, because moderation errors are not evenly distributed; refresh test sets as adversaries adapt.
 
 ## Common mistakes
 

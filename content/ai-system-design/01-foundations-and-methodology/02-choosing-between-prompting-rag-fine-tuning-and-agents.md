@@ -6,6 +6,9 @@ sources:
   - "Anthropic, 'Building effective agents' (workflows versus agents, 2024)"
   - "Public guidance from model providers on when to prompt, retrieve or fine-tune"
   - "Lewis et al., 'Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks' (2020)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched Oct 2026)"
+  - "Practitioner guides on fine-tuning versus RAG, 2026 (secondary: bigdataboutique.com, gauraw.com)"
+  - "Anthropic, Contextual Retrieval (fetched Oct 2026)"
 ---
 
 ## The decision that shapes everything
@@ -74,6 +77,19 @@ Real systems stack techniques: a fine-tuned small model for classification and r
 3. Retrieval is not needed: all information is inside each note. An agent is not needed: the steps are fixed.
 4. With 8,000 labelled notes available, a small fine-tuned model reaches 94 percent, at a quarter of the cost per note and half the latency.
 5. The team keeps the prompted large model as a fallback for rare note types, routes by confidence, and re-evaluates quarterly.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Start with the simplest approach that could work: a good prompt; add retrieval for knowledge; fine-tune for behaviour; add agents when the task needs multi-step actions (steps above).
+
+**What changed (live-checked, October 2026).**
+
+- **Prompting has more headroom.** Context windows of 1M tokens are billed at the standard rate on Claude 4.6 and later, and cached input costs about 10% of normal, so a long, stable instruction-plus-examples prompt is cheap to reuse. Try prompt plus caching before building anything else.
+- **RAG remains the default for fresh or private knowledge**, and its quality levers are known (hybrid retrieval, reranking, contextual chunks: failure rates down 35 to 67% in Anthropic's study).
+- **Fine-tuning is for form, not facts** (secondary guidance): consistent structure, tone, tool-calling reliability and cost reduction on a narrow high-volume task, usually with at least a few hundred good examples and a real evaluation set. Managed fine-tuning exists on the major clouds.
+- **Agents add risk and cost**: more tokens per task, more failure modes, and the OWASP agentic risks (goal hijack, tool misuse, privilege abuse). Use them only when a fixed workflow cannot do the job.
+
+**Enterprise pattern.** Decide with a small bake-off on your evaluation set: baseline prompt, prompt plus RAG, fine-tuned small model, and (if needed) an agent. Compare quality, p95 latency and cost per 1,000 tasks; record the decision and the numbers; re-run it when a new model generation lands, because the winner changes.
 
 ## Common mistakes
 

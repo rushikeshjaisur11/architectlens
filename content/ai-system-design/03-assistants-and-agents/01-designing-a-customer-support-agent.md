@@ -6,6 +6,7 @@ sources:
   - "Anthropic, 'Building effective agents' (engineering guidance on workflows versus agents)"
   - "Public product documentation on AI customer-service assistants and human handoff"
   - "Yao et al., 'ReAct: Synergizing Reasoning and Acting in Language Models' (2022)"
+  - "Customer-service AI benchmark roundups, 2026 (secondary: aissist.io, fin.ai, digitalapplied.com); vendor-reported figures"
 ---
 
 ## The problem
@@ -71,6 +72,19 @@ Replay historical conversations against the agent offline and compare to what hu
 4. The agent confirms the item, asks for a photo (policy requires it for defects), then calls `create_return_label` with an idempotency key.
 5. It replies with the label and refund timeline, citing the return policy. The case state records the actions.
 6. Had the order been 45 days old, the agent would have explained the policy and offered a human for an exception request.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Retrieve help-center content, answer with citations, escalate when unsure, summarise for humans (steps above).
+
+**Reference numbers (vendor and aggregator reports, October 2026; treat as ranges, not targets).** Published 2026 roundups cluster AI-agent **resolution rates around 70% median**, with half of deployments between about 56% and 80%, new deployments starting near 20 to 45%, and production tier-1 automation commonly 55 to 70%. The same sources attribute the largest gains to **letting the agent take actions** (refunds, account changes, rescheduling), worth roughly 20 to 30 points over answering only, and report the best hybrid setups escalating about **20 to 25%** of conversations to humans. Tool-use benchmarks such as tau-bench (scripted retail and airline tasks under a policy manual) show top models near 85 to 90%, but a scripted policy is easier than your messy one.
+
+**Enterprise pattern.**
+
+- **Define resolution honestly.** Count a conversation as resolved only if the customer did not return on the same issue within a window; vendor "resolution" metrics often do not.
+- **Action tools need policy engines.** The LLM proposes; deterministic code checks eligibility, limits and fraud signals before a refund executes; log every action with the evidence used.
+- **Escalation is a feature.** Pass the full context and a summary, set clear triggers (low confidence, sentiment, legal or safety terms, repeated failures), and measure time-to-human.
+- **Disclose that it is an AI** where required, keep records of conversations per your regulator, and run weekly review of failed and escalated conversations to extend the knowledge base.
 
 ## Common mistakes
 

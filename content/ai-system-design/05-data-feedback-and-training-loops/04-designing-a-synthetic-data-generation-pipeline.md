@@ -6,6 +6,8 @@ sources:
   - "Wang et al., 'Self-Instruct: Aligning Language Models with Self-Generated Instructions' (2022)"
   - "Shumailov et al., 'The Curse of Recursion: Training on Generated Data Makes Models Forget' (2023)"
   - "Public documentation on instruction-tuning data generation and filtering practices"
+  - "Shumailov et al., 'AI models collapse when trained on recursively generated data', Nature (2024); 2026 follow-up literature on mitigation (secondary summaries)"
+  - "NVIDIA, Nemotron-4 340B synthetic data generation pipeline (blogs.nvidia.com), via search results"
 ---
 
 ## The problem
@@ -72,6 +74,17 @@ Ultimately, what matters is downstream performance. Train small ablations: real 
 3. Filters remove duplicates (embedding similarity above 0.95), invalid labels, and tickets a second model labels differently; 40 percent survive. A human reviews 300 samples and finds 94 percent correctly labelled.
 4. Selection balances categories and favours diversity, producing 20,000 synthetic examples mixed with the 800 real ones.
 5. The fine-tuned model reaches 91 percent accuracy on a held-out set of real tickets versus 78 percent for real data alone; the pipeline's provenance records show which cells helped most.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Seed with real examples, generate with a strong model, filter, deduplicate, validate, mix into training (steps above).
+
+**What the evidence says.**
+
+- **Model collapse is real when synthetic data replaces real data.** Recursive training on a model's own outputs loses diversity and amplifies errors. Secondary summaries of the 2026 literature converge on mitigation: **accumulate** real data alongside synthetic rather than replacing it, keep a nontrivial real-data fraction in every generation (one line of work cites roughly 20 to 30% or more as a safeguard), and **verify** generated examples against an external signal (ground truth, a reward model, execution, human review) before they enter training.
+- **Synthetic pipelines work at scale when verified.** NVIDIA's Nemotron-4 340B report described generating over 98% of the alignment data with a pipeline of instruct and reward models, using only about 20,000 human-annotated examples, and released the models under a licence permitting commercial use of outputs. Read the licence of any *generator* model: some providers forbid using outputs to train competing models.
+
+**Enterprise pattern.** Treat synthetic data as a governed dataset: record the generator model, version, prompt and seed examples (provenance), apply the same PII and licence checks as real data, filter with executable checks where possible (run the code, validate the schema, solve the problem), measure diversity (duplicate rate, embedding spread) and contamination against your evaluation sets, and hold out *real* data for evaluation so synthetic-trained models are never judged on synthetic tests alone.
 
 ## Common mistakes
 

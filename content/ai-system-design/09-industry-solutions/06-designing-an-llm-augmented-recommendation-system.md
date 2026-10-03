@@ -6,6 +6,8 @@ sources:
   - "Covington, Adams and Sargin, 'Deep Neural Networks for YouTube Recommendations' (RecSys 2016)"
   - "Public documentation and papers on two-tower retrieval models and approximate nearest neighbour serving"
   - "Public research on using large language models for recommendation, explanation and cold start"
+  - "Rajput et al., 'Recommender Systems with Generative Retrieval' (TIGER), NeurIPS 2023, arXiv 2305.05065; 2026 follow-up papers on industrial semantic-ID deployments (secondary summaries)"
+  - "EU Digital Services Act, recommender system transparency provisions (European Commission pages)"
 ---
 
 ## The problem
@@ -72,6 +74,16 @@ Serve candidate embeddings with a vector index and a feature store with p99 late
 3. In the conversational feature, a user types "a gentle mystery with great cinematography, nothing violent". An LLM converts it into filters (genre, mood, maturity rating) plus a semantic query; retrieval and ranking return candidates in 80 ms; the LLM writes one-line reasons using each title's real attributes.
 4. A guard verifies every title in the response exists in the catalogue and is available in the user's region; the explanation text is checked against the metadata for unsupported claims.
 5. Monitoring shows the conversational surface adds 1.8 seconds at p95 and 0.3 cents per session; it is enabled only for opt-in users, with the standard feed as fallback.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Retrieve candidates, rank, re-rank, and use LLMs offline for item understanding and online only for conversation (steps above).
+
+**Generative retrieval is the new production pattern (research, 2023 to 2026).** **TIGER** (Transformer Index for Generative Recommenders) gives each item a **Semantic ID** built by a residual-quantised autoencoder from its content embedding, then trains a sequence model to *generate* the next item's ID token by token instead of searching an embedding index. Because IDs share structure across similar items, it can recommend **new and infrequent items** better than pure ID-based models. Secondary summaries report industrial deployments or adaptations at YouTube, Kuaishou, Snapchat, Meituan and Pinterest, and 2026 papers address efficient constrained decoding on accelerators and LLM-integrated variants. Treat it as an addition to the retrieve-rank funnel for some surfaces, not a wholesale replacement: serving cost, constrained decoding and the loss of simple filtering are real engineering issues.
+
+**Regulation.** In the EU, the **Digital Services Act** requires platforms to explain the main parameters of recommender systems and to offer at least one option not based on profiling (very large platforms), with researcher data access; design the ranker so parameters are describable and a non-personalised feed exists.
+
+**Enterprise pattern.** Keep LLM-derived item and user features versioned like any feature, test them offline by slice (new items, long tail, languages), and verify gains with online experiments including diversity and long-term retention guardrails.
 
 ## Common mistakes
 

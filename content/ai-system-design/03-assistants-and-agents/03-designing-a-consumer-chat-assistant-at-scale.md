@@ -6,6 +6,8 @@ sources:
   - "Public engineering write-ups on large-scale chat assistant infrastructure"
   - "Server-Sent Events and WebSocket specifications for streaming transports"
   - "Public provider documentation on conversation context management and rate limiting"
+  - "California SB 243, Companion Chatbots (signed 13 October 2025, effective 1 January 2026), via law-firm summaries (Jones Walker, Future of Privacy Forum), October 2026"
+  - "Provider privacy and data-retention policies for consumer versus API data, 2026 (secondary summaries)"
 ---
 
 ## The problem
@@ -73,6 +75,16 @@ Multi-region deployment with users routed to the nearest healthy region; convers
 3. The router temporarily sends simple queries from free users to the medium model, and disables the code-execution tool for free tier to protect sandbox capacity.
 4. One user closes the tab mid-answer: the chat service detects the disconnect, cancels generation and stores the partial message; on reconnect the client resumes from the saved state.
 5. Autoscaling adds replicas from a warm pool within a minute; as queues drain, degradations are lifted in reverse order, and a postmortem adds launch-surge capacity reservations to the plan.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Stream responses, keep conversation memory, moderate, cache, autoscale (steps above).
+
+**Regulation and policy now shape consumer chat design (US example; secondary summaries).** **California SB 243** (effective 1 January 2026) applies to *companion chatbots* and requires clear disclosure that the user is talking to an AI when a reasonable person might think otherwise; for users the operator **knows are minors**, a reminder at least every **three hours** of continuous use to take a break and that the chatbot is AI-generated, and reasonable measures to prevent sexually explicit content; operators must also maintain protocols for suicide and self-harm and the law allows private suits at **$1,000 per violation**. It does not require age verification of every user, but "knows or reasonably should know" is assessed per user, so age-signal detection matters. Other states (for example New York) have enacted related laws. Check applicability to *your* product: general assistants may fall outside "companion" definitions yet face similar expectations.
+
+**Data policy.** Consumer and enterprise tiers differ: major providers state that **API and enterprise data is not used for training by default**, while consumer chats may be used unless the user opts out; one provider's June 2026 policy update reportedly allows conversations flagged for safety review to be used regardless of the opt-out. Present your own training-use policy plainly and let users delete history.
+
+**Scale design.** Treat conversation state as an externalised, region-pinned store, stream tokens over SSE or WebSockets with backpressure, apply per-user rate limits and abuse detection, route simple turns to smaller models, and maintain crisis-response flows (detect self-harm signals, surface resources, escalate) as a tested, versioned component.
 
 ## Common mistakes
 

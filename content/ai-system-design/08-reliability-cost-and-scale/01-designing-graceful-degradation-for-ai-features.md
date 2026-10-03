@@ -6,6 +6,7 @@ sources:
   - "Nygard, Release It! (Pragmatic Bookshelf, 2nd edition, 2018), on circuit breakers and bulkheads"
   - "Google SRE Book, chapter 'Addressing Cascading Failures'"
   - "Public provider status and incident postmortems on LLM API outages"
+  - "Amazon Bedrock documentation: Guardrails streaming behaviour and prompt caching (docs.aws.amazon.com), via search results, October 2026"
 ---
 
 ## The problem
@@ -72,6 +73,19 @@ Failures create pressure to bypass checks. Decide explicitly: if the guardrail s
 3. The reranker service times out, so reranking is skipped for ten minutes; answers cite sources with slightly lower precision, and the UI shows a small "quick mode" label.
 4. One feature, "draft an email from this document", needs a tool that is failing; it is disabled with an explanation and an option to be notified.
 5. When error rates drop for five minutes, traffic returns gradually to the primary; the incident review adds a pre-warmed capacity reservation with the second provider and a test that runs the quick-mode path nightly.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Define a degradation ladder: full feature, smaller model, cached or templated answer, non-AI path, clear error (steps above).
+
+**Platform behaviours that affect your ladder (AWS documentation, via search).** Bedrock **Guardrails** can run in *synchronous* mode (buffering response chunks until policies pass, adding latency) or *asynchronous* mode (streaming chunks immediately and applying policy in the background, with no added latency but a risk that already-streamed content is later flagged). Choose per feature: synchronous for high-risk surfaces, asynchronous with a retraction UX for low-risk ones. **Prompt caching** is reported to cut latency by up to about 85% and cost by up to 90% on supported models, with the largest time-to-first-token gains for prefixes over about 10,000 tokens, so a warm cache is part of your latency budget and a cold cache after a deploy or TTL expiry is a degradation event to plan for.
+
+**Ladder design.**
+
+- **Trigger on SLIs, not outages only:** p95 time-to-first-token, error rate, queue depth, guardrail latency and cost burn rate each can move the feature down a rung automatically.
+- **Prefer graceful, honest fallbacks:** a smaller model with a note, retrieval-only results, or "try again" beat a silent wrong answer. Keep fallback prompts and evaluation results per model.
+- **Protect dependencies:** timeouts, circuit breakers and bulkheads between the model call, the retriever and the guardrail; cap retries to avoid retry storms against a struggling provider.
+- **Rehearse:** run game days that disable the primary model, the vector store and the guardrail service in turn, and verify user-visible behaviour and alerts.
 
 ## Common mistakes
 

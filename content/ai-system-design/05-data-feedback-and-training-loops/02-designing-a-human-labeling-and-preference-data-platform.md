@@ -6,6 +6,7 @@ sources:
   - "Ouyang et al., 'Training language models to follow instructions with human feedback' (2022)"
   - "Public documentation of data annotation tools and workforce platforms"
   - "Krippendorff, Content Analysis: An Introduction to Its Methodology, on inter-annotator agreement"
+  - "Annotation platform and RLHF data cost roundups, 2026 (secondary: taskmonk.ai, secondtalent.com, herohunt.ai); vendor-sourced figures"
 ---
 
 ## The problem
@@ -80,6 +81,19 @@ Export versioned datasets with consensus labels, raw annotations, agreement stat
 3. Agreement across the project is 0.68; analysis shows low agreement on pairs about medical questions, so those pairs are routed to annotators with clinical backgrounds and the guideline is expanded with examples.
 4. One annotator scores 52 percent on gold items and finishes tasks in 4 seconds; they are retrained, and if no improvement, removed and their recent work re-labelled.
 5. The final dataset of 40,000 pairs, with consensus preferences and agreement scores, is exported with the guideline version for reward-model and DPO training.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Guidelines, task UI, assignment, quality control, adjudication, export (steps above).
+
+**Cost and quality reference points (secondary, vendor-sourced, 2026).** Pairwise preference ranking is commonly quoted at about **$0.50 to $5 per sample**, with expert domains (medicine, law, code review) far higher, and reports of surge prices up to about $100 per example for specialised work. Agreement on subjective preference tasks is low: a figure widely cited from Anthropic's research is about **63% average agreement** with crowd annotators, and platform guides target **Cohen's kappa or Krippendorff's alpha around 0.7**, reading low agreement as ambiguous guidelines rather than bad annotators. Providers range from managed expert networks to self-serve tools.
+
+**Enterprise pattern.**
+
+- **Gold sets and trust scores:** seed tasks with known answers, track each annotator's accuracy and calibration, and route disagreements to adjudicators.
+- **Guidelines are the product.** Version them, include worked edge cases, and re-measure agreement after each change.
+- **Use model assistance carefully.** Pre-labels speed work but cause anchoring; audit by blind-labelling a sample.
+- **Governance:** consent and compensation for labelers, region and language coverage, redaction of customer data before labelling, access controls, and a record of which guideline version and annotator produced each label, so a model can be traced back to its training data.
 
 ## Common mistakes
 

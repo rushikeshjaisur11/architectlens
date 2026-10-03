@@ -6,6 +6,7 @@ sources:
   - "Public product documentation of retail and marketplace shopping assistants"
   - "Public documentation on product search, catalog enrichment and structured product data standards"
   - "Garcia-Molina and Salem, 'Sagas' (SIGMOD 1987) for multi-step order flows"
+  - "Agentic commerce protocol comparisons, 2026 (secondary: digitalapplied.com, crossmint.com, mintmcp.com, wetheflywheel.com)"
 ---
 
 ## The problem
@@ -68,6 +69,14 @@ Measure **business and quality outcomes**: relevance of recommendations (human-j
 3. Live checks remove two out-of-stock items and update a promotional price on another; the structured records for the top four are passed to the model.
 4. The assistant replies with four product cards (rendered from data) and a short comparison: weight, waterproof rating and price, noting that only two are green and one is a better value in black.
 5. The shopper picks one; the assistant confirms size availability, summarises the return policy with a citation, and on "buy it" shows the order summary for explicit confirmation before calling checkout.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Understand intent, search the catalogue, recommend, build a cart, hand off to checkout (steps above).
+
+**Standards emerging in 2026 (secondary sources; confirm against each spec).** Four overlapping protocols address different layers: **ACP (Agentic Commerce Protocol)**, from Stripe and OpenAI, covers checkout, cart, orders, payment delegation and MCP integration (reported latest spec dated 2026-04-17); **AP2 (Agent Payments Protocol)**, from Google, handles payment authorisation with cryptographic *mandates* that record what the user allowed the agent to buy (reported contributed to the FIDO Alliance in April 2026); **UCP (Universal Commerce Protocol)** covers discovery, cart, checkout and post-purchase; **x402** targets stablecoin-style machine payments. They are described as layers rather than rivals: checkout through one, proof of consent through another. One reported data point on market volatility: a flagship in-chat checkout built on ACP was reportedly shut down in March 2026 while the protocol continued, a reminder not to couple your business to one surface.
+
+**Enterprise pattern.** Keep the catalogue and pricing API as the source of truth: the model may rank and explain but must never state a price, stock level or delivery date that was not just returned by a tool. Make purchase an explicit, confirmed step with a visible summary (item, price, shipping, return terms) and store the consent record (an AP2-style mandate where available). Handle refunds, substitutions and fraud checks as server-side workflows, evaluate on conversion *and* return rate, and expose structured product feeds so third-party shopping agents can reach you too.
 
 ## Common mistakes
 
