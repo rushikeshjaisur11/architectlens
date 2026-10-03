@@ -26,12 +26,12 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-ink: #0f1218;
-  --color-ink-elevated: #171b24;
-  --color-line: #2a3140;
-  --color-line-soft: #1f2531;
-  --color-paper: #e6eaf2;
-  --color-paper-muted: #a3adc2;
+  --color-ink: #09090b;
+  --color-ink-elevated: #131316;
+  --color-line: #2a2a2f;
+  --color-line-soft: #1d1d21;
+  --color-paper: #ededf0;
+  --color-paper-muted: #a3a3ad;
   --color-accent: #8f9dff;
   --color-accent-dim: #6d7df0;
   --color-hook: #f0b04a;
@@ -512,4 +512,28 @@ p {
     opacity: 1;
     transform: translate(-50%, -40%);
   }
+}
+
+/* Cursor-following highlight on cards; position is set by onGlowMove. */
+.glow { position: relative; }
+.glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+  background: radial-gradient(16rem circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--color-accent) 13%, transparent), transparent 65%);
+}
+.glow:hover::after { opacity: 1; }
+
+@keyframes search-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.search-in { animation: search-in 0.18s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .search-in { animation: none; }
+  .glow::after { transition: none; }
 }

@@ -7,6 +7,7 @@ import { SECTIONS } from "@/lib/track-meta";
 import { readSet } from "@/lib/progress";
 import { SectionIcon } from "./SectionIcon";
 import { BlurFade } from "./ui/blur-fade";
+import { onGlowMove } from "@/lib/glow";
 
 export type PathStats = Record<string, { lessons: number; hours: number; modules: number }>;
 export type PathOrder = Record<string, { key: string; title: string }[]>;
@@ -33,8 +34,9 @@ export function PathCards({ stats, order }: { stats: PathStats; order: PathOrder
         return (
           <BlurFade inView key={s.key} delay={i * 0.1} className={`h-full ${SPANS[i % SPANS.length]}`}>
           <div
+            onPointerMove={onGlowMove}
             style={{ "--h": s.hue } as React.CSSProperties}
-            className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink-elevated p-6 transition duration-200 hover:-translate-y-0.5 hover:border-accent-dim hover:shadow-xl hover:shadow-black/10"
+            className="glow group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink-elevated p-6 transition duration-200 hover:-translate-y-0.5 hover:border-accent-dim hover:shadow-xl hover:shadow-black/10"
           >
             <span
               aria-hidden

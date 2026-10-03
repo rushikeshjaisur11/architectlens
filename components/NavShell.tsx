@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { buildNavTree } from "@/lib/nav-tree";
 import { hasTrackContext, trackFromSlug, trackSlugFromPath } from "@/lib/tracks";
@@ -31,6 +31,9 @@ export function NavShell({
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [barHidden, setBarHidden] = useState(false);
+  const lastTop = useRef(0);
+  const inLesson = pathname.startsWith("/lessons");
   const [desktopCollapsed, setDesktopCollapsed] = useState(true);
 
   const track = trackFromSlug(trackSlugFromPath(pathname));
@@ -64,7 +67,18 @@ export function NavShell({
 
   useEffect(() => {
     setMobileOpen(false);
+    setBarHidden(false);
+    lastTop.current = 0;
   }, [pathname]);
+
+  // While reading a lesson the top bar tucks away on scroll down and returns on scroll up, leaving one sticky bar.
+  function onScroll(e: React.UIEvent<HTMLDivElement>) {
+    const top = e.currentTarget.scrollTop;
+    const delta = top - lastTop.current;
+    if (Math.abs(delta) < 12) return;
+    setBarHidden(inLesson && delta > 0 && top > 120);
+    lastTop.current = top;
+  }
 
   return (
     <div className="flex h-screen">
@@ -88,8 +102,9 @@ export function NavShell({
           onToggleContents={() => setDesktopCollapsed((prev) => !prev)}
           contentsOpen={!desktopCollapsed}
           showContents={inTrack}
+          hidden={barHidden}
         />
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto" onScroll={onScroll}>
           {children}
           <Footer />
         </div>

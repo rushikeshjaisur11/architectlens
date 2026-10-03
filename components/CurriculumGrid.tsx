@@ -9,6 +9,7 @@ import { TileBanner } from "./TileBanner";
 import { readSet } from "@/lib/progress";
 import type { BannerSpec } from "@/lib/banner-kinds";
 import { sectionByKey } from "@/lib/track-meta";
+import { onGlowMove } from "@/lib/glow";
 
 export type LessonTile = {
   slug: string;
@@ -31,7 +32,8 @@ function Tile({ lesson: l, href, label, read, hue }: { lesson: LessonTile; href:
       onMouseLeave={() => setHover(false)}
       onFocus={() => setHover(true)}
       onBlur={() => setHover(false)}
-      className="group flex flex-col overflow-hidden rounded-xl border border-line bg-ink-elevated/40 transition duration-200 hover:-translate-y-0.5 hover:border-accent-dim hover:bg-ink-elevated hover:shadow-lg hover:shadow-black/10"
+      onPointerMove={onGlowMove}
+      className="glow group flex flex-col overflow-hidden rounded-xl border border-line bg-ink-elevated/40 transition duration-200 hover:-translate-y-0.5 hover:border-accent-dim hover:bg-ink-elevated hover:shadow-lg hover:shadow-black/10"
     >
       <div
         className="banner-bg relative h-32 border-b border-line-soft"
@@ -134,7 +136,7 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
           </Link>
         )}
       </div>
-      <div className="sticky top-0 z-10 -mx-2 mb-6 space-y-3 bg-ink/95 px-2 py-3 backdrop-blur">
+      <div className="sticky top-0 z-10 -mx-2 mb-6 space-y-3 bg-ink/70 px-2 py-3 backdrop-blur-xl backdrop-saturate-150">
         <div className="flex gap-2">
           <input
             type="search"

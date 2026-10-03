@@ -118,7 +118,7 @@ export function SearchOverlay({
         <div
           role="dialog"
           aria-label="Search notes"
-          className="w-full overflow-hidden rounded-xl border border-line bg-ink-elevated/95 shadow-2xl"
+          className="search-in w-full overflow-hidden rounded-2xl border border-line bg-ink-elevated/90 shadow-2xl backdrop-blur-xl"
         >
           <div className="flex items-center gap-3 border-b border-line-soft px-4 py-3">
             <ThinkingOrb state="searching" size={20} theme={beam} />
@@ -155,7 +155,7 @@ export function SearchOverlay({
                     aria-selected={i === active}
                     onMouseEnter={() => setActive(i)}
                     onClick={() => go(item)}
-                    className={`cursor-pointer rounded-lg px-3 py-2 ${i === active ? "bg-ink" : ""}`}
+                    className={`cursor-pointer rounded-lg border-l-2 px-3 py-2 ${i === active ? "border-accent bg-accent/10" : "border-transparent"}`}
                   >
                     <div className="text-sm text-paper">
                       <Highlight text={item.title} result={result} />

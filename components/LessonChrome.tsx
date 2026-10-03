@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight, ChevronsDownUp, ChevronsUpDown, Home } from "luc
 import { TileBanner } from "./TileBanner";
 import { markRead } from "@/lib/progress";
 import type { BannerSpec } from "@/lib/banner-kinds";
+import { onGlowMove } from "@/lib/glow";
 
 const btn =
   "inline-flex items-center gap-1.5 rounded border border-line px-2.5 py-1 font-mono text-xs text-paper-muted transition-colors hover:border-accent-dim hover:text-paper";
@@ -34,7 +35,7 @@ export function LessonTopNav({
   return (
     <div className="sticky top-0 z-30 -mx-4 flex items-center gap-2 border-b border-line-soft bg-ink/70 px-4 py-2 backdrop-blur-xl backdrop-saturate-150 sm:-mx-6 sm:px-6">
       <button type="button" onClick={back} className={btn} aria-label="Go back">
-        <ArrowLeft size={13} /> Back
+        <ArrowLeft size={13} /> <span className="hidden sm:inline">Back</span>
       </button>
       <Link href={trackHref} className={`${btn} min-w-0 max-w-[11rem]`} aria-label={`${trackName} home`}>
         <Home size={13} className="shrink-0" /> <span className="truncate">{trackName}</span>
@@ -234,11 +235,11 @@ export function LessonPager({ prev, next }: { prev?: PagerLink; next?: PagerLink
     return () => window.removeEventListener("keydown", onKey);
   }, [prev, next, router]);
   const card =
-    "group flex min-w-0 flex-1 flex-col rounded-lg border border-line p-4 transition-colors hover:border-accent-dim hover:bg-ink-elevated";
+    "glow group flex min-w-0 flex-1 flex-col rounded-xl border border-line p-4 transition-colors hover:border-accent-dim hover:bg-ink-elevated";
   return (
     <nav className="mt-10 flex flex-col gap-3 sm:flex-row" aria-label="Lesson navigation">
       {prev ? (
-        <Link href={prev.href} className={card}>
+        <Link href={prev.href} className={card} onPointerMove={onGlowMove}>
           <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-paper-muted">
             <ArrowLeft size={12} /> Previous
           </span>
@@ -248,7 +249,7 @@ export function LessonPager({ prev, next }: { prev?: PagerLink; next?: PagerLink
         <span className="hidden flex-1 sm:block" />
       )}
       {next ? (
-        <Link href={next.href} className={`${card} sm:items-end sm:text-right`}>
+        <Link href={next.href} className={`${card} sm:items-end sm:text-right`} onPointerMove={onGlowMove}>
           <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-paper-muted">
             Next <ArrowRight size={12} />
           </span>

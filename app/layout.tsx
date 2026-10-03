@@ -8,12 +8,14 @@ const sans = Atkinson_Hyperlegible_Next({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-sans-body",
+  adjustFontFallback: false,
 });
 
 const mono = Atkinson_Hyperlegible_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-mono-body",
+  adjustFontFallback: false,
 });
 
 const display = Instrument_Serif({
