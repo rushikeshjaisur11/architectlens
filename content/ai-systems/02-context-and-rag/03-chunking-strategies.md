@@ -7,6 +7,8 @@ sources:
   - "LlamaIndex Node Parsers / Chunking documentation"
   - "Greg Kamradt's 5 Levels of Text Splitting (deeplearning.ai / YouTube)"
   - "Pinecone Chunking Strategies guide"
+  - "Anthropic, 'Introducing Contextual Retrieval' (fetched October 2026)"
+  - "Jina AI, 'Late Chunking in Long-Context Embedding Models' (2024)"
 ---
 
 ## Why chunking determines retrieval quality before anything else runs
@@ -32,6 +34,10 @@ A different strategy entirely: index at **sentence granularity** (each chunk is 
 ## Choosing chunk size in practice
 
 Chunk size interacts with the embedding model's effective context: most embedding models (e.g., `text-embedding-3-small`, BGE, E5) degrade when chunks approach their max token length because the pooled representation gets diluted across too many topics — 256-512 tokens is a common sweet spot for dense-passage retrieval, versus 100-200 tokens for precision-critical sentence-level matching. Document structure should override defaults where it exists: chunk by heading/section for structured docs (markdown, HTML), by function/class for code (tools like `RecursiveCharacterTextSplitter.from_language` respect syntax), and by row/table for tabular data rather than treating everything as flat prose.
+
+## Current practice (verified October 2026)
+
+Two upgrades now sit beside classic fixed, recursive and semantic splitting. **Contextual retrieval** prepends a short model-written description to each chunk before indexing; Anthropic reported top-20 retrieval failures falling from 5.7% to 3.7% (embeddings alone), 2.9% with BM25 and 1.9% with a reranker, at about $1.02 per million document tokens using prompt caching. **Late chunking** embeds the full document with a long-context embedder first and pools per chunk, so each vector carries document context; Jina reported nDCG@10 gains such as 64.2 to 66.1 on SciFact, larger for longer documents. **Parent-child** retrieval (search small chunks, return the larger parent) remains a strong default. Whatever you choose, evaluate on your own questions: published gains are on specific corpora.
 
 ## Common mistakes
 

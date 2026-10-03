@@ -5,6 +5,7 @@ tags: ["distributed-systems", "consensus", "coordination"]
 sources:
   - "Diego Ongaro & John Ousterhout, 'In Search of an Understandable Consensus Algorithm' (2014, the Raft paper)"
   - "Leslie Lamport, 'The Part-Time Parliament' (1998, the original Paxos paper)"
+  - "Apache Kafka 4.0 release announcement (March 2025), kafka.apache.org (via search results, October 2026)"
 ---
 
 ## Why distributed nodes need to agree on anything
@@ -38,6 +39,10 @@ Both algorithms require a majority (more than half) of nodes to agree before com
 - The store runs as a 5-node Raft cluster. A client writing "primary = db-server-2" sends the write to the current leader, which appends it to its log and replicates to followers.
 - The write is only acknowledged as committed once 3 of the 5 nodes (a majority) have durably stored it — at that point, even if the leader crashes immediately after, the new leader (elected from the remaining nodes) is guaranteed to have that committed entry, because at least one node in any future majority overlaps with the majority that committed it.
 - If the leader crashes before reaching a majority, the write is not yet committed, and after a new leader is elected, that partial write is safely discarded rather than left in an ambiguous state — this is the concrete guarantee "consensus" is providing: no node ever sees a partial or contradictory answer to "what is the current primary."
+
+## Current practice (verified October 2026)
+
+A concrete recent example of consensus in infrastructure: Kafka 4.0 (March 2025) removed ZooKeeper and runs its metadata quorum with **KRaft**, a Raft-based controller group inside Kafka itself, which simplifies operations and scales metadata. etcd (Kubernetes) and many databases use Raft the same way.
 
 ## Common mistakes
 

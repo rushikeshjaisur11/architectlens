@@ -5,6 +5,8 @@ tags: ["fine-tuning", "adaptation", "llm", "rag"]
 sources:
   - "OpenAI and Anthropic documentation on fine-tuning use cases and limitations"
   - "Hugging Face documentation on LoRA and parameter-efficient fine-tuning"
+  - "Practitioner guides on fine-tuning versus RAG, 2026 (secondary: bigdataboutique.com, gauraw.com)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
 ---
 
 ## Three different tools for three different problems
@@ -39,6 +41,10 @@ Full fine-tuning — updating every parameter in a model — requires enough com
 - **Support bot → RAG, not fine-tuning.** The knowledge base changes weekly; fine-tuning would mean either accepting stale answers between fine-tuning runs or re-fine-tuning constantly, which is slower and more expensive than simply re-indexing updated documents for retrieval — a textbook case for choosing RAG's update model over fine-tuning's.
 - **Code-review assistant → fine-tuning (via LoRA), layered on top of good prompting first.** The team first tries a well-specified prompt with a few examples of the exact desired output format; if compliance is inconsistent across the volume of real reviews (say, format deviations on 15% of outputs even with good prompting), that consistency gap — not new knowledge — is exactly what fine-tuning is suited to close, since the underlying task (reviewing code, in a fixed format) doesn't change week to week the way the support knowledge base does.
 - **Sequencing matters:** prompting is tried first in both cases because it's nearly free to iterate on; fine-tuning is reached for only once a real, measured gap remains that prompting and retrieval can't close — not as the first move.
+
+## Current practice (verified October 2026)
+
+Decision guidance in 2026: prompting plus caching first (1M-token windows are billed at the standard rate on current Claude models); RAG for fresh or private knowledge; fine-tune for **form, not facts** (stable schema, tone, tool-calling reliability, cost reduction on a narrow high-volume task) with a real evaluation set and, as a commonly cited threshold, a few hundred or more good examples; reinforcement fine-tuning only where an automatic grader exists. Managed fine-tuning is available on the major clouds. Re-run the comparison when a new model generation lands.
 
 ## Common mistakes
 

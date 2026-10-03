@@ -5,6 +5,8 @@ tags: ["inference", "serving", "llm", "performance"]
 sources:
   - "vLLM paper: Kwon et al., 'Efficient Memory Management for Large Language Model Serving with PagedAttention' (2023)"
   - "NVIDIA and Hugging Face documentation on LLM inference optimization"
+  - "vLLM documentation and blog, docs.vllm.ai and vllm.ai/blog (fetched October 2026)"
+  - "llm-d project blog, llm-d.ai/blog/kvcache-wins-you-can-see (fetched October 2026)"
 ---
 
 ## Why serving an LLM is a different problem than training one
@@ -41,6 +43,10 @@ Model weights are usually trained in 16-bit or 32-bit floating point. Quantizati
 - **Continuous batching** is close to mandatory here — static batching would mean a user with a short question waits behind another user's long response finishing in the same batch, directly hurting the metric (latency) that matters most for a chat product.
 - **KV cache memory becomes the practical ceiling on concurrency** before raw compute does, for most chat workloads with moderate-length conversations — so a serving engine with efficient KV cache management (like PagedAttention-based vLLM) directly increases how many simultaneous conversations one GPU can handle, which is often the real cost lever, more than a marginally faster GPU would be.
 - **Quantization (e.g., 8-bit)** is a reasonable default to reduce memory footprint and fit a larger model or more concurrent requests on the same hardware, with a quality check against a held-out eval set (see this track's evaluation lesson) before committing to it in production, rather than assuming the quality cost is negligible without checking.
+
+## Current practice (verified October 2026)
+
+Continuous batching, paged KV-cache management and prefix caching are now defaults in the main engines, so the interesting decisions are scheduling and topology. vLLM's documentation describes prefill/decode disaggregation as experimental and as a way to tune time-to-first-token and inter-token latency independently and control tail latency, *not* to raise throughput. KV-cache-aware routing (llm-d) is the larger lever for shared-prefix workloads such as chat and agents. Track cache hit rate, TTFT and ITL percentiles and queue depth as first-class SLIs.
 
 ## Common mistakes
 

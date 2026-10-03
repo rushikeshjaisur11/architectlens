@@ -7,6 +7,7 @@ sources:
   - "Envoy Proxy documentation (envoyproxy.io) — rate limit filter"
   - "NGINX rate limiting docs (nginx.org)"
   - "Stripe API rate limits documentation"
+  - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io (fetched October 2026)"
 ---
 
 ## Why a gateway sits in front of everything
@@ -43,6 +44,10 @@ Clients need feedback to back off correctly. The convention, though not a single
 - `429 Too Many Requests` status code (defined in RFC 6585).
 - `Retry-After` header telling the client when to retry.
 - `X-RateLimit-Limit` / `X-RateLimit-Remaining` / `X-RateLimit-Reset` headers (de facto standard, used by GitHub, Stripe, Twitter) so well-behaved clients can self-throttle before hitting the wall.
+
+## Current practice (verified October 2026)
+
+Gateways now also front AI traffic. LLM gateways add per-key budgets, token-based rate limits, fallbacks and guardrails, and MCP's 2026-07-28 revision adds `Mcp-Method` and `Mcp-Name` request headers so a gateway or WAF can route, meter and authorise agent tool calls without parsing JSON bodies. Rate limits for model traffic should count tokens as well as requests.
 
 ## Common mistakes
 

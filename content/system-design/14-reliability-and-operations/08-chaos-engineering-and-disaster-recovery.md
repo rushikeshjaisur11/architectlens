@@ -5,6 +5,8 @@ tags: ["reliability", "chaos-engineering", "disaster-recovery"]
 sources:
   - "Netflix Technology Blog, posts introducing Chaos Monkey and the Simian Army"
   - "AWS Well-Architected Framework documentation on disaster recovery strategies"
+  - "Amazon Web Services, 'Summary of the Amazon DynamoDB Service Disruption in the Northern Virginia (US-EAST-1) Region' (October 2025), aws.amazon.com/message/101925 (fetched October 2026)"
+  - "CrowdStrike, 'External Technical Root Cause Analysis: Channel File 291' (August 2024) (fetched October 2026)"
 ---
 
 ## Why untested resilience mechanisms often aren't actually resilient
@@ -40,6 +42,10 @@ These metrics directly connect back to the replication and redundancy design cho
 - **Synchronous replication** (per this track's replication-strategies lesson) is used specifically to support the near-zero RPO target, accepting the added write latency cost as a deliberate tradeoff justified by the stated recovery objective.
 - **A scheduled game day** simulates a full primary-region failure, with the on-call team executing the actual failover procedure (not just discussing it hypothetically) — measuring the actual elapsed time from failure detection to full service restoration in the secondary region, and comparing that measured time against the stated 15-minute RTO.
 - **The exercise reveals a gap**: the actual measured failover time is 25 minutes, not 15 — DNS propagation delay and a manual approval step in the failover runbook are identified as the specific bottlenecks, previously invisible because the failover procedure had never actually been exercised under realistic conditions before this game day. This directly leads to concrete fixes (automating the approval step for this specific failure scenario, adjusting DNS TTL settings) that wouldn't have been discovered without the deliberate chaos-engineering exercise forcing the gap to surface.
+
+## Current practice (verified October 2026)
+
+Use recent incidents as game-day scenarios: a regional dependency's control plane failing and slowing recovery for hours (AWS US-EAST-1, October 2025: DNS restored by about 2:25 AM PDT, but EC2 launches and load-balancer health checks recovered around 2 PM), and a bad content update crashing a fleet before remote repair is possible (CrowdStrike, July 2024). Test slowness as well as outright failure, test recovery throttling and backlog drain, and verify that failover paths do not depend on the failed region's control plane.
 
 ## Common mistakes
 

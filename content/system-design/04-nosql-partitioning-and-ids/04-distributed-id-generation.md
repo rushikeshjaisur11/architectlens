@@ -6,6 +6,7 @@ sources:
   - "Twitter Engineering, 'Announcing Snowflake' (2010)"
   - "RFC 4122 (UUID) and the UUIDv7 draft (RFC 9562)"
   - "Segment Engineering, 'A brief history of the UUID' (KSUID design notes)"
+  - "RFC 9562, Universally Unique IDentifiers (UUIDs) (2024); PostgreSQL 18 release notes (September 2025), postgresql.org (via secondary summaries, October 2026)"
 ---
 
 ## Why auto-increment doesn't survive sharding
@@ -34,6 +35,10 @@ The tradeoff is **index locality**: random UUIDs inserted as a primary key scatt
 - **Need zero infrastructure and don't care about insert locality?** UUIDv4.
 - **Need zero infrastructure but do care about insert locality and sortability?** UUIDv7 or ULID.
 - **Need debuggability (embedded timestamp, no external lookup) in a distributed event log?** KSUID or ULID.
+
+## Current practice (verified October 2026)
+
+**UUIDv7** is now standardised in RFC 9562: a millisecond Unix timestamp in the most significant bits followed by random bits, so new ids sort roughly in insertion order and keep B-tree index inserts local, unlike random UUIDv4. PostgreSQL 18 (released 25 September 2025) added a built-in `uuidv7()` function. For most new systems UUIDv7 is the simple default; use Snowflake-style ids when you need compact 64-bit values or embedded shard and worker information, and remember that any time-ordered id reveals creation time.
 
 ## Common mistakes
 

@@ -5,6 +5,7 @@ tags: ["agents", "memory", "llm", "context"]
 sources:
   - "LangChain documentation on memory types for agents"
   - "MemGPT paper: Packer et al., 'MemGPT: Towards LLMs as Operating Systems' (2023)"
+  - "Anthropic Engineering, 'Effective context engineering for AI agents', anthropic.com/engineering (fetched October 2026)"
 ---
 
 ## Why "memory" for an agent is a real design problem, not just context history
@@ -36,6 +37,10 @@ Even with well-curated long-term and episodic memory, an agent handling a long-r
 - **Long-term memory writing**: after each conversation, a dedicated memory-extraction step (a separate LLM call, evaluating the conversation for anything preference-relevant) identifies and writes any newly-stated or updated preferences to a persistent store — not logging the entire raw conversation, specifically to keep the memory store precise and retrievable rather than accumulating noise that would make genuinely relevant preferences harder to find later via similarity search.
 - **Retrieval at the start of each new conversation**: rather than including the user's entire preference history in every new session's initial context (which could grow unboundedly over months of use), a targeted retrieval step pulls only the preferences relevant to the current conversation's apparent topic (dietary preferences retrieved for a restaurant-recommendation request, scheduling preferences retrieved for a meeting-booking request) — directly analogous to RAG's targeted retrieval rather than indiscriminate inclusion.
 - **Episodic memory for a support-style use case layered in**: if the assistant also handles troubleshooting requests, a separate episodic store of past resolved issues (this specific user's or a broader pool's) can be retrieved when a similar-sounding new issue arises, informing the agent's approach with precedent rather than starting from scratch each time.
+
+## Current practice (verified October 2026)
+
+Anthropic's context-engineering guidance names three techniques that are really memory patterns: **compaction** (summarise the history near the limit and restart with the summary, tuned first for recall), **structured note-taking** (the agent writes progress notes to files or a memory store outside the window and reads them back, enabling coherence over thousands of steps) and **sub-agents** (a focused agent explores in a clean context and returns a condensed summary of roughly 1,000 to 2,000 tokens). Prefer just-in-time retrieval (keep references, fetch on demand) to pre-loading, and treat memory writes as a security surface: persisted notes can carry injected instructions (OWASP lists memory and context poisoning among agentic risks).
 
 ## Common mistakes
 

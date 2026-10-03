@@ -5,6 +5,8 @@ tags: ["reliability", "production", "llm", "failure-handling"]
 sources:
   - "OpenAI and Anthropic API documentation on rate limits, retries, and error handling"
   - "Google SRE Book, chapters on graceful degradation and reliability patterns (applicable to LLM-dependent systems)"
+  - "Amazon Builders' Library, 'Using load shedding to avoid overload' and 'Timeouts, retries and backoff with jitter'"
+  - "Amazon Bedrock documentation on Guardrails streaming (docs.aws.amazon.com)"
 ---
 
 ## Why LLM calls fail differently than typical API calls
@@ -43,6 +45,10 @@ LLM response times vary meaningfully with output length and load, so a timeout t
 - **Hard failure handling**: exponential backoff retries for transient errors, with a circuit breaker that, if the primary provider degrades badly, temporarily routes to a fallback (either a secondary provider or a cached/previous version of similarly-shaped content) rather than surfacing an error to the user.
 - **Soft failure handling**: every response is schema-validated before use; a validation failure triggers one corrective retry with the specific validation error included in the follow-up prompt, and if that also fails, the system falls back to a template-based, non-LLM-generated description rather than showing nothing or an error.
 - **Monitoring**: p95/p99 latency, validation failure rate, and cost-per-request are all tracked on dashboards with alerting thresholds, not just uptime — so a quality regression (rising validation failures) or a cost anomaly surfaces as an alert before a user complaint does.
+
+## Current practice (verified October 2026)
+
+Treat slowness, not just errors, as the failure mode: set timeouts and deadlines, cap retries (budget about +10% load, jitter, one layer), shed low-priority work when overloaded, use circuit breakers with a degradation ladder (smaller model, cached or retrieval-only answer, non-AI path), and decide per surface whether safety checks run synchronously or asynchronously. Rehearse with game days that disable the primary model, the vector store and the guardrail service in turn. See the system design lesson on retries, timeouts and load shedding.
 
 ## Common mistakes
 

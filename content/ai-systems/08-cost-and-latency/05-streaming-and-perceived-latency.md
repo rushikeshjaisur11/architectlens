@@ -5,6 +5,7 @@ tags: ["streaming", "latency", "cost", "llm"]
 sources:
   - "OpenAI and Anthropic API documentation on streaming responses"
   - "Nielsen Norman Group research on response-time perception thresholds"
+  - "Amazon Bedrock documentation, Guardrails streaming behaviour (docs.aws.amazon.com), via search results (October 2026)"
 ---
 
 ## Why perceived latency and actual latency are different metrics
@@ -34,6 +35,10 @@ Streaming isn't universally beneficial — it adds real client-side complexity (
 - **Interactive chat mode uses streaming**, directly targeting perceived responsiveness — the team specifically monitors time-to-first-token as a tracked metric distinct from total response time, since that's the number that actually correlates with how responsive the chat feels to an actively-watching user, per the reasoning above.
 - **Background scaffold generation does not use streaming**, since there's no user actively watching partial output appear in real time for this use case — the perceived-latency benefit streaming provides simply doesn't apply here, and the added client-side complexity of handling a streamed response isn't worth taking on for no corresponding benefit; the simpler wait-for-completion pattern is used instead.
 - **A structured-output sub-feature within the chat** (generating a JSON-formatted code-diff object) uses a hybrid approach: the assistant's explanatory text streams normally, while the structured diff data is generated as a separate, non-streamed call using constrained decoding (per the structured-output lesson) — avoiding the incremental-JSON-parsing complexity that would otherwise be needed to stream a structured object usefully, while still getting streaming's perceived-latency benefit for the freely-streamable explanatory text portion of the response.
+
+## Current practice (verified October 2026)
+
+Safety checks interact with streaming. Bedrock Guardrails can run **synchronously** (buffering chunks until policies pass, adding latency) or **asynchronously** (streaming immediately and applying policy in the background, which risks already-streamed content being flagged later). Choose per surface: synchronous for high-risk features, asynchronous with a retraction experience for low-risk ones, or buffer by sentence and check windows. Report time-to-first-token and inter-token latency separately.
 
 ## Common mistakes
 

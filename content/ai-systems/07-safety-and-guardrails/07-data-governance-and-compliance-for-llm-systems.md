@@ -6,6 +6,8 @@ sources:
   - "EU AI Act — Regulation (EU) 2024/1689 (record-keeping and transparency obligations)"
   - "NIST AI Risk Management Framework (AI RMF 1.0)"
   - "ISO/IEC 42001:2023 — AI management system standard"
+  - "EU AI Omnibus (Reg. (EU) 2026/1744) summary, Gibson Dunn (fetched October 2026)"
+  - "NIST AI 600-1 (July 2024); ISO/IEC 42001:2023"
 ---
 
 ## Why LLM systems need governance beyond standard app logging
@@ -32,6 +34,10 @@ A common failure mode is a single undifferentiated log store where debug-level d
 ## Explainability and traceability
 
 For high-risk classified use cases, "the model decided X" isn't a sufficient answer during an audit — governance requires being able to reconstruct the decision path: input, retrieved context, model version, any human review step, and final action taken. Systems that can't reproduce this chain (because intermediate steps weren't logged, or because retrieval is non-deterministic and wasn't snapshotted) can't demonstrate compliance even if the underlying decision was correct.
+
+## Current practice (verified October 2026)
+
+Dates moved in 2026: EU high-risk Annex III duties now apply from **2 December 2027** and Annex I from **2 August 2028**, Article 50 transparency from **2 August 2026**, and general-purpose model duties since **2 August 2025**. NIST's Generative AI Profile (AI 600-1) lists 12 generative-AI risks, and ISO/IEC 42001 is the certifiable management-system standard many organisations use as one control library. Keep deadlines as data in your governance registry, tie each use case to a risk tier and owner, and log enough to reconstruct a decision. See the regulation lesson for the overview.
 
 ## Common mistakes
 

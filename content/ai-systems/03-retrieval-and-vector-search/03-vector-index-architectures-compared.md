@@ -7,6 +7,7 @@ sources:
   - "Subramanya et al., 'DiskANN: Fast Accurate Billion-point Nearest Neighbor Search on a Single Node' (NeurIPS 2019)"
   - "Guo et al., 'Accelerating Large-Scale Inference with Anisotropic Vector Quantization' (ScaNN, ICML 2020)"
   - "Faiss documentation (github.com/facebookresearch/faiss/wiki)"
+  - "pgvector documentation (0.8.0 iterative scans; HNSW dimension limits), github.com/pgvector/pgvector, via secondary summaries (October 2026)"
 ---
 
 ## Why the index choice is an architecture decision, not a config flag
@@ -44,6 +45,10 @@ Google's ScaNN (used internally at Google and in Vertex AI Vector Search) distin
 | IVF_PQ | Memory-constrained, 10M-1B vectors | Low-medium | Moderate (re-cluster periodically) |
 | DiskANN | >500M vectors, RAM-constrained | Very low (disk-resident) | Expensive (graph rebuild) |
 | ScaNN | Max throughput at fixed recall, Google Cloud | Medium | Moderate |
+
+## Current practice (verified October 2026)
+
+Filtered search is where index choice bites. Before pgvector 0.8.0 a filter was applied *after* the approximate scan, so selective filters returned fewer rows than requested; 0.8.0 added **iterative index scans** (`hnsw.iterative_scan` in `relaxed_order` or `strict_order` mode, bounded by `hnsw.max_scan_tuples`, default 20,000). HNSW in pgvector indexes up to about 2,000 dimensions for full-precision vectors (4,000 for half-precision, 64,000 for bit vectors), so the embedding dimension is an index decision. pgvectorscale adds a disk-based StreamingDiskANN index for datasets that do not fit in RAM. When you compare indexes, test recall and latency **at your filter selectivity**, not on unfiltered benchmarks.
 
 ## Common mistakes
 

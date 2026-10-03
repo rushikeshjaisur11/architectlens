@@ -5,6 +5,8 @@ tags: ["agents", "orchestration", "multi-agent", "llm"]
 sources:
   - "LangGraph and CrewAI documentation on multi-agent orchestration patterns"
   - "Anthropic documentation on multi-agent research systems"
+  - "Anthropic Engineering, 'Effective context engineering for AI agents', anthropic.com/engineering (fetched October 2026)"
+  - "Durable-execution comparisons, 2026 (secondary: hackernoon.com, cordum.io)"
 ---
 
 ## Why split one task across multiple agents at all
@@ -35,6 +37,10 @@ Many tasks that look like they need multiple specialized agents can instead be h
 - **Fan-out for the gathering stage**: three parallel worker agents, each scoped to one source type (papers, news, internal docs), run simultaneously — this is a genuine parallelism win, since these searches are independent of each other and don't need to happen sequentially, directly reducing wall-clock time versus one agent working through all three source types in sequence.
 - **Orchestrator synthesizes**: a separate orchestrating agent receives all three workers' findings and produces the final report — kept as a distinct step (rather than having one of the search agents also do synthesis) specifically because synthesis benefits from seeing all three sources' findings together, which no single search-focused worker agent has visibility into on its own.
 - **Why not more agents**: a "critique" agent reviewing the final report before it ships was considered but deliberately left out for this use case — the report is a well-understood, lower-stakes internal summary, not a high-stakes output where an extra verification pass's added latency and cost would be clearly justified, per the debate/critique pattern's tradeoff above.
+
+## Current practice (verified October 2026)
+
+Current guidance favours **sub-agents with clean contexts** returning short summaries over many chatty peers, because each extra agent multiplies tokens and failure modes. For long or side-effecting workflows, production stacks pair the agent framework with a **durable execution engine** (Temporal, Restate, DBOS, Inngest; Temporal reported a LangGraph plugin in public preview in July 2026): the framework reasons, the engine guarantees retries, waits and replay. Budget every run (tokens, steps, wall-clock) and trace one run end to end.
 
 ## Common mistakes
 

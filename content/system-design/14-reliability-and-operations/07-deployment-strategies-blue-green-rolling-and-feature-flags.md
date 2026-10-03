@@ -6,6 +6,8 @@ sources:
   - "Humble and Farley, Continuous Delivery (2010)"
   - "Martin Fowler, articles on BlueGreenDeployment, CanaryRelease and FeatureToggle"
   - "Kubernetes documentation on Deployments and rolling updates"
+  - "CrowdStrike, 'External Technical Root Cause Analysis: Channel File 291' (August 2024) (fetched October 2026)"
+  - "Amazon Web Services, 'Summary of the Amazon DynamoDB Service Disruption in the Northern Virginia (US-EAST-1) Region' (October 2025), aws.amazon.com/message/101925 (fetched October 2026)"
 ---
 
 ## The goal: change production without hurting users
@@ -77,6 +79,10 @@ They are complementary: many teams deploy by canary and release behavior with fl
 - The code ships behind a flag, **off**, via a normal canary deploy: 5 percent of servers get the build, error rates match, and it is promoted to all servers. Users see nothing different yet.
 - The flag is enabled for employees, then 1 percent of users, then 10 percent, while dashboards compare click-through and latency between the flag-on and flag-off groups.
 - At 10 percent, p99 latency of the flag-on group is 30 percent worse. The flag is turned off in seconds; no rollback deploy is needed. The team fixes a slow query and resumes.
+
+## Current practice (verified October 2026)
+
+Two recent incidents show the cost of skipping staged rollout. In **July 2024** CrowdStrike delivered a content update to its whole sensor fleet at once; a latent out-of-bounds read crashed about 8.5 million Windows machines within roughly 78 minutes, and its own analysis lists "deployed globally without staged rollout" among six gaps and commits to canary rings and customer control of update timing. In **October 2025** a latent race condition in AWS's DynamoDB DNS automation emptied a regional endpoint and the disruption lasted about 15 hours. Treat configuration and content as code: stage it in rings with bake time and automatic halt, and keep the rollback path working in the failure state. See the case studies and the cell-based architecture lesson.
 
 ## Common mistakes
 

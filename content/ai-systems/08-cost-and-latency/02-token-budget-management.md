@@ -5,6 +5,8 @@ tags: ["cost", "token-budget", "pipelines", "llm"]
 sources:
   - "Anthropic prompt caching and context window documentation (docs.anthropic.com)"
   - "LangChain / LangGraph documentation on context management (python.langchain.com)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
+  - "Anthropic documentation, extended and adaptive thinking (fetched October 2026)"
 ---
 
 ## The core problem
@@ -31,6 +33,10 @@ A single LLM call's token cost is easy to reason about. A multi-step pipeline â€
 ## Measuring it
 
 Track **tokens per pipeline run**, not just tokens per call â€” the run is the unit a user or business actually pays for. Logging per-step token counts (input/output separately, since they're priced differently) makes it possible to see which step in a 6-step pipeline is actually driving 70% of the cost, which is rarely obvious from looking at the pipeline's logic alone.
+
+## Current practice (verified October 2026)
+
+Budget more than prompt length: thinking tokens are billed as output and count against `max_tokens` (the fixed `budget_tokens` mode is deprecated on Claude 4.6 and rejected on 4.7 and later in favour of adaptive thinking with an effort level); tool definitions add hundreds to thousands of tokens per request; web search results become input tokens on that turn and every later turn that keeps them; and newer Claude tokenizers produce about 30% more tokens for the same text. Track input, cached, output, thinking and tool tokens separately per feature and set per-run caps.
 
 ## Common mistakes
 

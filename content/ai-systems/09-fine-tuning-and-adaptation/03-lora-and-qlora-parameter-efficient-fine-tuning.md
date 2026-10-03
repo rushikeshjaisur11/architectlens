@@ -6,6 +6,8 @@ sources:
   - "LoRA: Low-Rank Adaptation of Large Language Models (Hu et al., 2021, arXiv:2106.09685)"
   - "QLoRA: Efficient Finetuning of Quantized LLMs (Dettmers et al., 2023, arXiv:2305.14314)"
   - "Hugging Face PEFT documentation"
+  - "Practitioner guides on LoRA and QLoRA, 2026 (secondary: futureagi.com, codersera.com)"
+  - "Hu et al., 'LoRA' (2021); Dettmers et al., 'QLoRA' (2023)"
 ---
 
 ## The core idea
@@ -29,6 +31,10 @@ Because `A` and `B` are separate from `W`, multiple LoRA adapters can be trained
 - **Paged optimizers**: use NVIDIA unified memory to page optimizer states to CPU RAM during memory spikes, avoiding OOM crashes on long sequences.
 
 The result: QLoRA fine-tuned a 65B model on a single 48GB GPU, something that would otherwise require multiple 80GB GPUs — while matching full 16-bit fine-tuning performance on benchmarks like Vicuna evaluations. The tradeoff is training speed (dequantizing on the fly costs compute) and that quality can degrade slightly on tasks requiring very fine-grained numeric precision in the base weights.
+
+## Current practice (verified October 2026)
+
+Still the default: LoRA for most cases, QLoRA (4-bit base plus adapters) when GPU memory is the constraint. A common 2026 pattern is a fine-tuned 8B to 70B open-weight model on a narrow task plus RAG for fresh knowledge, served with **multi-LoRA** hosting so many tenant or task adapters share one base model. Evaluate the adapter against the base model and a strong prompted baseline, version adapters with their data and base-model hash, and plan re-training when the base model is deprecated.
 
 ## Common mistakes
 

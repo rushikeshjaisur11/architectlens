@@ -7,6 +7,7 @@ sources:
   - "AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration (Lin et al., 2023)"
   - "llama.cpp / GGUF format documentation (ggerganov/llama.cpp)"
   - "bitsandbytes LLM.int8() documentation (Hugging Face)"
+  - "Quantization guides, 2026 (secondary: gmicloud.ai, vrlatech.com, packet.ai, spheron.network); NVIDIA benchmarks as reported"
 ---
 
 ## Why quantize at all
@@ -34,6 +35,10 @@ In practice: AWQ is the more common default for W4A16 (4-bit weights, 16-bit act
 ## GGUF and CPU/edge serving
 
 **GGUF** (the format used by `llama.cpp`, successor to GGML) is less a quantization *algorithm* and more a **file format and runtime** optimized for CPU and mixed CPU/GPU inference — the kind of deployment relevant for local or edge use rather than datacenter GPU serving. It supports a range of quantization schemes (Q4_K_M, Q5_K_M, Q8_0, etc.) with different bit-widths and block structures, letting you trade file size and speed against quality on a single spectrum. The key architectural difference from AWQ/GPTQ workflows: GGUF targets `llama.cpp`'s own tensor kernels rather than PyTorch/CUDA, which is why it's the standard choice for running models on laptops or without a dedicated inference server.
+
+## Current practice (verified October 2026)
+
+Precision defaults have moved. **FP8** is reported as the default serving precision on Hopper and Blackwell GPUs, typically within about 0.5 to 1% of BF16 on standard benchmarks. **FP4 (NVFP4)** is native to Blackwell GPUs (B200, B300 and some workstation cards), doubles FP8 tensor throughput on the B200 per NVIDIA's figures, and shrinks a 70B model from about 140 GB to about 40 GB; with good calibration accuracy often lands within 1 to 3% of BF16 (NVIDIA reported 1% or less on several benchmarks for DeepSeek-R1). INT4 methods (AWQ, GPTQ) and GGUF remain common on older GPUs and on-device. Rules: evaluate the quantised model on your task, keep sensitive layers at higher precision where tools allow, and remember FP4 needs Blackwell-class hardware.
 
 ## Common mistakes
 

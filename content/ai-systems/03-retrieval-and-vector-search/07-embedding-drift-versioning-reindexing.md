@@ -6,6 +6,7 @@ sources:
   - "OpenAI embeddings model deprecation and migration documentation"
   - "Pinecone and Weaviate documentation on index migration and re-embedding"
   - "Muennighoff et al., 'MTEB: Massive Text Embedding Benchmark' (2023)"
+  - "Embedding model roundups, 2026 (secondary); pgvector documentation"
 ---
 
 ## Why embeddings aren't a fire-and-forget asset
@@ -35,6 +36,10 @@ For very large corpora where a full rebuild is expensive (re-embedding is often 
 ## Triggering re-indexing: eval, not calendar
 
 Re-indexing cadence shouldn't be purely time-based ("re-embed every quarter") because that's disconnected from actual quality signal. The better trigger is a standing **retrieval eval pipeline** — a labeled or LLM-judged query set run periodically (or on every candidate model change) measuring recall@k / NDCG / MRR against the current production index. A meaningful drop against baseline is the actual signal to re-index, whether that happens on day 10 or month 6. This also gives you the artifact needed to justify the cost of a re-embed to stakeholders: a measured quality delta, not a hunch.
+
+## Current practice (verified October 2026)
+
+Providers retire and replace embedding models on their own schedule, and newer multimodal models change dimensions and similarity behaviour, so re-embedding is a normal operation. Make it routine: version the index (model, dimension, chunker, parser, ACL schema), build the new index in parallel, shadow-query both with live traffic, compare recall and business metrics, then cut over and retire the old one. Budget the cost up front as corpus tokens times the embedding price, and keep the original text so you can re-embed without re-parsing.
 
 ## Common mistakes
 

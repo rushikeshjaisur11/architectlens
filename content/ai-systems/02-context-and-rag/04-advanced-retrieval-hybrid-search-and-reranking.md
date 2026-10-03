@@ -5,6 +5,8 @@ tags: ["rag", "retrieval", "reranking", "hybrid-search"]
 sources:
   - "Pinecone and Weaviate documentation on hybrid search"
   - "Cohere documentation on rerank models"
+  - "Anthropic, 'Introducing Contextual Retrieval' (fetched October 2026)"
+  - "Enterprise RAG adoption reporting, VentureBeat (2026; survey-based, secondary)"
 ---
 
 ## Why pure vector search alone often isn't enough
@@ -34,6 +36,10 @@ Embedding-based retrieval's similarity scoring is a fairly coarse signal — it 
 - **Hybrid retrieval** is close to essential here, not optional: a query containing a specific citation needs BM25's exact-term matching to reliably surface the document containing that citation, while a conceptual question about precedent benefits from vector search's semantic matching — relying on either alone would systematically fail one of these two common query types.
 - **Reranking** is layered on top because legal relevance is nuanced — two documents can both mention the same statute, but only one actually applies it to a factually similar situation, a distinction a cross-encoder reranker is better positioned to make than the coarser initial retrieval scoring.
 - **Cost tradeoff, made deliberately**: reranking the full corpus directly would be prohibitively slow, but reranking only the top 50 hybrid-search candidates keeps the added latency and compute cost bounded and predictable, regardless of overall corpus size — this is exactly the two-stage pattern's purpose, and the candidate-set size (50, in this case) is a tunable parameter balancing reranking quality against added latency.
+
+## Current practice (verified October 2026)
+
+Hybrid retrieval (BM25 plus dense vectors, fused with reciprocal-rank fusion) followed by a cross-encoder reranker is the common 2026 default. Anthropic's published test sets show each layer helping (contextual embeddings alone cut failures 35%, adding BM25 49%, adding reranking 67%), and an industry survey reported enterprise intent to adopt hybrid retrieval rising from about 10% to 33% in the first quarter of 2026. Secondary sources put reranking latency at roughly 100 to 150 ms, so rerank only the top 50 to 100 candidates and budget that time. Agentic retrieval, where the model reformulates and searches again, now sits on top; it needs the same permission filtering as the first pass.
 
 ## Common mistakes
 

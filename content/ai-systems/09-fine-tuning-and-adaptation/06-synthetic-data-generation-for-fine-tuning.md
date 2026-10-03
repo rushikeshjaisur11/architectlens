@@ -6,6 +6,8 @@ sources:
   - "Self-Instruct: Aligning Language Models with Self-Generated Instructions (Wang et al., 2022, arXiv:2212.10560)"
   - "Textbooks Are All You Need (Phi model technical report, Gunasekar et al., 2023, arXiv:2306.11644)"
   - "Orca: Progressive Learning from Complex Explanation Traces of GPT-4 (Mukherjee et al., 2023, arXiv:2306.02707)"
+  - "Shumailov et al., 'AI models collapse when trained on recursively generated data', Nature (2024); 2026 mitigation literature (secondary summaries)"
+  - "NVIDIA, Nemotron-4 340B synthetic data pipeline (blogs.nvidia.com), via search results"
 ---
 
 ## Why synthetic data
@@ -28,6 +30,10 @@ Synthetic data inherits and can amplify the generating model's biases, factual e
 - **Always mixing in some real data**: pure-synthetic training sets are riskier than blends; keeping a portion of human-generated or human-verified examples anchors the distribution.
 - **Automated + spot-check human verification**: use a separate model (or rubric-based LLM judge) to filter for correctness at scale, but spot-check a sample manually — automated filters share blind spots with the generator if it's the same model family.
 - **License and terms-of-service awareness**: generating training data from a commercial API's outputs to train a competing or redistributed model is restricted under most major providers' terms of service — this is a real constraint on distillation pipelines, not just a legal footnote.
+
+## Current practice (verified October 2026)
+
+Recursive training on a model's own output can degrade diversity (model collapse); 2026 literature converges on **accumulating** real data alongside synthetic rather than replacing it, keeping a nontrivial real fraction (one line of work cites roughly 20 to 30% or more), and **verifying** generated examples against an external signal (ground truth, execution, a reward model, human review) before training. NVIDIA reported generating over 98% of Nemotron-4 340B's alignment data synthetically with about 20,000 human-annotated examples. Check the generator model's licence for restrictions on training other models.
 
 ## Common mistakes
 

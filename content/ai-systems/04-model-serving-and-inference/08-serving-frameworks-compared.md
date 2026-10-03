@@ -7,6 +7,8 @@ sources:
   - "Hugging Face Text Generation Inference (TGI) documentation"
   - "NVIDIA Triton Inference Server documentation"
   - "SGLang documentation and RadixAttention paper (Zheng et al., 2024)"
+  - "vLLM documentation and blog, docs.vllm.ai and vllm.ai/blog (fetched October 2026)"
+  - "Serving framework comparisons, 2026 (secondary: premai.io, deploybase.ai, yottalabs.ai, tensormesh.ai)"
 ---
 
 ## Why the choice of server matters
@@ -35,6 +37,18 @@ SGLang is built around **RadixAttention**, which generalizes prefix caching usin
 - **Already standardized on Hugging Face tooling**: TGI.
 - **Multi-framework model fleet (not just LLMs), need TensorRT-level single-GPU performance**: Triton.
 - **Heavy structured generation, agent workloads with shared prefixes/branches**: SGLang.
+
+## Current practice (verified October 2026)
+
+Status check, October 2026 (secondary sources, confirm in each project's repository):
+
+- **vLLM** is the default general-purpose engine (continuous batching, PagedAttention, prefix caching, wide hardware support). Its documentation labels prefill/decode disaggregation **experimental**.
+- **SGLang** is favoured for structured generation and agent workloads, with comparison posts reporting higher throughput than vLLM on some H100 tests (for example about 16,200 versus 12,500 tokens per second on a Llama 3.1 8B benchmark); results vary with model and workload.
+- **TensorRT-LLM** extracts peak performance on NVIDIA hardware at the cost of compilation and tighter coupling.
+- **Hugging Face TGI** is **frozen**: reported put into maintenance mode in December 2025 and archived read-only on 21 March 2026, so avoid it for new builds.
+- **Routing and orchestration layers** such as llm-d (a CNCF Sandbox project) add KV-cache-aware routing on top of vLLM, and NVIDIA Dynamo targets the same pattern.
+
+Choose by benchmarking your model, prompt lengths and concurrency, and weigh maintenance health and hardware support as much as peak numbers.
 
 ## Common mistakes
 

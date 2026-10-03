@@ -6,6 +6,7 @@ sources:
   - "ReAct: Synergizing Reasoning and Acting in Language Models (Yao et al., 2022, arXiv:2210.03629)"
   - "Tree of Thoughts: Deliberate Problem Solving with Large Language Models (Yao et al., 2023, arXiv:2305.10601)"
   - "Plan-and-Solve Prompting (Wang et al., 2023, arXiv:2305.04091)"
+  - "Anthropic documentation, extended and adaptive thinking (fetched October 2026)"
 ---
 
 ## Why planning strategy is a separate design choice
@@ -39,6 +40,10 @@ Plan-and-execute (and the related Plan-and-Solve prompting) splits the loop into
 ## Choosing and combining
 
 These aren't mutually exclusive: a common production pattern is plan-and-execute at the top level (decompose the goal into ordered sub-tasks) with a ReAct loop executing each individual sub-task (react to that sub-task's tool results). Reserve Tree-of-Thought for the specific sub-tasks that are genuinely combinatorial and cheaply evaluable — running it over the entire agent loop is usually cost-prohibitive relative to the accuracy gain.
+
+## Current practice (verified October 2026)
+
+Reasoning models change how much explicit planning scaffolding you need. With adaptive thinking and an effort setting, the model decides per request how much to reason, and interleaved thinking lets it reason between tool calls inside one turn, so a ReAct-style loop can be shorter. Keep explicit plan-and-execute structure where you need auditability, resumability (a stored plan survives a crash) or parallel sub-tasks; use model-internal reasoning for local decisions. Measure steps and cost per task, not just success.
 
 ## Common mistakes
 

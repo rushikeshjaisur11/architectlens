@@ -7,6 +7,9 @@ sources:
   - "SGLang: Efficient Execution of Structured Language Model Programs (Zheng et al., 2024 — RadixAttention)"
   - "Anthropic prompt caching documentation (docs.anthropic.com)"
   - "OpenAI prompt caching documentation (platform docs)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
+  - "llm-d project blog, llm-d.ai/blog/kvcache-wins-you-can-see (fetched October 2026)"
+  - "Google Gemini API documentation on implicit and explicit context caching (ai.google.dev, fetched October 2026)"
 ---
 
 ## What's actually being cached
@@ -29,6 +32,10 @@ Anthropic and OpenAI expose prompt caching as an **API-level** feature: mark a p
 ## Why ordering matters so much
 
 Because prefix caching is fundamentally about **exact-match reuse of a prefix**, any content placed before a variable element breaks the cache for that element and everything after it. A request structured as `[variable user query] + [large static system prompt]` gets zero benefit from prefix caching; `[large static system prompt] + [variable user query]` gets full benefit on the static portion. This is a real architectural constraint on prompt design, not just a formatting preference — it directly determines whether caching helps at all.
+
+## Current practice (verified October 2026)
+
+Provider prompt caching, with live numbers: Anthropic writes cache entries at **1.25x** (5-minute lifetime) or **2x** (1-hour) the base input price and reads them at **0.1x** (0.05x on Opus 5.5, 0.025x on Fable 5.1); a 5-minute entry pays for itself after one read, a 1-hour entry after two. Changing the thinking configuration between requests invalidates cache breakpoints. Gemini applies **implicit caching** by default (about 90% off cached input, no storage fee) and offers explicit caching with a storage charge. In your own serving stack, prefix reuse depends on routing: llm-d's benchmark saw p90 time-to-first-token of about 0.54 s with precise prefix-aware routing versus 31 to 95 s without, on the same hardware. Put stable content first and variable content last in every prompt.
 
 ## Common mistakes
 

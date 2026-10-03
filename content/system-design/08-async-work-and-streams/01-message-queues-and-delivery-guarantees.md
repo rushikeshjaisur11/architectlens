@@ -5,6 +5,7 @@ tags: ["messaging", "queues", "async", "distributed-systems"]
 sources:
   - "Kafka documentation on delivery semantics"
   - "AWS SQS documentation on at-least-once delivery and idempotency"
+  - "Apache Kafka KIP-932 'Queues for Kafka' and Kafka 4.1 release notes (via search results, October 2026)"
 ---
 
 ## Why decouple with a queue at all
@@ -43,6 +44,10 @@ Kafka's partitioning model is a common example: ordering is guaranteed within a 
 - **Queue choice**: a partitioned queue (Kafka, or SQS FIFO with per-customer message groups) using `customer_id` as the partition/group key — guarantees ordering within a customer's event stream while letting different customers' events flow through independent partitions concurrently.
 - **Delivery guarantee**: at-least-once (the realistic default), paired with an idempotency key on each event (a unique event ID stored in a processed-events table, checked before applying any charge/refund) — so a redelivered "payment charged" event after a consumer crash doesn't double-charge the customer.
 - **Failure handling**: a dead-letter queue captures events that fail processing repeatedly (e.g., malformed data), so they don't block the rest of that customer's ordered stream indefinitely while still being available for manual investigation.
+
+## Current practice (verified October 2026)
+
+The boundary between logs and queues is blurring: Kafka's share groups (KIP-932, preview in 4.1) add per-message acknowledgement and redelivery to a partitioned log, covering workloads previously sent to RabbitMQ or SQS. The delivery-guarantee rules do not change: at-least-once delivery plus idempotent consumers is the dependable default; use the transactional outbox for publishing from a database.
 
 ## Common mistakes
 

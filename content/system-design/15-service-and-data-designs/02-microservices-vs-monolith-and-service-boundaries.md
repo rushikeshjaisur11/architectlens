@@ -5,6 +5,7 @@ tags: ["microservices", "monolith", "service-design", "architecture"]
 sources:
   - "Sam Newman, 'Building Microservices' (2015)"
   - "Martin Fowler, 'MonolithFirst' (martinfowler.com)"
+  - "Istio documentation, ambient mode (GA in Istio 1.24, November 2024), istio.io; service mesh comparisons, 2026 (secondary)"
 ---
 
 ## Why this is a genuine tradeoff, not a settled "microservices are modern" default
@@ -38,6 +39,10 @@ When splitting is genuinely warranted, service boundaries should generally align
 - **Start as a well-modularized monolith**, with clear internal module boundaries (order management, payment processing, inventory) even though it deploys as a single unit — this gets the team fast iteration speed and operational simplicity appropriate for a single small team's current actual needs, while the clear internal modularity (following bounded-context reasoning even within the monolith) keeps a future split feasible if and when it's actually warranted, rather than needing a full rewrite at that point.
 - **Split out a specific service only once a concrete driver emerges** — say, once the company has grown enough that a dedicated payments team needs to deploy payment-related changes independently of the broader engineering team's release cadence, or once the image-processing/recommendation workload genuinely needs independent scaling from the rest of the system's more moderate, steadier load — each split justified by an actual observed organizational or technical need, not undertaken preemptively based on an assumption that microservices are simply the more mature end-state to build toward from day one.
 - **The eventual payments-service split follows the monolith's existing internal module boundary**, since that boundary was already drawn along genuine bounded-context lines rather than an arbitrary technical seam — making the actual extraction meaningfully more straightforward than it would have been if the original monolith's internal structure hadn't already respected domain boundaries.
+
+## Current practice (verified October 2026)
+
+Operational cost is part of the boundary decision. A fleet of services usually needs service discovery, mTLS and uniform retries and telemetry; sidecar meshes added a proxy per pod, and sidecar-less designs (Istio ambient mode, GA in November 2024, and Cilium's eBPF approach) reduce that overhead. See the service mesh lesson; for a handful of services a library, an ingress and Kubernetes network policy are often enough.
 
 ## Common mistakes
 

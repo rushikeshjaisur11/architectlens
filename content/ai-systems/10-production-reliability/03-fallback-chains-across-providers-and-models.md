@@ -6,6 +6,8 @@ sources:
   - "OpenRouter documentation on model routing and fallbacks (openrouter.ai/docs)"
   - "AWS Well-Architected Framework, Reliability Pillar (aws.amazon.com)"
   - "Martin Fowler, CircuitBreaker pattern (martinfowler.com)"
+  - "Amazon Bedrock cross-Region inference documentation (aws.amazon.com), via search results (October 2026)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
 ---
 
 ## Why single-provider dependency is a production risk
@@ -40,6 +42,10 @@ Without a circuit breaker, a degraded (not fully down) provider that responds sl
 ## Quality drift across the chain
 
 The fallback model is rarely identical in behavior to the primary. A smaller or different-family model may have a shorter effective context window, weaker instruction-following, or different tool-calling reliability. Silently serving fallback responses as if they were primary-quality output erodes trust when quality is inconsistent and nobody downstream can tell which model produced which answer. Log which model in the chain actually served each response, and consider surfacing degraded-mode responses distinctly (a banner, a confidence flag) rather than passing them through indistinguishably — especially for chains that fall back to a materially weaker model.
+
+## Current practice (verified October 2026)
+
+The same model families are now reachable through several distribution paths (vendor API, Bedrock, Vertex AI, Azure), which gives fallback routes that survive a single-vendor incident, though Bedrock lacks some tools such as hosted web search. Fallback changes behaviour: keep a prompt and evaluation result per model, cap fallback spend, prefer a smaller model of the same family for degraded mode, and test failover in game days. Regional endpoints add about 10% on clouds and `inference_geo: "us"` adds 1.1x on Anthropic's API, so data-residency fallbacks have a price.
 
 ## Common mistakes
 

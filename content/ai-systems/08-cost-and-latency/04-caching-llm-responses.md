@@ -5,6 +5,8 @@ tags: ["caching", "cost", "latency", "llm"]
 sources:
   - "GPTCache and semantic-caching library documentation"
   - "Redis documentation on semantic caching patterns for LLM applications"
+  - "Secondary reports on semantic cache hit rates and AWS-published chatbot research, 2026 (futureagi.com, spheron.network, getmaxim.ai)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
 ---
 
 ## Two different kinds of caching for LLM applications
@@ -37,6 +39,10 @@ Ordinary API response caching (covered in the system-design track's caching less
 - **Account-specific questions are explicitly excluded from caching** ("what's the status of my order") — these depend on the individual user's data at request time, so even an exact text match wouldn't imply the same correct answer for two different users, making response caching actively wrong here rather than merely unhelpful.
 - **A moderate-conservative similarity threshold** is chosen for the cacheable policy-question category, tuned against a labeled set of query pairs (some genuinely equivalent, some subtly different) to find a threshold that catches real paraphrases without conflating genuinely different questions — validated the same way the embedding-model lesson's evaluation methodology recommends, not set by a guessed default.
 - **TTL on cached policy answers** ensures a policy change (a new stated return window, for instance) propagates within a bounded time, rather than the cache silently serving an outdated policy indefinitely.
+
+## Current practice (verified October 2026)
+
+Distinguish provider **prompt caching** (reuse a processed prefix; reads at about 10% of input on Anthropic), serving-stack **KV-prefix caching**, and **semantic caching** (return a stored answer for a similar question, skipping the model). Practitioner reports put tuned semantic caches at about 25 to 45% hit rates (30 to 60% for FAQ and support traffic), with hits returning in roughly 5 to 20 ms; AWS-published research on real chatbot queries reported far higher best-case rates. Only semantic caching can return a wrong answer, so key it by tenant, permissions, model, prompt version and retrieval snapshot, keep TTLs short for volatile facts, and track wrong-hit rate through sampled review.
 
 ## Common mistakes
 

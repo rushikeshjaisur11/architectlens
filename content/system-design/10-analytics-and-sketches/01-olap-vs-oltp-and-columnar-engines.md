@@ -7,6 +7,7 @@ sources:
   - "ClickHouse documentation — MergeTree engine and columnar storage"
   - "Ralph Kimball & Margy Ross, 'The Data Warehouse Toolkit' (star schema and dimensional modeling)"
   - "Google BigQuery documentation — Materialized views"
+  - "Apache Iceberg v3 specification and lakehouse comparisons, 2026 (secondary: bigdataboutique.com, databricks.com blog)"
 ---
 
 ## OLTP and OLAP are optimized for opposite access patterns
@@ -35,6 +36,10 @@ This is a deliberate departure from OLTP's normalized (3NF) modeling. Dimension 
 A **materialized view** pre-computes and physically stores the result of a query — typically an aggregation over the fact table — so subsequent reads hit the stored result instead of re-scanning and re-aggregating raw rows. BigQuery's materialized views and ClickHouse's `MATERIALIZED VIEW` (commonly paired with `AggregatingMergeTree`) both support **incremental refresh**: as new rows land in the base table, only the delta is merged into the view's stored aggregate rather than recomputing from scratch.
 
 This is the standard technique for serving high-QPS dashboards off a warehouse: run the expensive rollup once (or incrementally, continuously), and let dashboard queries read a small pre-aggregated table instead of re-scanning raw fact data on every page load. The trade-off is staleness (bounded by refresh interval or lag) and storage cost for the precomputed result.
+
+## Current practice (verified October 2026)
+
+Analytics increasingly runs on **lakehouse table formats** over object storage. Iceberg v3 (ratified in 2025, per secondary sources) added deletion vectors, row lineage, a variant type for semi-structured data and geospatial types, and an open REST catalog lets several engines share tables; Delta Lake is the main alternative, with 2026 write-ups describing convergence between them. See the lakehouse lesson for compaction, snapshot expiry and catalog design.
 
 ## Common mistakes
 

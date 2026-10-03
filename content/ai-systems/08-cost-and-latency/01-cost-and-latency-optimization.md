@@ -5,6 +5,8 @@ tags: ["cost", "latency", "llm", "optimization"]
 sources:
   - "OpenAI and Anthropic pricing and prompt-caching documentation"
   - "vLLM and TensorRT-LLM documentation on serving-level cost/latency tradeoffs"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
+  - "Google Gemini API pricing, ai.google.dev/gemini-api/docs/pricing (fetched October 2026)"
 ---
 
 ## Why LLM cost and latency need explicit design attention
@@ -42,6 +44,10 @@ Total latency in an LLM application usually breaks down into: time to first toke
 - **Auto-suggested reply (latency-critical, shown live):** a smaller, faster model, with a short, tightly-scoped prompt (recent conversation only, not the full history) and streaming enabled, since perceived responsiveness matters far more here than using the most capable model available.
 - **End-of-conversation summary (cost matters more than latency):** the larger model, since a summary generated once per closed ticket is far lower volume than every keystroke-triggered suggestion, and quality matters more when a human will read and act on it later — routing by task type rather than using one model uniformly across both paths.
 - **Prompt caching**: the system prompt and any shared context (product documentation excerpts used across all support tickets) are placed first in every prompt, structured deliberately so they're cached across the high-volume auto-suggest calls, where the cost savings compound the most given the call volume.
+
+## Current practice (verified October 2026)
+
+Live levers (October 2026; prices change, so keep them as data): cache reads cost about **10%** of input (5% on Opus 5.5, 2.5% on Fable 5.1) with 1.25x or 2x write premiums; **Batch** is 50% off input and output and stacks with caching; Gemini offers implicit caching by default; data-residency options add about 10% (regional cloud endpoints) or 1.1x (Anthropic `inference_geo: "us"`). Output costs about 5x input per token, so cap and structure output first. A 1M-token window is billed at the standard rate on current Claude models, which changes "stuff versus retrieve" into a quality and latency decision. Worked cost: 3,000 input tokens (2,500 cached) plus 400 output tokens on a $2/$10 model is about $0.0055 per turn, versus about $0.010 uncached.
 
 ## Common mistakes
 

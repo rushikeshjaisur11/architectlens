@@ -5,6 +5,7 @@ tags: ["messaging", "kafka", "pulsar", "distributed-systems", "streaming"]
 sources:
   - "Apache Kafka documentation (kafka.apache.org) — design and implementation"
   - "Apache Pulsar documentation (pulsar.apache.org) — architecture overview"
+  - "Apache Kafka 4.0 release announcement (March 2025) and Kafka 4.1 upgrade notes, kafka.apache.org (via search results, October 2026)"
 ---
 
 ## The log as the core abstraction
@@ -34,6 +35,10 @@ Pulsar tracks position differently: rather than a consumer-managed offset, each 
 - Both read the same topic through **separate consumer groups** (`inventory-service` and `analytics-loader`), each maintaining its own offsets — the analytics loader can fall behind by hours without affecting inventory reservation's near-real-time consumption.
 - Within `inventory-service`, running 3 consumer instances against 6 partitions, Kafka assigns 2 partitions per instance; if one instance crashes, a rebalance reassigns its 2 partitions across the remaining 2 instances, briefly pausing consumption during reassignment.
 - Because partitioning is by `customer_id`, all of one customer's order events land in the same partition and are guaranteed to be processed in order — critical for not reserving inventory against a canceled order.
+
+## Current practice (verified October 2026)
+
+Current state: **Apache Kafka 4.0 (18 March 2025) removed ZooKeeper entirely**; KRaft, Kafka's Raft-based controller quorum, is the only metadata mode, so older descriptions of ZooKeeper-managed clusters apply to earlier versions only. **KIP-932 share groups ("queues for Kafka")** let several consumers read from the same partition with per-message acknowledgement, giving a native work-queue model; they were early access in 4.0 and promoted to preview in 4.1 (September 2025). Plan upgrades through the supported KRaft migration path and confirm share-group maturity before relying on it in production.
 
 ## Common mistakes
 

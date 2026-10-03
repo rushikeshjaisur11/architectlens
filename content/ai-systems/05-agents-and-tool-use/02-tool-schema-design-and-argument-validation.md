@@ -6,6 +6,8 @@ sources:
   - "OpenAI Function Calling documentation (platform.openai.com)"
   - "Anthropic Tool Use documentation (docs.anthropic.com)"
   - "JSON Schema specification (json-schema.org)"
+  - "Anthropic pricing documentation, tool use overhead (fetched October 2026)"
+  - "Anthropic Engineering, 'Effective context engineering for AI agents', anthropic.com/engineering (fetched October 2026)"
 ---
 
 ## The tool definition is a prompt, not just an API contract
@@ -34,6 +36,10 @@ Constrained decoding reduces malformed output; it does not eliminate the need fo
 ## Versioning and drift
 
 Tool schemas change as APIs evolve, but agents in production may have cached prompts, few-shot examples, or fine-tuned routing behavior built against an older schema shape. Renaming a parameter or changing an enum value is a breaking change for the agent the same way it is for a client library — bump the tool name or version it explicitly (`create_order_v2`) rather than silently mutating the schema underneath a name the model has already learned to trust from few-shot examples in the system prompt.
+
+## Current practice (verified October 2026)
+
+Every tool definition costs input tokens on every request: Anthropic lists a fixed tool-use system prompt of a few hundred tokens per request on current models, and computer-use and browser toolsets add roughly 4,500 and 6,600 input tokens. Anthropic's guidance is to keep toolsets small and unambiguous ("if a human engineer can't say which tool applies, the model can't either") and to return token-lean results. Validate arguments server-side against the schema and against business rules; the model's JSON is untrusted input.
 
 ## Common mistakes
 

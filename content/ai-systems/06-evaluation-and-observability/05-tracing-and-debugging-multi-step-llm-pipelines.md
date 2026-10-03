@@ -5,6 +5,7 @@ tags: ["observability", "tracing", "debugging", "llm"]
 sources:
   - "OpenTelemetry documentation on distributed tracing concepts"
   - "LangSmith and Langfuse documentation on LLM application tracing"
+  - "OpenTelemetry GenAI semantic conventions (moved to open-telemetry/semantic-conventions-genai; fetched October 2026)"
 ---
 
 ## Why multi-step LLM systems need tracing, not just logging
@@ -38,6 +39,10 @@ A wrong final output in a multi-step pipeline could stem from several genuinely 
 - **The trace shows**: a `get_order(order_id)` tool call that returned correct order data, followed by a `check_refund_policy` tool call that returned an outdated policy document (the actual current policy had been updated, but the tool's underlying data source hadn't been refreshed), followed by the agent correctly reasoning from that (incorrect) policy data to compute a refund amount that was correct *given the stale policy it was shown*, but wrong given the actual current policy.
 - **Without the trace**, this would likely have been misdiagnosed as "the agent reasoned incorrectly" and led to unproductive prompt-tuning efforts — the trace makes clear the agent's reasoning was actually sound given its inputs, and the real defect is in the tool's data freshness, a completely different fix (updating the data refresh pipeline) than what a "the model is confused" diagnosis would have led to.
 - **This finding also becomes a permanent eval case** (per this track's evaluation lesson) — a regression test ensuring the refund-policy tool's data freshness is checked, preventing the same category of failure from recurring silently.
+
+## Current practice (verified October 2026)
+
+OpenTelemetry's GenAI semantic conventions now cover inference, agent, tool and MCP spans, but community analysis in July 2026 reports every `gen_ai.*` attribute still has **Development** (not Stable) status after the June 2026 move to a dedicated repository. Instrument with OpenTelemetry for vendor neutrality, wrap attribute names in one adapter, capture prompt and completion text only behind a redacting flag, and propagate trace context across agents and MCP calls.
 
 ## Common mistakes
 

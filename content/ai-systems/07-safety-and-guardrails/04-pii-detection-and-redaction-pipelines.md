@@ -6,6 +6,7 @@ sources:
   - "Microsoft Presidio (open-source PII detection/anonymization engine)"
   - "NIST SP 800-122: Guide to Protecting the Confidentiality of PII"
   - "Google Cloud Data Loss Prevention (DLP) API documentation"
+  - "EDPB Opinion 28/2024 on AI models and personal data (via law-firm summaries); OWASP LLM02 Sensitive Information Disclosure"
 ---
 
 ## Why LLM pipelines need their own PII layer
@@ -31,6 +32,10 @@ Detecting a span is only half the pipeline — what you do with it matters for b
 ## Placement in the request pipeline
 
 PII guardrails need to run at **input** (before the prompt reaches the model or gets logged), **output** (before a completion is returned or stored), and **at rest** (scanning logs, traces, and eval datasets that accumulated raw prompts before a guardrail existed). A common miss: teams redact live traffic but forget that their observability/tracing pipeline (LangSmith, Datadog, custom logging) captured the raw, unredacted prompt before redaction ran, creating a second, unguarded copy of the same PII.
+
+## Current practice (verified October 2026)
+
+The EDPB's December 2024 opinion treats a model that can emit personal data about people whose data trained it as **not anonymous**, and stresses documentation and lawful basis; do not assume fine-tuning on redacted text is risk-free. Redact at the gateway before provider calls, treat traces and logs as the main leak path (OWASP LLM02), support erasure across prompts, memory, vector indexes and training sets, and keep pseudonym mapping tables inside your boundary.
 
 ## Common mistakes
 

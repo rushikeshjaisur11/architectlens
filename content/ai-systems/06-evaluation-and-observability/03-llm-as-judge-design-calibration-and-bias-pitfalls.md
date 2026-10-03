@@ -6,6 +6,7 @@ sources:
   - "Zheng et al., \"Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena\" (2023)"
   - "OpenAI Evals documentation (github.com/openai/evals)"
   - "Anthropic Prompt Engineering: evaluating outputs (docs.anthropic.com)"
+  - "LLM-as-judge studies and guides, 2026 (arXiv 2606.19544 'Reliability without Validity'; arXiv 2608.25869 on anchoring; secondary: futureagi.com)"
 ---
 
 ## Why use a model as the judge
@@ -34,6 +35,10 @@ A judge prompt that isn't calibrated produces scores that don't track ground tru
 - **Length bias**: judges (and humans) tend to rate longer, more detailed answers higher even when the extra content is padding rather than substance. Explicitly instruct the judge to penalize unnecessary verbosity, or normalize by including length-matched examples in a few-shot prompt.
 - **Self-preference bias**: a model judging outputs including its own family's generations rates them higher than outputs from other model families, even at equal quality — documented in the MT-Bench paper. Using a different model as judge than the one under test reduces this, though it doesn't eliminate style-similarity effects.
 - **Sycophancy toward confident-sounding text**: judges tend to reward assertive phrasing over hedged, accurate phrasing, since fluency is easier to detect than factual correctness. This is why reference-guided grading matters more than the judge's raw capability.
+
+## Current practice (verified October 2026)
+
+2026 work sharpens three cautions. **Consistency is not validity**: a judge that agrees with itself may still not measure what you care about (arXiv 2606.19544). **Anchoring**: showing a judge prior scores changes its verdicts (arXiv 2608.25869), so keep judgements independent. **Drift**: practitioner guides report judges drifting within 60 to 90 days, so schedule recalibration. The working checklist: locked rubric, human-labelled calibration set with reported agreement, order-swapped pairwise comparisons, a cross-family judge check, confidence intervals on scores.
 
 ## Common mistakes
 

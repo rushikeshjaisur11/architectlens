@@ -5,6 +5,7 @@ tags: ["indexing", "sql", "performance", "databases"]
 sources:
   - "PostgreSQL documentation on index types (B-Tree, GIN, GiST, BRIN)"
   - "Use The Index, Luke! (Markus Winand's indexing reference)"
+  - "PostgreSQL 18 release notes (September 2025), postgresql.org (via secondary summaries, October 2026)"
 ---
 
 ## Why a primary key index alone isn't enough
@@ -38,6 +39,10 @@ Every index added speeds up the queries it serves, but also adds write cost (eve
 - **Composite index on `(customer_id, created_at)`** directly serves the first access pattern — `customer_id` first since queries always filter by it, `created_at` second to support the sort-by-date requirement within a customer's orders using the same index, avoiding a separate sort step after the index lookup.
 - **A covering index on `(status, created_at)` including the `id` column** serves the frequently-run dashboard query, letting it satisfy the count-by-status query entirely from the index without a bookmark lookup back to the full row — justified specifically because this query runs often enough (a live dashboard) that the extra index storage and write cost is worth the query speedup.
 - **No index added for a rarely-run ad hoc reporting query** filtering on a different, uncommon column combination — since that query runs infrequently, the write-cost tradeoff of adding a dedicated index for it isn't judged worthwhile; an occasional full-scan cost for a rare query is accepted rather than paying ongoing write overhead for every order insert to support a query that runs once a quarter.
+
+## Current practice (verified October 2026)
+
+PostgreSQL 18 added **skip scan**, which lets a multicolumn B-tree index serve queries that omit the leading column when that column has few distinct values, narrowing the cases where you need a separate index; it also introduced an asynchronous I/O subsystem (reported to speed sequential and bitmap scans and vacuum substantially). Verify with `EXPLAIN (ANALYZE, BUFFERS)` on your own workload before dropping indexes, since skip scan helps only low-cardinality leading columns.
 
 ## Common mistakes
 

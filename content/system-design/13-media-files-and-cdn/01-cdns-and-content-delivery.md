@@ -5,6 +5,7 @@ tags: ["cdn", "media", "caching", "performance"]
 sources:
   - "Cloudflare Learning Center documentation on CDN architecture"
   - "Netflix Technology Blog, posts on Open Connect CDN architecture"
+  - "HTTP/3 and QUIC adoption statistics, 2026 (secondary: W3Techs, Cloudflare Radar via technologychecker.io and wmtips.com)"
 ---
 
 ## Why serving media directly from your origin server doesn't scale
@@ -43,6 +44,10 @@ Video adds a layer CDNs for static files don't need to handle: network condition
 - **Catalog content → pull CDN with long TTLs and versioned segment URLs.** Content is stable once encoded, so a pull model (caching on first request per region) works fine, and adaptive-bitrate segments are cached aggressively since they never change once published — no invalidation complexity needed for this path.
 - **Live events → different handling entirely.** Live video can't be pre-cached (it doesn't exist yet), so the CDN here is really relaying near-real-time segments as they're produced, with very short cache TTLs (seconds, matching segment duration) rather than the long TTLs appropriate for stable catalog content — the caching strategy has to match the actual freshness requirement of the content, not be applied uniformly across very different content types.
 - **Geographic distribution**: both cases benefit from edge locations close to viewers, but live events concentrate load in a short, sharp burst around the event's actual airtime, while catalog content has a steadier, more spread-out access pattern — a detail that matters for capacity planning even though both ultimately use the same underlying CDN infrastructure.
+
+## Current practice (verified October 2026)
+
+HTTP/3 over QUIC is mainstream at the edge: measurements in 2026 vary by method (about 39% of websites support it per W3Techs; about 21% of page loads and about 35% of Cloudflare edge traffic use it, and over half of the top 1,000 sites). QUIC helps most on lossy and mobile networks because loss on one stream no longer blocks others and connection migration survives network changes. Enable it at the CDN, keep HTTP/2 fallback, and measure real-user latency by network type before and after.
 
 ## Common mistakes
 

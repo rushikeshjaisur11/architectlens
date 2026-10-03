@@ -5,6 +5,7 @@ tags: ["apis", "idempotency", "reliability", "protocols"]
 sources:
   - "Stripe API documentation on idempotent requests"
   - "RFC 7231, section 4.2.2 (HTTP method idempotency definitions)"
+  - "IETF HTTPAPI working group, 'The Idempotency-Key HTTP Header Field', draft-ietf-httpapi-idempotency-key-header (draft 07, October 2025), datatracker.ietf.org (via search results, October 2026)"
 ---
 
 ## What idempotency actually means
@@ -35,6 +36,10 @@ Storing "which idempotency keys have been processed, and what was the resulting 
 - **Without an idempotency key**: the client has no safe choice. Retrying risks a double charge if the original request actually succeeded server-side before the response was lost; not retrying risks the customer never being charged if the original request actually failed. Either way, the client is guessing.
 - **With an idempotency key**: the client generates one key for this logical charge attempt and includes it on both the original request and any retry. If the original request already succeeded, the server sees the repeated key, skips re-charging, and returns the same success response as before — the client can retry freely and safely, with the server guaranteeing the charge only happens once regardless of how many times the same key arrives.
 - **The key's scope matters**: it needs to be unique per logical operation (one key per distinct $50 charge intent), not reused across genuinely different charges — reusing a key for a different, later purchase would incorrectly return the first charge's cached response instead of processing the new one.
+
+## Current practice (verified October 2026)
+
+The `Idempotency-Key` header, long a vendor convention (popularised by payment APIs), is being standardised by the IETF HTTPAPI working group. As of the latest draft found (draft-07, October 2025, standards-track intent, still an Internet-Draft rather than an RFC) it is an Item Structured Header (RFC 8941) whose uniqueness is defined by the resource owner and implemented by clients, with a UUID or similar random id recommended. Practical rules unchanged: store the key with the request fingerprint and the first response, return the stored response on a replay, reject a reused key with a different payload, and expire keys on a documented schedule. Check the draft's current state before citing it as a standard.
 
 ## Common mistakes
 

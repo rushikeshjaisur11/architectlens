@@ -5,6 +5,7 @@ tags: ["reliability", "load-balancing", "operations", "availability"]
 sources:
   - "NGINX documentation on load balancing algorithms"
   - "Google SRE Book, chapter on load balancing at the frontend and backend"
+  - "Amazon Web Services, 'Summary of the Amazon DynamoDB Service Disruption in the Northern Virginia (US-EAST-1) Region' (October 2025), aws.amazon.com/message/101925 (fetched October 2026)"
 ---
 
 ## What a load balancer is actually for
@@ -44,6 +45,10 @@ Most modern application load balancers (AWS ALB, NGINX in HTTP mode) operate at 
 - **Least-connections routing** among the remaining 9 healthy servers ensures the temporarily reduced capacity is distributed evenly rather than round-robin blindly sending equal load to servers that might already be handling longer-running requests.
 - **Passive health checks** act as a backstop — even if the active `/health` endpoint doesn't perfectly capture the memory-leak symptom, real request failures against that server will eventually trigger passive removal too, giving the system two independent detection paths rather than relying on one.
 - Once the leaking server is restarted (by an auto-remediation process or manual intervention) and passes health checks again, it's automatically added back into rotation — the whole cycle requiring no manual load-balancer reconfiguration.
+
+## Current practice (verified October 2026)
+
+Health checks can amplify an outage. In the October 2025 AWS incident, delays in propagating network configuration made Network Load Balancer health checks fail, triggering automatic failovers that removed healthy capacity; AWS listed velocity controls (limits on how much capacity health-check failover may remove at once) among its fixes. Add a floor ("never mark more than X% unhealthy"), distinguish a failing backend from a failing check path, and prefer gradual ejection with recovery slow-start.
 
 ## Common mistakes
 

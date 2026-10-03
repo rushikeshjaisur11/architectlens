@@ -5,6 +5,7 @@ tags: ["mcp", "agents", "tool-use", "protocols"]
 sources:
   - "Model Context Protocol specification, architecture overview (modelcontextprotocol.io)"
   - "Anthropic announcement of the Model Context Protocol (November 2024)"
+  - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched October 2026)"
 ---
 
 ## The integration problem MCP exists to solve
@@ -56,6 +57,19 @@ MCP standardizes the *plumbing*. It does not make a tool safe, make the model ch
 - **Without MCP**, they write two integrations, one per application, with separate auth handling and separate schemas.
 - **With MCP**, they write one issue-tracker server that exposes a read-only `search_issues` tool and an `issue` resource. Both applications connect to it as clients.
 - **Safety choices made at the host:** the support agent is given only the read-only tools; creating or closing issues is a separate server, enabled only in the IDE assistant and gated behind a user confirmation. The server's tool descriptions are reviewed like code, since they flow straight into the model's context.
+
+## Current practice (verified October 2026)
+
+The protocol changed materially in the **2026-07-28 specification** (check which revision your SDK and servers implement; older descriptions above of an initialisation handshake and long-lived sessions apply to earlier versions).
+
+- **Stateless core.** The `initialize` and `initialized` exchange and the `Mcp-Session-Id` header are gone; each request carries its protocol version, client identity and capabilities in `_meta`, so servers run behind ordinary round-robin load balancers with no shared session store.
+- **Multi Round-Trip Requests.** A server that needs input mid-call returns `resultType: "input_required"`; the client retries with `inputResponses`. This replaces server-initiated requests that needed an open stream and suits mid-call confirmations.
+- **Header-based routing.** HTTP requests carry `Mcp-Method` and `Mcp-Name` headers so gateways and WAFs can route, meter and authorise without parsing JSON bodies.
+- **Cacheable lists.** Tool, prompt and resource list results carry `ttlMs` and `cacheScope` so clients can cache catalogues safely.
+- **Authorisation hardening.** RFC 9207 issuer validation before code redemption, credentials bound to the issuing authorisation server, and a formal shift from Dynamic Client Registration toward Client ID Metadata Documents.
+- **Extensions.** Tasks (long-running calls with poll-based status), MCP Apps and **Enterprise Managed Authorization** are formal extensions. Roots, Sampling and Logging are deprecated with a twelve-month minimum support window, and legacy HTTP+SSE transport is deprecated.
+
+Operationally: stateless servers scale horizontally, authorisation is checked per request, and gateways become the natural policy point.
 
 ## Common mistakes
 

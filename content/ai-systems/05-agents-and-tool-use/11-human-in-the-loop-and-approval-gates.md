@@ -6,6 +6,8 @@ sources:
   - "LangGraph human-in-the-loop documentation (langchain-ai.github.io/langgraph)"
   - "Anthropic: Building Effective AI Agents (anthropic.com/research)"
   - "OWASP Top 10 for LLM Applications (owasp.org)"
+  - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched October 2026)"
+  - "OWASP Top 10 for Agentic Applications 2026 (December 2025), via secondary summaries"
 ---
 
 ## Why autonomy needs a throttle, not an on/off switch
@@ -31,6 +33,10 @@ An approval gate is only as good as what it shows the human. Presenting a raw to
 ## Interaction with self-correction and retries
 
 Approval gates and self-correction loops (see failure recovery) need to compose carefully: if a rejected or failed action triggers an automatic retry with modified arguments, that retry should generally re-enter the approval gate rather than bypass it — otherwise a human's rejection of one specific action can be silently circumvented by the agent's own retry logic proposing a slightly different version of the same risky action.
+
+## Current practice (verified October 2026)
+
+Two 2026 developments make approvals easier to build correctly. MCP's **Multi Round-Trip Requests** let a tool pause with `input_required` and resume when the human answers, without holding a stream open; durable-execution engines let a workflow wait days for an approval at no compute cost. Render the confirmation from the **real parameters in your code**, not from the model's description, and record who approved what. OWASP's agentic list names human-agent trust exploitation as a risk, so show evidence, not just a verdict, and sample approvals for rubber-stamping.
 
 ## Common mistakes
 

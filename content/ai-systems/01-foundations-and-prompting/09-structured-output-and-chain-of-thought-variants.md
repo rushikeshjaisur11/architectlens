@@ -5,6 +5,8 @@ tags: ["prompting", "structured-output", "chain-of-thought", "llm"]
 sources:
   - "OpenAI documentation on structured outputs and JSON mode"
   - "Wei et al., 'Chain-of-Thought Prompting Elicits Reasoning in Large Language Models' (2022); Wang et al., 'Self-Consistency Improves Chain of Thought Reasoning' (2022)"
+  - "Anthropic documentation, 'Extended thinking' (fetched October 2026)"
+  - "DeepSeek-AI, 'DeepSeek-R1' (arXiv 2501.12948)"
 ---
 
 ## Why "return JSON" alone isn't reliable enough for production
@@ -36,6 +38,10 @@ Every technique beyond basic prompting (self-consistency's multiple samples, tre
 - **Order extraction → constrained decoding.** The target structure is fully known and fixed ahead of time (a JSON schema for order data), so constraining generation to that schema directly eliminates the malformed-output failure mode this track's production-reliability lesson covers as a "soft failure" — no need for a corrective retry loop for structural errors, since they're structurally impossible under constrained decoding.
 - **Math tutoring → self-consistency, layered on basic chain-of-thought.** Getting the final numeric answer right matters directly to the product's value (a tutoring tool giving a wrong answer undermines trust badly), and math problems often have a clear, checkable correct answer, making them a good fit for self-consistency's majority-vote approach — the added cost of a few extra generations per problem is judged worth it given how directly answer correctness matters to this specific product.
 - **Why tree-of-thoughts wasn't used here**: the math problems in question are within basic chain-of-thought's range of reliable performance once combined with self-consistency: the added branching-exploration cost of tree-of-thoughts wasn't judged necessary for this specific problem difficulty level, illustrating that even among these techniques, matching complexity to actual need (not defaulting to the most sophisticated available option) is the right default reasoning.
+
+## Current practice (verified October 2026)
+
+Chain-of-thought prompting ("think step by step") is now partly built into the model. Reasoning models generate their own long chain of thought, and APIs expose it as thinking blocks, often as a **summary** rather than the raw text. Practical consequences: do not paste "think step by step" into prompts for reasoning models (it can duplicate work and cost); ask for the final answer in a schema and let the model reason internally; and never build features that parse the thinking text, since its format and availability change between versions. Use explicit step-by-step prompting for non-reasoning models, or where you need visible, auditable intermediate steps that you control.
 
 ## Common mistakes
 

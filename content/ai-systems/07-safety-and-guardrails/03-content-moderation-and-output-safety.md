@@ -5,6 +5,8 @@ tags: ["safety", "content-moderation", "guardrails", "llm"]
 sources:
   - "OpenAI Moderation API documentation"
   - "Anthropic documentation on usage policies and safety classifiers"
+  - "EU Digital Services Act (Regulation (EU) 2022/2065) and Commission transparency-reporting pages (via search results, October 2026)"
+  - "EU AI Omnibus summary, Gibson Dunn (fetched October 2026)"
 ---
 
 ## Why output safety is a separate concern from prompt injection
@@ -37,6 +39,10 @@ When a model appropriately declines to answer (a request outside its intended sc
 - **Output moderation** runs the same classifier on generated content as a backstop, catching the rarer case where a seemingly benign creative-writing request leads to genuinely inappropriate content in the output.
 - **A deliberately calibrated threshold, not a blanket ban on serious themes**: since fiction legitimately explores difficult subjects (conflict, loss, moral complexity) without being harmful, the moderation threshold is tuned to catch clearly disallowed content categories specifically, rather than any mention of a serious theme — an overly blunt filter here would block a large amount of legitimate creative writing for no actual safety benefit, which is exactly the over-triggering failure mode keyword-based approaches are especially prone to.
 - **Refusals, when they do happen**, are designed to briefly explain the boundary and suggest an alternative direction, rather than a bare "I can't help with that" — treated as a product-quality concern distinct from the underlying safety mechanism that triggered the refusal.
+
+## Current practice (verified October 2026)
+
+In the EU, DSA duties shape moderation systems: statements of reasons for restrictions, submission to the Commission's transparency database, explanation of automated moderation in terms and conditions, and harmonised transparency reports (first published February 2026). The AI Act's Article 50 transparency duties started **2 August 2026** (generated content must be marked, with a watermarking grace period to 2 December 2026), and a new prohibition covers non-consensual intimate imagery and child sexual abuse material. Log every decision with policy id, evidence, automation level and a generated user-facing reason, and provide appeals with human review.
 
 ## Common mistakes
 

@@ -7,6 +7,8 @@ sources:
   - "Switch Transformer: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity (Fedus et al., 2021)"
   - "Mixtral of Experts (Jiang et al., 2024)"
   - "RouteLLM: Learning to Route LLMs with Preference Data (Ong et al., 2024)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
+  - "Google Gemini API pricing (fetched October 2026)"
 ---
 
 ## Two different problems called "routing"
@@ -34,6 +36,10 @@ This is a **training-time and architecture-level** decision, not something a ser
 ## When to use which
 
 Cascades are a **product/cost engineering** decision — apply them when a large fraction of real traffic is genuinely easy and a cheaper model can handle it, and you're willing to own a router's failure modes. MoE routing is a **model architecture** decision made upstream; a serving team's job is choosing infrastructure (memory, parallelism strategy) that matches an MoE model's activation pattern, not building the routing logic itself.
+
+## Current practice (verified October 2026)
+
+Price spreads make routing worthwhile. Anthropic lists Haiku 4.5 at $1/$5 per million tokens, Sonnet 5.5 at $2/$10, Opus 5.5 at $4/$20 and a top tier at $10/$50; Gemini lists a Flash model at $0.75/$3.75 (introductory through 31 December 2026, then doubling) and Flash-Lite at $0.30/$2.50. Batch discounts (50%) and cache reads (about 10% of input) stack on top. Evaluate each route on your labelled set, include the cost of a wrong answer, and re-run the analysis when a provider reprices or a new generation lands: the best cheap model changes every few months.
 
 ## Common mistakes
 

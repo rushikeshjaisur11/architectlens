@@ -5,6 +5,7 @@ tags: ["vector-search", "quantization", "memory", "embeddings"]
 sources:
   - "Jégou, Douze & Schmid, 'Product Quantization for Nearest Neighbor Search' (2011)"
   - "Faiss documentation on quantization and index compression"
+  - "pgvector documentation (halfvec and bit types) and Aurora pgvector binary quantization guidance, AWS Database Blog (via search results, October 2026)"
 ---
 
 ## Why memory becomes the real bottleneck at large scale
@@ -37,6 +38,10 @@ This track's vector-search lesson mentioned IVF-PQ as a common combination: IVF 
 - **PQ codebooks are trained on a representative sample** of the actual product embedding distribution (not a synthetic or unrelated sample), specifically because codebook quality directly determines compression quality for the real data it will later be applied to.
 - **Recall is validated against a labeled eval set** (following the methodology from this track's embedding-model-evaluation lesson) comparing full-precision and PQ-compressed retrieval on the same queries, confirming the compression's recall impact is acceptable for this product's actual quality bar before committing to it in production — not assumed acceptable purely from the compression ratio looking reasonable on paper.
 - **A two-stage approach is layered on top for the highest-traffic queries**: an initial fast pass over binary-quantized vectors narrows candidates aggressively, followed by re-ranking that smaller candidate set using the less-aggressively-quantized PQ vectors — balancing speed and precision similarly to the hybrid-search-and-reranking lesson's two-stage pattern, but for precision level rather than retrieval method.
+
+## Current practice (verified October 2026)
+
+Quantisation is now built into mainstream stores: pgvector supports half-precision (`halfvec`) and binary (`bit`) vectors, and AWS guidance describes binary quantisation on Aurora PostgreSQL to scale pgvector. Typical pattern: search a compressed index (binary or scalar-quantised) for a few hundred candidates, then **rescore** with full-precision vectors to recover recall. Measure recall loss on your queries before and after, and remember that compression changes memory, not the need to re-embed when the model changes.
 
 ## Common mistakes
 

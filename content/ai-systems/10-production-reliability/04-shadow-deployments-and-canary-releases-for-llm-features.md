@@ -5,6 +5,8 @@ tags: ["reliability", "deployment", "production", "llm"]
 sources:
   - "Google SRE Book, chapter on canary releases and progressive rollout"
   - "Anthropic and OpenAI documentation on prompt/model version management"
+  - "Experimentation and prompt-management guidance, 2026 (secondary: Langfuse, MLflow, Statsig)"
+  - "CrowdStrike, Channel File 291 Root Cause Analysis (August 2024)"
 ---
 
 ## Why deploying an LLM change is riskier than it looks
@@ -35,6 +37,10 @@ A canary rollout for a typical software change monitors error rates and latency 
 - **Offline eval comparison** (per the embedding-model lesson's methodology) runs alongside the shadow deployment, not instead of it — the shadow deployment's real-traffic data complements, rather than replaces, the more controlled offline eval set, since real traffic can surface distributional edge cases the offline eval set didn't anticipate.
 - **Canary rollout follows**, starting at a small percentage of real users, with retrieval quality proxies (validation failure rate, a sampled model-graded relevance check, user feedback signals like explicit thumbs-down or regeneration requests) monitored specifically, not just error rate and latency — since the actual risk here is a subtle retrieval-quality regression, not an outright failure, and only quality-specific metrics would reliably catch it.
 - **Gradual expansion**: the rollout percentage increases only after each stage's monitoring window shows no quality regression, with an explicit, pre-defined rollback trigger (a specific threshold on the quality metrics) rather than a vague "keep an eye on it" plan.
+
+## Current practice (verified October 2026)
+
+Prompts, models, retrieval configs and tools are all releases. Use prompt registries with immutable versions and labels (Langfuse, LangSmith and MLflow all provide them), shadow new variants on mirrored traffic, canary to a small cohort with guardrail metrics (p95 latency, cost per task, tool errors, safety violations) that can halt the rollout automatically, and keep rollback one label change away. The CrowdStrike 2024 outage is the cautionary tale: content pushed to the whole fleet at once, with no staged rollout, caused a global failure.
 
 ## Common mistakes
 

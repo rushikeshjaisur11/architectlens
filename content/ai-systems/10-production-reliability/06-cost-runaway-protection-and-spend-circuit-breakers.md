@@ -6,6 +6,8 @@ sources:
   - "OpenAI usage limits and billing documentation (platform.openai.com)"
   - "Anthropic Console spend limits documentation (docs.anthropic.com)"
   - "AWS Cost Anomaly Detection documentation (aws.amazon.com)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
+  - "OWASP Top 10 for LLM Applications 2025, LLM10 Unbounded Consumption (fetched October 2026)"
 ---
 
 ## Why LLM spend runs away differently than typical cloud spend
@@ -37,6 +39,10 @@ Hard caps prevent catastrophic bills but are usually set loose enough to allow l
 ## Graceful degradation over hard failure
 
 When a budget cap is hit, the system's response matters. Hard-failing every request the instant a limit trips turns a cost problem into an availability problem. Preferable: degrade to a cheaper model, disable non-essential LLM features (autocomplete, suggestions) while keeping core functionality alive on a stricter budget, or queue non-urgent work for the next budget window — the same tiered-response principle used in rate limiting, applied to dollars instead of requests.
+
+## Current practice (verified October 2026)
+
+OWASP lists **Unbounded Consumption** (LLM10) as a top risk, so budgets are a security control. Know the per-call extras: web search $10 per 1,000 searches (Anthropic) or $14 per 1,000 after 5,000 free (Gemini), tool definitions and computer-use toolsets adding thousands of tokens per request, managed agent sessions at $0.08 per running hour plus tokens, and thinking tokens billed as output. Enforce per-key, per-tenant, per-run and per-day limits at the gateway, with hard cut-offs and alerts on burn rate, and cap steps and retries inside agents.
 
 ## Common mistakes
 

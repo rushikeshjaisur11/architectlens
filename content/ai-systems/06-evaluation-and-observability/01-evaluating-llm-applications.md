@@ -5,6 +5,7 @@ tags: ["evaluation", "evals", "observability", "llm"]
 sources:
   - "Anthropic and OpenAI documentation on evaluation methodology"
   - "Hamel Husain, writing on LLM evaluation practices for production systems"
+  - "SWE-bench and agent benchmark summaries, 2026 (secondary); LLM-as-judge calibration guidance, 2026 (secondary: futureagi.com)"
 ---
 
 ## Why LLM applications need a different testing approach
@@ -43,6 +44,10 @@ Debugging why an LLM application produced a bad output requires more than the fi
 - **The eval set** (built from real past support queries, with known-good expected answers or rubrics) gets re-run against both the old and new system versions, and a model-graded eval scores each response for accuracy against the source material.
 - **The comparison isolates the regression**: if unit evals pass but model-graded accuracy drops specifically on questions requiring information from a particular document type, the team checks retrieval logs for those specific queries — this is where having retrieved-chunk logging (not just final answers) pays off, since it separates "retrieval got worse" from "generation got worse" instead of leaving the team guessing.
 - **A human review of a sample of the regressed cases** confirms the model-graded eval's finding before the fix ships, since a judge model's score alone isn't fully trusted without periodic human-labeled validation.
+
+## Current practice (verified October 2026)
+
+Public benchmarks saturate and contaminate: SWE-bench Verified now shows scores in the mid-90s and was reportedly dropped by one major lab in February 2026, with SWE-bench Pro (private code included) taking over as the harder reference. Your own golden set remains the release gate. For model-graded metrics, calibrate against human labels (guidance commonly cites Cohen's kappa above 0.6 as workable), control position, verbosity and self-preference bias, and re-calibrate on a schedule; add deterministic checks wherever possible.
 
 ## Common mistakes
 

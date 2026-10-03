@@ -5,6 +5,8 @@ tags: ["safety", "jailbreaks", "adversarial", "llm"]
 sources:
   - "Anthropic and OpenAI documentation and research on adversarial robustness and red-teaming"
   - "Wei, Haghtalab & Steinhardt, 'Jailbroken: How Does LLM Safety Training Fail?' (2023)"
+  - "OWASP Top 10 for LLM Applications 2025, genai.owasp.org/llm-top-10 (fetched October 2026)"
+  - "NVIDIA NeMo Guardrails and Llama Guard 4 documentation, via secondary summaries (October 2026)"
 ---
 
 ## How jailbreaks differ from prompt injection
@@ -38,6 +40,10 @@ Analogous to this track's prompt-injection lesson's conclusion that no single pr
 - **An independent output classifier** (per the content-moderation lesson) runs on generated responses regardless of how benign the immediate input looked, catching cases where a multi-turn escalation or clever framing got past the primary model's own safety judgment despite the additional training.
 - **Ongoing red-teaming** is treated as a continuous program, not a pre-launch checklist item — new jailbreak techniques are discovered by the broader research and user community over time, and a defense validated only against techniques known at launch will predictably degrade in effectiveness as new techniques emerge, without an ongoing process to discover and incorporate defenses against them.
 - **Discovered jailbreak successes are fed back into both the safety-training data and the eval set** (per this track's evaluation lesson) used to validate future model or prompt changes — turning each discovered gap into a permanent regression check, the same pattern the evaluation lesson recommends for general quality failures, applied here to safety specifically.
+
+## Current practice (verified October 2026)
+
+Current tooling: Llama Guard 4 (a 12B natively multimodal safety classifier), NVIDIA's Nemotron safety models (multilingual, policy-conditioned) and small prompt-attack classifiers that run in tens of milliseconds. Pair them with a refreshed attack suite, because jailbreak techniques change monthly, and measure both miss rate and false-positive rate on benign prompts. OWASP also lists *System Prompt Leakage* (LLM07): do not store secrets or authorisation rules in prompts.
 
 ## Common mistakes
 

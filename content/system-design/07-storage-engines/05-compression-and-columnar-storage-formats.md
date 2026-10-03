@@ -5,6 +5,8 @@ tags: ["storage-engines", "compression", "columnar", "analytics"]
 sources:
   - "Apache Parquet documentation on columnar storage format internals"
   - "Abadi, Madden & Hachem, 'Column-Stores vs. Row-Stores: How Different Are They Really?' (2008)"
+  - "Apache Iceberg v3 specification and lakehouse comparisons, 2026 (secondary)"
+  - "Pelkonen et al., 'Gorilla' (VLDB 2015)"
 ---
 
 ## Row-oriented vs. column-oriented storage: matching layout to access pattern
@@ -38,6 +40,10 @@ Columnar storage's strength for analytical, few-columns-many-rows queries is exa
 - **A separate analytics pipeline** periodically exports order data from the transactional database into Parquet files in object storage — deliberately choosing a columnar format specifically because the analytical queries this data will serve (aggregating across millions of rows, touching only a few columns like `product_category`, `order_value`, and `date`) match columnar storage's strength directly, unlike the original transactional database's row-oriented layout, which would be a poor fit for this specific workload even though it's the right choice for the original transactional access pattern.
 - **Dictionary encoding on the `product_category` column** (a low-cardinality categorical field) achieves strong compression, directly reducing both storage cost and the I/O volume analytical queries need to scan.
 - **Predicate pushdown via Parquet's stored metadata**: a query filtering for "orders in Q4 2025" can skip entire file chunks whose stored min/max date metadata shows they fall entirely outside that range, without reading those chunks' actual data at all — a direct connection to this track's search-and-indexing reasoning about avoiding unnecessary scans, applied here at the analytical file-storage level.
+
+## Current practice (verified October 2026)
+
+Columnar files (Parquet, ORC) remain the storage layer under lakehouse tables, now managed by table formats that add atomic commits, schema evolution and time travel. Time-series data uses specialised compression (delta-of-delta timestamps and XOR-compressed floats; the Gorilla paper reported about 1.37 bytes per point). Pick compression by workload: dictionary and run-length encoding for low-cardinality columns, ZSTD for general data, and measure CPU against storage and scan savings.
 
 ## Common mistakes
 

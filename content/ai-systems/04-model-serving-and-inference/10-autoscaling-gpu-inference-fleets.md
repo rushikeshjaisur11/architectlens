@@ -7,6 +7,8 @@ sources:
   - "AWS SageMaker Inference autoscaling and multi-model endpoints documentation"
   - "Ray Serve autoscaling documentation (docs.ray.io)"
   - "Hugging Face Text Generation Inference (TGI) deployment docs"
+  - "GPU rental price trackers, September to October 2026 (secondary: getdeploying.com, spheron.network)"
+  - "llm-d project blog, llm-d.ai/blog/kvcache-wins-you-can-see (fetched October 2026)"
 ---
 
 ## Why GPU autoscaling is harder than CPU autoscaling
@@ -33,6 +35,10 @@ CPU utilization is a poor signal for GPU inference — a GPU can be at high util
 
 - **Heterogeneous instance pools**: route latency-sensitive traffic to always-warm reserved instances, and burst or batch-tolerant traffic to spot/preemptible GPU capacity, which is materially cheaper but can be reclaimed with short notice.
 - **Multi-model endpoints / model packing**: for many small or lightly-used models, packing several onto shared GPU capacity (rather than one dedicated replica per model) improves utilization, at the cost of needing swap-in/swap-out logic when a request arrives for a currently-unloaded model — which reintroduces a cold-start problem at the model level even with warm hardware.
+
+## Current practice (verified October 2026)
+
+Reference prices (secondary trackers, move monthly): on-demand H100 near $3 per GPU-hour (about $1.5 on marketplaces to about $7 at hyperscalers), B200 about $4 to $6.4, GB200 about $8 to $19, with interruptible capacity far cheaper. Autoscaling signals should reflect inference reality: queue depth, time-to-first-token and KV-cache utilisation rather than CPU. Cold start is dominated by loading weights, so keep warm replicas for the floor, use fast storage or pre-staged images, and consider cache-aware routers so scaling out does not reset hit rates.
 
 ## Common mistakes
 

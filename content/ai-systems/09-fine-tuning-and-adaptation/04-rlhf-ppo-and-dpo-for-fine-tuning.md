@@ -5,6 +5,7 @@ tags: ["fine-tuning", "rlhf", "dpo", "llm"]
 sources:
   - "Rafailov et al., 'Direct Preference Optimization' (2023)"
   - "Hugging Face TRL (Transformer Reinforcement Learning) library documentation"
+  - "DeepSeek-AI, 'DeepSeek-R1' (arXiv 2501.12948; Nature 2025); GRPO practitioner summaries, 2026 (secondary)"
 ---
 
 ## Connecting preference-based training to the fine-tuning decision process
@@ -34,6 +35,10 @@ Building on this track's fine-tuning-data-preparation lesson's general quality p
 - **Preference data collection**: for a sample of representative real prompts, the SFT model generates two candidate responses (varying temperature or minor prompt variation to get genuinely different candidates), and human raters indicate which they prefer, specifically targeting the verbosity/tone issue by including instructions to raters about what dimension to judge on — producing focused preference data rather than open-ended general quality judgments that might not specifically capture the targeted issue.
 - **DPO is chosen over full RLHF**, consistent with the practical-default reasoning above — the team already has SFT training infrastructure, and DPO extends it without requiring a new reward-model-training and PPO pipeline, keeping the project tractable for their team's existing tooling and expertise.
 - **Evaluation after DPO training**: following this track's evaluation lesson's methodology, the team runs the DPO-tuned model against a held-out eval set specifically scoring for the targeted verbosity/tone dimension (not just general quality), confirming the preference tuning actually moved that specific metric — the same targeted-evaluation discipline emphasized in this track's human-feedback lesson's worked example, applied again here.
+
+## Current practice (verified October 2026)
+
+Beyond PPO and DPO on preference data, **GRPO** with **verifiable rewards** (RLVR) has become the standard recipe for reasoning training: sample a group of answers, grade each with a checker, and learn from group-relative advantages with no critic network (see the lesson on reinforcement learning with verifiable rewards). Use preference methods for tone and helpfulness, and checker-based RL where answers are objectively verifiable.
 
 ## Common mistakes
 

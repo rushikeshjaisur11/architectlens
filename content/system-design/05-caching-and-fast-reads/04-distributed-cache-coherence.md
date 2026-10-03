@@ -6,6 +6,7 @@ sources:
   - "Redis Cluster Specification (redis.io/docs/reference/cluster-spec)"
   - "Memcached wiki: ConfiguringClient / consistent hashing documentation"
   - "Karger et al., Consistent Hashing and Random Trees (STOC 1997)"
+  - "Redis and Valkey licensing and adoption summaries, 2025 to 2026 (secondary)"
 ---
 
 ## Why a single cache node isn't enough
@@ -25,6 +26,10 @@ Redis Cluster doesn't use consistent hashing directly. Instead it partitions the
 ## Coherence and replication
 
 "Coherence" in a distributed cache means readers see a consistent view despite data living on multiple nodes and possibly multiple replicas per node. Redis Cluster assigns each master one or more replicas; writes go to the master and are replicated asynchronously, so a failover can lose the last few writes (Redis trades strict consistency for availability and speed, matching an AP-leaning stance under network partitions — see Redis Cluster's own documented consistency guarantees). Memcached, by contrast, has **no built-in replication or coherence protocol at all** — it's a pure best-effort cache. If a node fails, every key it owned is simply gone and refetched from the source of truth; the "coherence" model is deliberately "don't treat this as durable," which is precisely what makes it simple and fast to reason about.
+
+## Current practice (verified October 2026)
+
+Operationally, Redis-compatible engines now come in two lineages (Redis and Valkey) with the same wire protocol but diverging features and licences. Pin the engine and version in your platform standard, test client-library compatibility for cluster, pub/sub and module use, and treat invalidation and TTL design as engine-independent.
 
 ## Common mistakes
 

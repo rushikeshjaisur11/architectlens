@@ -6,6 +6,9 @@ sources:
   - "OWASP Top 10 for LLM Applications (2025) — Excessive Agency"
   - "Anthropic: Building Effective Agents / Model Context Protocol documentation"
   - "Simon Willison — 'The lethal trifecta' (prompt injection + private data + external communication)"
+  - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched October 2026)"
+  - "OWASP Top 10 for Agentic Applications 2026 (December 2025), via secondary summaries"
+  - "A2A Protocol documentation, a2a-protocol.org (v1.0, fetched October 2026)"
 ---
 
 ## Why multi-agent systems widen the attack surface
@@ -30,6 +33,10 @@ The core mitigation is applying **least privilege** per agent, not per system:
 - **Orchestrator-worker isolation**: the orchestrator holds broader context and decision authority; workers get narrowly scoped tool access and their outputs are treated as data, not instructions, when they flow back to the orchestrator.
 - **Sandboxing code execution.** Any agent that generates and runs code needs to run in an isolated environment (container, VM, gVisor-style sandbox) with no network access or filesystem access beyond what the task needs — code-executing agents are a favorite target because arbitrary code execution subsumes almost every other guardrail.
 - **Message provenance tracking.** In multi-agent systems, tag messages with their source (user, tool output, another agent) so a downstream agent can apply different trust levels — treating a sub-agent's summary of a scraped webpage with the same trust as a direct user instruction is how injected content becomes an executed instruction.
+
+## Current practice (verified October 2026)
+
+Standards now give you building blocks: MCP's Enterprise Managed Authorization extension lets the corporate identity provider decide which agents may reach which tools; MCP's 2026-07-28 header-based routing lets gateways authorise per tool without parsing bodies; A2A v1.0 adds signed Agent Cards for verifying other agents. OWASP's agentic list names *Identity and Privilege Abuse*, *Insecure Inter-Agent Communication*, *Cascading Failures* and *Rogue Agents*. Issue each agent its own short-lived, narrowly scoped credentials, check authorisation on every request (MCP is now stateless), and log agent id, user id and policy decision for each tool call.
 
 ## Common mistakes
 

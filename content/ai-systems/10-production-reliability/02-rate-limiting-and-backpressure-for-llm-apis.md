@@ -6,6 +6,8 @@ sources:
   - "Anthropic API rate limits documentation (docs.anthropic.com)"
   - "OpenAI API rate limits documentation (platform.openai.com)"
   - "Google SRE Book, Chapter 21: Handling Overload (sre.google)"
+  - "Anthropic and provider documentation on rate limits and tiers (platform.claude.com/docs/en/api/rate-limits)"
+  - "Amazon Builders' Library, 'Timeouts, retries and backoff with jitter'"
 ---
 
 ## Why LLM rate limits are different from typical API limits
@@ -36,6 +38,10 @@ Not all LLM calls have equal urgency. A synchronous user-facing chat completion 
 ## Concurrency limits vs. rate limits
 
 Rate limits cap throughput over time; **concurrency limits** cap how many requests are in flight simultaneously. LLM calls have highly variable latency (a 200-token response and a 4K-token response differ by seconds), so a fixed concurrency limit is often the more direct lever for controlling load on your own infrastructure (connection pools, worker threads) even when the provider's constraint is purely token-based. Use a semaphore sized to your worker pool, independent of the provider's RPM/TPM bucket.
+
+## Current practice (verified October 2026)
+
+Provider limits are tiered (Anthropic lists Start, Build and Scale tiers with higher limits on request), and batched web-search calls are throttled separately. Implement client-side token-bucket limits by tokens and requests, honour `Retry-After`, retry only idempotent calls with exponential backoff **and jitter**, set a retry budget (about +10% load) and retry at one layer, and shed low-priority work first when capacity is short. Cross-region inference profiles on Bedrock can raise effective throughput (up to about 2x in-region quota per AWS).
 
 ## Common mistakes
 

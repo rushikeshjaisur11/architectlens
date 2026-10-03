@@ -5,6 +5,8 @@ tags: ["tokens", "context-window", "llm", "foundations"]
 sources:
   - "OpenAI and Anthropic documentation on tokenization and context window limits"
   - "Hugging Face tokenizers documentation"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
+  - "Anthropic Engineering, 'Effective context engineering for AI agents', anthropic.com/engineering (fetched October 2026)"
 ---
 
 ## What a token actually is
@@ -41,6 +43,13 @@ A chat application that keeps sending the full conversation history on every tur
 - **Static, reusable content** (the system prompt defining the assistant's behavior, and any consistently-relevant project context like a style guide) is placed early in the prompt and kept stable across calls, positioned specifically to benefit from prompt caching (covered in this track's cost-and-latency lesson) — reducing both cost and latency for the portion of the context that doesn't change turn to turn.
 - **Conversation history** uses a hybrid approach: the most recent several turns are kept verbatim (since recent context is usually most relevant to the current request), while older turns are periodically summarized into a compact running summary rather than dropped entirely or kept in full — balancing context window budget against not losing useful earlier context.
 - **File contents** referenced during the session aren't kept in the conversation history indefinitely once discussed — instead, the assistant re-reads a file when it becomes relevant again, rather than paying to keep every previously-viewed file's full content in context for the entire session regardless of continued relevance.
+
+## Current practice (verified October 2026)
+
+- **Window size is no longer the constraint, attention is.** Several frontier models offer 1M-token windows, and Anthropic's pricing page says its 4.6 and later models bill the full window at the standard per-token rate. Anthropic's context-engineering guidance still describes *context rot*: recall of any one fact falls as the window fills, so a curated 20,000-token context usually beats a stuffed 800,000-token one on quality, latency and cost.
+- **Tokenizers change cost.** Anthropic notes that its 4.7 and later models produce about 30% more tokens for the same text than earlier ones, so a model upgrade can raise your bill at an unchanged list price. Count with the target model's tokenizer.
+- **Output costs more than input.** Current rate cards run output at about 5x input per token (for example $2 in and $10 out per million tokens on Claude Sonnet 5.5; $0.75 in and $3.75 out on Gemini 3.8 Flash during its introductory pricing). Short, structured answers are the cheapest optimisation.
+- **Thinking tokens are output tokens** and count against `max_tokens`.
 
 ## Common mistakes
 

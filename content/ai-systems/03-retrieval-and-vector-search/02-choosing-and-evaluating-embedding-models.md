@@ -5,6 +5,7 @@ tags: ["embeddings", "retrieval", "evaluation"]
 sources:
   - "MTEB (Massive Text Embedding Benchmark) leaderboard and documentation"
   - "OpenAI and Cohere documentation on embedding model selection"
+  - "Embedding model roundups and papers, 2026 (secondary: premai.io, mixpeek.com; arXiv 2605.27295 Gemini Embedding 2; arXiv 2601.04720 Qwen3-VL-Embedding)"
 ---
 
 ## Why the embedding model choice is a foundational, hard-to-change decision
@@ -40,6 +41,10 @@ Running each embedding model candidate through the same eval set and comparing t
 - **A retrieval eval set** is built from ~100 real internal search queries (pulled from existing internal search logs) paired with the documents an engineer confirms are actually relevant for each — deliberately using real queries rather than synthetic ones, since real internal jargon and phrasing patterns are exactly what a generic benchmark wouldn't capture.
 - **Each candidate model** embeds the same document corpus and is evaluated on Recall@10 and MRR against the eval set; the model chosen is whichever performs best on *this* eval set, even if it wasn't the top-ranked model on the general MTEB leaderboard — the domain-specific eval result is trusted over the generic benchmark rank, per the reasoning above.
 - **The decision is documented and the eval set retained**, since any future embedding model change (a newer model release, a cost-driven switch) needs to be re-validated against the same eval set before committing to a costly full re-index.
+
+## Current practice (verified October 2026)
+
+The 2026 field includes natively multimodal embedders (Google's Gemini Embedding 2, reported released 10 March 2026 with audio support; Cohere Embed v4; Voyage multimodal-3.5; open Qwen3-VL-Embedding, reported 77.8 on MMEB-V2 in January 2026) alongside text-only leaders. Public leaderboard gaps among the top models are small (the multilingual MTEB task means sit in the high 60s), so choose on domain accuracy, dimension, price, latency, multilingual coverage and licence. Matryoshka-style models let you shorten vectors, cutting memory with modest loss. Always store the model id and version with each vector: changing the embedder means re-embedding the corpus.
 
 ## Common mistakes
 

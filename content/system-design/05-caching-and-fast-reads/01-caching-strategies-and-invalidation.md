@@ -5,6 +5,7 @@ tags: ["caching", "performance", "distributed-systems"]
 sources:
   - "Phil Karlton (attributed), on cache invalidation being one of the two hard problems in computer science"
   - "Redis and Memcached documentation on caching patterns"
+  - "Redis and Valkey licensing and adoption summaries, 2025 to 2026 (secondary: dsa-research.org, buildmvpfast.com, flowverify.co)"
 ---
 
 ## Why caching works
@@ -46,6 +47,10 @@ A common, pragmatic middle ground: use explicit invalidation for correctness-cri
 - **Explicit invalidation** on the specific `product:{id}:price` cache key whenever an admin updates a price, so a deliberate price change is reflected immediately rather than waiting out the TTL — layered on top of the TTL safety net, not instead of it.
 
 This two-layer approach — TTL as a floor, explicit invalidation for known-important changes — is common precisely because relying on either alone has a failure mode: TTL alone means every change waits out the full TTL before showing up; invalidation alone means a missed code path goes stale forever.
+
+## Current practice (verified October 2026)
+
+Cache technology choice now has a licensing dimension. Redis moved from BSD to dual RSALv2/SSPLv1 in March 2024, and Redis 8 (2025) added AGPLv3 as an option; the Linux Foundation's **Valkey** fork of Redis 7.2.4 (backed by AWS, Google Cloud, Oracle and others) stayed permissively licensed, is wire-compatible, and is reported as the default for new AWS ElastiCache and Google Memorystore clusters. Check your legal team's position on AGPL, and keep application code to the common protocol so the engine can change.
 
 ## Common mistakes
 

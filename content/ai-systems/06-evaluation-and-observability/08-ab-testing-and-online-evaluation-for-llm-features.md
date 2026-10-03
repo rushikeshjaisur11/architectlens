@@ -6,6 +6,7 @@ sources:
   - "Kohavi, Tang, Xu, \"Trustworthy Online Controlled Experiments\" (2020)"
   - "Netflix Tech Blog on experimentation platforms"
   - "OpenAI/Anthropic API usage and evaluation documentation"
+  - "Experimentation guidance, 2026 (secondary: Statsig, Datadog LLM Observability docs, Optimizely; arXiv 2606.18750)"
 ---
 
 ## Why online testing is still necessary
@@ -34,6 +35,10 @@ Offline evals and A/B tests aren't substitutes — they're sequential gates:
 2. **Shadow mode / silent A/B** runs the new variant against live traffic without showing it to users, comparing its outputs to production for divergence, catching failures offline evals missed without any user exposure.
 3. **Small-percentage online A/B** (1-5% of traffic) validates real behavioral impact with bounded blast radius.
 4. **Staged rollout** ramps the winning variant to 100% while continuing to watch guardrail metrics, since production monitoring (drift, hallucination rate) is what catches degradation the initial experiment window didn't run long enough to see.
+
+## Current practice (verified October 2026)
+
+Practitioner guidance for LLM experiments: judge variance stacks on user variance, so use **CUPED** (pre-experiment covariates; vendors report reaching significance up to about 2x faster) and paired or **interleaved** designs for ranking and retrieval; make latency, cost per resolved task, tool-error rate and safety violations guardrail metrics that can stop a test; tag every trace with the experiment and variant; and replay traffic offline before exposing users.
 
 ## Common mistakes
 

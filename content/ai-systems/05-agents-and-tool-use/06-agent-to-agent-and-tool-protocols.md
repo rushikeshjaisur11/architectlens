@@ -6,6 +6,9 @@ sources:
   - "Model Context Protocol specification (modelcontextprotocol.io)"
   - "Agent2Agent Protocol specification (a2a-protocol.org, originally Google)"
   - "Anthropic MCP announcement and documentation (anthropic.com, docs.anthropic.com)"
+  - "A2A Protocol documentation, a2a-protocol.org (v1.0, fetched October 2026)"
+  - "MCP specification 2026-07-28 release notes, blog.modelcontextprotocol.io/posts/2026-07-28 (fetched October 2026)"
+  - "Agentic commerce protocol comparisons, 2026 (secondary: digitalapplied.com, crossmint.com)"
 ---
 
 ## Why standardized protocols exist at all
@@ -40,6 +43,10 @@ The conceptual split: **MCP is for giving an agent hands** (tools, data access);
 - A single agent needing a reusable, versioned library of internal tool integrations shared across multiple agent products: MCP servers as the packaging unit.
 - Multiple autonomous agents (possibly built by different teams or vendors) that need to delegate sub-tasks to each other and track long-running async work: A2A.
 - A tightly-coupled multi-agent system within one codebase (e.g., a supervisor and worker agents in a single LangGraph app) generally doesn't need A2A's discovery and auth machinery — direct function calls or an in-process message bus are lower-overhead until agents genuinely live in separate trust domains or deployments.
+
+## Current practice (verified October 2026)
+
+**A2A reached v1.0** (reported released 12 March 2026) under the Linux Foundation, with signed Agent Cards (JWS with canonicalisation) so one agent can verify another's domain and declared capabilities, and enterprise multi-tenancy. Its own documentation frames the split: use MCP to give one agent its tools, use A2A to let specialised agents collaborate. Reported adoption by April 2026 included more than 150 supporting organisations and integrations in Azure AI Foundry, Amazon Bedrock AgentCore and Salesforce Agentforce. In commerce, ACP (checkout, from Stripe and OpenAI), AP2 (payment mandates, contributed to the FIDO Alliance in April 2026) and UCP address different layers; confirm each spec's version before building, since this area moves quickly.
 
 ## Common mistakes
 

@@ -7,6 +7,7 @@ sources:
   - "RFC 7519 — JSON Web Token (JWT)"
   - "RFC 6750 — OAuth 2.0 Bearer Token Usage"
   - "OWASP Authentication Cheat Sheet"
+  - "OAuth 2.1 Internet-Draft (draft-ietf-oauth-v2-1), datatracker.ietf.org; RFC 9700 (OAuth 2.0 Security Best Current Practice); FIDO Alliance State of Passkeys 2026 and HID/FIDO State of Authentication survey, via secondary summaries (October 2026)"
 ---
 
 ## Authentication vs. authorization
@@ -45,6 +46,10 @@ The relevant grant types:
 - **Implicit grant** — returned tokens directly in the redirect fragment, no code exchange. Deprecated by the OAuth2 Security Best Current Practice (BCP) in favor of Authorization Code + PKCE, because tokens in a URL fragment are exposed to browser history and referrer leaks.
 
 A common point of confusion: **OpenID Connect (OIDC)** is a thin identity layer *on top of* OAuth2 that adds the missing authentication piece — an `id_token` (itself a JWT) that asserts who the user is, distinct from OAuth2's `access_token`, which only grants delegated access to resources.
+
+## Current practice (verified October 2026)
+
+Status check (secondary sources, October 2026): **OAuth 2.1** is still an IETF Internet-Draft (draft-15 dated March 2026 was reported, intended for the standards track) but is treated as the current best-practice profile: it folds in PKCE and the security best current practice (RFC 9700), requires **PKCE for every authorisation-code flow**, and removes the implicit and resource-owner-password grants. Prefer **sender-constrained tokens** (DPoP or mTLS binding) so a stolen bearer token cannot be replayed elsewhere; several identity servers support DPoP out of the box. **Passkeys** have moved mainstream: a FIDO-backed survey reported 87% of enterprises deploying or piloting FIDO2 passkeys, and the FIDO Alliance estimated about 5 billion passkeys in use. Use phishing-resistant MFA for staff and administrators, keep tokens short-lived, and check authorisation on every request.
 
 ## Common mistakes
 

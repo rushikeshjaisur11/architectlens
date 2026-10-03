@@ -7,6 +7,7 @@ sources:
   - "Weaviate multi-tenancy documentation"
   - "Qdrant payload filtering and collection design documentation"
   - "Milvus partition key and multi-tenancy documentation"
+  - "pgvector 0.8.0 iterative scans and PostgreSQL row-level security documentation; multi-tenant RAG isolation guides, 2026 (secondary: truto.one, render.com)"
 ---
 
 ## Why filtering breaks the ANN assumption
@@ -36,6 +37,10 @@ Most production systems land on a hybrid: high-value or compliance-sensitive ten
 ## Scalar filter indexing
 
 Metadata filters on high-cardinality fields (timestamps, IDs) or combined filters (`category=X AND date > Y AND status=Z`) benefit from the same indexing discipline as a relational database — inverted indexes or B-trees on filterable scalar fields, which is why most vector DBs let you declare which payload/metadata fields should be indexed for filtering rather than indexing everything by default (indexing every field bloats memory for no benefit if it's rarely filtered on).
+
+## Current practice (verified October 2026)
+
+Two 2026-relevant points. First, **iterative scans** in pgvector 0.8.0 make tenant and ACL filters safe for recall by continuing the scan until enough filtered rows are found. Second, isolation must be enforced in the data layer: Postgres **row-level security** policies force a tenant predicate on every query, and list partitioning by tenant (or a namespace or index per tenant) stops one tenant's vectors from changing recall and speed for others on a shared graph index. Take the tenant id from a signed token, never from user input, and test with cross-tenant canary queries in CI.
 
 ## Common mistakes
 

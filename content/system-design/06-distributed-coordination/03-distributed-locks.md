@@ -5,6 +5,7 @@ tags: ["distributed-systems", "locks", "coordination"]
 sources:
   - "Martin Kleppmann, 'How to do distributed locking' (2016 blog post, critiquing the Redlock algorithm)"
   - "ZooKeeper documentation on distributed locks and leader election recipes"
+  - "Amazon Web Services, 'Summary of the Amazon DynamoDB Service Disruption in the Northern Virginia (US-EAST-1) Region' (October 2025), aws.amazon.com/message/101925 (fetched October 2026)"
 ---
 
 ## Why a single-machine lock doesn't translate to distributed systems
@@ -35,6 +36,10 @@ Because the pause-based failure mode above can't be fully prevented by lock desi
 
 - **Basic lock acquisition**: each instance attempts to acquire a Redis-based lock (`SET report_job_lock <instance_uuid> NX PX 600000`, a 10-minute TTL estimated to comfortably exceed the job's expected duration) when the scheduled time arrives; only the instance that successfully acquires it proceeds to generate the report, while others skip.
 - **Fencing token added for the actual report write**: the lock acquisition also returns an incrementing token; when the report-generating instance writes the final report to storage, it includes this token, and the storage layer rejects a write carrying a lower token than one it's already accepted — protecting against the case where the job actually took longer than the 10-minute TTL (say, due to an unexpected data volume spike), the lock expired, a second instance acquired it and also started generating the report, and both processes attempt to write a result — only the higher-token (later-acquired) write succeeds, avoiding a corrupted double-write even though the lock-level protection alone didn't fully prevent the double-acquisition.
+
+## Current practice (verified October 2026)
+
+The October 2025 AWS DynamoDB DNS outage is a clean example of check-then-act on stale data: a slow worker validated "my plan is newer" at the start, a faster worker finished and cleaned up old plans, and the slow worker then applied its stale plan over the newer one, after which cleanup deleted it and left an empty record. The defences are the ones in this lesson: re-validate at the moment of action with a compare-and-swap or **fencing token**, and never let cleanup delete the currently applied generation.
 
 ## Common mistakes
 

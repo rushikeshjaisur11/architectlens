@@ -5,6 +5,8 @@ tags: ["reliability", "multi-region", "production", "llm"]
 sources:
   - "AWS and Google Cloud documentation on multi-region architecture patterns"
   - "OpenAI and Anthropic documentation on regional API availability"
+  - "Amazon Bedrock cross-Region inference documentation (aws.amazon.com), via search results (October 2026)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
 ---
 
 ## Why multi-region matters more, not less, for LLM-dependent applications
@@ -35,6 +37,10 @@ Beyond pure availability, some applications need multi-region deployment for reg
 - **Active-active deployment** across a North American and a European region, with users routed to their geographic region primarily for latency, and the European region additionally serving the data-residency requirement — a user's data and LLM interactions genuinely stay within the correct jurisdiction's infrastructure rather than crossing regional boundaries incidentally.
 - **LLM provider region alignment**: the European region's infrastructure calls the LLM provider's EU-region endpoint specifically (confirmed available for the chosen provider, verified during initial architecture design rather than assumed), satisfying data residency for the LLM call itself, not just the application's own infrastructure — a detail that would be a genuine compliance gap if overlooked, since the LLM call is itself part of processing that user's data.
 - **Independent provider-region fallback**: if the EU-region LLM endpoint specifically degrades, the European infrastructure's circuit breaker (per this track's production-reliability lesson) can fall back to a secondary EU-compliant option (a different provider with EU presence, if available, or a degraded-but-compliant fallback behavior) — deliberately avoiding a fallback to a non-EU provider region that would violate the data-residency requirement even while technically restoring availability, a mistake that a naive "just fail over to whatever's available" approach could make.
+
+## Current practice (verified October 2026)
+
+Bedrock offers **geographic** profiles (routing within a geography such as the US, EU, Australia or Japan) and **global** profiles (any supported commercial region); AWS states on-demand users can see up to 2x their in-region quota and that customer-managed logs, knowledge bases and stored configuration remain in the source region. Anthropic's API supports US-only inference at 1.1x. Choose residency and resilience together per tenant, avoid control-plane dependence during failover (the October 2025 AWS DynamoDB DNS outage showed how a regional dependency cascades), and keep conversation state and indexes in the user's home region.
 
 ## Common mistakes
 

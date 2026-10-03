@@ -5,6 +5,7 @@ tags: ["sampling", "temperature", "foundations"]
 sources:
   - "OpenAI API reference (temperature, top_p documentation)"
   - "Holtzman et al., 'The Curious Case of Neural Text Degeneration' (nucleus sampling / top-p paper)"
+  - "Anthropic documentation, 'Extended thinking' and adaptive thinking migration guide (fetched October 2026)"
 ---
 
 ## From logits to a chosen token
@@ -41,6 +42,10 @@ Most production APIs expose top-p; some also expose top-k as an additional filte
 Temperature and top-p/top-k are typically combined, not used alone: temperature reshapes the whole distribution, then top-p/top-k trims the tail before sampling. A common production default is a moderate temperature (0.3–0.7) with a top-p around 0.9–0.95, tuned per task via evaluation rather than guessed.
 
 **Setting all sampling parameters to their most deterministic values (temperature 0, or provider-specific greedy mode) does not guarantee bit-for-bit reproducibility** across calls, even with identical input — most production inference stacks use batched, parallelized computation where floating-point non-associativity introduces small numerical differences run to run. If true determinism is required, check whether the provider exposes a `seed` parameter, and treat "temperature 0" as "highly consistent," not "guaranteed identical."
+
+## Current practice (verified October 2026)
+
+Newer reasoning-capable APIs move some control away from sampling knobs. With adaptive thinking, depth is steered by an **effort** setting rather than a token budget, and the fixed-budget mode (`budget_tokens`) is deprecated on Claude 4.6 models and rejected on 4.7 and later. Treat temperature and top-p as secondary controls for style and diversity, and check each model's documentation for which parameters it accepts when thinking is enabled; a parameter that worked on one model generation can be rejected or ignored on the next. Pin sampling settings per model in configuration and re-test after upgrades.
 
 ## Common mistakes
 

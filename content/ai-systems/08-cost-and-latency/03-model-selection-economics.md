@@ -6,6 +6,8 @@ sources:
   - "Anthropic model pricing and comparison docs (docs.anthropic.com)"
   - "OpenAI model pricing page (openai.com/api/pricing)"
   - "Artificial Analysis LLM benchmark and cost leaderboard (artificialanalysis.ai)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
+  - "Google Gemini API pricing, ai.google.dev/gemini-api/docs/pricing (fetched October 2026)"
 ---
 
 ## The core mental model
@@ -37,6 +39,10 @@ Public leaderboards (Artificial Analysis, LMSYS/Chatbot Arena) are useful for a 
 ## Output tokens dominate the bill
 
 Pricing is asymmetric: output tokens typically cost 3-5x input tokens across providers. A model tier decision interacts directly with **output verbosity** — a chattier model at a cheaper per-token rate can still cost more than a terser model at a higher rate if it burns 3x the output tokens per response. Prompting for concise, structured output (see prompting fundamentals) is part of the model-selection decision, not a separate optimization.
+
+## Current practice (verified October 2026)
+
+List-price anchors (October 2026): Claude Haiku 4.5 $1/$5 per million tokens, Sonnet 5.5 $2/$10, Opus 5.5 $4/$20, top tier $10/$50; Gemini 3.8 Flash $0.75/$3.75 (introductory through 31 December 2026) and 3.5 Flash-Lite $0.30/$2.50. Effective cost depends on cache hit rate, batch eligibility, output length and retries, so compare **cost per successful task** on your evaluation set, not list price. Mid-tier models repriced downward in 2026 (Sonnet 5 at $2/$10 versus $3/$15 for Sonnet 4.6), so last year's routing rules may be wrong.
 
 ## Common mistakes
 

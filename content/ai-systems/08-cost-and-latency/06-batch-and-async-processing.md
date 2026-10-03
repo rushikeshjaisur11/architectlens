@@ -5,6 +5,8 @@ tags: ["cost", "batch-processing", "async", "llm"]
 sources:
   - "Anthropic Message Batches API documentation (docs.anthropic.com)"
   - "OpenAI Batch API documentation (platform.openai.com/docs)"
+  - "Anthropic pricing documentation, platform.claude.com/docs/en/about-claude/pricing (fetched October 2026)"
+  - "Anthropic documentation, extended thinking (fetched October 2026)"
 ---
 
 ## The core tradeoff
@@ -28,6 +30,10 @@ Separate from provider batch APIs, there's a second lever: even synchronous call
 ## Combining both levers
 
 The two techniques compose: use the provider's Batch API for the bulk, non-interactive workload to get the ~50% price cut, and use async concurrency within your own job submission and result-polling code to keep the batch's *wall-clock* turnaround short even though the API is being used in bulk mode. They solve different problems — batch cuts token cost, concurrency cuts wall-clock time — and conflating them (e.g., assuming "async" alone saves money) is a common confusion.
+
+## Current practice (verified October 2026)
+
+Batch APIs discount input and output by **50%** (Anthropic, Gemini and, per third-party trackers, OpenAI Batch and Flex) and stack with caching; fast mode and Managed Agents sessions are excluded. Anthropic advises batch processing for thinking budgets above about 32,000 tokens to avoid timeouts, and web-search calls inside batches are throttled per organisation. Good fits: nightly summarisation, evaluation runs, embeddings, backfills. Design for completion windows of up to 24 hours, idempotent result handling and partial failures.
 
 ## Common mistakes
 
