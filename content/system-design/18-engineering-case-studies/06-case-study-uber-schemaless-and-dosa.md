@@ -10,7 +10,7 @@ sources:
   - "Uber Engineering, 'MySQL to MyRocks Migration in Uber's Distributed Datastores' (2022), uber.com (via search results, October 2026)"
 ---
 
-*Provenance note: this summary comes from recollection of the public Uber engineering posts above, written years ago. Uber's platform has evolved since, so treat details as a snapshot of the design thinking rather than the current system, and check the original posts.*
+*Provenance note (October 2026): the cell model (row key, column name, ref key, JSON body), append-only immutability, the 2014 move off a single PostgreSQL instance, triggers and secondary indexes were checked against Uber's Schemaless post, and Docstore against Uber's 2021 post. Hash-based shard placement, the fixed shard count and the DOSA and Cassandra details come from recall and were not re-fetched.*
 
 ## The problem Uber faced
 

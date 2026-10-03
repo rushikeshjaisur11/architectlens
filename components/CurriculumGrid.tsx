@@ -73,6 +73,10 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
   }, []);
   const readCount = lessons.filter((l) => done.has(`${track.slug}/${l.category.slug}/${l.slug}`)).length;
 
+  const nextUnread = sortByOrder(lessons)
+    .sort((a, b) => a.category.number - b.category.number)
+    .find((l) => !done.has(`${track.slug}/${l.category.slug}/${l.slug}`));
+
   const topTags = useMemo(() => {
     const counts = new Map<string, number>();
     for (const l of lessons) for (const t of l.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
@@ -95,6 +99,14 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
         <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line-soft" role="progressbar" aria-valuemin={0} aria-valuemax={lessons.length} aria-valuenow={readCount}>
           <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${lessons.length ? (readCount / lessons.length) * 100 : 0}%` }} />
         </div>
+        {readCount > 0 && nextUnread && (
+          <Link
+            href={`/lessons/${track.slug}/${nextUnread.category.slug}/${nextUnread.slug}`}
+            className="max-w-[55%] shrink-0 truncate rounded border border-accent-dim px-2.5 py-1 text-accent hover:bg-ink-elevated"
+          >
+            Continue: {nextUnread.shortTitle}
+          </Link>
+        )}
       </div>
       <div className="sticky top-0 z-10 -mx-2 mb-8 space-y-3 bg-ink/95 px-2 py-3 backdrop-blur">
         <input

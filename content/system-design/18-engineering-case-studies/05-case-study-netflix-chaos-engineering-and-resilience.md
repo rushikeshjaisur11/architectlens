@@ -11,7 +11,7 @@ sources:
   - "Basiri et al., 'Automating Chaos Experiments in Production' (ICSE-SEIP 2019), arXiv 1905.04648"
 ---
 
-*Provenance note: this lesson summarizes publicly described practices from memory of the sources above. Specific dates and tool details should be checked against the primary posts before being quoted.*
+*Provenance note (October 2026): the experiment steps and principles were checked against principlesofchaos.org, and the current-practice section against a report of Netflix's QCon SF 2025 talk. The 2008 corruption incident, Chaos Monkey details and the Simian Army tool list come from the author's recall of Netflix blog posts and were not re-fetched; check those before quoting.*
 
 ## The context
 

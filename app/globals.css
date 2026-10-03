@@ -144,3 +144,6 @@
   color: var(--color-accent);
   outline: none;
 }
+
+:root[data-fs="sm"] .prose { font-size: 0.9375rem; }
+:root[data-fs="lg"] .prose { font-size: 1.25rem; }

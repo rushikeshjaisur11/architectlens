@@ -115,13 +115,46 @@ export function SectionControls() {
 
   const fire = (collapsed: boolean) => window.dispatchEvent(new CustomEvent("lesson:collapse-all", { detail: collapsed }));
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2">
+      <TextSize />
       <button type="button" onClick={() => fire(true)} className={btn}>
         <ChevronsDownUp size={13} /> Collapse all
       </button>
       <button type="button" onClick={() => fire(false)} className={btn}>
         <ChevronsUpDown size={13} /> Expand all
       </button>
+    </div>
+  );
+}
+
+// Reading text size (small / default / large), remembered per browser.
+function TextSize() {
+  const [fs, setFs] = useState("md");
+  useEffect(() => setFs(document.documentElement.dataset.fs ?? "md"), []);
+  function pick(next: string) {
+    setFs(next);
+    if (next === "md") delete document.documentElement.dataset.fs;
+    else document.documentElement.dataset.fs = next;
+    try {
+      localStorage.setItem("text-size-v1", next);
+    } catch {
+      // storage unavailable: size applies for this page view only
+    }
+  }
+  return (
+    <div className="inline-flex overflow-hidden rounded border border-line font-mono text-xs" role="group" aria-label="Text size">
+      {([["sm", "A-", "Smaller text"], ["md", "A", "Default text"], ["lg", "A+", "Larger text"]] as const).map(([k, label, name]) => (
+        <button
+          key={k}
+          type="button"
+          onClick={() => pick(k)}
+          aria-pressed={fs === k}
+          aria-label={name}
+          className={`px-2.5 py-1 transition-colors ${fs === k ? "bg-ink-elevated text-accent" : "text-paper-muted hover:text-paper"}`}
+        >
+          {label}
+        </button>
+      ))}
     </div>
   );
 }
