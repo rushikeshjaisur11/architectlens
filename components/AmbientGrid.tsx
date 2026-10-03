@@ -40,7 +40,7 @@ function cssColor(name: string, fallback: string): [number, number, number] {
 
 // Page-wide ambient layer behind everything: a dot field that brightens near the pointer and under a slow wave,
 // drifts a little slower than the page as you scroll, plus the section orbs. Decorative: no pointer events.
-// `calm` (lessons) drops the wave so long reading stays quiet.
+// `calm` (reading pages) draws no dots, only the progress rail, so long reading stays quiet.
 export function AmbientGrid({ mode, calm, scrollRef }: { mode: AmbientMode; calm: boolean; scrollRef: RefObject<HTMLElement | null> }) {
   const box = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -120,17 +120,18 @@ export function AmbientGrid({ mode, calm, scrollRef }: { mode: AmbientMode; calm
       ctx.clearRect(0, 0, w, h);
       const wave = still || quiet ? -1 : ((now % WAVE_MS) / WAVE_MS) * (w + h + 400) - 200;
       const offset = (scrollTop * 0.3) % GAP;
-      const rest = quiet ? 0.13 : 0.2;
+      const rest = 0.2;
       const cols = Math.ceil(w / GAP) + 1;
       const rows = Math.ceil(h / GAP) + 2;
-      for (let i = 0; i < cols; i++) {
+      // Reading pages (calm) get no dots at all: only the progress rail below.
+      for (let i = 0; i < (quiet ? 0 : cols); i++) {
         for (let j = -1; j < rows; j++) {
           const x = i * GAP + ((j & 1) * GAP) / 2;
           const y = j * GAP - offset + GAP;
           let k = 0;
           if (pointer.on) {
             const d = Math.hypot(x - pointer.x, y - pointer.y);
-            if (d < POINTER_R) k = Math.max(k, (1 - d / POINTER_R) ** 2 * (quiet ? 0.6 : 1));
+            if (d < POINTER_R) k = Math.max(k, (1 - d / POINTER_R) ** 2);
           }
           if (wave >= 0) {
             const d = Math.abs(x + y - wave);

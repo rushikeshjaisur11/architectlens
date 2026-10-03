@@ -1,4 +1,4 @@
-import { boolean, index, integer, pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, index, integer, pgTable, primaryKey, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
 export const users = pgTable("user", {
@@ -7,6 +7,7 @@ export const users = pgTable("user", {
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
+  passwordHash: text("password_hash"),
 });
 
 export const accounts = pgTable(
@@ -82,3 +83,57 @@ export const userPreferences = pgTable("user_preferences", {
   textSize: text("text_size", { enum: ["sm", "md", "lg"] }),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const authAttempts = pgTable(
+  "auth_attempts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    key: text("key").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("auth_attempts_key_created_idx").on(t.key, t.createdAt)],
+);
+
+export const coupons = pgTable("coupons", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  code: text("code").notNull().unique(),
+  description: text("description"),
+  kind: text("kind", { enum: ["percent", "fixed", "free_access"] }).notNull(),
+  value: integer("value").notNull().default(0),
+  currency: text("currency"),
+  maxRedemptions: integer("max_redemptions"),
+  redeemedCount: integer("redeemed_count").notNull().default(0),
+  validFrom: timestamp("valid_from"),
+  validUntil: timestamp("valid_until"),
+  grantsPlan: text("grants_plan"),
+  grantDays: integer("grant_days"),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  createdBy: text("created_by"),
+});
+
+export const couponRedemptions = pgTable(
+  "coupon_redemptions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    couponId: uuid("coupon_id").notNull().references(() => coupons.id),
+    userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    redeemedAt: timestamp("redeemed_at").notNull().defaultNow(),
+  },
+  (t) => [unique("coupon_redemptions_coupon_user_unique").on(t.couponId, t.userId)],
+);
+
+export const entitlements = pgTable(
+  "entitlements",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    plan: text("plan").notNull(),
+    source: text("source", { enum: ["coupon", "purchase", "admin"] }).notNull(),
+    couponId: uuid("coupon_id").references(() => coupons.id),
+    startsAt: timestamp("starts_at").notNull().defaultNow(),
+    endsAt: timestamp("ends_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("entitlements_user_idx").on(t.userId)],
+);
