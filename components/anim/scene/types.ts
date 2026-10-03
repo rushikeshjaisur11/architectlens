@@ -59,3 +59,5 @@ export type Scene = {
   controls?: Control[];
   make: () => (g: G) => void;
 };
+
+export type SceneSet = Scene | Scene[];

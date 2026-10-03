@@ -89,9 +89,9 @@ function render(scene: Scene, dark: boolean, preview?: string) {
 describe("scenes", () => {
   const previews = process.env.SCENE_PREVIEW ? path.resolve(__dirname, "../.scene-previews") : "";
 
-  for (const [key, scene] of Object.entries(SCENES)) {
-    it(`${key} draws cleanly in both themes`, () => {
-      const dark = render(scene, true, previews ? path.join(previews, `${key.replace(/\//g, "__")}.png`) : undefined);
+  for (const [key, scene, n] of Object.entries(SCENES).flatMap(([k, list]) => list.map((sc, i) => [k, sc, i] as const))) {
+    it(`${key} #${n + 1} draws cleanly in both themes`, () => {
+      const dark = render(scene, true, previews ? path.join(previews, `${key.replace(/\//g, "__")}${n ? `__${n + 1}` : ""}.png`) : undefined);
       const light = render(scene, false);
       expect(dark.bad).toEqual([]);
       expect(light.bad).toEqual([]);

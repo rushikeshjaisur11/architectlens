@@ -1,5 +1,6 @@
 import type { OrbState } from "thinking-orbs";
 import type { G } from "../scene/types";
+import { inferKind, node, type Kind } from "./shapes";
 
 export function chip(g: G, x: number, y: number, s: string, color?: string, size = 11, a = 1): void {
   const w = s.length * size * 0.62 + 12;
@@ -8,33 +9,14 @@ export function chip(g: G, x: number, y: number, s: string, color?: string, size
   g.text(s, x, y + 0.5, { size, color: color ?? g.pal.paper, a });
 }
 
-export function server(g: G, x: number, y: number, label: string, o: { state?: OrbState; color?: string; a?: number; size?: number; ring?: string } = {}): void {
-  const size = o.size ?? 46;
-  const a = o.a ?? 1;
-  g.glow(x, y, size * 0.9, o.ring ?? o.color ?? g.pal.accent, 0.12 * a);
-  g.ring(x, y, size * 0.52, o.ring ?? g.pal.line, a, 1.2);
-  g.orb(o.state ?? "breathing", x, y, size, o.color ?? g.pal.paper, 1);
-  g.text(label, x, y + size * 0.78, { size: 11, color: g.pal.muted, a });
+export function server(g: G, x: number, y: number, label: string, o: { state?: OrbState; color?: string; a?: number; size?: number; ring?: string; kind?: Kind } = {}): void {
+  const kind = o.kind ?? inferKind(label);
+  const busy = o.state !== undefined && o.state !== "breathing";
+  node(g, kind, x, y, { label, size: o.size ?? 46, color: o.ring ?? o.color, a: o.a, active: busy, state: o.state });
 }
 
 export function db(g: G, x: number, y: number, w = 34, h = 40, color?: string, a = 1): void {
-  const col = color ?? g.pal.line;
-  const c = g.c;
-  c.globalAlpha = a;
-  c.strokeStyle = col;
-  c.lineWidth = 1.3;
-  for (let k = 0; k < 3; k++) {
-    c.beginPath();
-    c.ellipse(x, y - h / 2 + (k * h) / 2.2, w / 2, 5, 0, 0, Math.PI * 2);
-    c.stroke();
-  }
-  c.beginPath();
-  c.moveTo(x - w / 2, y - h / 2);
-  c.lineTo(x - w / 2, y + h / 2 - 6);
-  c.moveTo(x + w / 2, y - h / 2);
-  c.lineTo(x + w / 2, y + h / 2 - 6);
-  c.stroke();
-  c.globalAlpha = 1;
+  node(g, "db", x, y, { size: Math.max(w, h), color, a });
 }
 
 export function ptOnCircle(i: number, n: number, cx: number, cy: number, r: number, rot = -Math.PI / 2): [number, number] {
