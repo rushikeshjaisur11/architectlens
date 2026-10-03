@@ -32,7 +32,7 @@ export function LessonTopNav({
     else router.push(moduleHref);
   }
   return (
-    <div className="sticky top-0 z-30 -mx-4 flex items-center gap-2 border-b border-line-soft bg-ink/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6">
+    <div className="sticky top-0 z-30 -mx-4 flex items-center gap-2 border-b border-line-soft bg-ink/70 px-4 py-2 backdrop-blur-xl backdrop-saturate-150 sm:-mx-6 sm:px-6">
       <button type="button" onClick={back} className={btn} aria-label="Go back">
         <ArrowLeft size={13} /> Back
       </button>
@@ -263,7 +263,7 @@ export function LessonPager({ prev, next }: { prev?: PagerLink; next?: PagerLink
 }
 
 // Thin bar showing how far through the note you are; reaching the end marks the note as read.
-export function ReadingProgress({ lessonKey }: { lessonKey: string }) {
+export function ReadingProgress({ lessonKey, minutes }: { lessonKey: string; minutes: number }) {
   const [pct, setPct] = useState(0);
   useEffect(() => {
     const body = document.querySelector<HTMLElement>("[data-lesson-body]");
@@ -281,9 +281,18 @@ export function ReadingProgress({ lessonKey }: { lessonKey: string }) {
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
   }, [lessonKey]);
+  const left = Math.ceil(minutes * (1 - pct));
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-0 z-40 h-0.5 bg-transparent" aria-hidden>
-      <div className="h-full origin-left bg-hook transition-[width] duration-100" style={{ width: `${pct * 100}%` }} />
-    </div>
+    <>
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-40 h-0.5 bg-transparent" aria-hidden>
+        <div className="h-full origin-left bg-hook transition-[width] duration-100" style={{ width: `${pct * 100}%` }} />
+      </div>
+      <div
+        className="pointer-events-none fixed bottom-4 right-4 z-30 rounded-full border border-line bg-ink/70 px-3 py-1 font-mono text-[11px] text-paper-muted backdrop-blur-xl"
+        role="status"
+      >
+        {pct >= 0.9 ? "Done" : `~${Math.max(1, left)} min left`}
+      </div>
+    </>
   );
 }

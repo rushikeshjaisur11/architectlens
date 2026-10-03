@@ -6,10 +6,13 @@ import { ArrowRight } from "lucide-react";
 import { SECTIONS } from "@/lib/track-meta";
 import { readSet } from "@/lib/progress";
 import { SectionIcon } from "./SectionIcon";
-import { Reveal } from "./Reveal";
+import { BlurFade } from "./ui/blur-fade";
 
 export type PathStats = Record<string, { lessons: number; hours: number; modules: number }>;
 export type PathOrder = Record<string, { key: string; title: string }[]>;
+
+// Bento widths on a 6-column grid: wide, narrow / narrow, wide.
+const SPANS = ["md:col-span-4", "md:col-span-2", "md:col-span-2", "md:col-span-4"];
 
 // The four learning paths as distinct cards. Reading progress comes from this browser only.
 export function PathCards({ stats, order }: { stats: PathStats; order: PathOrder }) {
@@ -22,13 +25,13 @@ export function PathCards({ stats, order }: { stats: PathStats; order: PathOrder
   }, []);
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-6">
       {SECTIONS.map((s, i) => {
         const st = stats[s.key];
         const done = st ? [...read].filter((k) => k.startsWith(`${s.key}/`)).length : 0;
         const next = (order[s.key] ?? []).find((l) => !read.has(l.key));
         return (
-          <Reveal key={s.key} delay={i * 100} className="h-full">
+          <BlurFade inView key={s.key} delay={i * 0.1} className={`h-full ${SPANS[i % SPANS.length]}`}>
           <div
             style={{ "--h": s.hue } as React.CSSProperties}
             className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink-elevated p-6 transition duration-200 hover:-translate-y-0.5 hover:border-accent-dim hover:shadow-xl hover:shadow-black/10"
@@ -76,7 +79,7 @@ export function PathCards({ stats, order }: { stats: PathStats; order: PathOrder
               )}
             </div>
           </div>
-          </Reveal>
+          </BlurFade>
         );
       })}
     </div>

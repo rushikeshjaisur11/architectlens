@@ -16,7 +16,7 @@ export function ThemeToggle() {
 
   useEffect(() => {
     const current = document.documentElement.dataset.theme;
-    setTheme(current === "dark" || current === "sepia" ? current : "light");
+    setTheme(current === "light" || current === "sepia" ? current : "dark");
   }, []);
 
   function choose(next: Theme) {

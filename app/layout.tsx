@@ -32,7 +32,7 @@ const THEME_INIT_SCRIPT = `
 (function () {
   try {
     var stored = localStorage.getItem("theme-v2");
-    var theme = stored === "dark" || stored === "sepia" ? stored : "light";
+    var theme = stored === "light" || stored === "sepia" ? stored : "dark";
     document.documentElement.dataset.theme = theme;
     var fs = localStorage.getItem("text-size-v1");
     if (fs === "sm" || fs === "lg") document.documentElement.dataset.fs = fs;

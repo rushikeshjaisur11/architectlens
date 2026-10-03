@@ -25,7 +25,7 @@ export function TopBar({
     "items-center gap-2 rounded-full border border-line px-3 py-1.5 text-sm text-paper-muted transition-colors hover:border-accent-dim hover:text-paper";
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-3 border-b border-line bg-ink/85 px-3 backdrop-blur sm:px-5">
+    <header className="flex h-14 shrink-0 items-center gap-3 border-b border-line bg-ink/70 px-3 backdrop-blur-xl backdrop-saturate-150 sm:px-5">
       <button type="button" onClick={onMenuClick} aria-label="Open menu" className={`${quiet} inline-flex px-2.5 lg:hidden`}>
         <Menu size={16} />
       </button>

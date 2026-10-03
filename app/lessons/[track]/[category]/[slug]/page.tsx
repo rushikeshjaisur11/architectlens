@@ -50,7 +50,7 @@ export default async function LessonPage({
 
   return (
     <main className="mx-auto max-w-3xl px-5 py-8 sm:px-6 sm:py-12">
-      <ReadingProgress lessonKey={`${track}/${category}/${slug}`} />
+      <ReadingProgress lessonKey={`${track}/${category}/${slug}`} minutes={lesson.minutes} />
       <LessonTopNav trackName={trackName} trackHref={trackHref} moduleName={lesson.category.name}
         moduleHref={moduleHref}
         prevHref={prev && href(prev)}

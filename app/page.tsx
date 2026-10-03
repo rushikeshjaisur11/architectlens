@@ -3,8 +3,13 @@ import { ArrowRight } from "lucide-react";
 import { lessons } from "#velite";
 import { TRACKS } from "@/lib/tracks";
 import { PathCards, type PathOrder, type PathStats } from "@/components/PathCards";
-import { Reveal } from "@/components/Reveal";
+import { BlurFade } from "@/components/ui/blur-fade";
+import { DotPattern } from "@/components/ui/dot-pattern";
+import { NumberTicker } from "@/components/ui/number-ticker";
+import { Spotlight } from "@/components/ui/spotlight";
+import { TextEffect } from "@/components/ui/text-effect";
 import { TypedWords } from "@/components/TypedWords";
+import { TileBanner } from "@/components/TileBanner";
 
 const STEPS = [
   { n: "1", title: "System Design", text: "Learn the foundations: data, scaling, consistency and failure." },
@@ -36,21 +41,24 @@ export default function LandingPage() {
         .map((l) => ({ key: `${t.slug}/${l.category.slug}/${l.slug}`, title: l.shortTitle })),
     ]),
   );
+  const preview = lessons.find((l) => /raft vs\.? paxos/i.test(l.title)) ?? lessons[0];
   const totalLessons = lessons.length;
   const totalHours = Math.round(lessons.reduce((sum, l) => sum + l.minutes, 0) / 60);
 
   return (
     <main>
       <section className="relative overflow-hidden border-b border-line-soft">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(40rem 22rem at 15% 0%, hsl(232 80% 60% / 0.16), transparent 70%), radial-gradient(34rem 20rem at 85% 10%, hsl(268 80% 60% / 0.14), transparent 70%), radial-gradient(30rem 18rem at 60% 100%, hsl(172 75% 45% / 0.12), transparent 70%)",
-          }}
-        />
-        <div className="relative mx-auto max-w-5xl px-6 py-16 sm:py-24">
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          <DotPattern
+            width={22}
+            height={22}
+            cr={1}
+            className="fill-paper-muted/25 [mask-image:radial-gradient(48rem_26rem_at_30%_30%,white,transparent)]"
+          />
+          <Spotlight className="-top-40 left-0 md:-top-20 md:left-40" fill="#8f9dff" />
+        </div>
+        <div className="relative mx-auto grid max-w-5xl items-center gap-12 px-6 py-16 sm:py-24 lg:grid-cols-[1.15fr_1fr]">
+          <div>
           <p className="inline-flex items-center gap-2 rounded-full border border-line bg-ink-elevated/70 px-3 py-1.5 text-xs font-medium text-paper-muted">
             <span className="h-1.5 w-1.5 rounded-full bg-hook" />
             Architecture education, grounded in current practice
@@ -63,10 +71,15 @@ export default function LandingPage() {
               <TypedWords words={["designed", "scaled", "secured", "operated"]} className="italic text-accent" />
             </span>
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-paper-muted">
-            A structured library on system design and production AI systems. Start from first principles, move
-            through the building blocks, and finish with complete designs you can reason about.
-          </p>
+          <TextEffect
+            as="p"
+            per="word"
+            preset="fade-in-blur"
+            speedReveal={1.6}
+            className="mt-6 max-w-2xl text-lg leading-relaxed text-paper-muted"
+          >
+            A structured library on system design and production AI systems. Start from first principles, move through the building blocks, and finish with complete designs you can reason about.
+          </TextEffect>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
               href="/system-design"
@@ -83,17 +96,47 @@ export default function LandingPage() {
           </div>
           <dl className="mt-12 grid max-w-xl grid-cols-3 gap-6 text-sm">
             {[
-              [String(totalLessons), "lessons"],
-              [`${totalHours}+`, "hours of reading"],
-              [String(TRACKS.length + 1), "learning paths"],
-            ].map(([value, label]) => (
+              [totalLessons, "lessons", ""],
+              [totalHours, "hours of reading", "+"],
+              [TRACKS.length + 1, "learning paths", ""],
+            ].map(([value, label, suffix]) => (
               <div key={label}>
                 <dt className="sr-only">{label}</dt>
-                <dd className="text-3xl font-semibold tracking-tight text-paper">{value}</dd>
+                <dd className="text-3xl font-semibold tracking-tight text-paper">
+                  <NumberTicker value={Number(value)} className="text-paper dark:text-paper" />
+                  {suffix}
+                </dd>
                 <dd className="mt-1 text-paper-muted">{label}</dd>
               </div>
             ))}
           </dl>
+          </div>
+          {preview && (
+            <Link
+              href={`/lessons/${preview.track.slug}/${preview.category.slug}/${preview.slug}`}
+              className="group block overflow-hidden rounded-2xl border border-line bg-ink-elevated shadow-2xl shadow-black/10 transition hover:-translate-y-0.5 hover:border-accent-dim"
+              aria-label={`Open lesson: ${preview.title}`}
+            >
+              <div className="flex items-center gap-1.5 border-b border-line-soft px-4 py-2.5">
+                <span className="h-2 w-2 rounded-full bg-line" />
+                <span className="h-2 w-2 rounded-full bg-line" />
+                <span className="h-2 w-2 rounded-full bg-line" />
+                <span className="ml-3 truncate font-mono text-[11px] text-paper-muted">{preview.category.name}</span>
+              </div>
+              <div className="h-0.5 w-2/5 bg-hook" aria-hidden />
+              <div className="p-5">
+                <div className="banner-bg h-36 overflow-hidden rounded-lg border border-line">
+                  <TileBanner title={preview.title} tags={preview.tags.join(" ")} spec={preview.banner} hover />
+                </div>
+                <h2 className="mt-5 font-display text-3xl leading-tight text-paper">{preview.title}</h2>
+                <p className="mt-1 font-mono text-[11px] text-paper-muted">{preview.minutes} min read</p>
+                <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-paper-muted">{preview.summary}</p>
+                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
+                  Read this lesson <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </div>
+            </Link>
+          )}
         </div>
       </section>
 
@@ -112,11 +155,13 @@ export default function LandingPage() {
           <h2 className="text-paper">How the paths fit together</h2>
           <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s, i) => (
-              <Reveal as="li" key={s.n} delay={i * 100} className="rounded-xl border border-line bg-ink-elevated p-5">
+              <li key={s.n}>
+              <BlurFade inView delay={i * 0.1} className="h-full rounded-xl border border-line bg-ink-elevated p-5">
                 <span className="text-xs font-medium text-accent">Step {s.n}</span>
                 <p className="mt-2 font-medium text-paper">{s.title}</p>
                 <p className="mt-1.5 text-sm leading-relaxed text-paper-muted">{s.text}</p>
-              </Reveal>
+              </BlurFade>
+              </li>
             ))}
           </ol>
         </div>
@@ -124,12 +169,12 @@ export default function LandingPage() {
 
       <section className="mx-auto max-w-5xl px-6 py-16">
         <h2 className="text-paper">Made for focused learning</h2>
-        <div className="mt-8 grid gap-6 sm:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
           {PILLARS.map((p, i) => (
-            <Reveal key={p.title} delay={i * 100}>
+            <BlurFade inView key={p.title} delay={i * 0.1} className="rounded-2xl border border-line bg-ink-elevated p-6">
               <p className="font-medium text-paper">{p.title}</p>
               <p className="mt-2 text-sm leading-relaxed text-paper-muted">{p.text}</p>
-            </Reveal>
+            </BlurFade>
           ))}
         </div>
       </section>
