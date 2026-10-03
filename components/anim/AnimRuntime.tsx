@@ -11,14 +11,12 @@ type Slot = { el: HTMLElement; key: string; node: ReactNode };
 
 const STOP = /^(H1|H2|H3)$/;
 
-// The visual goes after the section's lead-in: skip a paragraph that ends with a colon so it
-// lands after the list it introduces, and otherwise sit right under the first block.
+// The visual goes after the section's first block, and after the list when a paragraph leads into one.
 function anchorFor(heading: Element): Element {
   const first = heading.nextElementSibling;
   if (!first || STOP.test(first.tagName)) return heading;
   const next = first.nextElementSibling;
-  const leadsIn = first.tagName === "P" && /:\s*$/.test(first.textContent ?? "");
-  if (leadsIn && next && /^(UL|OL|TABLE|PRE)$/.test(next.tagName)) return next;
+  if (first.tagName === "P" && next && /^(UL|OL|TABLE|PRE)$/.test(next.tagName)) return next;
   return first;
 }
 
