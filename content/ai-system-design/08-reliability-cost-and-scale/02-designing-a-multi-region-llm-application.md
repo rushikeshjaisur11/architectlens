@@ -6,6 +6,8 @@ sources:
   - "Google SRE Book, chapters on managing critical state and load balancing"
   - "Public provider documentation on regional model endpoints and data residency"
   - "AWS and Google Cloud multi-region architecture guidance"
+  - "AWS, 'Amazon Bedrock now supports global cross-Region inference' and cross-Region inference documentation (aws.amazon.com), via search results October 2026"
+  - "Anthropic pricing documentation, data residency and regional endpoint premiums (fetched Oct 2026)"
 ---
 
 ## The problem
@@ -75,6 +77,18 @@ Track availability, latency and error rates **per region and per provider**, cap
 3. Residency rules prevent spilling EU tenants' prompts to US endpoints; for a tenant with a US-allowed policy, overflow is sent to the US region with the data classification checked first.
 4. The status page shows degraded latency, not an outage; the share of out-of-region traffic stays at 0.4 percent, all from permitted tenants.
 5. When the primary recovers, traffic shifts back gradually, and the post-incident review adds a rule to pre-warm the second provider's quota before European mornings.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Active-active regions, health-checked routing, replicated state, a fallback path for the model call (steps above).
+
+**What managed platforms give you (October 2026).** Amazon Bedrock offers **geographic** cross-Region inference profiles (routing within a geography such as the US, EU, Australia or Japan) and **global** profiles (any supported commercial region). AWS states that on-demand users can see **up to 2x their in-region quota** and better resilience in demand spikes, and that customer-managed logs, knowledge bases and stored configuration stay in the **source region** while only the inference request travels over the AWS network. Reported breadth is large (a recent OpenAI model family on Bedrock is listed in more than 25 regions). Anthropic's first-party API supports `inference_geo: "us"` at **1.1x**, and Bedrock and Vertex regional or multi-region endpoints carry about a **10% premium** over global ones.
+
+**Design implications.**
+
+- **Choose data-residency and resilience together.** A global profile maximises capacity but may process data outside your jurisdiction; a geographic profile keeps residency but narrows failover. Make it a per-tenant policy.
+- **Fail over across providers too**, not only regions: a gateway with a second model family behind the same interface handles provider-wide incidents. Keep prompts and evaluation results per model since behaviour differs.
+- **State lives with the user's home region**: conversation memory, vector indexes and audit logs are region-scoped; route requests to the data, not the reverse.
 
 ## Common mistakes
 

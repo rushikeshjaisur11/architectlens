@@ -6,6 +6,7 @@ sources:
   - "Hu et al., 'LoRA: Low-Rank Adaptation of Large Language Models' (2021)"
   - "Dettmers et al., 'QLoRA: Efficient Finetuning of Quantized LLMs' (2023)"
   - "Public documentation on experiment tracking, model registries and training infrastructure"
+  - "Practitioner guides on LoRA, QLoRA, DPO and GRPO, 2026 (secondary: futureagi.com, bigdataboutique.com, gauraw.com)"
 ---
 
 ## The problem
@@ -76,6 +77,14 @@ Models age as the product and world change. Schedule re-evaluation, retrain when
 3. A QLoRA run on a single GPU takes three hours; the registry stores adapter weights with dataset and code hashes.
 4. Evaluation: field accuracy rises from 81 to 94 percent; general capability and safety suites are unchanged; latency drops 40 percent versus the large prompted model.
 5. Shadow comparison on live traffic confirms results; a 10 percent canary runs for three days, then full rollout, with the old adapter retained for rollback.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Curate data, train an adapter, evaluate against the base model, register and deploy (steps above).
+
+**Where the field is in 2026 (secondary sources).** **LoRA** is the default method; **QLoRA** (4-bit base plus adapters) when GPU memory is the constraint. **DPO** trains on preference pairs and is the common alignment step; **GRPO and reinforcement fine-tuning** apply where you have a verifiable reward (a checker, a unit test, a ground-truth label). The consistent practitioner guidance is: **fine-tune for form, not facts**. Use it to fix output structure, tone, tool-calling reliability or domain vocabulary; keep fast-changing knowledge in retrieval. A frequently cited threshold is a stable task, a real evaluation set and roughly **500 or more in-distribution examples**. A common cost-quality pattern is a fine-tuned 8B to 70B open-weight model for a narrow high-volume task plus RAG. Managed fine-tuning exists on Bedrock, Vertex AI and Azure, so you can start without owning GPUs.
+
+**Enterprise pattern.** Decide with numbers: compare (a) a better prompt on a frontier model with caching, (b) RAG, (c) a tuned small model, on quality, p95 latency and cost per 1,000 requests. Fine-tuning adds a lifecycle you must own: data lineage and consent for every training example (see PII-safe pipelines), re-training when the base model is deprecated, and a regression suite so the tuned model does not lose general safety behaviour. Serve adapters through multi-LoRA hosting so many tenants share one base model.
 
 ## Common mistakes
 

@@ -31,7 +31,7 @@ export function TopBar({
 
   return (
     <div className="flex h-12 items-center justify-between gap-2 border-b border-line px-3 sm:px-6">
-      <div className="flex min-w-0 items-center gap-2">
+      <div className="flex min-w-0 flex-1 items-center gap-2 overflow-visible">
         <button
           type="button"
           onClick={onMenuClick}
@@ -48,7 +48,7 @@ export function TopBar({
         >
           {sidebarCollapsed ? "»" : "«"}
         </button>
-        <nav className="flex min-w-0 items-center gap-3 font-mono text-xs text-paper-muted">
+        <nav className="flex min-w-0 items-center gap-2 sm:gap-3 font-mono text-xs text-paper-muted">
           <Link href="/" className="hidden shrink-0 hover:text-paper sm:inline">
             architectlens
           </Link>

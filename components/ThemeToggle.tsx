@@ -19,10 +19,12 @@ export function ThemeToggle() {
   return (
     <button
       type="button"
+      aria-label="Toggle theme"
       onClick={toggle}
       className="rounded border border-line px-2 py-1 font-mono text-xs text-paper-muted hover:border-accent-dim hover:text-paper"
     >
-      {light ? "Dark" : "Light"}
+      <span className="sm:hidden" aria-hidden>{light ? "☾" : "☀"}</span>
+      <span className="hidden sm:inline">{light ? "Dark" : "Light"}</span>
     </button>
   );
 }

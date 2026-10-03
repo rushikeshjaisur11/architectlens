@@ -6,6 +6,9 @@ sources:
   - "OWASP Top 10 for Large Language Model Applications"
   - "Public documentation of open-source guardrail frameworks and safety classifier models"
   - "Inan et al., 'Llama Guard: LLM-based Input-Output Safeguard for Human-AI Conversations' (2023)"
+  - "NVIDIA NeMo Guardrails documentation and NVIDIA developer blog on guardrail latency (via secondary summaries, October 2026)"
+  - "Meta Llama Guard 4 model card (12B multimodal safety classifier), via secondary summaries"
+  - "OWASP Top 10 for LLM Applications 2025 (LLM01, LLM05, LLM06)"
 ---
 
 ## The problem
@@ -63,6 +66,21 @@ Maintain labelled datasets per category and report **precision, recall and false
 3. The model summarises the cleaned thread. The output rail checks for PII and policy compliance; it finds none.
 4. The decision log records the detectors, scores and policy version; a daily report shows the injection block rate trending up for this route, which triggers a red-team review.
 5. The tool allow-list for this assistant does not include any email-sending tool, providing a second line of defence even if the rail had missed it.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Input checks, output checks, tool-call checks, with a fail-safe default (steps above).
+
+**Current tooling (secondary sources; benchmark on your own traffic).** NeMo Guardrails (NVIDIA, open source) structures five rail types: input, dialog, retrieval, execution and output, with policies written in Colang and integrations for LangChain, LangGraph and LlamaIndex. Reported overhead is roughly **20 to 80 ms** per classifier-based rail, and about half a second when several safety microservices are chained. **Llama Guard 4** is a 12B natively multimodal safety classifier that can screen both prompts and responses on a single GPU; small prompt-injection classifiers (Prompt Guard class, tens of millions of parameters) run in tens of milliseconds. NVIDIA's Nemotron safety models add multilingual, policy-conditioned moderation.
+
+**What to design around.**
+
+- **Classifiers are probabilistic.** They reduce risk; they do not enforce authorisation. Hard controls (what tools may do, which data a user may see) stay in deterministic code, which is why OWASP puts *Excessive Agency* (LLM06) and *Improper Output Handling* (LLM05) next to injection.
+- **Latency budget.** Run input checks in parallel with retrieval; stream output only after the streaming-safe rails pass, or buffer sentences and check them in windows.
+- **Per-tenant policy.** A bank and a children's education product need different thresholds; store policy as versioned config, not code.
+- **Measure both error types.** Track block rate, false-positive rate on benign golden prompts and miss rate on an attack suite that you refresh as new jailbreaks appear.
+
+**Enterprise pattern.** Guardrails as a shared service behind the gateway, with decisions logged (rule id, score, action) for audit and a documented override path for false positives.
 
 ## Common mistakes
 

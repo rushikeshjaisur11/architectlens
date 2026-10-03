@@ -6,6 +6,8 @@ sources:
   - "Public documentation of LLM serving benchmarks and GPU specifications"
   - "Pope et al., 'Efficiently Scaling Transformer Inference' (2022)"
   - "Google SRE Workbook, chapters on capacity and demand forecasting"
+  - "GPU rental price trackers, September to October 2026 (secondary: getdeploying.com, spheron.network, dev.to/fastgpu)"
+  - "llm-d project blog (KV-cache hit rate and throughput, fetched Oct 2026)"
 ---
 
 ## The problem
@@ -75,6 +77,19 @@ Capacity needs can fall dramatically through engineering: quantization, prefix c
 3. Enabling prefix caching (measured 55 percent hit rate on the shared system prompt) raises per-node capacity to 58 requests per second in a second benchmark, reducing the plan to 9 nodes with the same headroom.
 4. The team procures 7 committed nodes, plans 2 on-demand for spikes, and contracts a provider API as overflow for traffic above 90 percent fleet utilisation.
 5. A warm pool of 1 node plus scaling on queue depth covers the five-minute start-up; the plan is revisited monthly against actual traffic, and a "high" scenario of 600 requests per second has a documented trigger to order more nodes.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Capacity = peak tokens per second needed / tokens per second per GPU, plus headroom (steps above).
+
+**Price anchors (third-party trackers, September 2026; rates move monthly).** On-demand **H100** rentals cluster around a **median near $3 per GPU-hour** (about $1.5 on marketplaces to about $7 at hyperscalers), down from above $7 in early 2024. **B200** is reported around **$4 to $6.4 per GPU-hour** on specialist clouds and higher on hyperscaler capacity blocks; **GB200** around **$8 to $19**. Interruptible spot capacity is far cheaper (H100 from about $1). A B200 is reported at roughly 2.5x H100 training throughput, so a higher hourly price can still be cheaper per result; measure inference throughput on **your** model and context length before assuming that.
+
+**Planning rules that survive price changes.**
+
+- **Plan on tokens, not requests.** Separate prefill tokens (compute-bound) from decode tokens (memory-bandwidth-bound); disaggregated serving pools size each independently.
+- **Cache hit rate moves capacity.** In llm-d's benchmark, precise prefix-aware routing roughly doubled throughput on identical GPUs, so a routing change can substitute for hardware.
+- **Reserve versus burst.** Reserve (or commit) for the steady floor, use spot or on-demand for the peak, and keep a provider-API fallback for spikes beyond your pool.
+- **Headroom and drain.** Keep 20 to 30 percent headroom, and test GPU-node failure and rolling model updates, because model load takes minutes.
 
 ## Common mistakes
 

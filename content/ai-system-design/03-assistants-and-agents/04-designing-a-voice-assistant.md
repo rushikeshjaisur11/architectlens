@@ -6,6 +6,7 @@ sources:
   - "Public documentation on streaming speech-to-text and text-to-speech APIs"
   - "WebRTC specification and documentation on real-time audio transport"
   - "Public engineering articles on voice agents, turn detection and barge-in"
+  - "Provider documentation and independent benchmark reports on OpenAI Realtime and Gemini Live APIs, September 2026 (secondary: inworld.ai, softcery.com, foundrysoft.co)"
 ---
 
 ## The problem
@@ -65,6 +66,14 @@ Each call holds long-lived streams, so the system is **connection-bound**. Use s
 3. Audio starts playing about 700 ms after the user stopped speaking.
 4. Midway through a longer reply the user says "wait, it's for my daughter." Barge-in stops playback, cancels generation, and the assistant responds to the new information.
 5. The user reads out a prescription number; ASR confidence is low, so the assistant reads it back for confirmation before calling the refill tool.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Speech-to-text, language model, text-to-speech, with turn detection and barge-in (steps above).
+
+**Two architectures, both current (secondary sources, October 2026).** **Cascaded** (STT then LLM then TTS) gives you control of each stage, easy tool use and the ability to swap vendors; **native speech-to-speech** APIs (OpenAI Realtime, Google Gemini Live) skip the text hop and report **about 300 to 500 ms** end-to-end, with one benchmark reporting time-to-first-audio of roughly **180 to 220 ms for Gemini versus 200 to 250 ms for OpenAI** in September 2026. Reported pricing differs widely: OpenAI's realtime model is listed around **$32 per million audio input tokens and $64 output** (roughly $0.25 to $0.35 per minute all-in with caching), while Gemini Live is reported roughly an order of magnitude cheaper per minute. Treat vendor and aggregator numbers as a starting point and measure on your telephony path.
+
+**Enterprise pattern.** Voice agents fail in the details: telephony codecs and jitter, interruptions, background noise and accents, and consent. Keep tool calls and business logic outside the speech model so the same logic serves chat and voice; keep a deterministic confirmation step before irreversible actions ("I'll transfer 500 dollars to account ending 1234, correct?"); record call consent per jurisdiction; log transcripts with PII redaction; and keep a human-handoff path with the context attached.
 
 ## Common mistakes
 

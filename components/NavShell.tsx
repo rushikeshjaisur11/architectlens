@@ -30,7 +30,7 @@ export function NavShell({
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
+  const [desktopCollapsed, setDesktopCollapsed] = useState(true);
 
   const track = trackFromSlug(trackSlugFromPath(pathname));
   const tree = buildNavTree(

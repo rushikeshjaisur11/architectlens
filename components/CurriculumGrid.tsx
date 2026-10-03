@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { sortByOrder } from "@/lib/content";
 import type { Track } from "@/lib/tracks";
+import { TileBanner } from "./TileBanner";
 
 export type LessonTile = {
   slug: string;
@@ -15,6 +16,38 @@ export type LessonTile = {
   order: number;
   category: { number: number; slug: string; name: string };
 };
+
+function Tile({ lesson: l, href, label }: { lesson: LessonTile; href: string; label: string }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <Link
+      href={href}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onFocus={() => setHover(true)}
+      onBlur={() => setHover(false)}
+      className="group flex flex-col overflow-hidden rounded-lg border border-line transition-colors hover:border-accent-dim hover:bg-ink-elevated"
+    >
+      <div className="relative h-24 border-b border-line-soft bg-ink-elevated/50">
+        <TileBanner text={`${l.title} ${l.tags.join(" ")}`} hover={hover} />
+      </div>
+      <div className="flex flex-1 flex-col p-4">
+        <span className="font-mono text-[11px] text-paper-muted">
+          {label} · {l.minutes} min
+        </span>
+        <h3 className="mt-1 text-sm font-medium leading-snug text-paper group-hover:text-accent">{l.shortTitle}</h3>
+        <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-paper-muted">{l.summary}</p>
+        <div className="mt-auto flex flex-wrap gap-1.5 pt-3">
+          {l.tags.slice(0, 3).map((t) => (
+            <span key={t} className="rounded border border-line-soft px-1.5 py-0.5 font-mono text-[10px] text-paper-muted">
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 export function CurriculumGrid({ track, lessons }: { track: Track; lessons: LessonTile[] }) {
   const [query, setQuery] = useState("");
@@ -77,24 +110,12 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
               </div>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((l, i) => (
-                  <Link
+                  <Tile
                     key={l.slug}
+                    lesson={l}
                     href={`/lessons/${track.slug}/${category.slug}/${l.slug}`}
-                    className="group flex flex-col rounded-lg border border-line p-4 transition-colors hover:border-accent-dim hover:bg-ink-elevated"
-                  >
-                    <span className="font-mono text-[11px] text-paper-muted">
-                      {number}.{String(i + 1).padStart(2, "0")} · {l.minutes} min
-                    </span>
-                    <h3 className="mt-1.5 text-sm font-medium leading-snug text-paper group-hover:text-accent">{l.shortTitle}</h3>
-                    <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-paper-muted">{l.summary}</p>
-                    <div className="mt-auto flex flex-wrap gap-1.5 pt-3">
-                      {l.tags.slice(0, 3).map((t) => (
-                        <span key={t} className="rounded border border-line-soft px-1.5 py-0.5 font-mono text-[10px] text-paper-muted">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </Link>
+                    label={`${number}.${String(i + 1).padStart(2, "0")}`}
+                  />
                 ))}
               </div>
             </section>

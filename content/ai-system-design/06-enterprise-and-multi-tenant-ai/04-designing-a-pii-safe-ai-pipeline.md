@@ -6,6 +6,8 @@ sources:
   - "Regulation (EU) 2016/679 (GDPR) overview of personal data principles"
   - "NIST SP 800-122, Guide to Protecting the Confidentiality of Personally Identifiable Information"
   - "Public documentation on named-entity recognition based PII detection and tokenization services"
+  - "EDPB Opinion 28/2024 on personal data in AI models (17 December 2024), via law-firm summaries (Gibson Dunn, Hunton, A&O Shearman)"
+  - "OWASP Top 10 for LLM Applications 2025, LLM02 Sensitive Information Disclosure"
 ---
 
 *This lesson covers engineering patterns, not legal advice; check obligations with your privacy and legal teams.*
@@ -82,6 +84,21 @@ Run **red-team tests**: seed canary personal data and verify it never appears in
 3. The model, called under a zero-retention agreement, summarises: "`<PERSON_1>` reports a duplicate charge; reply to `<EMAIL_1>`."
 4. The egress check confirms no raw identifiers remain, then de-tokenises for the authorised support agent, who sees the real name and email.
 5. Logs store only the tokenised text; a canary email planted in a test ticket is verified absent from logs and the vector index by the nightly privacy test.
+
+## Enterprise practice (verified October 2026)
+
+**Basics.** Detect and redact PII before it reaches the model, logs and training data; restore only where needed (steps above).
+
+**Regulatory anchor (EU).** The European Data Protection Board's December 2024 opinion says a model is **not anonymous** if it can output personal data about individuals whose data trained it, and that anonymity claims need evidence that personal data cannot be extracted directly or probabilistically from the model or its outputs. It recognises **legitimate interest** as a possible lawful basis for development and deployment, subject to a three-step test, and puts weight on **documentation**. Practical effect: do not assume a fine-tuned model is "clean"; keep the lineage of training data, the lawful basis and your extraction tests on file.
+
+**Design patterns.**
+
+- **Pseudonymise at the gateway.** Replace identifiers with stable tokens before the provider call and map back on return; the mapping table stays inside your boundary. This reduces exposure to the provider but it is still personal data under GDPR if re-identification is possible.
+- **Treat logs and traces as the leak path.** OWASP LLM02 lists sensitive-information disclosure; prompts and completions in observability stores are the most common unplanned copy of personal data.
+- **Retention and deletion.** Support erasure across prompts, conversation memory, vector indexes and derived fine-tuning sets; index by data-subject id from the start.
+- **Contractual controls:** zero-retention terms, data-processing agreements and regional endpoints for each provider.
+
+*Not legal advice; confirm with your data-protection officer.*
 
 ## Common mistakes
 

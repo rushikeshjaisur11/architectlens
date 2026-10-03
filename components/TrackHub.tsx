@@ -28,19 +28,19 @@ export function TrackHub({ active }: { active?: string }) {
   ];
 
   return (
-    <div className="mb-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="mb-10 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
       {cards.map((c) => {
         const isActive = c.key === active;
         return (
           <Link
             key={c.key}
             href={c.href}
-            className={`group rounded-lg border p-4 transition-colors ${
+            className={`group rounded-lg border p-3 sm:p-4 transition-colors ${
               isActive ? "border-accent-dim bg-ink-elevated" : "border-line hover:border-accent-dim hover:bg-ink-elevated"
             }`}
           >
             <p className={`font-mono text-sm ${isActive ? "text-accent" : "text-paper group-hover:text-accent"}`}>{c.name}</p>
-            <p className="mt-1.5 text-xs leading-relaxed text-paper-muted">{c.blurb}</p>
+            <p className="mt-1.5 hidden text-xs leading-relaxed sm:block text-paper-muted">{c.blurb}</p>
             <p className="mt-3 font-mono text-[11px] text-paper-muted">{c.meta}</p>
           </Link>
         );
