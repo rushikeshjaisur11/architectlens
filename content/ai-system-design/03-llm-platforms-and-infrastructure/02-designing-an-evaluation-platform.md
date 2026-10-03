@@ -1,0 +1,89 @@
+---
+title: "Designing an Evaluation Platform"
+short_title: "Evaluation Platform"
+tags: ["evaluation", "platform", "datasets", "llm-judge", "regression", "design"]
+sources:
+  - "Zheng et al., 'Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena' (2023)"
+  - "Public documentation of open-source LLM evaluation frameworks and experiment trackers"
+  - "Kohavi, Tang and Xu, Trustworthy Online Controlled Experiments (2020)"
+---
+
+## The problem
+
+Teams change prompts, models and retrieval settings constantly, and each change can quietly make things worse. Without shared evaluation infrastructure, every team builds a fragile notebook, results are not comparable, and regressions reach users. An **evaluation platform** gives every AI feature a repeatable way to answer "is this change better, and at what cost?" before and after release.
+
+## Step 1: Requirements
+
+- **Datasets:** versioned collections of test cases with inputs, expected outputs or reference facts, and tags (slice, difficulty, source).
+- **Runs:** execute a candidate (prompt, model, pipeline) over a dataset, collect outputs, scores, latency and cost.
+- **Scorers:** deterministic checks, model-graded judges and human review, combinable per task.
+- **Comparison:** side-by-side results between two runs with statistics and drill-down to individual cases.
+- **Integration:** run in CI as a gate, on a schedule against production traffic samples, and on demand from a notebook or UI.
+- **Scale (example):** 200 teams, thousands of runs per day, datasets from 50 to 50,000 cases.
+
+## Step 2: Core data model
+
+- **Dataset** (versioned, immutable once published) containing **cases**.
+- **Target:** a reference to the thing under test, defined as a callable or a service endpoint plus its config (prompt version, model, parameters).
+- **Run:** target plus dataset version plus scorer set, with status and metadata (git commit, author).
+- **Result:** per case: output, trace id, latency, tokens, and one score per scorer with rationale.
+- **Experiment:** a named comparison of runs.
+
+Immutable dataset versions are essential: if the data changes under a run, comparisons are meaningless.
+
+## Step 3: Execution engine
+
+A run fans out into case-level jobs processed by a worker pool.
+
+- **Concurrency control** respects provider rate limits and budgets; use the LLM gateway's quotas.
+- **Retries and timeouts** per case; one failure should not sink the run, and failures are recorded as results, not hidden.
+- **Caching** of target outputs keyed by input and target config, so re-scoring with a new judge does not re-run the model.
+- **Determinism aids:** fixed seeds and temperature where possible, and multiple samples per case for stochastic targets to measure variance.
+- **Cost control:** estimate cost before launching, cap spend per run.
+
+## Step 4: Scorers
+
+- **Deterministic:** exact match, regex, JSON schema validity, code execution against tests, retrieval hit rate. Cheap, reliable, run on everything.
+- **LLM judges:** rubric-based grading of qualities like helpfulness or faithfulness. Use pairwise comparisons with swapped order, clear rubrics, and structured output. **Calibrate** judges against human labels and track agreement; version judge prompts like any other code.
+- **Human review:** a queue with an annotation UI, guidelines, and inter-annotator agreement tracking, applied to samples and disagreements.
+
+Store the **rationale** with each score so reviewers can audit it.
+
+## Step 5: Comparison and statistics
+
+Averages hide regressions. Show:
+
+- Aggregate scores with **confidence intervals**, and a paired comparison between runs on the same cases.
+- **Slices** (by topic, language, difficulty), because a gain on easy cases can mask a loss on hard ones.
+- **Regressions and wins** as lists of specific cases that flipped.
+- Latency and cost beside quality, so trade-offs are explicit.
+
+Small datasets give noisy differences; the platform should flag when a result is within noise.
+
+## Step 6: CI gating and production loops
+
+- **CI gate:** a change must not drop key scores beyond a threshold versus the baseline, with a documented override process.
+- **Online sampling:** a fraction of production traces is scored automatically for drift and added to a review queue.
+- **Failure harvesting:** bad production cases found by users or monitors are promoted into the dataset, so each incident becomes a permanent regression test.
+
+## Step 7: Operations and trust
+
+Track evaluator reliability: judge-human agreement, score drift over time, and rerun variance. Protect sensitive data in datasets with access control and redaction. Keep run metadata and artifacts for audit and reproducibility.
+
+## A worked example
+
+**Scenario:** a team wants to switch their summarizer to a cheaper model.
+
+1. They create a run for the candidate on dataset v7 (1,200 cases) with deterministic checks (length, no markdown), a faithfulness judge and a 5 percent human sample.
+2. Outputs are produced with gateway quotas; cached outputs from the baseline run are reused.
+3. The comparison shows quality within noise overall, cost down 62 percent, but a drop on the "numeric tables" slice.
+4. Drill-down lists 31 regressed cases; reviewers confirm the cheaper model misreads tables.
+5. The team keeps the expensive model for table-heavy documents and routes the rest to the cheaper one, then adds the 31 cases as a permanent "tables" slice in CI.
+
+## Common mistakes
+
+- **Mutable datasets**, making runs incomparable.
+- **Reporting a single average**, hiding slice regressions.
+- **Uncalibrated judges**, treating their scores as ground truth.
+- **No cost or latency next to quality**, so trade-offs go unseen.
+- **Never feeding production failures back** into the dataset.

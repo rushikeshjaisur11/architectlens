@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { buildNavTree } from "@/lib/nav-tree";
-import { trackFromSlug } from "@/lib/tracks";
+import { trackFromSlug, trackSlugFromPath } from "@/lib/tracks";
 import type { ContentIndexItem } from "@/lib/search-index";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
@@ -17,11 +17,6 @@ type LessonLike = {
   track: { slug: string; name: string };
   category: { number: number; slug: string; name: string };
 };
-
-function activeTrackSlug(pathname: string): string {
-  if (pathname.startsWith("/ai-systems") || pathname.startsWith("/lessons/ai-systems")) return "ai-systems";
-  return "system-design";
-}
 
 export function NavShell({
   lessons,
@@ -37,7 +32,7 @@ export function NavShell({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
 
-  const track = trackFromSlug(activeTrackSlug(pathname));
+  const track = trackFromSlug(trackSlugFromPath(pathname));
   const tree = buildNavTree(
     lessons.filter((l) => l.track.slug === track.slug),
     track

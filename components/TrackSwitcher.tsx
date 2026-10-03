@@ -3,16 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TRACKS } from "@/lib/tracks";
-
-function activeTrackSlug(pathname: string): string {
-  if (pathname.startsWith("/ai-systems") || pathname.startsWith("/lessons/ai-systems")) return "ai-systems";
-  return "system-design";
-}
+import { TRACKS, trackSlugFromPath } from "@/lib/tracks";
 
 export function TrackSwitcher({ className = "" }: { className?: string }) {
   const pathname = usePathname();
-  const active = activeTrackSlug(pathname);
+  const active = trackSlugFromPath(pathname);
   const activeTrack = TRACKS.find((t) => t.slug === active) ?? TRACKS[0];
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);

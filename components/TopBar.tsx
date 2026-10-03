@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./ThemeToggle";
 import { TrackSwitcher } from "./TrackSwitcher";
+import { FrameworksMenu } from "./FrameworksMenu";
 
 function categoryLabel(pathname: string): string | null {
   const match = /^\/lessons\/[^/]+\/([^/]+)\//.exec(pathname);
@@ -52,6 +53,7 @@ export function TopBar({
             architectlens
           </Link>
           <TrackSwitcher className="shrink-0" />
+          <FrameworksMenu className="hidden shrink-0 sm:block" />
           {label && (
             <>
               <span className="hidden sm:inline">/</span>

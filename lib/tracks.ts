@@ -36,10 +36,25 @@ const AI_SYSTEMS_CATEGORIES: Category[] = [
   { number: 10, slug: "production-reliability", name: "Production reliability" },
 ];
 
+const AI_SYSTEM_DESIGN_CATEGORIES: Category[] = [
+  { number: 1, slug: "knowledge-and-search-products", name: "Knowledge and search products" },
+  { number: 2, slug: "assistants-and-agents", name: "Assistants and agents" },
+  { number: 3, slug: "llm-platforms-and-infrastructure", name: "LLM platforms and infrastructure" },
+  { number: 4, slug: "data-feedback-and-training-loops", name: "Data, feedback and training loops" },
+  { number: 5, slug: "enterprise-and-multi-tenant-ai", name: "Enterprise and multi-tenant AI" },
+];
+
 export const TRACKS: Track[] = [
   { slug: "system-design", name: "System Design", categories: SYSTEM_DESIGN_CATEGORIES },
   { slug: "ai-systems", name: "AI Systems", categories: AI_SYSTEMS_CATEGORIES },
+  { slug: "ai-system-design", name: "AI System Design", categories: AI_SYSTEM_DESIGN_CATEGORIES },
 ];
+
+export function trackSlugFromPath(pathname: string): string {
+  const [first, second] = pathname.split("/").filter(Boolean);
+  const slug = first === "lessons" ? second : first;
+  return TRACKS.some((t) => t.slug === slug) ? slug : "system-design";
+}
 
 export function trackFromSlug(slug: string): Track {
   const track = TRACKS.find((t) => t.slug === slug);
