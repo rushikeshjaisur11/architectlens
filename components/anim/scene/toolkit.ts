@@ -17,7 +17,15 @@ function rgb(hex: string): [number, number, number] {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
-const FONT = '"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace';
+// Canvas text uses the site's mono face; next/font publishes its hashed family name as a CSS variable.
+let fontCache = "";
+function font() {
+  if (!fontCache && typeof document !== "undefined") {
+    const v = getComputedStyle(document.documentElement).getPropertyValue("--font-mono-body").trim();
+    if (v) fontCache = `${v}, ui-monospace, Menlo, Consolas, monospace`;
+  }
+  return fontCache || "ui-monospace, Menlo, Consolas, monospace";
+}
 
 export function makeG(c: CanvasRenderingContext2D, h: number): G {
   const g: G = {
@@ -119,7 +127,7 @@ export function makeG(c: CanvasRenderingContext2D, h: number): G {
     text(s, x, y, o: TextOpts = {}) {
       c.globalAlpha = o.a ?? 1;
       c.fillStyle = o.color ?? g.pal.muted;
-      c.font = `${o.bold ? 600 : 400} ${o.size ?? 12}px ${FONT}`;
+      c.font = `${o.bold ? 600 : 400} ${o.size ?? 12}px ${font()}`;
       c.textAlign = o.align ?? "center";
       c.textBaseline = "middle";
       c.fillText(s, x, y);

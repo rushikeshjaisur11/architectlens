@@ -166,7 +166,7 @@ export default function SceneCanvas({ scene }: { scene: Scene }) {
             }
             if (c.kind === "choice") {
               return (
-                <span key={c.id} className="flex items-center gap-1.5">
+                <span key={c.id} className="flex max-w-full flex-wrap items-center gap-1.5">
                   <span className="font-mono text-xs text-paper-muted">{c.label}</span>
                   {c.options.map((o, i) => (
                     <AnimButton key={o} active={vals[c.id] === i} onClick={() => set(c.id, i)}>
