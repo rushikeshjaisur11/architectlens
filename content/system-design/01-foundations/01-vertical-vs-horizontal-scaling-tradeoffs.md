@@ -28,7 +28,7 @@ Horizontal scaling means adding more nodes and distributing work across them —
 
 The cost is complexity, and this is where most system design difficulty actually lives:
 
-- **State must be partitioned or replicated.** A stateless web tier scales out trivially behind a load balancer. A database does not — you need sharding (splitting data by key across nodes), replication (copying data across nodes), or both, and each introduces the consistency trade-offs covered in [Consistency Models Overview](05-consistency-models-overview.md).
+- **State must be partitioned or replicated.** A stateless web tier scales out trivially behind a load balancer. A database does not — you need sharding (splitting data by key across nodes), replication (copying data across nodes), or both, and each introduces the consistency trade-offs covered in [Consistency Models Overview](06-consistency-models-overview.md).
 - **Coordination overhead appears.** Distributed locks, consensus protocols, and cross-node transactions all cost latency that a single machine never pays.
 - **Load must actually distribute evenly.** A poor partitioning scheme (e.g., sharding by a key with a hot skew, like a single celebrity user ID) can leave one node overloaded while others sit idle — horizontal capacity only helps if the load balancer or shard key spreads traffic evenly.
 

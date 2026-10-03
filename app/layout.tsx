@@ -19,9 +19,9 @@ const plexMono = IBM_Plex_Mono({
 const THEME_INIT_SCRIPT = `
 (function () {
   try {
-    var stored = localStorage.getItem("theme");
-    var theme = stored || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
-    if (theme === "light") document.documentElement.dataset.theme = "light";
+    var stored = localStorage.getItem("theme-v2");
+    var theme = stored === "dark" || stored === "sepia" ? stored : "light";
+    document.documentElement.dataset.theme = theme;
   } catch (e) {}
 })();
 `;

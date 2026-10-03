@@ -5,6 +5,22 @@
   --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 
+  --color-ink: #eef1f6;
+  --color-ink-elevated: #ffffff;
+  --color-line: #c7d0e0;
+  --color-line-soft: #dbe1ec;
+  --color-paper: #0b0f1c;
+  --color-paper-muted: #3c4560;
+  --color-accent: #a6650c;
+  --color-accent-dim: #8f5a0c;
+}
+
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
   --color-ink: #0a0a0b;
   --color-ink-elevated: #141415;
   --color-line: #2e2e33;
@@ -15,20 +31,29 @@
   --color-accent-dim: #b8801f;
 }
 
-:root {
-  color-scheme: dark;
+/* Reading mode: warm paper, soft brown ink, serif body text, like an e-reader. */
+:root[data-theme="sepia"] {
+  color-scheme: light;
+  --color-ink: #f4ecd8;
+  --color-ink-elevated: #fbf5e6;
+  --color-line: #d8cba9;
+  --color-line-soft: #e5dac0;
+  --color-paper: #3a2e1d;
+  --color-paper-muted: #6a5a42;
+  --color-accent: #9a5a12;
+  --color-accent-dim: #85500f;
 }
 
-:root[data-theme="light"] {
-  color-scheme: light;
-  --color-ink: #eef1f6;
-  --color-ink-elevated: #ffffff;
-  --color-line: #c7d0e0;
-  --color-line-soft: #dbe1ec;
-  --color-paper: #0b0f1c;
-  --color-paper-muted: #3c4560;
-  --color-accent: #a6650c;
-  --color-accent-dim: #8f5a0c;
+:root[data-theme="sepia"] .prose {
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  font-size: 1.0625rem;
+  line-height: 1.85;
+}
+
+:root[data-theme="sepia"] .prose h1,
+:root[data-theme="sepia"] .prose h2,
+:root[data-theme="sepia"] .prose h3 {
+  font-family: var(--font-sans);
 }
 
 .prose {
@@ -83,4 +108,39 @@
     radial-gradient(circle at 1px 1px, var(--color-line) 1px, transparent 0),
     linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 9%, transparent), transparent 60%);
   background-size: 14px 14px, 100% 100%;
+}
+
+.sec-hidden {
+  display: none;
+}
+
+.prose h2[data-collapsible] {
+  cursor: pointer;
+  position: relative;
+  padding-right: 1.75rem;
+  user-select: none;
+}
+
+.prose h2[data-collapsible]::after {
+  content: "";
+  position: absolute;
+  right: 0.25rem;
+  top: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-top: -0.35rem;
+  border-right: 2px solid var(--color-paper-muted);
+  border-bottom: 2px solid var(--color-paper-muted);
+  transform: rotate(45deg);
+  transition: transform 150ms ease;
+}
+
+.prose h2[data-collapsible][aria-expanded="false"]::after {
+  transform: rotate(-45deg);
+}
+
+.prose h2[data-collapsible]:hover,
+.prose h2[data-collapsible]:focus-visible {
+  color: var(--color-accent);
+  outline: none;
 }

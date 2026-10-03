@@ -18,7 +18,7 @@ function Tile({ t }: { t: SectionTile }) {
       className="group flex flex-col overflow-hidden rounded-lg border border-line transition-colors hover:border-accent-dim hover:bg-ink-elevated"
     >
       <div className="banner-bg relative h-24 border-b border-line-soft">
-        <TileBanner text={t.hint} hover={hover} />
+        <TileBanner title={t.hint} hover={hover} />
       </div>
       <div className="p-4">
         <div className="flex items-center justify-between gap-2">

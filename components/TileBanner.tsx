@@ -5,7 +5,7 @@ import { basePalette, makeG } from "./anim/scene/toolkit";
 import { BANNER_H, BANNER_W, drawBanner, motifFor } from "./anim/scenes/banner";
 
 // Concept banner for a tile: a small labelled diagram of the topic. Static until hovered.
-export function TileBanner({ text, hover }: { text: string; hover: boolean }) {
+export function TileBanner({ title, tags = "", hover }: { title: string; tags?: string; hover: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const hoverRef = useRef(hover);
   hoverRef.current = hover;
@@ -15,7 +15,7 @@ export function TileBanner({ text, hover }: { text: string; hover: boolean }) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const motif = motifFor(text);
+    const motif = motifFor(title, tags);
     const g = makeG(ctx, BANNER_H);
     g.w = BANNER_W;
     g.t = 2.1;
@@ -32,7 +32,7 @@ export function TileBanner({ text, hover }: { text: string; hover: boolean }) {
         canvas.width = Math.round(w * dpr);
         canvas.height = Math.round(h * dpr);
       }
-      const light = document.documentElement.dataset.theme === "light";
+      const light = document.documentElement.dataset.theme !== "dark";
       g.dark = !light;
       g.pal = basePalette(!light);
       const s = Math.min(w / BANNER_W, h / BANNER_H);
@@ -72,7 +72,7 @@ export function TileBanner({ text, hover }: { text: string; hover: boolean }) {
       mo.disconnect();
       window.removeEventListener("resize", draw);
     };
-  }, [text]);
+  }, [title, tags]);
 
   return <canvas ref={ref} aria-hidden className="h-full w-full" />;
 }

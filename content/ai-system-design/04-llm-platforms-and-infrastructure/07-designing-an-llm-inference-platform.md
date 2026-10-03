@@ -8,6 +8,7 @@ sources:
   - "Public documentation of open-source LLM serving frameworks and GPU orchestration systems"
   - "llm-d project blog, 'KV-Cache Wins You Can See', llm-d.ai/blog/kvcache-wins-you-can-see (fetched Oct 2026)"
   - "vLLM blog, vllm.ai/blog (September 2026 posts on disaggregated serving, fetched Oct 2026)"
+  - "vLLM documentation, Disaggregated Prefilling (docs.vllm.ai, fetched Oct 2026)"
 ---
 
 ## The problem
@@ -81,7 +82,7 @@ Handle GPU failures (node loss, memory errors) with health checks and automatic 
 **What enterprises add (live-checked).**
 
 - **KV-cache-aware routing is the biggest lever after batching.** llm-d (a CNCF Sandbox project that routes across vLLM pods) tracks which pod holds which prefix blocks via cache events. In its published benchmark (8 H100 GPUs, a 32B model, 150 simulated B2B customers with 6,000-token shared contexts), **precise prefix-aware routing gave P90 time-to-first-token of 0.54 s versus 31 s for approximate routing and about 92 to 95 s for load-only or random routing, with about 2x the throughput** (8,730 vs 4,429 tokens/s). The index metadata cost is tiny (about 339 KB for a 365 GB cache pool). This is a vendor-project benchmark on one workload shape; reproduce it on yours. Workloads that gain most: multi-turn chat and **agent loops with long static context** (input-to-output ratios above 100:1).
-- **Prefill/decode disaggregation** is mainstream. vLLM's September 2026 posts cover disaggregated serving with a GPU-less frontend and report serving a very large model with prefill/decode split. Use it when long prompts and long generations compete for the same GPUs; stay colocated for short, uniform traffic where transfer overhead is not worth it.
+- **Prefill/decode disaggregation** runs prefill and decode in separate instances connected by KV-cache transfer. vLLM's documentation labels the feature **experimental** and states plainly that it lets you tune time-to-first-token and inter-token latency independently and avoids prefill jobs interrupting decode (tail latency), but that it **does not improve throughput**; its September 2026 posts cover production patterns including a GPU-less frontend. Use it when long prompts and long generations compete for the same GPUs and tail latency is the problem; stay colocated for short, uniform traffic where transfer overhead is not worth it.
 - **Operational stack:** an inference gateway with queue-depth and cache-hit-rate autoscaling, per-tenant rate limits, multi-LoRA serving for fine-tuned variants, and speculative decoding for latency-sensitive paths.
 
 **Enterprise pattern.** Separate pools by workload class (interactive, batch, embeddings), size by tokens per second at your latency SLO rather than by request count, and treat KV-cache hit rate as a first-class SLI next to p95 latency and GPU utilisation.

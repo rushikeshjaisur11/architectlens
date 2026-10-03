@@ -6,14 +6,16 @@ import { SCENES as sd4 } from "./sd-4";
 import { SCENES as sd5 } from "./sd-5";
 import { SCENES as sd6 } from "./sd-6";
 import { SCENES as sd7 } from "./sd-7";
+import { SCENES as sd8 } from "./sd-8";
 import { SCENES as ai1 } from "./ai-1";
 import { SCENES as ai2 } from "./ai-2";
 import { SCENES as ai3 } from "./ai-3";
 import { SCENES as ai4 } from "./ai-4";
 import { SCENES as ai5 } from "./ai-5";
+import { SCENES as ai6 } from "./ai-6";
 import { MORE } from "./more";
 
-const base: Record<string, Scene> = { ...sd1, ...sd2, ...sd3, ...sd4, ...sd5, ...sd6, ...sd7, ...ai1, ...ai2, ...ai3, ...ai4, ...ai5 };
+const base: Record<string, Scene> = { ...sd1, ...sd2, ...sd3, ...sd4, ...sd5, ...sd6, ...sd7, ...sd8, ...ai1, ...ai2, ...ai3, ...ai4, ...ai5, ...ai6 };
 
 // A lesson gets its main scene first, then any extra scenes that explain further parts of it.
 // Lessons that use an explicit pilot animation have extras only.

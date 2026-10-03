@@ -1,40 +1,51 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Moon, Sun } from "lucide-react";
+import { BookOpen, Moon, Sun, type LucideIcon } from "lucide-react";
+
+type Theme = "light" | "dark" | "sepia";
+
+const OPTIONS: { id: Theme; label: string; Icon: LucideIcon }[] = [
+  { id: "light", label: "Light", Icon: Sun },
+  { id: "dark", label: "Dark", Icon: Moon },
+  { id: "sepia", label: "Reading mode", Icon: BookOpen },
+];
 
 export function ThemeToggle() {
-  const [light, setLight] = useState(false);
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    setLight(document.documentElement.dataset.theme === "light");
+    const current = document.documentElement.dataset.theme;
+    setTheme(current === "dark" || current === "sepia" ? current : "light");
   }, []);
 
-  function toggle() {
-    const next = !light;
-    setLight(next);
-    document.documentElement.dataset.theme = next ? "light" : "dark";
-    localStorage.setItem("theme", next ? "light" : "dark");
+  function choose(next: Theme) {
+    setTheme(next);
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("theme-v2", next);
   }
 
   return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={light}
-      aria-label={light ? "Switch to dark theme" : "Switch to light theme"}
-      title={light ? "Switch to dark theme" : "Switch to light theme"}
-      onClick={toggle}
-      className="relative flex h-7 w-14 shrink-0 items-center rounded-full border border-line bg-ink-elevated text-paper-muted transition-colors hover:border-accent-dim"
-    >
-      <span
-        aria-hidden
-        className={`absolute top-0.5 h-5.5 w-6 rounded-full bg-accent/20 ring-1 ring-accent-dim transition-all duration-200 ${
-          light ? "left-[calc(100%-1.625rem)]" : "left-0.5"
-        }`}
-      />
-      <Moon size={13} aria-hidden className={`relative z-10 ml-[0.55rem] ${light ? "" : "text-accent"}`} />
-      <Sun size={13} aria-hidden className={`relative z-10 ml-auto mr-[0.55rem] ${light ? "text-accent" : ""}`} />
-    </button>
+    <div role="radiogroup" aria-label="Colour theme" className="flex shrink-0 items-center gap-0.5 rounded-full border border-line bg-ink-elevated p-0.5">
+      {OPTIONS.map(({ id, label, Icon }) => {
+        const active = theme === id;
+        return (
+          <button
+            key={id}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            aria-label={label}
+            title={label}
+            onClick={() => choose(id)}
+            className={`flex h-6 w-7 items-center justify-center rounded-full transition-colors ${
+              active ? "bg-accent/20 text-accent ring-1 ring-accent-dim" : "text-paper-muted hover:text-paper"
+            }`}
+          >
+            <Icon size={13} aria-hidden />
+          </button>
+        );
+      })}
+    </div>
   );
 }

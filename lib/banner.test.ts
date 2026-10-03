@@ -11,7 +11,7 @@ describe("motifFor", () => {
 
   it("covers almost every lesson with a specific diagram", () => {
     const generic = (lessons as { title: string; tags: string[] }[]).filter(
-      (l) => motifFor(`${l.title} ${l.tags.join(" ")}`).id === "default",
+      (l) => motifFor(l.title, l.tags.join(" ")).id === "default",
     );
     expect(generic.map((l) => l.title)).toEqual([]);
   });
