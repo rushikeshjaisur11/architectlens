@@ -1,8 +1,8 @@
 name: Deploy to GitHub Pages
 
+# Static export cannot include the API routes (accounts), so Vercel hosts the site.
+# This workflow is manual-only; the Pages build is expected to fail while API routes exist.
 on:
-  push:
-    branches: [master]
   workflow_dispatch:
 
 permissions:
