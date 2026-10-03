@@ -23,7 +23,7 @@ function Tile({ t }: { t: SectionTile }) {
       <div className="p-4">
         <div className="flex items-center justify-between gap-2">
           <h3 className="text-sm font-medium text-paper group-hover:text-accent">{t.name}</h3>
-          {t.soon && <span className="rounded border border-line px-1.5 py-0.5 font-mono text-[10px] text-paper-muted">soon</span>}
+          {t.soon && <span className="rounded border border-line px-1.5 py-0.5 font-mono text-[11px] text-paper-muted">soon</span>}
         </div>
         <p className="mt-2 text-xs leading-relaxed text-paper-muted">{t.blurb}</p>
       </div>

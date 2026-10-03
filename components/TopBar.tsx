@@ -73,7 +73,7 @@ export function TopBar({
         <button type="button" onClick={onSearchClick} aria-label="Search" className={`${quiet} inline-flex xl:w-56`}>
           <Search size={15} />
           <span className="hidden flex-1 text-left xl:inline">Search notes</span>
-          <kbd className="hidden rounded border border-line-soft px-1 text-[11px] xl:inline">/</kbd>
+          <kbd className="hidden rounded border border-line-soft px-1 text-xs xl:inline">/</kbd>
         </button>
         <ThemeToggle />
       </div>

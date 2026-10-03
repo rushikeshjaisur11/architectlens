@@ -6,7 +6,6 @@ import { PathCards, type PathOrder, type PathStats } from "@/components/PathCard
 import { BlurFade } from "@/components/ui/blur-fade";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { NumberTicker } from "@/components/ui/number-ticker";
-import { Spotlight } from "@/components/ui/spotlight";
 import { TextEffect } from "@/components/ui/text-effect";
 import { TypedWords } from "@/components/TypedWords";
 import { TileBanner } from "@/components/TileBanner";
@@ -55,7 +54,6 @@ export default function LandingPage() {
             cr={1}
             className="fill-paper-muted/25 [mask-image:radial-gradient(48rem_26rem_at_30%_30%,white,transparent)]"
           />
-          <Spotlight className="-top-40 left-0 md:-top-20 md:left-40" fill="#8f9dff" />
         </div>
         <div className="relative mx-auto grid max-w-5xl items-center gap-12 px-6 py-16 sm:py-24 lg:grid-cols-[1.15fr_1fr]">
           <div>
@@ -121,7 +119,7 @@ export default function LandingPage() {
                 <span className="h-2 w-2 rounded-full bg-line" />
                 <span className="h-2 w-2 rounded-full bg-line" />
                 <span className="h-2 w-2 rounded-full bg-line" />
-                <span className="ml-3 truncate font-mono text-[11px] text-paper-muted">{preview.category.name}</span>
+                <span className="ml-3 truncate font-mono text-xs text-paper-muted">{preview.category.name}</span>
               </div>
               <div className="h-0.5 w-2/5 bg-hook" aria-hidden />
               <div className="p-5">
@@ -129,7 +127,7 @@ export default function LandingPage() {
                   <TileBanner title={preview.title} tags={preview.tags.join(" ")} spec={preview.banner} hover />
                 </div>
                 <h2 className="mt-5 font-display text-3xl leading-tight text-paper">{preview.title}</h2>
-                <p className="mt-1 font-mono text-[11px] text-paper-muted">{preview.minutes} min read</p>
+                <p className="mt-1 font-mono text-xs text-paper-muted">{preview.minutes} min read</p>
                 <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-paper-muted">{preview.summary}</p>
                 <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
                   Read this lesson <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />

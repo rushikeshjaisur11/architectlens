@@ -14,7 +14,7 @@
   --color-line: #d5dbe8;
   --color-line-soft: #e6e9f2;
   --color-paper: #12172b;
-  --color-paper-muted: #465068;
+  --color-paper-muted: #38425a;
   --color-accent: #4338ca;
   --color-accent-dim: #3730a3;
   --color-hook: #b45309;
@@ -31,7 +31,7 @@
   --color-line: #2a2a2f;
   --color-line-soft: #1d1d21;
   --color-paper: #ededf0;
-  --color-paper-muted: #a3a3ad;
+  --color-paper-muted: #b8b8c2;
   --color-accent: #8f9dff;
   --color-accent-dim: #6d7df0;
   --color-hook: #f0b04a;
@@ -45,7 +45,7 @@
   --color-line: #d8cba9;
   --color-line-soft: #e5dac0;
   --color-paper: #3a2e1d;
-  --color-paper-muted: #6a5a42;
+  --color-paper-muted: #55472f;
   --color-accent: #9a5a12;
   --color-accent-dim: #85500f;
   --color-hook: #9a5a12;
@@ -53,7 +53,7 @@
 
 :root[data-theme="sepia"] .prose {
   font-family: var(--font-reading), Georgia, serif;
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   line-height: 1.85;
 }
 
@@ -77,7 +77,7 @@
   --tw-prose-pre-bg: var(--color-ink-elevated);
   --tw-prose-th-borders: var(--color-line);
   --tw-prose-td-borders: var(--color-line-soft);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   line-height: 1.75;
 }
 
@@ -153,8 +153,8 @@
   outline: none;
 }
 
-:root[data-fs="sm"] .prose { font-size: 0.9375rem; }
-:root[data-fs="lg"] .prose { font-size: 1.25rem; }
+:root[data-fs="sm"] .prose { font-size: 1rem; }
+:root[data-fs="lg"] .prose { font-size: 1.3125rem; }
 
 .prose :where(code, pre, kbd, samp):not(:where([class~="not-prose"] *)) {
   font-family: var(--font-code);
@@ -259,10 +259,10 @@ p {
 
 /* ===== Reading text: body, emphasis, links, lists, quotes ===== */
 .prose {
-  --tw-prose-body: color-mix(in srgb, var(--color-paper) 88%, var(--color-ink));
+  --tw-prose-body: color-mix(in srgb, var(--color-paper) 96%, var(--color-ink));
   --tw-prose-bullets: var(--color-accent-dim);
   --tw-prose-counters: var(--color-accent-dim);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   line-height: 1.75;
 }
 

@@ -41,13 +41,13 @@ function Tile({ lesson: l, href, label, read, hue }: { lesson: LessonTile; href:
       >
         <TileBanner title={l.title} tags={l.tags.join(" ")} hover={hover} spec={l.banner} />
         {read && (
-          <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full border border-hook bg-ink px-2 py-0.5 font-mono text-[10px] text-hook">
+          <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full border border-hook bg-ink px-2 py-0.5 font-mono text-[11px] text-hook">
             <Check size={10} /> read
           </span>
         )}
       </div>
       <div className="flex flex-1 flex-col p-4">
-        <span className="font-mono text-[11px] text-paper-muted">
+        <span className="font-mono text-xs text-paper-muted">
           {label} · {l.minutes} min
         </span>
         <h3 className="mt-1 text-sm font-medium leading-snug text-paper group-hover:text-accent">{l.shortTitle}</h3>
@@ -167,7 +167,7 @@ export function CurriculumGrid({ track, lessons }: { track: Track; lessons: Less
                 type="button"
                 onClick={() => setTag(tag === t ? null : t)}
                 aria-pressed={tag === t}
-                className={`rounded-full border px-3 py-1 font-mono text-[11px] transition-colors ${
+                className={`rounded-full border px-3 py-1 font-mono text-xs transition-colors ${
                   tag === t ? "border-accent bg-ink-elevated text-accent" : "border-line text-paper-muted hover:border-accent-dim hover:text-paper"
                 }`}
               >

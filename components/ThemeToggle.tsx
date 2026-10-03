@@ -5,47 +5,44 @@ import { BookOpen, Moon, Sun, type LucideIcon } from "lucide-react";
 
 type Theme = "light" | "dark" | "sepia";
 
-const OPTIONS: { id: Theme; label: string; Icon: LucideIcon }[] = [
-  { id: "light", label: "Light", Icon: Sun },
+const ORDER: { id: Theme; label: string; Icon: LucideIcon }[] = [
   { id: "dark", label: "Dark", Icon: Moon },
+  { id: "light", label: "Light", Icon: Sun },
   { id: "sepia", label: "Reading mode", Icon: BookOpen },
 ];
 
+// One button that cycles dark, light and reading mode.
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
     const current = document.documentElement.dataset.theme;
     setTheme(current === "light" || current === "sepia" ? current : "dark");
   }, []);
 
-  function choose(next: Theme) {
-    setTheme(next);
-    document.documentElement.dataset.theme = next;
-    localStorage.setItem("theme-v2", next);
+  const at = ORDER.findIndex((o) => o.id === theme);
+  const next = ORDER[(at + 1) % ORDER.length];
+  const { Icon, label } = ORDER[at];
+
+  function choose() {
+    setTheme(next.id);
+    document.documentElement.dataset.theme = next.id;
+    try {
+      localStorage.setItem("theme-v2", next.id);
+    } catch {
+      // storage unavailable: theme applies for this page view only
+    }
   }
 
   return (
-    <div role="radiogroup" aria-label="Colour theme" className="flex shrink-0 items-center gap-0.5 rounded-full border border-line bg-ink-elevated p-0.5">
-      {OPTIONS.map(({ id, label, Icon }) => {
-        const active = theme === id;
-        return (
-          <button
-            key={id}
-            type="button"
-            role="radio"
-            aria-checked={active}
-            aria-label={label}
-            title={label}
-            onClick={() => choose(id)}
-            className={`flex h-6 w-7 items-center justify-center rounded-full transition-colors ${
-              active ? "bg-accent/20 text-accent ring-1 ring-accent-dim" : "text-paper-muted hover:text-paper"
-            }`}
-          >
-            <Icon size={13} aria-hidden />
-          </button>
-        );
-      })}
-    </div>
+    <button
+      type="button"
+      onClick={choose}
+      aria-label={`Theme: ${label}. Switch to ${next.label}`}
+      title={`Theme: ${label}. Click for ${next.label}`}
+      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line text-paper-muted transition-colors hover:border-accent-dim hover:text-paper"
+    >
+      <Icon size={15} aria-hidden />
+    </button>
   );
 }

@@ -27,16 +27,8 @@ export function LessonTopNav({
   prevHref?: string;
   nextHref?: string;
 }) {
-  const router = useRouter();
-  function back() {
-    if (window.history.length > 1 && document.referrer.startsWith(window.location.origin)) router.back();
-    else router.push(moduleHref);
-  }
   return (
     <div className="sticky top-0 z-30 -mx-4 flex items-center gap-2 border-b border-line-soft bg-ink/70 px-4 py-2 backdrop-blur-xl backdrop-saturate-150 sm:-mx-6 sm:px-6">
-      <button type="button" onClick={back} className={btn} aria-label="Go back">
-        <ArrowLeft size={13} /> <span className="hidden sm:inline">Back</span>
-      </button>
       <Link href={trackHref} className={`${btn} min-w-0 max-w-[11rem]`} aria-label={`${trackName} home`}>
         <Home size={13} className="shrink-0" /> <span className="truncate">{trackName}</span>
       </Link>
@@ -240,7 +232,7 @@ export function LessonPager({ prev, next }: { prev?: PagerLink; next?: PagerLink
     <nav className="mt-10 flex flex-col gap-3 sm:flex-row" aria-label="Lesson navigation">
       {prev ? (
         <Link href={prev.href} className={card} onPointerMove={onGlowMove}>
-          <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-paper-muted">
+          <span className="inline-flex items-center gap-1.5 font-mono text-xs text-paper-muted">
             <ArrowLeft size={12} /> Previous
           </span>
           <span className="mt-1 truncate text-sm text-paper group-hover:text-accent">{prev.title}</span>
@@ -250,7 +242,7 @@ export function LessonPager({ prev, next }: { prev?: PagerLink; next?: PagerLink
       )}
       {next ? (
         <Link href={next.href} className={`${card} sm:items-end sm:text-right`} onPointerMove={onGlowMove}>
-          <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-paper-muted">
+          <span className="inline-flex items-center gap-1.5 font-mono text-xs text-paper-muted">
             Next <ArrowRight size={12} />
           </span>
           <span className="mt-1 max-w-full truncate text-sm text-paper group-hover:text-accent">{next.title}</span>
@@ -289,7 +281,7 @@ export function ReadingProgress({ lessonKey, minutes }: { lessonKey: string; min
         <div className="h-full origin-left bg-hook transition-[width] duration-100" style={{ width: `${pct * 100}%` }} />
       </div>
       <div
-        className="pointer-events-none fixed bottom-4 right-4 z-30 rounded-full border border-line bg-ink/70 px-3 py-1 font-mono text-[11px] text-paper-muted backdrop-blur-xl"
+        className="pointer-events-none fixed bottom-4 right-4 z-30 rounded-full border border-line bg-ink/70 px-3 py-1 font-mono text-xs text-paper-muted backdrop-blur-xl"
         role="status"
       >
         {pct >= 0.9 ? "Done" : `~${Math.max(1, left)} min left`}
